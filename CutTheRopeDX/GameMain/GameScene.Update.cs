@@ -1428,12 +1428,8 @@ namespace CutTheRopeDX.GameMain
             {
                 Spikes spike = (Spikes)obj14;
                 spike.Update(delta);
-                if (isCandyInLantern)
-                {
-                    continue;
-                }
                 float spikeCollisionRadius = 15f;
-                if (!spike.electro || (spike.electro && spike.electroOn))
+                if (!isCandyInLantern && (!spike.electro || (spike.electro && spike.electroOn)))
                 {
                     bool flag5 = false;
                     bool flag6;
@@ -1474,46 +1470,77 @@ namespace CutTheRopeDX.GameMain
                             PopCandyBubble(false);
                         }
 
-                        int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                        string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                        Image image2 = Image.Image_createWithResID(candyResource);
-                        image2.DoRestoreCutTransparency();
-                        CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
-                        if (gravityButton != null && !gravityNormal)
-                        {
-                            candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;
-                            candyBreak.angle = 90f;
-                        }
-                        candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+                        float breakX, breakY;
                         if (twoParts != 2)
                         {
                             if (flag5)
                             {
-                                candyBreak.x = candyL.x;
-                                candyBreak.y = candyL.y;
+                                breakX = candyL.x;
+                                breakY = candyL.y;
                                 noCandyL = true;
                             }
                             else
                             {
-                                candyBreak.x = candyR.x;
-                                candyBreak.y = candyR.y;
+                                breakX = candyR.x;
+                                breakY = candyR.y;
                                 noCandyR = true;
                             }
                         }
                         else
                         {
-                            candyBreak.x = candy.x;
-                            candyBreak.y = candy.y;
+                            breakX = candy.x;
+                            breakY = candy.y;
                             noCandy = true;
                         }
                         ExhaustAllActiveRockets();
-                        candyBreak.StartSystem(5);
-                        _ = aniPool.AddChild(candyBreak);
-                        CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
+                        SpawnCandyBreakParticles(breakX, breakY);
                         ReleaseAllRopes(flag5);
                         DetachActiveHands();
                         DetachActiveSnails();
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
+                        {
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
+                        }
+                        if (ghosts != null)
+                        {
+                            foreach (object objGhost in ghosts)
+                            {
+                                Ghost ghost = (Ghost)objGhost;
+                                _ = (ghost?.candyBreak = true);
+                            }
+                        }
+                        return;
+                    }
+                }
+                // Additional candies (index 1+): any uneaten candy touching a spike breaks -> game loss.
+                if (!spike.electro || (spike.electro && spike.electroOn))
+                {
+                    for (int ci = 1; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (ctx.noCandy || ctx.inLantern)
+                        {
+                            continue;
+                        }
+                        if (!BarrierCollision.Hits(
+                            spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y,
+                            spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y,
+                            ctx.point.pos.X, ctx.point.pos.Y, ctx.point.prevPos.X, ctx.point.prevPos.Y,
+                            spikeCollisionRadius))
+                        {
+                            continue;
+                        }
+
+                        PopCandyBubble(ctx);
+                        ctx.candy.x = ctx.point.pos.X;
+                        ctx.candy.y = ctx.point.pos.Y;
+                        ctx.noCandy = true;
+                        ExhaustAllActiveRockets();
+                        SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
+                        ReleaseRopesForPoint(ctx.point);
+                        DetachActiveHands();
+                        DetachActiveSnails();
+                        if (restartState != 0)
                         {
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
                         }

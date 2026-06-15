@@ -583,6 +583,31 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Spawns the candy-break particle burst at a world position and plays the break sound.
+        /// </summary>
+        /// <param name="bx">World-space X for the burst.</param>
+        /// <param name="by">World-space Y for the burst.</param>
+        private void SpawnCandyBreakParticles(float bx, float by)
+        {
+            int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+            Image image2 = Image.Image_createWithResID(candyResource);
+            image2.DoRestoreCutTransparency();
+            CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
+            if (gravityButton != null && !gravityNormal)
+            {
+                candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;
+                candyBreak.angle = 90f;
+            }
+            candyBreak.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+            candyBreak.x = bx;
+            candyBreak.y = by;
+            candyBreak.StartSystem(5);
+            _ = aniPool.AddChild(candyBreak);
+            CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
+        }
+
+        /// <summary>
         /// Pops the bubble captured by a light bulb and restores any ghost cycling state.
         /// </summary>
         /// <param name="bulb">Light bulb whose captured bubble should be popped.</param>
