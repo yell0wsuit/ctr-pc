@@ -672,11 +672,17 @@ namespace CutTheRopeDX.GameMain
             {
                 if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
                 {
-                    hand.cPoint.RemoveConstraint(star);
+                    CandyContext held = HandHeldCandy(hand);
+                    ConstraintedPoint heldPoint = held?.point ?? star;
+                    hand.cPoint.RemoveConstraint(heldPoint);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
+                    if (held != null)
+                    {
+                        held.capturingHand = null;
+                    }
                     releasedHand = true;
                 }
             }
