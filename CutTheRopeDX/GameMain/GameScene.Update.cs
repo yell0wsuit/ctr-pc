@@ -1260,15 +1260,19 @@ namespace CutTheRopeDX.GameMain
                     }
                     rocket.Update(delta);
                     rocket.UpdateRotation();
-                    float dist = VectLength(VectSub(star.pos, rocket.point.pos));
+                    // The rocket flies exactly one candy; resolve it (null while idle/unbound).
+                    CandyContext rocketCandy = RocketBoundCandy(rocket);
+                    ConstraintedPoint rocketStar = rocketCandy?.point ?? star;
+                    GameObject rocketCandyMain = rocketCandy?.candyMain ?? candyMain;
+                    float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
                     if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
                     {
                         for (int i = 0; i < 30; i++)
                         {
-                            ConstraintedPoint.SatisfyConstraints(star);
+                            ConstraintedPoint.SatisfyConstraints(rocketStar);
                             ConstraintedPoint.SatisfyConstraints(rocket.point);
                         }
-                        rocket.rotation = AngleTo0_360(rocket.startRotation + candyMain.rotation - rocket.startCandyRotation);
+                        rocket.rotation = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_FLY)
                     {
@@ -1281,7 +1285,7 @@ namespace CutTheRopeDX.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.rope;
-                                    if (rope != null && rope.tail == star && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
+                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
                                     {
                                         ropeRelaxed = true;
                                         ConstraintedPoint anchor = rope.bungeeAnchor;
@@ -1312,16 +1316,14 @@ namespace CutTheRopeDX.GameMain
                         {
                             impulse = VectMult(impulse, rocket.impulseFactor);
                         }
-                        star.ApplyImpulseDelta(impulse, delta);
-                        star.gravity = vectZero;
-                        rocket.point.pos.X = star.pos.X;
-                        rocket.point.pos.Y = star.pos.Y;
+                        rocketStar.ApplyImpulseDelta(impulse, delta);
+                        rocketStar.gravity = vectZero;
+                        rocket.point.pos.X = rocketStar.pos.X;
+                        rocket.point.pos.Y = rocketStar.pos.Y;
                         if (rocket.time != -1f && Mover.MoveVariableToTarget(ref rocket.time, 0f, 1f, delta))
                         {
-                            activeRocket = null;
-                            rocket.state = Rocket.STATE_ROCKET_EXAUST;
-                            star.disableGravity = false;
-                            rocket.StopAnimation();
+                            rocketStar.disableGravity = false;
+                            ExhaustRocketForCandy(rocketCandy ?? candies[0]);
                         }
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
@@ -1332,7 +1334,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         else
                         {
-                            rocket.point.ChangeRestLengthToFor(dist, star);
+                            rocket.point.ChangeRestLengthToFor(dist, rocketStar);
                         }
                     }
                     if (
