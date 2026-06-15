@@ -55,6 +55,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The mechanical hand currently holding this candy, if any (one candy per hand).</summary>
         public MechanicalHand capturingHand;
 
+        /// <summary>True while this candy is the one carried by the active mouse (single-occupancy).</summary>
+        public bool carriedByMouse;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {

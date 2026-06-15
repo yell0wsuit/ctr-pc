@@ -119,6 +119,12 @@ namespace CutTheRopeDX.GameMain
             return activeMouse?.HasCandy ?? false;
         }
 
+        /// <summary>The point the active mouse is currently carrying, or null when it carries nothing.</summary>
+        public ConstraintedPoint ActiveMouseCarriedStar()
+        {
+            return (activeMouse?.HasCandy ?? false) ? carriedStar : null;
+        }
+
         /// <summary>
         /// Forces the active mouse to drop candy and retreat back into its hole.
         /// </summary>
