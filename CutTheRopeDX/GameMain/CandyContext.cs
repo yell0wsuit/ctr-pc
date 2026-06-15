@@ -52,6 +52,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
 
+        /// <summary>The mechanical hand currently holding this candy, if any (one candy per hand).</summary>
+        public MechanicalHand capturingHand;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {

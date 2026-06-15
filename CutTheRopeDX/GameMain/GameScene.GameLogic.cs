@@ -264,6 +264,44 @@ namespace CutTheRopeDX.GameMain
             return null;
         }
 
+        /// <summary>The candy held by <paramref name="hand"/>, or null if the hand holds none.</summary>
+        private CandyContext HandHeldCandy(MechanicalHand hand)
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].capturingHand == hand)
+                {
+                    return candies[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// The nearest grabbable candy to <paramref name="hand"/> (not eaten, not in a lantern, not in a
+        /// sock) and its distance. Returns null with <paramref name="distance"/> = float.MaxValue if none.
+        /// </summary>
+        private CandyContext NearestGrabbableCandy(MechanicalHand hand, out float distance)
+        {
+            CandyContext nearest = null;
+            distance = float.MaxValue;
+            for (int i = 0; i < candies.Count; i++)
+            {
+                CandyContext ctx = candies[i];
+                if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null)
+                {
+                    continue;
+                }
+                float d = VectDistance(hand.cPoint.pos, ctx.point.pos);
+                if (d < distance)
+                {
+                    distance = d;
+                    nearest = ctx;
+                }
+            }
+            return nearest;
+        }
+
         /// <summary>Exhausts the rocket bound to <paramref name="ctx"/> (one-time consume) and clears the binding.</summary>
         private void ExhaustRocketForCandy(CandyContext ctx)
         {
