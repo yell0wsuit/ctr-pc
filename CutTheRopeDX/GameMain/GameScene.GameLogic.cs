@@ -251,6 +251,44 @@ namespace CutTheRopeDX.GameMain
             return false;
         }
 
+        /// <summary>The candy currently flown by <paramref name="rocket"/>, or null if none.</summary>
+        private CandyContext RocketBoundCandy(Rocket rocket)
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].activeRocket == rocket)
+                {
+                    return candies[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>Exhausts the rocket bound to <paramref name="ctx"/> (one-time consume) and clears the binding.</summary>
+        private void ExhaustRocketForCandy(CandyContext ctx)
+        {
+            if (ctx.activeRocket == null)
+            {
+                return;
+            }
+            ctx.activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+            ctx.activeRocket.StopAnimation();
+            ctx.activeRocket = null;
+            if (ctx == candies[0])
+            {
+                activeRocket = null; // keep singleton alias in sync
+            }
+        }
+
+        /// <summary>Exhausts every candy's bound rocket (win/loss cleanup).</summary>
+        private void ExhaustAllActiveRockets()
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                ExhaustRocketForCandy(candies[i]);
+            }
+        }
+
         /// <summary>
         /// Calculates time, star, and total score bonuses for the completed level.
         /// </summary>

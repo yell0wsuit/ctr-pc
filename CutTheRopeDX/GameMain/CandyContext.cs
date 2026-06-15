@@ -49,6 +49,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The bamboo tube currently teleporting this candy, if any (was the singleton <c>targetBambooTube</c>).</summary>
         public BambooTube targetBambooTube;
 
+        /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
+        public Rocket activeRocket;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {
