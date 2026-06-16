@@ -704,10 +704,7 @@ namespace CutTheRopeDX.GameMain
                     hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
-                    if (held != null)
-                    {
-                        held.capturingHand = null;
-                    }
+                    _ = (held?.capturingHand = null);
                     releasedHand = true;
                 }
             }
