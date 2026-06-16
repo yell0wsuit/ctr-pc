@@ -132,10 +132,6 @@ namespace CutTheRopeDX.GameMain
                 }
                 return true;
             }
-            if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
-            {
-                return true;
-            }
             if (twoParts != 2)
             {
                 if (candyBubbleL != null && HandleBubbleTouchXY(starL, tx, ty))
@@ -147,10 +143,17 @@ namespace CutTheRopeDX.GameMain
                     return true;
                 }
             }
-            // Additional independent candies (candies[1+]) can have their bubble tapped to pop.
-            for (int ci = 1; ci < candies.Count; ci++)
+            for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
+                if (ci == 0)
+                {
+                    if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
+                    {
+                        return true;
+                    }
+                    continue;
+                }
                 if (ctx.bubble == null)
                 {
                     continue;
