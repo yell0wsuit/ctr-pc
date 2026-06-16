@@ -317,6 +317,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Initial snail rotation used when restoring state.</summary>
         public float startRotation;
 
+        /// <summary>Returns the candy physics point currently followed by the snail.</summary>
+        public ConstraintedPoint AttachedPoint()
+        {
+            return point;
+        }
+
         /// <summary>Container for eye and wake/sleep overlay visuals drawn behind the shell.</summary>
         private BaseElement backContainer;
 

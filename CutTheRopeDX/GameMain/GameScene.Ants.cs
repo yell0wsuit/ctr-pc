@@ -280,7 +280,7 @@ namespace CutTheRopeDX.GameMain
             if (star.weight > 1f)
             {
                 star.SetWeight(1f);
-                DetachActiveSnails();
+                DetachSnailsForPoint(star);
             }
 
             return true;

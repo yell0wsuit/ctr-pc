@@ -1557,7 +1557,7 @@ namespace CutTheRopeDX.GameMain
                             ReleaseRopesForPoint(ctx.point);
                         }
                         DetachActiveHands();
-                        DetachActiveSnails();
+                        DetachSnailsForPoint(ctx.point);
                         if (restartState != 0)
                         {
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
@@ -2235,7 +2235,7 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
-                    DetachActiveSnails();
+                    DetachSnailsForPoint(ctx.point);
                     miceManager?.ForceDropCandy();
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool([ctx.candy, ctx.candyMain, ctx.candyTop], aniPool);

@@ -682,6 +682,24 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>Detaches active snails riding the given candy point (no-op if null).</summary>
+        public void DetachSnailsForPoint(ConstraintedPoint point)
+        {
+            if (snailobjects == null || snailobjects.Count <= 0 || point == null)
+            {
+                return;
+            }
+
+            for (int i = snailobjects.Count - 1; i >= 0; i--)
+            {
+                Snail snail = snailobjects[i];
+                if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == point)
+                {
+                    snail.Detach();
+                }
+            }
+        }
+
         /// <summary>
         /// Releases all mechanical hands currently holding the candy and unblocks conveyors if needed.
         /// </summary>

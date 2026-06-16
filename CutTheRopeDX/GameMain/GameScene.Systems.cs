@@ -523,7 +523,7 @@ namespace CutTheRopeDX.GameMain
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
             ExhaustAllActiveRockets();
-            DetachActiveSnails();
+            DetachSnailsForPoint(capturedStar);
             if (restartState != 0)
             {
                 dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2);
