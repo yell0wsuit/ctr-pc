@@ -1765,22 +1765,21 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            else if (candyBubble != null)
-            {
-                if (gravityButton != null && !gravityNormal)
-                {
-                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / bubbleDamping, ((0f - star.v.Y) / bubbleDamping) - bubbleLift), delta);
-                }
-                else
-                {
-                    star.ApplyImpulseDelta(Vect((0f - star.v.X) / bubbleDamping, ((0f - star.v.Y) / bubbleDamping) + bubbleLift), delta);
-                }
-            }
-            // Per-candy bubble lift for additional candies. candies[0] handled above via `star`.
-            for (int ci = 1; ci < candies.Count; ci++)
+            // Per-candy bubble lift. Split halves (twoParts 0/1) are handled above and
+            // ci==0 is skipped while split; whole candies[0] uses singleton candyBubble/star.
+            for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (ctx.bubble == null || ctx.noCandy)
+                if (ci == 0 && twoParts != 2)
+                {
+                    continue;
+                }
+                GameObject b = ci == 0 ? candyBubble : ctx.bubble;
+                if (b == null)
+                {
+                    continue;
+                }
+                if (ci != 0 && ctx.noCandy)
                 {
                     continue;
                 }
