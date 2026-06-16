@@ -449,27 +449,23 @@ namespace CutTheRopeDX.GameMain
                     lastCandyRotateDelta *= 0.98f;
                 }
             }
-            if (!noCandy)
+            // Step every candy point + visual in one pass. candies[0]'s "gone" flag is the
+            // singleton `noCandy` (not synced to candies[0].noCandy - see plan); index 1+ use
+            // their own noCandy. During split-candy, singleton noCandy is true, so candies[0] is
+            // skipped here and its halves are stepped by the twoParts block below.
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                star.Update(delta * ropePhysicsSpeed);
-                candy.x = star.pos.X;
-                candy.y = star.pos.Y;
-                candy.Update(delta);
-                CalculateTopLeft(candy);
-            }
-            // Step additional independent candies (multi-candy). candies[0] handled above via `star`/`candy`.
-            for (int ci = 1; ci < candies.Count; ci++)
-            {
-                CandyContext extraCandy = candies[ci];
-                if (extraCandy.noCandy)
+                CandyContext ctx = candies[ci];
+                bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                if (gone)
                 {
                     continue;
                 }
-                extraCandy.point.Update(delta * ropePhysicsSpeed);
-                extraCandy.candy.x = extraCandy.point.pos.X;
-                extraCandy.candy.y = extraCandy.point.pos.Y;
-                extraCandy.candy.Update(delta);
-                CalculateTopLeft(extraCandy.candy);
+                ctx.point.Update(delta * ropePhysicsSpeed);
+                ctx.candy.x = ctx.point.pos.X;
+                ctx.candy.y = ctx.point.pos.Y;
+                ctx.candy.Update(delta);
+                CalculateTopLeft(ctx.candy);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
             ResolveCandyCollisions();
