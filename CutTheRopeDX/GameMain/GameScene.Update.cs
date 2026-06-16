@@ -656,22 +656,24 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
 
-                    bool candyTouchesStar = twoParts == 2
-                        ? GameObject.ObjectsIntersect(candy, star) && !noCandy
-                        : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
-                        (GameObject.ObjectsIntersect(candyR, star) && !noCandyR);
-
-                    // Track which candy collected the star so only that candy glows.
-                    CandyContext collectingCandy = candyTouchesStar && candies.Count > 0 ? candies[0] : null;
-
-                    // Additional independent candies (multi-candy) can also collect stars.
-                    for (int ci = 1; ci < candies.Count && !candyTouchesStar; ci++)
+                    // Which candy (if any) collects this star. candies[0] keeps its split-aware
+                    // test (singleton `noCandy` / candyL,candyR halves); index 1+ are whole candies.
+                    bool candyTouchesStar = false;
+                    CandyContext collectingCandy = null;
+                    for (int ci = 0; ci < candies.Count; ci++)
                     {
-                        CandyContext ec = candies[ci];
-                        if (!ec.noCandy && GameObject.ObjectsIntersect(ec.candy, star))
+                        CandyContext ctx = candies[ci];
+                        bool touches = ci == 0
+                            ? (twoParts == 2
+                                ? GameObject.ObjectsIntersect(candy, star) && !noCandy
+                                : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
+                                  (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
+                            : !ctx.noCandy && GameObject.ObjectsIntersect(ctx.candy, star);
+                        if (touches)
                         {
                             candyTouchesStar = true;
-                            collectingCandy = ec;
+                            collectingCandy = ctx;
+                            break;
                         }
                     }
 
