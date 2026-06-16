@@ -1427,30 +1427,44 @@ namespace CutTheRopeDX.GameMain
                 Spikes spike = (Spikes)obj14;
                 spike.Update(delta);
                 float spikeCollisionRadius = 15f;
-                if (!isCandyInLantern && (!spike.electro || (spike.electro && spike.electroOn)))
+                // Break whichever candy touches the spike, in one pass. candies[0] is tested first
+                // (preserving priority) and keeps its exact singleton effect calls (PopCandyBubble(false),
+                // ReleaseAllRopes(false), singleton noCandy) - these are NOT equivalent to the per-candy
+                // calls (gun-cup drop + starR ropes; singleton candyBubble + split-restore). Split
+                // candies[0] keeps its half-aware branch. Decision routed through BarrierCollision.Hits.
+                if (!spike.electro || (spike.electro && spike.electroOn))
                 {
-                    bool flag5 = false;
-                    bool flag6;
-                    if (twoParts != 2)
+                    for (int ci = 0; ci < candies.Count; ci++)
                     {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starL.pos.X - spikeCollisionRadius, starL.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandyL;
-                        if (flag6)
+                        CandyContext ctx = candies[ci];
+                        if (ci == 0 && twoParts != 2)
                         {
-                            flag5 = true;
-                        }
-                        else
-                        {
-                            flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, starR.pos.X - spikeCollisionRadius, starR.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandyR;
-                        }
-                    }
-                    else
-                    {
-                        flag6 = (LineInRect(spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInRect(spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y, star.pos.X - spikeCollisionRadius, star.pos.Y - spikeCollisionRadius, spikeCollisionRadius * 2f, spikeCollisionRadius * 2f) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y)) && !noCandy;
-                    }
-                    if (flag6)
-                    {
-                        if (twoParts != 2)
-                        {
+                            if (isCandyInLantern)
+                            {
+                                continue;
+                            }
+                            bool flag5 = false;
+                            bool flag6 = BarrierCollision.Hits(
+                                spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y,
+                                spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y,
+                                starL.pos.X, starL.pos.Y, starL.prevPos.X, starL.prevPos.Y,
+                                spikeCollisionRadius) && !noCandyL;
+                            if (flag6)
+                            {
+                                flag5 = true;
+                            }
+                            else
+                            {
+                                flag6 = BarrierCollision.Hits(
+                                    spike.t1.X, spike.t1.Y, spike.t2.X, spike.t2.Y,
+                                    spike.b1.X, spike.b1.Y, spike.b2.X, spike.b2.Y,
+                                    starR.pos.X, starR.pos.Y, starR.prevPos.X, starR.prevPos.Y,
+                                    spikeCollisionRadius) && !noCandyR;
+                            }
+                            if (!flag6)
+                            {
+                                continue;
+                            }
                             if (flag5)
                             {
                                 if (candyBubbleL != null)
@@ -1462,15 +1476,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 PopCandyBubble(false);
                             }
-                        }
-                        else if (candyBubble != null)
-                        {
-                            PopCandyBubble(false);
-                        }
-
-                        float breakX, breakY;
-                        if (twoParts != 2)
-                        {
+                            float breakX, breakY;
                             if (flag5)
                             {
                                 breakX = candyL.x;
@@ -1483,40 +1489,28 @@ namespace CutTheRopeDX.GameMain
                                 breakY = candyR.y;
                                 noCandyR = true;
                             }
-                        }
-                        else
-                        {
-                            breakX = candy.x;
-                            breakY = candy.y;
-                            noCandy = true;
-                        }
-                        ExhaustAllActiveRockets();
-                        SpawnCandyBreakParticles(breakX, breakY);
-                        ReleaseAllRopes(flag5);
-                        DetachActiveHands();
-                        DetachActiveSnails();
-                        if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
-                        {
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
-                        }
-                        if (ghosts != null)
-                        {
-                            foreach (object objGhost in ghosts)
+                            ExhaustAllActiveRockets();
+                            SpawnCandyBreakParticles(breakX, breakY);
+                            ReleaseAllRopes(flag5);
+                            DetachActiveHands();
+                            DetachActiveSnails();
+                            if (restartState != 0 && (!noCandyL || !noCandyR))
                             {
-                                Ghost ghost = (Ghost)objGhost;
-                                _ = (ghost?.candyBreak = true);
+                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
                             }
+                            if (ghosts != null)
+                            {
+                                foreach (object objGhost in ghosts)
+                                {
+                                    Ghost ghost = (Ghost)objGhost;
+                                    _ = (ghost?.candyBreak = true);
+                                }
+                            }
+                            return;
                         }
-                        return;
-                    }
-                }
-                // Additional candies (index 1+): any uneaten candy touching a spike breaks -> game loss.
-                if (!spike.electro || (spike.electro && spike.electroOn))
-                {
-                    for (int ci = 1; ci < candies.Count; ci++)
-                    {
-                        CandyContext ctx = candies[ci];
-                        if (ctx.noCandy || ctx.inLantern)
+
+                        bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                        if (gone || ctx.inLantern)
                         {
                             continue;
                         }
@@ -1529,13 +1523,37 @@ namespace CutTheRopeDX.GameMain
                             continue;
                         }
 
-                        PopCandyBubble(ctx);
+                        if (ci == 0)
+                        {
+                            if (candyBubble != null)
+                            {
+                                PopCandyBubble(false);
+                            }
+                        }
+                        else
+                        {
+                            PopCandyBubble(ctx);
+                        }
                         ctx.candy.x = ctx.point.pos.X;
                         ctx.candy.y = ctx.point.pos.Y;
-                        ctx.noCandy = true;
+                        if (ci == 0)
+                        {
+                            noCandy = true;
+                        }
+                        else
+                        {
+                            ctx.noCandy = true;
+                        }
                         ExhaustAllActiveRockets();
                         SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
-                        ReleaseRopesForPoint(ctx.point);
+                        if (ci == 0)
+                        {
+                            ReleaseAllRopes(false);
+                        }
+                        else
+                        {
+                            ReleaseRopesForPoint(ctx.point);
+                        }
                         DetachActiveHands();
                         DetachActiveSnails();
                         if (restartState != 0)
