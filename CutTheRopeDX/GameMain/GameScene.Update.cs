@@ -1559,61 +1559,54 @@ namespace CutTheRopeDX.GameMain
                 Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta);
                 float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
-                bool flag7 = false;
-                bool flag8;
-                if (twoParts != 2)
+                bool anyCandyHit = false;
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starL.pos.X - bouncerCollisionRadius, starL.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(starL.prevPos.X, starL.prevPos.Y, starL.pos.X, starL.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandyL;
-                    if (flag8)
+                    CandyContext ctx = candies[ci];
+                    if (ci == 0 && twoParts != 2)
                     {
-                        flag7 = true;
-                    }
-                    else
-                    {
-                        flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, starR.pos.X - bouncerCollisionRadius, starR.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(starR.prevPos.X, starR.prevPos.Y, starR.pos.X, starR.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandyR;
-                    }
-                }
-                else
-                {
-                    flag8 = (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, star.pos.X - bouncerCollisionRadius, star.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(star.prevPos.X, star.prevPos.Y, star.pos.X, star.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y)) && !noCandy;
-                }
-                bool anyCandyHit = flag8;
-                if (flag8)
-                {
-                    DetachActiveHands();
-                    if (twoParts != 2)
-                    {
-                        if (flag7)
+                        // Split candy: bounce whichever half (left preferred) hits the bouncer.
+                        bool flag7 = false;
+                        bool flag8 = BarrierCollision.Hits(
+                            bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
+                            bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
+                            starL.pos.X, starL.pos.Y, starL.prevPos.X, starL.prevPos.Y,
+                            bouncerCollisionRadius) && !noCandyL;
+                        if (flag8)
                         {
-                            HandleBouncePtDelta(bouncer, starL, delta);
+                            flag7 = true;
                         }
                         else
                         {
-                            HandleBouncePtDelta(bouncer, starR, delta);
+                            flag8 = BarrierCollision.Hits(
+                                bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
+                                bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
+                                starR.pos.X, starR.pos.Y, starR.prevPos.X, starR.prevPos.Y,
+                                bouncerCollisionRadius) && !noCandyR;
+                        }
+                        if (flag8)
+                        {
+                            anyCandyHit = true;
+                            DetachActiveHands();
+                            HandleBouncePtDelta(bouncer, flag7 ? starL : starR, delta);
                         }
                     }
                     else
                     {
-                        HandleBouncePtDelta(bouncer, star, delta);
-                    }
-                }
-                // Additional candies (index 1+) bounce independently; never split-candy.
-                for (int ci = 1; ci < candies.Count; ci++)
-                {
-                    CandyContext ctx = candies[ci];
-                    if (ctx.noCandy)
-                    {
-                        continue;
-                    }
-                    if (BarrierCollision.Hits(
-                        bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
-                        bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
-                        ctx.point.pos.X, ctx.point.pos.Y, ctx.point.prevPos.X, ctx.point.prevPos.Y,
-                        bouncerCollisionRadius))
-                    {
-                        anyCandyHit = true;
-                        DetachActiveHands();
-                        HandleBouncePtDelta(bouncer, ctx.point, delta);
+                        if (ci == 0 ? noCandy : ctx.noCandy)
+                        {
+                            continue;
+                        }
+                        if (BarrierCollision.Hits(
+                            bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
+                            bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
+                            ctx.point.pos.X, ctx.point.pos.Y, ctx.point.prevPos.X, ctx.point.prevPos.Y,
+                            bouncerCollisionRadius))
+                        {
+                            anyCandyHit = true;
+                            DetachActiveHands();
+                            HandleBouncePtDelta(bouncer, ctx.point, delta);
+                        }
                     }
                 }
                 bool bulbHit = false;

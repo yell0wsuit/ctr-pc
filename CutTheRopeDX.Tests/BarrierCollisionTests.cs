@@ -1,4 +1,6 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.GameMain;
+
 using Xunit;
 
 namespace CutTheRopeDX.Tests
@@ -7,6 +9,7 @@ namespace CutTheRopeDX.Tests
     {
         private const float T1X = 0, T1Y = 100, T2X = 200, T2Y = 100;
         private const float B1X = 0, B1Y = 110, B2X = 200, B2Y = 110;
+        private static readonly float BouncerRadius = ActivePhysicsConstants.BouncerCollisionRadius;
 
         [Fact]
         public void Hits_TrueWhenCandyBoxOverlapsTopEdge()
@@ -30,6 +33,25 @@ namespace CutTheRopeDX.Tests
             Assert.False(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
                 px: 500, py: 500, prevX: 500, prevY: 500, radius: 15f));
+        }
+
+        // A whole candy whose swept path crosses the bouncer barrier registers a hit at the real
+        // bouncer collision radius (mirrors the candies[0] inline bouncer formula).
+        [Fact]
+        public void Hits_TrueForWholeCandyCrossingBouncer()
+        {
+            Assert.True(BarrierCollision.Hits(
+                T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
+                px: 100, py: 120, prevX: 100, prevY: 80, radius: BouncerRadius));
+        }
+
+        // The same candy far below the barrier does not register a hit.
+        [Fact]
+        public void Hits_FalseForWholeCandyBelowBouncer()
+        {
+            Assert.False(BarrierCollision.Hits(
+                T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
+                px: 100, py: 400, prevX: 100, prevY: 400, radius: BouncerRadius));
         }
     }
 }
