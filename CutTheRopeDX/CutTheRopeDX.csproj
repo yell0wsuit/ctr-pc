@@ -265,8 +265,9 @@
   -->
   <Target Name="RestoreContentAssets"
     BeforeTargets="CollectPackageReferences"
-    Condition="'$(CI)' != 'true'">
-    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/FetchContentAssets/FetchContentAssets.csproj&quot; -- &quot;$(MSBuildProjectDirectory)/../content&quot;"
+    Condition="'$(CI)' != 'true' AND '$(RunMGCB)' == 'true'">
+    <Exec
+      Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/FetchContentAssets/FetchContentAssets.csproj&quot; -- &quot;$(MSBuildProjectDirectory)/../content&quot;"
       WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
 </Project>
