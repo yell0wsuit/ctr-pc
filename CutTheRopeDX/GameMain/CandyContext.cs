@@ -58,6 +58,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True while this candy is the one carried by the active mouse (single-occupancy).</summary>
         public bool carriedByMouse;
 
+        /// <summary>Edge-detect flag: candy is breaking the water surface (splash played once).</summary>
+        public bool splashes;
+
+        /// <summary>Edge-detect flag: candy is fully below the water surface.</summary>
+        public bool underwater;
+
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {

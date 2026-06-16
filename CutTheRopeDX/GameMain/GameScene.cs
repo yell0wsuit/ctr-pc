@@ -126,8 +126,6 @@ namespace CutTheRopeDX.GameMain
                 waterLayer.Dispose();
                 waterLayer = null;
             }
-            splashes = false;
-            underwater = false;
             candyL = null;
             candyR = null;
             starL = null;
@@ -1177,16 +1175,6 @@ namespace CutTheRopeDX.GameMain
         /// Whether the candy is currently hidden inside a lantern.
         /// </summary>
         private bool isCandyInLantern;
-
-        /// <summary>
-        /// Whether splash effects are currently enabled.
-        /// </summary>
-        private bool splashes;
-
-        /// <summary>
-        /// Whether the scene is currently underwater.
-        /// </summary>
-        private bool underwater;
 
         /// <summary>
         /// The current split-candy state.

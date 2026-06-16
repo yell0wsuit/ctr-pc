@@ -56,44 +56,49 @@ namespace CutTheRopeDX.GameMain
                 float waterSurfaceY = waterLayer.y;
                 float waterLeftX = waterLayer.x;
                 float waterRightX = waterLeftX + waterLayer.width;
-                if (
-                    GameObject.RectInObject(
-                        waterLeftX,
-                        waterSurfaceY - ActivePhysicsConstants.WaterSurfaceDetectionHeight,
-                        waterRightX,
-                        waterSurfaceY + ActivePhysicsConstants.WaterSurfaceDetectionHeight,
-                        candy
-                    )
-                )
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    if (!splashes)
+                    CandyContext ctx = candies[ci];
+                    if (ci != 0 && ctx.noCandy)
                     {
-                        waterLayer.AddWaterParticlesAtXY(candy.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
+                        continue;
                     }
-                    splashes = true;
-                }
-                else
-                {
-                    splashes = false;
-                }
-
-                if (candy.y - (candy.texture.quadRects[0].h / 2f) > waterSurfaceY)
-                {
-                    if (!underwater)
+                    if (GameObject.RectInObject(
+                            waterLeftX,
+                            waterSurfaceY - ActivePhysicsConstants.WaterSurfaceDetectionHeight,
+                            waterRightX,
+                            waterSurfaceY + ActivePhysicsConstants.WaterSurfaceDetectionHeight,
+                            ctx.candy))
                     {
-                        int underwaterCount = Preferences.GetIntForKey("PREFS_UNDERWATER") + 1;
-                        Preferences.SetIntForKey(underwaterCount, "PREFS_UNDERWATER", false);
-                        if (underwaterCount >= 150)
+                        if (!ctx.splashes)
                         {
-                            CTRRootController.PostAchievementName("acDeepDiver");
+                            waterLayer.AddWaterParticlesAtXY(ctx.candy.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                         }
+                        ctx.splashes = true;
                     }
-                    underwater = true;
-                }
-                else
-                {
-                    underwater = false;
+                    else
+                    {
+                        ctx.splashes = false;
+                    }
+
+                    if (ctx.candy.y - (ctx.candy.texture.quadRects[0].h / 2f) > waterSurfaceY)
+                    {
+                        if (!ctx.underwater)
+                        {
+                            int underwaterCount = Preferences.GetIntForKey("PREFS_UNDERWATER") + 1;
+                            Preferences.SetIntForKey(underwaterCount, "PREFS_UNDERWATER", false);
+                            if (underwaterCount >= 150)
+                            {
+                                CTRRootController.PostAchievementName("acDeepDiver");
+                            }
+                        }
+                        ctx.underwater = true;
+                    }
+                    else
+                    {
+                        ctx.underwater = false;
+                    }
                 }
             }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
