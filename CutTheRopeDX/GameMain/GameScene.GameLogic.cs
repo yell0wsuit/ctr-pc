@@ -39,20 +39,20 @@ namespace CutTheRopeDX.GameMain
                 ctx.targetBambooTube.ThrowCandy(ctx.point);
                 ctx.targetBambooTube.ThrowParticlesOut(particlesAniPool);
                 ctx.candy.PlayTimeline(2);
-                if (isPrimary && activeRocket != null)
+                if (ctx.activeRocket != null)
                 {
                     Vector holeOut = ctx.targetBambooTube.HoleOut;
                     Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
-                    activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
-                    activeRocket.startRotation = activeRocket.rotation;
-                    activeRocket.startCandyRotation = 0f;
+                    ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
+                    ctx.activeRocket.startRotation = ctx.activeRocket.rotation;
+                    ctx.activeRocket.startCandyRotation = 0f;
                     ctx.candyMain.rotation = 0f;
-                    activeRocket.additionalAngle = 0f;
-                    activeRocket.UpdateRotation();
-                    activeRocket.point.posDelta = vectZero;
-                    activeRocket.point.pos = ctx.point.pos;
-                    activeRocket.point.prevPos = activeRocket.point.pos;
-                    activeRocket.point.v = vectZero;
+                    ctx.activeRocket.additionalAngle = 0f;
+                    ctx.activeRocket.UpdateRotation();
+                    ctx.activeRocket.point.posDelta = vectZero;
+                    ctx.activeRocket.point.pos = ctx.point.pos;
+                    ctx.activeRocket.point.prevPos = ctx.activeRocket.point.pos;
+                    ctx.activeRocket.point.v = vectZero;
                 }
                 else
                 {
@@ -82,17 +82,17 @@ namespace CutTheRopeDX.GameMain
                 ctx.point.posDelta = VectDiv(ctx.point.v, 60f);
                 ctx.point.prevPos = VectSub(ctx.point.pos, ctx.point.posDelta);
 
-                if (isPrimary && activeRocket != null)
+                if (ctx.activeRocket != null)
                 {
-                    activeRocket.point.pos = ctx.point.pos;
-                    activeRocket.point.prevPos = ctx.point.prevPos;
-                    activeRocket.point.v = ctx.point.v;
-                    activeRocket.point.posDelta = ctx.point.posDelta;
-                    activeRocket.rotation = ctx.targetSock.rotation + DEG_90;
-                    activeRocket.startRotation = ctx.targetSock.rotation + DEG_90;
-                    activeRocket.startCandyRotation = ctx.candyMain.rotation;
-                    activeRocket.additionalAngle = 0f;
-                    activeRocket.UpdateRotation();
+                    ctx.activeRocket.point.pos = ctx.point.pos;
+                    ctx.activeRocket.point.prevPos = ctx.point.prevPos;
+                    ctx.activeRocket.point.v = ctx.point.v;
+                    ctx.activeRocket.point.posDelta = ctx.point.posDelta;
+                    ctx.activeRocket.rotation = ctx.targetSock.rotation + DEG_90;
+                    ctx.activeRocket.startRotation = ctx.targetSock.rotation + DEG_90;
+                    ctx.activeRocket.startCandyRotation = ctx.candyMain.rotation;
+                    ctx.activeRocket.additionalAngle = 0f;
+                    ctx.activeRocket.UpdateRotation();
                 }
 
                 ctx.targetSock = null;

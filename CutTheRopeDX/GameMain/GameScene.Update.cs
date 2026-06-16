@@ -2154,7 +2154,7 @@ namespace CutTheRopeDX.GameMain
                             heldCandy.candyMain.rotation += hand.rotatingSegment.RotationDelta();
                         }
                     }
-                    else if (activeRocket != null)
+                    else if (heldCandy.activeRocket != null)
                     {
                         _ = hand.IsRotating();
                         hand.doRotateCandy = true;
@@ -2245,7 +2245,7 @@ namespace CutTheRopeDX.GameMain
                         PopCandyBubble(ctx);
                     }
 
-                    if (activeRocket != null)
+                    if (ctx.activeRocket != null)
                     {
                         int count = Preferences.GetIntForKey("PREFS_GRAB_ROCKET") + 1;
                         Preferences.SetIntForKey(count, "PREFS_GRAB_ROCKET", false);

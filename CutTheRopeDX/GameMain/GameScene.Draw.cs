@@ -237,7 +237,21 @@ namespace CutTheRopeDX.GameMain
             {
                 foreach (Rocket rocket in rockets)
                 {
-                    if (rocket != null && !(rocket == activeRocket && (targetSock != null || targetBambooTube != null)))
+                    if (rocket == null)
+                    {
+                        continue;
+                    }
+                    bool hiddenForTransit = false;
+                    for (int ci = 0; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (rocket == ctx.activeRocket && (ctx.targetSock != null || ctx.targetBambooTube != null))
+                        {
+                            hiddenForTransit = true;
+                            break;
+                        }
+                    }
+                    if (!hiddenForTransit)
                     {
                         rocket.Draw();
                     }
