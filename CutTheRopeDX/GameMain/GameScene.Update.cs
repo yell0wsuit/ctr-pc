@@ -1664,26 +1664,37 @@ namespace CutTheRopeDX.GameMain
             float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
             bool rocketInWater = false;
             float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
-            if (waterLayer != null
-                && waterLevel > 0f
-                && star.pos.Y > waterLayer.y
-                && star.pos.X + candyRadius >= waterLayer.x
-                && star.pos.X - candyRadius <= waterLayer.x + waterLayer.width)
+            if (waterLayer != null && waterLevel > 0f)
             {
-                float damping = ActivePhysicsConstants.WaterDamping;
-                float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / star.weight;
-                if (activeRocket != null)
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    rocketInWater = true;
-                    verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
-                    damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
-                    if (activeRocket.state == Rocket.STATE_ROCKET_FLY)
+                    CandyContext ctx = candies[ci];
+                    if (ci != 0 && ctx.noCandy)
                     {
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
-                        ExhaustAllActiveRockets();
+                        continue;
                     }
+                    if (!WaterSubmersion.IsSubmerged(ctx.point.pos.X, ctx.point.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius))
+                    {
+                        continue;
+                    }
+                    float damping = ActivePhysicsConstants.WaterDamping;
+                    float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / ctx.point.weight;
+                    if (ctx.activeRocket != null)
+                    {
+                        if (ci == 0)
+                        {
+                            rocketInWater = true;
+                        }
+                        verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
+                        damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
+                        if (ctx.activeRocket.state == Rocket.STATE_ROCKET_FLY)
+                        {
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
+                            ExhaustRocketForCandy(ctx);
+                        }
+                    }
+                    ctx.point.ApplyImpulseDelta(Vect(-ctx.point.v.X / damping, (-ctx.point.v.Y / damping) + verticalWaterImpulse), delta);
                 }
-                star.ApplyImpulseDelta(Vect(-star.v.X / damping, (-star.v.Y / damping) + verticalWaterImpulse), delta);
             }
             if (waterLayer != null && bungees != null)
             {
