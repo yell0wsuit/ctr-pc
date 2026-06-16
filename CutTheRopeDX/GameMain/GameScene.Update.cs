@@ -1707,15 +1707,26 @@ namespace CutTheRopeDX.GameMain
 
                     if (snail.state == Snail.SNAIL_STATE_ACTIVE)
                     {
-                        snail.rotation = candyMain.rotation - snail.startRotation;
+                        snail.rotation = CandyForPoint(snail.AttachedPoint()).candyMain.rotation - snail.startRotation;
                     }
 
-                    if (snail.state == Snail.SNAIL_STATE_INACTIVE && !noCandy && GameObject.ObjectsIntersect(candy, snail))
+                    if (snail.state == Snail.SNAIL_STATE_INACTIVE)
                     {
-                        DetachActiveSnails();
-                        snail.startRotation += candyMain.rotation;
-                        snail.AttachToPoint(star);
-                        star.SetWeight(star.weight + 3f);
+                        for (int ci = 0; ci < candies.Count; ci++)
+                        {
+                            CandyContext ctx = candies[ci];
+                            bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                            if (gone || !GameObject.ObjectsIntersect(ctx.candy, snail))
+                            {
+                                continue;
+                            }
+
+                            DetachSnailsForPoint(ctx.point);
+                            snail.startRotation += ctx.candyMain.rotation;
+                            snail.AttachToPoint(ctx.point);
+                            ctx.point.SetWeight(ctx.point.weight + 3f);
+                            break;
+                        }
                     }
 
                     if (snail.state == Snail.SNAIL_STATE_VANISHED)
