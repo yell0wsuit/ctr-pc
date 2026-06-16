@@ -243,38 +243,26 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (!noCandy && targetSock == null)
+            // Draw every candy + its blink in one pass. candies[0] reads the exact singletons it
+            // did before (`noCandy`/`targetSock`); all other fields are the same objects on
+            // candies[0]. candies[0].candyBlink is always non-null, so the null check is harmless.
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                bool primaryInLantern = candies.Count > 0 && candies[0].inLantern;
-                if (!primaryInLantern)
+                CandyContext ctx = candies[ci];
+                bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                Sock sock = ci == 0 ? targetSock : ctx.targetSock;
+                if (!gone && sock == null)
                 {
-                    candy.x = star.pos.X;
-                    candy.y = star.pos.Y;
-                }
-                candy.Draw();
-                if (candyBlink.GetCurrentTimeline() != null && !primaryInLantern)
-                {
-                    Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                    candyBlink.Draw();
-                    Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                }
-            }
-            // Draw additional independent candies. candies[0] is the primary `candy`.
-            for (int ci = 1; ci < candies.Count; ci++)
-            {
-                CandyContext extra = candies[ci];
-                if (!extra.noCandy && extra.targetSock == null)
-                {
-                    if (!extra.inLantern)
+                    if (!ctx.inLantern)
                     {
-                        extra.candy.x = extra.point.pos.X;
-                        extra.candy.y = extra.point.pos.Y;
-                        extra.candy.Draw();
+                        ctx.candy.x = ctx.point.pos.X;
+                        ctx.candy.y = ctx.point.pos.Y;
+                        ctx.candy.Draw();
                     }
-                    if (extra.candyBlink != null && extra.candyBlink.GetCurrentTimeline() != null && !extra.inLantern)
+                    if (ctx.candyBlink != null && ctx.candyBlink.GetCurrentTimeline() != null && !ctx.inLantern)
                     {
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                        extra.candyBlink.Draw();
+                        ctx.candyBlink.Draw();
                         Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                     }
                 }
