@@ -240,26 +240,23 @@ namespace CutTheRopeDX.GameMain
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
             _ = aniPool.AddChild(pumpDirt);
-            if (!noCandy)
-            {
-                HandlePumpFlowPtSkin(p, star, candy);
-            }
-            if (twoParts != 2)
-            {
-                if (!noCandyL)
-                {
-                    HandlePumpFlowPtSkin(p, starL, candyL);
-                }
-                if (!noCandyR)
-                {
-                    HandlePumpFlowPtSkin(p, starR, candyR);
-                }
-            }
-            // Additional candies (index 1+) are pumped independently; never split-candy.
-            for (int ci = 1; ci < candies.Count; ci++)
+            // Pump every candy in the flow in one pass. candies[0] keeps its split-candy carve-out
+            // (starL/starR halves); non-split candies[0] and index 1+ run the generic body.
+            for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (!ctx.noCandy)
+                if (ci == 0 && twoParts != 2)
+                {
+                    if (!noCandyL)
+                    {
+                        HandlePumpFlowPtSkin(p, starL, candyL);
+                    }
+                    if (!noCandyR)
+                    {
+                        HandlePumpFlowPtSkin(p, starR, candyR);
+                    }
+                }
+                else if (!(ci == 0 ? noCandy : ctx.noCandy))
                 {
                     HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
                 }
