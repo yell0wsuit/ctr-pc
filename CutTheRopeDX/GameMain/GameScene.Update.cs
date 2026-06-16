@@ -785,73 +785,75 @@ namespace CutTheRopeDX.GameMain
                         break;
                     }
                 }
-                else if (!noCandy && !bubble3.popped && PointInRect(candy.x, candy.y, bubble3.x - bubbleCaptureRadius, bubble3.y - bubbleCaptureRadius, bubbleCaptureRadius * 2f, bubbleCaptureRadius * 2f))
-                {
-                    if (candyBubble != null)
-                    {
-                        PopBubbleAtXY(bubble3.x, bubble3.y);
-                        EnableGhostCycleForBubble(candyBubble);
-                        if (shouldRestoreSecondGhost)
-                        {
-                            EnableGhostCycleForBubble(candyBubbleR);
-                            candyBubbleR = null;
-                            shouldRestoreSecondGhost = false;
-                        }
-                    }
-                    candyBubble = bubble3;
-                    bool hasGhost = DisableGhostCycleForBubble(bubble3);
-                    if (hasGhost)
-                    {
-                        candyBubbleAnimation.visible = false;
-                        if (isCandyInGhostBubbleAnimationLoaded)
-                        {
-                            candyGhostBubbleAnimation.visible = true;
-                        }
-                    }
-                    else
-                    {
-                        candyBubbleAnimation.visible = true;
-                        if (isCandyInGhostBubbleAnimationLoaded)
-                        {
-                            candyGhostBubbleAnimation.visible = false;
-                        }
-                    }
-                    CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
-                    bubble3.popped = true;
-                    bubble3.RemoveChildWithID(0);
-                    conveyors.Remove(bubble3);
-                    break;
-                }
                 else
                 {
-                    // Additional independent candies (candies[1+]) capture their own bubble.
-                    // candies[0] is handled by the singleton branch above; legacy single-candy
-                    // levels have candies.Count == 1, so this loop is a no-op for them.
-                    bool capturedExtra = false;
-                    for (int ci = 1; ci < candies.Count; ci++)
+                    bool captured = false;
+                    for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (ctx.noCandy || ctx.bubble != null || bubble3.popped)
+                        if (ci == 0)
                         {
-                            continue;
-                        }
-                        if (BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
-                        {
+                            if (noCandy || bubble3.popped
+                                || !BubbleCapture.Captures(Vect(candy.x, candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
+                            {
+                                continue;
+                            }
+                            if (candyBubble != null)
+                            {
+                                PopBubbleAtXY(bubble3.x, bubble3.y);
+                                EnableGhostCycleForBubble(candyBubble);
+                                if (shouldRestoreSecondGhost)
+                                {
+                                    EnableGhostCycleForBubble(candyBubbleR);
+                                    candyBubbleR = null;
+                                    shouldRestoreSecondGhost = false;
+                                }
+                            }
+                            candyBubble = bubble3;
                             bool hasGhost = DisableGhostCycleForBubble(bubble3);
-                            ctx.bubble = bubble3;
-                            ctx.bubbleHasGhost = hasGhost;
-                            BubbleVisualState visualState = BubbleVisualState.ForCapture(hasGhost, ctx.candyGhostBubbleAnimation != null);
-                            ctx.candyBubbleAnimation.visible = visualState.ShowNormalBubble;
-                            ctx.candyGhostBubbleAnimation.visible = visualState.ShowGhostBubble;
+                            if (hasGhost)
+                            {
+                                candyBubbleAnimation.visible = false;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = true;
+                                }
+                            }
+                            else
+                            {
+                                candyBubbleAnimation.visible = true;
+                                if (isCandyInGhostBubbleAnimationLoaded)
+                                {
+                                    candyGhostBubbleAnimation.visible = false;
+                                }
+                            }
                             CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                             bubble3.popped = true;
                             bubble3.RemoveChildWithID(0);
                             conveyors.Remove(bubble3);
-                            capturedExtra = true;
+                            captured = true;
                             break;
                         }
+
+                        if (ctx.noCandy || ctx.bubble != null || bubble3.popped
+                            || !BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
+                        {
+                            continue;
+                        }
+                        bool extraHasGhost = DisableGhostCycleForBubble(bubble3);
+                        ctx.bubble = bubble3;
+                        ctx.bubbleHasGhost = extraHasGhost;
+                        BubbleVisualState visualState = BubbleVisualState.ForCapture(extraHasGhost, ctx.candyGhostBubbleAnimation != null);
+                        ctx.candyBubbleAnimation.visible = visualState.ShowNormalBubble;
+                        ctx.candyGhostBubbleAnimation.visible = visualState.ShowGhostBubble;
+                        CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
+                        bubble3.popped = true;
+                        bubble3.RemoveChildWithID(0);
+                        conveyors.Remove(bubble3);
+                        captured = true;
+                        break;
                     }
-                    if (capturedExtra)
+                    if (captured)
                     {
                         break;
                     }
