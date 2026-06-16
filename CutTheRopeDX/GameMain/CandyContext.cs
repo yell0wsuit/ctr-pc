@@ -52,6 +52,18 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
 
+        /// <summary>Ant-conveyor segment currently carrying this candy (null if not carried).</summary>
+        public AntsPathSegment antSegment;
+
+        /// <summary>Last segment that carried this candy, held during the re-attach cooldown.</summary>
+        public AntsPathSegment lastAntSegment;
+
+        /// <summary>Re-attach cooldown timer for this candy's last segment.</summary>
+        public float antCooldown;
+
+        /// <summary>True while this candy must leave a segment's external bounds before re-attaching.</summary>
+        public bool antWaitForFly;
+
         /// <summary>The mechanical hand currently holding this candy, if any (one candy per hand).</summary>
         public MechanicalHand capturingHand;
 

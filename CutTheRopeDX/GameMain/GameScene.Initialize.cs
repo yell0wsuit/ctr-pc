@@ -62,10 +62,6 @@ namespace CutTheRopeDX.GameMain
             };
             antsPathsSegments = [];
             antsPaths = [];
-            antsPathSegmentWithCandy = null;
-            lastAntsPathSegmentWithCandy = null;
-            antsPathSegmentCooldown = 0f;
-            candyWaitForFlyBeforeAttachingToConveyor = false;
 
             // Cleanup old mice before creating new arrays
             if (mice != null)

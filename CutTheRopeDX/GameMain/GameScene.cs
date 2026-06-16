@@ -819,26 +819,6 @@ namespace CutTheRopeDX.GameMain
         private List<AntsPath> antsPaths;
 
         /// <summary>
-        /// The ant path segment currently carrying the candy.
-        /// </summary>
-        private AntsPathSegment antsPathSegmentWithCandy;
-
-        /// <summary>
-        /// The previous ant path segment that carried the candy.
-        /// </summary>
-        private AntsPathSegment lastAntsPathSegmentWithCandy;
-
-        /// <summary>
-        /// Cooldown before the candy can reattach to another ant segment.
-        /// </summary>
-        private float antsPathSegmentCooldown;
-
-        /// <summary>
-        /// Whether conveyor attachment is deferred until the candy finishes flying.
-        /// </summary>
-        private bool candyWaitForFlyBeforeAttachingToConveyor;
-
-        /// <summary>
         /// The left candy half when split mode is active.
         /// </summary>
         private GameObject candyL;

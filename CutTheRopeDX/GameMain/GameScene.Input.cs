@@ -326,9 +326,18 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
 
-            if (HandleConveyorTouchConstraintedPointXY(star, tx, ty))
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                return true;
+                CandyContext ctx = candies[ci];
+                if ((ci != 0 && ctx.noCandy) || ctx.point == null)
+                {
+                    continue;
+                }
+
+                if (HandleConveyorTouchConstraintedPointXY(ctx.point, tx, ty))
+                {
+                    return true;
+                }
             }
 
             foreach (Lantern lantern in Lantern.GetAllLanterns())
