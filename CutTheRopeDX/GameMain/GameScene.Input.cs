@@ -111,26 +111,22 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (snailobjects != null
-                && twoParts == 2
-                && PointInRect(worldX, worldY, star.pos.X - 30f, star.pos.Y - 30f, 60f, 60f)
-                && star.weight > 1f)
+            if (snailobjects != null && twoParts == 2)
             {
-                star.SetWeight(star.weight - 3f);
-                if (star.weight <= 1f)
+                for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    star.SetWeight(1f);
-                    for (int i = 0; i < snailobjects.Count; i++)
+                    ConstraintedPoint p = candies[ci].point;
+                    if (PointInRect(worldX, worldY, p.pos.X - 30f, p.pos.Y - 30f, 60f, 60f) && p.weight > 1f)
                     {
-                        Snail snail = snailobjects[i];
-                        if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
+                        p.SetWeight(p.weight - 3f);
+                        if (p.weight <= 1f)
                         {
-                            snail.Detach();
-                            break;
+                            p.SetWeight(1f);
+                            DetachSnailsForPoint(p);
                         }
+                        return true;
                     }
                 }
-                return true;
             }
             if (twoParts != 2)
             {
