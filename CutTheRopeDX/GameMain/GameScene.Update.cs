@@ -1662,7 +1662,6 @@ namespace CutTheRopeDX.GameMain
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
-            bool rocketInWater = false;
             float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
             if (waterLayer != null && waterLevel > 0f)
             {
@@ -1681,10 +1680,6 @@ namespace CutTheRopeDX.GameMain
                     float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / ctx.point.weight;
                     if (ctx.activeRocket != null)
                     {
-                        if (ci == 0)
-                        {
-                            rocketInWater = true;
-                        }
                         verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
                         damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
                         if (ctx.activeRocket.state == Rocket.STATE_ROCKET_FLY)
@@ -1817,20 +1812,18 @@ namespace CutTheRopeDX.GameMain
                     Vect((0f - ctx.point.v.X) / bubbleDamping, ((0f - ctx.point.v.Y) / bubbleDamping) + lift),
                     delta);
             }
-            if (activeRocket != null)
+            for (int ci = 0; ci < candies.Count; ci++)
             {
-                float rocketDamping = ActivePhysicsConstants.RocketActiveVelocityDamping;
-                if (rocketInWater)
+                CandyContext ctx = candies[ci];
+                if (ctx.activeRocket == null)
                 {
-                    rocketDamping = waterRocketDamping;
+                    continue;
                 }
-                star.ApplyImpulseDelta(
-                    Vect(
-                        -star.v.X / rocketDamping,
-                        -star.v.Y / rocketDamping
-                    ),
-                    delta
-                );
+                bool inWater = waterLayer != null
+                    && waterLevel > 0f
+                    && WaterSubmersion.IsSubmerged(ctx.point.pos.X, ctx.point.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius);
+                float rocketDamping = inWater ? waterRocketDamping : ActivePhysicsConstants.RocketActiveVelocityDamping;
+                ctx.point.ApplyImpulseDelta(Vect(-ctx.point.v.X / rocketDamping, -ctx.point.v.Y / rocketDamping), delta);
             }
             if (lightBulbs.Count > 0)
             {
