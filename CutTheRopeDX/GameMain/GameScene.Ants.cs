@@ -65,21 +65,23 @@ namespace CutTheRopeDX.GameMain
             }
 
             AntsPathSegment carrier = ctx.antSegment;
-            if (carrier != null
-                && carrier.interacting
-                && carrier.interactionTime > AntConveyorLogic.CarrierSnapTimeThreshold
-                && !carrier.ContainsPoint(ctx.point.pos))
+            if (AntCandyInteraction.ShouldDetach(
+                candyCarriedBySegment: carrier != null,
+                segmentInteracting: carrier?.interacting == true,
+                interactionTime: carrier?.interactionTime ?? 0f,
+                candyInsideInternalBounds: carrier?.ContainsPoint(ctx.point.pos) == true))
             {
-                bool shouldSlowStop = true;
+                bool otherSegmentContainsCandyExternally = false;
                 foreach (AntsPathSegment other in antsPathsSegments)
                 {
                     if (other != carrier && other.ContainsPoint(ctx.point.pos, external: true))
                     {
-                        shouldSlowStop = false;
+                        otherSegmentContainsCandyExternally = true;
                         break;
                     }
                 }
 
+                bool shouldSlowStop = AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally);
                 ctx.point.disableGravity = ctx.activeRocket != null;
                 carrier.StopInteractionWithCandySlow(shouldSlowStop);
                 ctx.antSegment = null;
@@ -261,18 +263,19 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> if the candy was attached to the segment; otherwise, <see langword="false"/>.</returns>
         private bool TryStartAntInteraction(AntsPathSegment segment, CandyContext ctx, bool useExternalBounds)
         {
-            if (segment == null
-                || ctx?.point == null
-                || segment.interacting
-                || !segment.canInteract
-                || ctx.antWaitForFly
-                || segment == ctx.lastAntSegment)
+            if (segment == null || ctx == null)
             {
                 return false;
             }
 
-            bool contains = segment.ContainsPoint(ctx.point.pos, useExternalBounds);
-            if (!contains)
+            bool contains = ctx.point != null && segment.ContainsPoint(ctx.point.pos, useExternalBounds);
+            if (!AntCandyInteraction.CanAttach(
+                candyPresent: ctx.point != null,
+                segmentInteracting: segment.interacting,
+                segmentCanInteract: segment.canInteract,
+                candyWaitingForFly: ctx.antWaitForFly,
+                isLastSegment: segment == ctx.lastAntSegment,
+                candyInsideBounds: contains))
             {
                 return false;
             }
