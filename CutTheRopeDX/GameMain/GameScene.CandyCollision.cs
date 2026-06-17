@@ -50,12 +50,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Resolves a single candy-candy overlap. Ported from the engine's
-        /// <c>GameScene::handleCandyIntersection</c>.
+        /// Resolves a single elastic body overlap. Ported from the engine's
+        /// <c>GameScene::handleCandyIntersection</c>, which the engine uses for every elastic
+        /// body collision (candy↔candy and light-bulb collisions both route through here).
         /// </summary>
-        /// <param name="a">First candy point.</param>
-        /// <param name="b">Second candy point.</param>
-        /// <param name="collisionDist">Sum of the two candy radii (the engine's <c>a5</c>).</param>
+        /// <param name="a">First body point.</param>
+        /// <param name="b">Second body point.</param>
+        /// <param name="collisionDist">
+        /// Collision distance threshold (the engine's <c>a5</c>). For candy↔candy this is the sum
+        /// of the two candy radii; for light bulbs it is the bulb collision distance.
+        /// </param>
         private static void HandleCandyIntersection(ConstraintedPoint a, ConstraintedPoint b, float collisionDist)
         {
             float dx = a.pos.X - b.pos.X;

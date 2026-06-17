@@ -66,11 +66,11 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (!noCandyL)
                     {
-                        ResolveConstraintCollision(bulb.constraint, starL, lightBulbCollisionDistance);
+                        HandleCandyIntersection(bulb.constraint, starL, lightBulbCollisionDistance);
                     }
                     if (!noCandyR)
                     {
-                        ResolveConstraintCollision(bulb.constraint, starR, lightBulbCollisionDistance);
+                        HandleCandyIntersection(bulb.constraint, starR, lightBulbCollisionDistance);
                     }
                 }
                 // Full candy mode: check collision with every candy, each gated on its own sock
@@ -78,14 +78,14 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (!noCandy && candies[0].targetSock == null)
                     {
-                        ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                        HandleCandyIntersection(bulb.constraint, star, lightBulbCollisionDistance);
                     }
                     for (int ci = 1; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
                         if (!ctx.noCandy && ctx.targetSock == null)
                         {
-                            ResolveConstraintCollision(bulb.constraint, ctx.point, lightBulbCollisionDistance);
+                            HandleCandyIntersection(bulb.constraint, ctx.point, lightBulbCollisionDistance);
                         }
                     }
                 }
@@ -96,7 +96,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    ResolveConstraintCollision(bulb.constraint, other.constraint, lightBulbCollisionDistance);
+                    HandleCandyIntersection(bulb.constraint, other.constraint, lightBulbCollisionDistance);
                 }
             }
 
@@ -329,91 +329,6 @@ namespace CutTheRopeDX.GameMain
             {
                 SetNightSleepVisibility(targets[ti], visible);
             }
-        }
-
-        /// <summary>
-        /// Resolves collision between two constraint points by separating them
-        /// and exchanging velocities.
-        /// </summary>
-        /// <param name="a">The first constraint point.</param>
-        /// <param name="b">The second constraint point.</param>
-        /// <param name="minDistance">The minimum allowed distance between the points.</param>
-        /// <remarks>
-        /// Uses an elastic collision model that conserves momentum. For slow-moving
-        /// or stationary objects, simply separates them without velocity exchange.
-        /// For fast collisions, calculates proper velocity exchange based on
-        /// collision normal and tangent components.
-        /// </remarks>
-        private static void ResolveConstraintCollision(ConstraintedPoint a, ConstraintedPoint b, float minDistance)
-        {
-            Vector delta = VectSub(a.pos, b.pos);
-            float dist = VectLength(delta);
-
-            if (dist >= minDistance)
-            {
-                return;
-            }
-
-            // Handle overlapping points by using arbitrary separation direction
-            if (dist == 0f)
-            {
-                delta = Vect(1f, 0f);
-                dist = 1f;
-            }
-
-            float overlap = minDistance - dist;
-            float speedSum = VectLength(a.v) + VectLength(b.v);
-
-            // For slow collisions, just separate without velocity exchange
-            if (speedSum <= 0f || overlap < 1000f / speedSum * 2f)
-            {
-                float normX = delta.X / dist;
-                float normY = delta.Y / dist;
-                float offset = overlap / 2f;
-                a.pos.X += normX * offset;
-                a.pos.Y += normY * offset;
-                b.pos.X -= normX * offset;
-                b.pos.Y -= normY * offset;
-                return;
-            }
-
-            // Fast collision: calculate elastic velocity exchange
-            Vector g = VectSub(b.pos, a.pos);
-            float h = -g.Y;
-            float m = g.X;
-            float f = ((a.v.X * g.X) + (a.v.Y * g.Y)) / minDistance;
-            float e = ((a.v.X * h) + (a.v.Y * m)) / minDistance;
-            h = ((b.v.X * h) + (a.v.X * m)) / minDistance;
-            m = f;
-            f = ((b.v.X * g.X) + (b.v.Y * g.Y)) / minDistance;
-
-            float nx = g.X / minDistance;
-            float ny = g.Y / minDistance;
-
-            // Compute new velocities by exchanging normal components
-            float aVx = (f * nx) - (e * ny);
-            float aVy = (f * ny) + (e * nx);
-            float bVx = (m * nx) - (h * ny);
-            float bVy = (m * ny) + (h * nx);
-
-            a.v.X = aVx;
-            a.v.Y = aVy;
-            b.v.X = bVx;
-            b.v.Y = bVy;
-
-            // Separate the points to eliminate overlap
-            float sepX = overlap / 2f * (delta.X / dist);
-            float sepY = overlap / 2f * (delta.Y / dist);
-            a.pos.X += sepX;
-            a.pos.Y += sepY;
-            b.pos.X -= sepX;
-            b.pos.Y -= sepY;
-
-            // Update previous positions to maintain velocity in Verlet integration
-            a.prevPos.X = a.pos.X - (a.v.X / 60f);
-            a.prevPos.Y = a.pos.Y - (a.v.Y / 60f);
-            b.prevPos.X = b.pos.X - (b.v.X / 60f);
-            b.prevPos.Y = b.pos.Y - (b.v.Y / 60f);
         }
     }
 }
