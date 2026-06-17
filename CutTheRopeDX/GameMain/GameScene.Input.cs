@@ -673,6 +673,11 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
+            // Suppress all gameplay interactions while a win/loss transition is running.
+            if (outcomeTransitionActive)
+            {
+                return true;
+            }
             Vector vector = Vect(tx, ty);
             if (ti >= 5)
             {
