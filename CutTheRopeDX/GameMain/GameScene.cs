@@ -874,9 +874,17 @@ namespace CutTheRopeDX.GameMain
         private WaterElement waterLayer;
 
         /// <summary>
-        /// The main candy bubble gameplay object.
+        /// The primary candy's bubble gameplay object. Sealed onto <c>candies[0]</c> so the primary
+        /// candy's bubble is stored like every other candy's (the split-half bubbles
+        /// <see cref="candyBubbleL"/>/<see cref="candyBubbleR"/> stay separate).
         /// </summary>
-        private GameObject candyBubble;
+#pragma warning disable IDE1006
+        private GameObject candyBubble
+        {
+            get => candies[0].bubble;
+            set => candies[0].bubble = value;
+        }
+#pragma warning restore IDE1006
 
         /// <summary>
         /// The left split candy bubble gameplay object.
