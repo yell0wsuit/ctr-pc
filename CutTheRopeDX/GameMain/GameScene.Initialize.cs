@@ -107,8 +107,8 @@ namespace CutTheRopeDX.GameMain
         private void InitializeCandyObjects()
         {
             // Initialize constraint points for ropes
-            star = new ConstraintedPoint();
-            star.SetWeight(1f);
+            ConstraintedPoint starPoint = new();
+            starPoint.SetWeight(1f);
             starL = new ConstraintedPoint();
             starL.SetWeight(1f);
             starR = new ConstraintedPoint();
@@ -119,57 +119,57 @@ namespace CutTheRopeDX.GameMain
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
 
             // Initialize main candy
-            candy = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
-            candy.DoRestoreCutTransparency();
-            candy.anchor = 18;
-            candy.bb = GetCandyBoundingBox();
-            candy.passTransformationsToChilds = false;
-            candy.scaleX = candy.scaleY = 0.71f;
+            GameObject candyObj = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
+            candyObj.DoRestoreCutTransparency();
+            candyObj.anchor = 18;
+            candyObj.bb = GetCandyBoundingBox();
+            candyObj.passTransformationsToChilds = false;
+            candyObj.scaleX = candyObj.scaleY = 0.71f;
 
             // Candy reappear animation (timeline 2): scale 0→0.71 + transparent→opaque over 0.1s.
             // Mirrors iOS: played by Teleport() after candy exits a bamboo tube.
             Timeline candyReappearTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             candyReappearTimeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeScale(candy.scaleX, candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            candyReappearTimeline.AddKeyFrame(KeyFrame.MakeScale(candyObj.scaleX, candyObj.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             candyReappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             candyReappearTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             candyReappearTimeline.delegateTimelineDelegate = this;
-            candy.AddTimelinewithID(candyReappearTimeline, 2);
+            candyObj.AddTimelinewithID(candyReappearTimeline, 2);
 
             // Add candy main visual component
-            candyMain = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
-            candyMain.DoRestoreCutTransparency();
-            candyMain.anchor = candyMain.parentAnchor = 18;
-            _ = candy.AddChild(candyMain);
-            candyMain.scaleX = candyMain.scaleY = 0.71f;
+            GameObject candyMainObj = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
+            candyMainObj.DoRestoreCutTransparency();
+            candyMainObj.anchor = candyMainObj.parentAnchor = 18;
+            _ = candyObj.AddChild(candyMainObj);
+            candyMainObj.scaleX = candyMainObj.scaleY = 0.71f;
 
             // Add candy top visual component
-            candyTop = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
-            candyTop.DoRestoreCutTransparency();
-            candyTop.anchor = candyTop.parentAnchor = 18;
-            _ = candy.AddChild(candyTop);
-            candyTop.scaleX = candyTop.scaleY = 0.71f;
+            GameObject candyTopObj = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
+            candyTopObj.DoRestoreCutTransparency();
+            candyTopObj.anchor = candyTopObj.parentAnchor = 18;
+            _ = candyObj.AddChild(candyTopObj);
+            candyTopObj.scaleX = candyTopObj.scaleY = 0.71f;
 
             // Setup candy blink animation (highlight_start=2, layer_1-8=3-10, highlight_end=1)
-            candyBlink = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
-            candyBlink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
-            candyBlink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
-            Timeline timeline7 = candyBlink.GetTimeline(1);
+            Animation candyBlinkAnim = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
+            candyBlinkAnim.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
+            candyBlinkAnim.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
+            Timeline timeline7 = candyBlinkAnim.GetTimeline(1);
             timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
-            candyBlink.visible = false;
-            candyBlink.anchor = candyBlink.parentAnchor = 18;
-            candyBlink.scaleX = candyBlink.scaleY = 0.71f;
-            _ = candy.AddChild(candyBlink);
+            candyBlinkAnim.visible = false;
+            candyBlinkAnim.anchor = candyBlinkAnim.parentAnchor = 18;
+            candyBlinkAnim.scaleX = candyBlinkAnim.scaleY = 0.71f;
+            _ = candyObj.AddChild(candyBlinkAnim);
 
             // Setup candy bubble animation
             candyBubbleAnimation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
-            candyBubbleAnimation.x = candy.x;
-            candyBubbleAnimation.y = candy.y;
+            candyBubbleAnimation.x = candyObj.x;
+            candyBubbleAnimation.y = candyObj.y;
             candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
             _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
             candyBubbleAnimation.PlayTimeline(0);
-            _ = candy.AddChild(candyBubbleAnimation);
+            _ = candyObj.AddChild(candyBubbleAnimation);
             candyBubbleAnimation.visible = false;
 
             // Register the primary candy as candies[0] so multi-candy logic and legacy
@@ -180,11 +180,11 @@ namespace CutTheRopeDX.GameMain
             candies.Add(new CandyContext
             {
                 candyNumber = null,
-                point = star,
-                candy = candy,
-                candyMain = candyMain,
-                candyTop = candyTop,
-                candyBlink = candyBlink,
+                point = starPoint,
+                candy = candyObj,
+                candyMain = candyMainObj,
+                candyTop = candyTopObj,
+                candyBlink = candyBlinkAnim,
                 candyBubbleAnimation = candyBubbleAnimation,
                 noCandy = false,
             });
