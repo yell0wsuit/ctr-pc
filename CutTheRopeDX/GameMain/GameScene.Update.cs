@@ -172,6 +172,9 @@ namespace CutTheRopeDX.GameMain
                 bool flag = false;
                 bool flag2 = false;
                 bool flag3 = false;
+                // Per-frame "a rope drove this candy's rotation" flags for candies[1+].
+                // candies[0] keeps the singleton `flag`/`lastCandyRotateDelta`/candyMain path.
+                bool[] candyRotated = new bool[candies.Count];
                 int grabCount = bungees.Count;
                 int k = 0;
                 while (k < grabCount)
@@ -381,6 +384,9 @@ namespace CutTheRopeDX.GameMain
                             ConstraintedPoint constraintedPoint2 = rope.parts[^1];
                             Vector v = VectSub(bungeeAnchor.pos, constraintedPoint2.pos);
                             bool flag4 = false;
+                            // Non-split: the candy whose point this rope ends on (any candy, not just candies[0]).
+                            CandyContext rotateCandy = null;
+                            int rotateCandyIndex = -1;
                             if (twoParts != 2)
                             {
                                 if (constraintedPoint2 == starL && !noCandyL && !flag2)
@@ -392,9 +398,21 @@ namespace CutTheRopeDX.GameMain
                                     flag4 = true;
                                 }
                             }
-                            else if (!noCandy && !flag)
+                            else
                             {
-                                flag4 = true;
+                                for (int ci = 0; ci < candies.Count; ci++)
+                                {
+                                    CandyContext ctx = candies[ci];
+                                    bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                                    bool chosen = ci == 0 ? flag : candyRotated[ci];
+                                    if (!gone && !chosen && constraintedPoint2 == ctx.point)
+                                    {
+                                        rotateCandy = ctx;
+                                        rotateCandyIndex = ci;
+                                        flag4 = true;
+                                        break;
+                                    }
+                                }
                             }
                             if (rope.relaxed != 0 && rope.cut == -1 && flag4)
                             {
@@ -418,15 +436,25 @@ namespace CutTheRopeDX.GameMain
                                     }
                                     gameObject.rotation = ropeAngle + rope.initialCandleAngle;
                                 }
-                                else if (!noCandy && constraintedPoint2 == star)
+                                else if (rotateCandy != null)
                                 {
+                                    GameObject candyObj = rotateCandy.candyMain;
                                     if (!rope.chosenOne)
                                     {
-                                        rope.initialCandleAngle = candyMain.rotation - ropeAngle;
+                                        rope.initialCandleAngle = candyObj.rotation - ropeAngle;
                                     }
-                                    lastCandyRotateDelta = ropeAngle + rope.initialCandleAngle - candyMain.rotation;
-                                    candyMain.rotation = ropeAngle + rope.initialCandleAngle;
-                                    flag = true;
+                                    float rotateDelta = ropeAngle + rope.initialCandleAngle - candyObj.rotation;
+                                    candyObj.rotation = ropeAngle + rope.initialCandleAngle;
+                                    if (rotateCandyIndex == 0)
+                                    {
+                                        lastCandyRotateDelta = rotateDelta;
+                                        flag = true;
+                                    }
+                                    else
+                                    {
+                                        rotateCandy.lastCandyRotateDelta = rotateDelta;
+                                        candyRotated[rotateCandyIndex] = true;
+                                    }
                                 }
                                 rope.chosenOne = true;
                             }
@@ -452,10 +480,26 @@ namespace CutTheRopeDX.GameMain
                         lastCandyRotateDeltaR *= 0.98f;
                     }
                 }
-                else if (!flag && !noCandy && !handHoldingCandy)
+                else
                 {
-                    candyMain.rotation += MIN(5, lastCandyRotateDelta);
-                    lastCandyRotateDelta *= 0.98f;
+                    for (int ci = 0; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (ci == 0)
+                        {
+                            if (!flag && !noCandy && !handHoldingCandy)
+                            {
+                                candyMain.rotation += MIN(5, lastCandyRotateDelta);
+                                lastCandyRotateDelta *= 0.98f;
+                            }
+                            continue;
+                        }
+                        if (!candyRotated[ci] && !ctx.noCandy && ctx.capturingHand == null)
+                        {
+                            ctx.candyMain.rotation += MIN(5, ctx.lastCandyRotateDelta);
+                            ctx.lastCandyRotateDelta *= 0.98f;
+                        }
+                    }
                 }
             }
             // Step every candy point + visual in one pass. candies[0]'s "gone" flag is the

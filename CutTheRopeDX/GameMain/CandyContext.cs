@@ -31,6 +31,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True once this candy has been eaten/removed.</summary>
         public bool noCandy;
 
+        /// <summary>
+        /// Residual rope-swing rotation for this candy, decayed each frame so the candy
+        /// coasts to a stop when no rope is actively steering it. candies[0] uses the
+        /// singleton <c>lastCandyRotateDelta</c> instead; index 1+ use this field.
+        /// </summary>
+        public float lastCandyRotateDelta;
+
         /// <summary>The bubble currently carrying this candy, if any.</summary>
         public GameObject bubble;
 
