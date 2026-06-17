@@ -82,13 +82,6 @@ namespace CutTheRopeDX.GameMain
             targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
-            isNightTargetAwake = null;
-            sleepPulseActive = false;
-            sleepPulseTime = 0f;
-            sleepPulseDelay = 0f;
-            sleepPulseBaseY = 0f;
-            sleepSoundTimer = 0f;
-            nightSleepOverlayVisible = false;
             gameLostTriggered = false;
             gameWonTriggered = false;
             outcomeTransitionActive = false;

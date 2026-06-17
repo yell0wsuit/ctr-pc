@@ -829,41 +829,6 @@ namespace CutTheRopeDX.GameMain
         private ConstraintedPoint starR;
 
         /// <summary>
-        /// Cached awake state for night-level Om Nom overlays.
-        /// </summary>
-        private bool? isNightTargetAwake;
-
-        /// <summary>
-        /// Whether the night sleep pulse overlay is active.
-        /// </summary>
-        private bool sleepPulseActive;
-
-        /// <summary>
-        /// Elapsed time within the current sleep pulse.
-        /// </summary>
-        private float sleepPulseTime;
-
-        /// <summary>
-        /// Delay remaining before the next sleep pulse starts.
-        /// </summary>
-        private float sleepPulseDelay;
-
-        /// <summary>
-        /// Base Y position used by the sleep pulse overlay.
-        /// </summary>
-        private float sleepPulseBaseY;
-
-        /// <summary>
-        /// Accumulator used to time repeated night sleep sounds.
-        /// </summary>
-        private float sleepSoundTimer;
-
-        /// <summary>
-        /// Whether the night sleep overlay is currently visible.
-        /// </summary>
-        private bool nightSleepOverlayVisible;
-
-        /// <summary>
         /// The default horizontal scale applied to the Om Nom target.
         /// </summary>
         private float targetBaseScaleX = 1f;
