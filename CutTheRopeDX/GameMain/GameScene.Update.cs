@@ -714,11 +714,19 @@ namespace CutTheRopeDX.GameMain
                             3 => Resources.Snd.Star3,
                             _ => Resources.Snd.Star1
                         });
-                        if (targetAnimationController?.IsIdleLoopPlaying() == true)
+                        bool anyTargetReacted = false;
+                        for (int ti = 0; ti < targets.Count; ti++)
                         {
-                            targetAnimationController.PlayExcited();
+                            TargetAnimationController controller = targets[ti].controller;
+                            if (controller?.IsIdleLoopPlaying() == true)
+                            {
+                                controller.PlayExcited();
+                                anyTargetReacted = true;
+                            }
+                        }
+                        if (anyTargetReacted)
+                        {
                             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited);
-                            break;
                         }
                         break;
                     }
