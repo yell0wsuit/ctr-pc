@@ -65,6 +65,22 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Ends any in-progress rope-cut finger traces so they fade out instead of lingering
+        /// (used when a win/loss transition interrupts an active drag). Mirrors the touch-up cleanup.
+        /// </summary>
+        public void EndActiveFingerTraces()
+        {
+            for (int i = 0; i < fingerTraces.Length; i++)
+            {
+                if (fingerTraceDragging[i])
+                {
+                    fingerTraces[i]?.End();
+                    fingerTraceDragging[i] = false;
+                }
+            }
+        }
+
+        /// <summary>
         /// Handles a touch-down event for gameplay objects and rope-cut gestures.
         /// </summary>
         /// <param name="tx">Touch x-coordinate in screen space.</param>

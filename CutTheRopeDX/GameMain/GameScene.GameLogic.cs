@@ -331,6 +331,7 @@ namespace CutTheRopeDX.GameMain
             gameWonTriggered = true;
             outcomeTransitionActive = true;
 
+            EndActiveFingerTraces();
             dd.CancelAllDispatches();
 
             // Hide sleep animations and reset sleep state for night levels
@@ -409,6 +410,7 @@ namespace CutTheRopeDX.GameMain
             gameLostTriggered = true;
             outcomeTransitionActive = true;
 
+            EndActiveFingerTraces();
             dd.CancelAllDispatches();
 
             // Hide sleep animations and reset sleep state for night levels
