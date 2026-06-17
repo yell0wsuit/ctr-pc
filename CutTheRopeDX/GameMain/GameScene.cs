@@ -959,16 +959,6 @@ namespace CutTheRopeDX.GameMain
         private bool noCandy;
 
         /// <summary>
-        /// Frame counter used for blink timing.
-        /// </summary>
-        private int blinkTimer;
-
-        /// <summary>
-        /// Frame counter used for idle animation timing.
-        /// </summary>
-        private int idlesTimer;
-
-        /// <summary>
         /// Cached rotation delta for the main candy.
         /// </summary>
         private float lastCandyRotateDelta;

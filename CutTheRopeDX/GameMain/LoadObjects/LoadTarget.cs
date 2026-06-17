@@ -54,7 +54,6 @@ namespace CutTheRopeDX.GameMain
             // Mouth hitbox: 56 px left of center, 30 px below center.
             // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
             targetObj.bb = MakeRectangle((targetObj.width >> 1) - 56f, (targetObj.height >> 1) + 30f, 108f, 2f);
-            blinkTimer = BLINK_SKIP;
 
             controller.Initialize(this);
 
@@ -70,6 +69,8 @@ namespace CutTheRopeDX.GameMain
                 mouthOpen = false,
                 mouthCloseTimer = 0f,
                 asleep = false,
+                blinkTimer = BLINK_SKIP,
+                idlesTimer = RND_RANGE(5, 20),
             });
 
             // Show greeting if needed (skip for night levels).
@@ -83,8 +84,6 @@ namespace CutTheRopeDX.GameMain
 
                 CTRRootController.SetShowGreeting(false);
             }
-
-            idlesTimer = RND_RANGE(5, 20);
 
             support = targets[0].support;
             targetBaseScaleX = targets[0].baseScaleX;
