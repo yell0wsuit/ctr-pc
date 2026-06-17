@@ -74,10 +74,21 @@ namespace CutTheRopeDX.GameMain
                             ResolveConstraintCollision(bulb.constraint, starR, lightBulbCollisionDistance);
                         }
                     }
-                    // Full candy mode: check collision with the single candy
-                    else if (!noCandy)
+                    // Full candy mode: check collision with every candy
+                    else
                     {
-                        ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                        if (!noCandy)
+                        {
+                            ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                        }
+                        for (int ci = 1; ci < candies.Count; ci++)
+                        {
+                            CandyContext ctx = candies[ci];
+                            if (!ctx.noCandy)
+                            {
+                                ResolveConstraintCollision(bulb.constraint, ctx.point, lightBulbCollisionDistance);
+                            }
+                        }
                     }
                 }
                 for (int j = i + 1; j < lightBulbs.Count; j++)
