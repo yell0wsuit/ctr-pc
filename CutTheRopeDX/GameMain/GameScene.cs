@@ -620,12 +620,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The active Om Nom gameplay object.
         /// </summary>
-        private GameObject targetObject;
+#pragma warning disable IDE1006
+        private GameObject targetObject => targets.Count > 0 ? targets[0].targetObject : null;
 
         /// <summary>
         /// Controller for Om Nom animation state transitions.
         /// </summary>
-        private TargetAnimationController targetAnimationController;
+        private TargetAnimationController targetAnimationController => targets.Count > 0 ? targets[0].controller : null;
+#pragma warning restore IDE1006
 
         /// <summary>
         /// Support visual attached to certain level setups.

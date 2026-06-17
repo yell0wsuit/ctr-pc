@@ -34,36 +34,36 @@ namespace CutTheRopeDX.GameMain
             support.anchor = 18;
 
             ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
-            targetAnimationController = TargetAnimationController.Create(targetAnimationBackend);
-            targetObject = targetAnimationController.TargetObject;
-            targetBaseScaleX = targetAnimationController.GetTargetBaseScaleX();
-            targetBaseScaleY = targetAnimationController.GetTargetBaseScaleY();
-            targetObject.scaleX = targetBaseScaleX;
-            targetObject.scaleY = targetBaseScaleY;
+            TargetAnimationController controller = TargetAnimationController.Create(targetAnimationBackend);
+            GameObject targetObj = controller.TargetObject;
+            targetBaseScaleX = controller.GetTargetBaseScaleX();
+            targetBaseScaleY = controller.GetTargetBaseScaleY();
+            targetObj.scaleX = targetBaseScaleX;
+            targetObj.scaleY = targetBaseScaleY;
 
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
             int sourceX = ParseIntOrZero(xAttribute);
             float transformedX = (sourceX * scale) + offsetX + mapOffsetX;
-            targetObject.x = support.x = transformedX;
+            targetObj.x = support.x = transformedX;
 
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
             int sourceY = ParseIntOrZero(yAttribute);
             float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
-            targetObject.y = support.y = transformedY;
+            targetObj.y = support.y = transformedY;
 
             // Mouth hitbox: 56 px left of center, 30 px below center.
             // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
-            targetObject.bb = MakeRectangle((targetObject.width >> 1) - 56f, (targetObject.height >> 1) + 30f, 108f, 2f);
+            targetObj.bb = MakeRectangle((targetObj.width >> 1) - 56f, (targetObj.height >> 1) + 30f, 108f, 2f);
             blinkTimer = BLINK_SKIP;
 
-            targetAnimationController.Initialize(this);
+            controller.Initialize(this);
 
             // Register this Om Nom as an independent target. targets[0] stays the primary.
             _ = xmlNode.Attribute("targetType")?.Value ?? "basic";
             targets.Add(new TargetContext
             {
-                controller = targetAnimationController,
-                targetObject = targetObject,
+                controller = controller,
+                targetObject = targetObj,
                 support = support,
                 baseScaleX = targetBaseScaleX,
                 baseScaleY = targetBaseScaleY,
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.GameMain
             // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (CTRRootController.IsShowGreeting())
             {
-                if (!nightLevel && !targetAnimationController.StartsWithGreeting)
+                if (!nightLevel && !controller.StartsWithGreeting)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }
@@ -86,12 +86,6 @@ namespace CutTheRopeDX.GameMain
 
             idlesTimer = RND_RANGE(5, 20);
 
-            // Keep the singleton target fields pointing at the primary Om Nom (targets[0]).
-            // LoadTarget overwrites these fields each call, so without this the fields would
-            // refer to the last-loaded target and the first Om Nom would never be drawn/updated.
-            // Additional Om Noms live only in the targets list and are stepped/drawn by their loops.
-            targetAnimationController = targets[0].controller;
-            targetObject = targets[0].targetObject;
             support = targets[0].support;
             targetBaseScaleX = targets[0].baseScaleX;
             targetBaseScaleY = targets[0].baseScaleY;

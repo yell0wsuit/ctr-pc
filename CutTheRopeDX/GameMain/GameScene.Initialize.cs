@@ -83,8 +83,6 @@ namespace CutTheRopeDX.GameMain
             isCandyInGhostBubbleAnimationLeftLoaded = false;
             isCandyInGhostBubbleAnimationRightLoaded = false;
             shouldRestoreSecondGhost = false;
-            targetObject = null;
-            targetAnimationController = null;
             targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
