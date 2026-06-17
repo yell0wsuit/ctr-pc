@@ -59,35 +59,33 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                // Resolve collision between light bulb and candy (skip if candy is being teleported by sock)
-                if (candies[0].targetSock == null)
+                // Resolve collision between light bulb and candy (skip a candy being teleported by its own sock)
+                // Half candy mode: check collision with both candy halves. A split candy can't enter a
+                // sock (TransportEntry blocks it), so there's no per-half sock gate here.
+                if (twoParts != 2)
                 {
-                    // Half candy mode: check collision with both candy halves
-                    if (twoParts != 2)
+                    if (!noCandyL)
                     {
-                        if (!noCandyL)
-                        {
-                            ResolveConstraintCollision(bulb.constraint, starL, lightBulbCollisionDistance);
-                        }
-                        if (!noCandyR)
-                        {
-                            ResolveConstraintCollision(bulb.constraint, starR, lightBulbCollisionDistance);
-                        }
+                        ResolveConstraintCollision(bulb.constraint, starL, lightBulbCollisionDistance);
                     }
-                    // Full candy mode: check collision with every candy
-                    else
+                    if (!noCandyR)
                     {
-                        if (!noCandy)
+                        ResolveConstraintCollision(bulb.constraint, starR, lightBulbCollisionDistance);
+                    }
+                }
+                // Full candy mode: check collision with every candy, each gated on its own sock
+                else
+                {
+                    if (!noCandy && candies[0].targetSock == null)
+                    {
+                        ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
+                    }
+                    for (int ci = 1; ci < candies.Count; ci++)
+                    {
+                        CandyContext ctx = candies[ci];
+                        if (!ctx.noCandy && ctx.targetSock == null)
                         {
-                            ResolveConstraintCollision(bulb.constraint, star, lightBulbCollisionDistance);
-                        }
-                        for (int ci = 1; ci < candies.Count; ci++)
-                        {
-                            CandyContext ctx = candies[ci];
-                            if (!ctx.noCandy)
-                            {
-                                ResolveConstraintCollision(bulb.constraint, ctx.point, lightBulbCollisionDistance);
-                            }
+                            ResolveConstraintCollision(bulb.constraint, ctx.point, lightBulbCollisionDistance);
                         }
                     }
                 }
