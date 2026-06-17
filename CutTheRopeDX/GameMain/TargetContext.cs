@@ -26,5 +26,24 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>True once this Om Nom has eaten a candy; it will not reopen ("eats then sleeps").</summary>
         public bool asleep;
+
+        // --- Night-level sleep state (per Om Nom; were scene singletons) ---
+        public bool? isNightTargetAwake;
+
+        public bool sleepPulseActive;
+
+        public float sleepPulseTime;
+
+        public float sleepPulseDelay;
+
+        public float sleepPulseBaseY;
+
+        public float sleepSoundTimer;
+
+        public bool nightSleepOverlayVisible;
+
+        public int blinkTimer;
+
+        public int idlesTimer;
     }
 }
