@@ -81,6 +81,11 @@ namespace CutTheRopeDX.GameMain
                 }
                 return true;
             }
+            // Suppress all gameplay interactions while a win/loss transition is running.
+            if (outcomeTransitionActive)
+            {
+                return true;
+            }
             if (ti >= 5)
             {
                 return true;
@@ -483,6 +488,11 @@ namespace CutTheRopeDX.GameMain
         public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
+            {
+                return true;
+            }
+            // Suppress all gameplay interactions while a win/loss transition is running.
+            if (outcomeTransitionActive)
             {
                 return true;
             }
@@ -940,6 +950,11 @@ namespace CutTheRopeDX.GameMain
             if (index > 5)
             {
                 return false;
+            }
+            // Suppress all gameplay interactions while a win/loss transition is running.
+            if (outcomeTransitionActive)
+            {
+                return true;
             }
             slastTouch = Vect(tx, ty);
             return true;
