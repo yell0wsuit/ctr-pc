@@ -1890,7 +1890,7 @@ namespace CutTheRopeDX.GameMain
             ApplyAntCarryToCandyPosition();
 
             // Snapshot candies for pure decisions.
-            List<CandyView> candyViews = new(candies.Count);
+            List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 // A candy captured in a lantern is not a mouth-open candidate.
@@ -1985,7 +1985,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 // Win when every candy has been consumed, excluding candies hidden in transport.
-                List<CandyView> allCandyViews = new(candies.Count);
+                List<CandyView> allCandyViews = [];
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     allCandyViews.Add(candies[ci].ToView());
