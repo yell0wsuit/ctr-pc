@@ -1086,7 +1086,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.noCandy, miceManager.IsActiveMouseInRange(ctx.point)))
                         {
-                            miceManager.GrabWithActiveMouse(ctx.point, ctx.candy, false);
+                            miceManager.GrabWithActiveMouse(ctx.point, ctx.candy);
                             ExhaustRocketForCandy(ctx);
                             TriggerSpecialTutorial(4);
                             break;

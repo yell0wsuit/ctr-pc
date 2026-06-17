@@ -92,18 +92,17 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="star">The constrained star point.</param>
         /// <param name="candy">The candy game object.</param>
-        /// <param name="isLeft">
-        /// Indicates whether the interaction originates from the left side
-        /// (used for rope release logic).
-        /// </param>
-        public void GrabWithActiveMouse(ConstraintedPoint star, GameObject candy, bool isLeft)
+        public void GrabWithActiveMouse(ConstraintedPoint star, GameObject candy)
         {
             if (activeMouse == null || activeMouse.HasCandy)
             {
                 return;
             }
 
-            scene.ReleaseAllRopes(isLeft);
+            // Release only the ropes of the candy being grabbed, keyed by its own point.
+            // Using the global ReleaseAllRopes here would cut the first candy's ropes when
+            // a later candy is grabbed, since that path matches the singleton star points.
+            scene.ReleaseRopesForPoint(star);
             scene.DetachActiveHands();
             carriedStar = star;
             carriedCandy = candy;

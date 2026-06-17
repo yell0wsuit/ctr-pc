@@ -197,7 +197,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Cuts/hides all uncut ropes whose tail is the given candy point.</summary>
-        private void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
+        public void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
         {
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
