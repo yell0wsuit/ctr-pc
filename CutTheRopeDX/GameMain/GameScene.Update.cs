@@ -16,10 +16,14 @@ namespace CutTheRopeDX.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
-            if (targetObject != null)
+            for (int ti = 0; ti < targets.Count; ti++)
             {
-                targetAnimationController?.UpdateAdditionalOverlays(delta);
-                targetAnimationController?.SyncAdditionalOverlayPosition(targetObject.x, targetObject.y);
+                TargetContext t = targets[ti];
+                if (t.targetObject != null)
+                {
+                    t.controller?.UpdateAdditionalOverlays(delta);
+                    t.controller?.SyncAdditionalOverlayPosition(t.targetObject.x, t.targetObject.y);
+                }
             }
             dd.Update(delta);
             pollenDrawer.Update(delta);
