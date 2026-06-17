@@ -19,7 +19,6 @@ namespace CutTheRopeDX.GameMain
             staticAniPool.RemoveAllChilds();
             decalsLayer?.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
-            isCandyInLantern = false;
             gravityButton = null;
             gravityTouchDown = -1;
             if (waterLayer != null)

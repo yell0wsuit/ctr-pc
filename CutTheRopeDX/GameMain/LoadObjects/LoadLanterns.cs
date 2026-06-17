@@ -27,11 +27,7 @@ namespace CutTheRopeDX.GameMain
             lantern.ParseMover(xmlNode);
             if (isCandyCaptured)
             {
-                isCandyInLantern = true;
-                if (candies.Count > 0)
-                {
-                    candies[0].inLantern = true;
-                }
+                candies[0].inLantern = true;
                 lantern.CaptureCandy(star);
                 candy.x = star.pos.X;
                 candy.y = star.pos.Y;

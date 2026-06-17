@@ -131,7 +131,6 @@ namespace CutTheRopeDX.GameMain
             starL = null;
             starR = null;
             Lantern.RemoveAllLanterns();
-            isCandyInLantern = false;
         }
 
         /// <inheritdoc />
@@ -307,11 +306,7 @@ namespace CutTheRopeDX.GameMain
         private void Selector_revealCandyFromLantern(FrameworkTypes param)
         {
             ConstraintedPoint releasedPoint = param as ConstraintedPoint;
-            int releasedIndex = LanternRelease.RestoreReleasedCandy(candies, releasedPoint);
-            if (releasedIndex == 0)
-            {
-                isCandyInLantern = false;
-            }
+            _ = LanternRelease.RestoreReleasedCandy(candies, releasedPoint);
         }
 
         /// <summary>
@@ -1130,11 +1125,6 @@ namespace CutTheRopeDX.GameMain
         /// The touch index currently holding the gravity button, or an invalid marker.
         /// </summary>
         public int gravityTouchDown;
-
-        /// <summary>
-        /// Whether the candy is currently hidden inside a lantern.
-        /// </summary>
-        private bool isCandyInLantern;
 
         /// <summary>
         /// The current split-candy state.

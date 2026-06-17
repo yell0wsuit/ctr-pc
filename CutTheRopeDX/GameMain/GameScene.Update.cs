@@ -980,10 +980,6 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     ctx.inLantern = true;
-                    if (ci == 0)
-                    {
-                        isCandyInLantern = true; // alias for not-yet-converted sock/rocket/hand guards
-                    }
                     ExhaustRocketForCandy(ctx);
                     ctx.candy.passTransformationsToChilds = true;
                     ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
@@ -1437,7 +1433,7 @@ namespace CutTheRopeDX.GameMain
                         CandyContext ctx = candies[ci];
                         if (ci == 0 && twoParts != 2)
                         {
-                            if (isCandyInLantern)
+                            if (candies[0].inLantern)
                             {
                                 continue;
                             }
