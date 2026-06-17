@@ -134,82 +134,84 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            // Check if any light bulb is close enough to wake Om Nom
-            bool isAwake = false;
-            if (targetObject == null)
-            {
-                return;
-            }
-
-            Vector targetPosition = Vect(targetObject.x, targetObject.y);
-            foreach (LightBulb bulb in lightBulbs)
-            {
-                if (VectDistance(bulb.constraint.pos, targetPosition) < bulb.lightRadius)
-                {
-                    isAwake = true;
-                    break;
-                }
-            }
-
             bool hasCandyPresent = twoParts == 2 ? !noCandy : (!noCandyL || !noCandyR);
-            if (hasCandyPresent)
+            for (int ti = 0; ti < targets.Count; ti++)
             {
-                UpdateNightTargetAwake(isAwake);
-            }
-
-            bool isSleeping = isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
-            bool shouldShowSleepOverlay = isSleeping
-                && targetAnimationController != null
-                && targetAnimationController.IsSleepingAnimationPlaying();
-            SetNightSleepVisibility(shouldShowSleepOverlay);
-
-            if (shouldShowSleepOverlay)
-            {
-                targetAnimationController?.UpdateSleepOverlays(delta);
-                targetAnimationController?.SyncSleepOverlayPosition(targetObject.x, targetObject.y);
-            }
-
-            // Handle sleeping state animations and sounds
-            if (isSleeping)
-            {
-                // Wait for sleep animation to finish before starting pulse
-                if (!sleepPulseActive)
+                TargetContext t = targets[ti];
+                if (t.targetObject == null)
                 {
-                    sleepPulseDelay = MathF.Max(0f, sleepPulseDelay - delta);
-                    if (sleepPulseDelay == 0f)
+                    continue;
+                }
+
+                bool isAwake = false;
+                Vector targetPosition = Vect(t.targetObject.x, t.targetObject.y);
+                foreach (LightBulb bulb in lightBulbs)
+                {
+                    if (LightProximity.IsWithinLight(targetPosition, bulb.constraint.pos, bulb.lightRadius))
                     {
-                        sleepPulseActive = true;
+                        isAwake = true;
+                        break;
                     }
                 }
 
-                // Apply breathing pulse effect using sine wave (classic backend only;
-                // the Flash backend has its own sleeping timeline that includes the pulse).
-                if (sleepPulseActive && targetAnimationController?.HandlesOwnSleepPulse != true)
+                if (hasCandyPresent)
                 {
-                    float sinValue = MathF.Sin(sleepPulseTime * 2f);
-                    float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
+                    UpdateNightTargetAwake(t, isAwake);
+                }
 
-                    if (targetAnimationController?.IsSleepingAnimationPlaying() == true)
+                bool isSleeping = t.isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
+                bool shouldShowSleepOverlay = isSleeping
+                    && t.controller?.IsSleepingAnimationPlaying() == true;
+                SetNightSleepVisibility(t, shouldShowSleepOverlay);
+
+                if (shouldShowSleepOverlay)
+                {
+                    t.controller?.UpdateSleepOverlays(delta);
+                    t.controller?.SyncSleepOverlayPosition(t.targetObject.x, t.targetObject.y);
+                }
+
+                // Handle sleeping state animations and sounds
+                if (isSleeping)
+                {
+                    // Wait for sleep animation to finish before starting pulse
+                    if (!t.sleepPulseActive)
                     {
-                        targetObject.rotationCenterY = 86f;
-                        targetObject.scaleX = targetBaseScaleX;
-                        targetObject.scaleY = targetBaseScaleY * scaleY;
+                        t.sleepPulseDelay = MathF.Max(0f, t.sleepPulseDelay - delta);
+                        if (t.sleepPulseDelay == 0f)
+                        {
+                            t.sleepPulseActive = true;
+                        }
                     }
-                    sleepPulseTime += delta;
-                }
-                else if (sleepPulseActive)
-                {
-                    sleepPulseTime += delta;
-                }
 
-                sleepSoundTimer += delta;
-                if (sleepSoundTimer > NightSleepSoundInterval)
-                {
-                    sleepSoundTimer = 0f;
-                    CTRSoundMgr.PlayRandomOmNomSound(
-                        Resources.Snd.MonsterSleep1,
-                        Resources.Snd.MonsterSleep2,
-                        Resources.Snd.MonsterSleep3);
+                    // Apply breathing pulse effect using sine wave (classic backend only;
+                    // the Flash backend has its own sleeping timeline that includes the pulse).
+                    if (t.sleepPulseActive && t.controller?.HandlesOwnSleepPulse != true)
+                    {
+                        float sinValue = MathF.Sin(t.sleepPulseTime * 2f);
+                        float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
+
+                        if (t.controller?.IsSleepingAnimationPlaying() == true)
+                        {
+                            t.targetObject.rotationCenterY = 86f;
+                            t.targetObject.scaleX = t.baseScaleX;
+                            t.targetObject.scaleY = t.baseScaleY * scaleY;
+                        }
+                        t.sleepPulseTime += delta;
+                    }
+                    else if (t.sleepPulseActive)
+                    {
+                        t.sleepPulseTime += delta;
+                    }
+
+                    t.sleepSoundTimer += delta;
+                    if (t.sleepSoundTimer > NightSleepSoundInterval)
+                    {
+                        t.sleepSoundTimer = 0f;
+                        CTRSoundMgr.PlayRandomOmNomSound(
+                            Resources.Snd.MonsterSleep1,
+                            Resources.Snd.MonsterSleep2,
+                            Resources.Snd.MonsterSleep3);
+                    }
                 }
             }
 
@@ -223,7 +225,7 @@ namespace CutTheRopeDX.GameMain
                 bool lit = false;
                 foreach (LightBulb bulb in lightBulbs)
                 {
-                    if (VectDistance(bulb.constraint.pos, Vect(star.x, star.y)) < bulb.lightRadius)
+                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), bulb.constraint.pos, bulb.lightRadius))
                     {
                         lit = true;
                         break;
@@ -237,37 +239,38 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Handles transitions between Om Nom's awake and sleeping states.
         /// </summary>
+        /// <param name="t">The Om Nom target context to update.</param>
         /// <param name="isAwake">Whether Om Nom should be awake (illuminated by a light bulb).</param>
         /// <remarks>
         /// When waking up, resets all sleep animation state and plays the wake animation.
         /// When falling asleep, starts the sleep animation and prepares the breathing pulse effect.
         /// </remarks>
-        private void UpdateNightTargetAwake(bool isAwake)
+        private void UpdateNightTargetAwake(TargetContext t, bool isAwake)
         {
-            if (isNightTargetAwake == isAwake)
+            if (t.isNightTargetAwake == isAwake)
             {
                 return;
             }
 
-            isNightTargetAwake = isAwake;
+            t.isNightTargetAwake = isAwake;
 
             // Waking up: reset sleep state and play wake animation
             if (isAwake)
             {
-                sleepPulseActive = false;
-                sleepPulseTime = 0f;
-                sleepPulseDelay = 0f;
-                sleepSoundTimer = 0f;
-                sleepPulseBaseY = 0f;
-                if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
+                t.sleepPulseActive = false;
+                t.sleepPulseTime = 0f;
+                t.sleepPulseDelay = 0f;
+                t.sleepSoundTimer = 0f;
+                t.sleepPulseBaseY = 0f;
+                if (t.targetObject != null && t.controller?.HandlesOwnSleepPulse != true)
                 {
-                    targetObject.scaleX = targetBaseScaleX;
-                    targetObject.scaleY = targetBaseScaleY;
-                    targetObject.rotationCenterX = 0f;
-                    targetObject.rotationCenterY = 0f;
+                    t.targetObject.scaleX = t.baseScaleX;
+                    t.targetObject.scaleY = t.baseScaleY;
+                    t.targetObject.rotationCenterX = 0f;
+                    t.targetObject.rotationCenterY = 0f;
                 }
-                SetNightSleepVisibility(false);
-                targetAnimationController?.PlayExcited();
+                SetNightSleepVisibility(t, false);
+                t.controller?.PlayExcited();
                 return;
             }
 
@@ -278,32 +281,45 @@ namespace CutTheRopeDX.GameMain
             }
 
             // Falling asleep: start sleep animation and prepare pulse effect
-            sleepPulseActive = false;
-            sleepPulseTime = 0f;
-            sleepPulseDelay = targetAnimationController?.GetSleepPulseDelaySeconds() ?? 0f;
-            sleepSoundTimer = 0.9f;
-            SetNightSleepVisibility(false);
-            targetAnimationController?.PlaySleeping();
-            if (targetObject != null && targetAnimationController?.HandlesOwnSleepPulse != true)
+            t.sleepPulseActive = false;
+            t.sleepPulseTime = 0f;
+            t.sleepPulseDelay = t.controller?.GetSleepPulseDelaySeconds() ?? 0f;
+            t.sleepSoundTimer = 0.9f;
+            SetNightSleepVisibility(t, false);
+            t.controller?.PlaySleeping();
+            if (t.targetObject != null && t.controller?.HandlesOwnSleepPulse != true)
             {
-                sleepPulseBaseY = GetSleepPulsePivotOffsetY(targetObject.height);
-                targetObject.rotationCenterY = sleepPulseBaseY;
+                t.sleepPulseBaseY = GetSleepPulsePivotOffsetY(t.targetObject.height);
+                t.targetObject.rotationCenterY = t.sleepPulseBaseY;
             }
         }
 
         /// <summary>
         /// Controls the visibility and playback of zzz animations.
         /// </summary>
+        /// <param name="t">The Om Nom target context that owns the zzz animations.</param>
         /// <param name="visible">Whether the zzz animations should be visible.</param>
-        private void SetNightSleepVisibility(bool visible)
+        private static void SetNightSleepVisibility(TargetContext t, bool visible)
         {
-            if (nightSleepOverlayVisible == visible)
+            if (t.nightSleepOverlayVisible == visible)
             {
                 return;
             }
 
-            nightSleepOverlayVisible = visible;
-            targetAnimationController?.SetSleepOverlayVisible(visible);
+            t.nightSleepOverlayVisible = visible;
+            t.controller?.SetSleepOverlayVisible(visible);
+        }
+
+        /// <summary>
+        /// Controls the visibility and playback of zzz animations for every Om Nom.
+        /// </summary>
+        /// <param name="visible">Whether the zzz animations should be visible.</param>
+        private void SetAllNightSleepVisibility(bool visible)
+        {
+            for (int ti = 0; ti < targets.Count; ti++)
+            {
+                SetNightSleepVisibility(targets[ti], visible);
+            }
         }
 
         /// <summary>

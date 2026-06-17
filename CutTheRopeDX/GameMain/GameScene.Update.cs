@@ -1845,7 +1845,6 @@ namespace CutTheRopeDX.GameMain
                 candyViews.Add(candies[ci].ToView());
             }
 
-            bool canInteractWithTarget = !nightLevel || isNightTargetAwake == true;
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -1854,6 +1853,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
+                bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
 
                 if (!t.mouthOpen && canInteractWithTarget)
                 {
@@ -1891,12 +1891,13 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
-            if (restartState != 0 && canInteractWithTarget)
+            if (restartState != 0)
             {
                 for (int ti = 0; ti < targets.Count; ti++)
                 {
                     TargetContext t = targets[ti];
-                    if (t.asleep || !t.mouthOpen || t.targetObject == null)
+                    bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
+                    if (!canInteractWithTarget || t.asleep || !t.mouthOpen || t.targetObject == null)
                     {
                         continue;
                     }

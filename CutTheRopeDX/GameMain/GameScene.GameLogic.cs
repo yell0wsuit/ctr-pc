@@ -334,15 +334,19 @@ namespace CutTheRopeDX.GameMain
             dd.CancelAllDispatches();
 
             // Hide sleep animations and reset sleep state for night levels
-            SetNightSleepVisibility(false);
-            sleepPulseActive = false;
-            sleepSoundTimer = 0f;
-            if (targetObject != null)
+            SetAllNightSleepVisibility(false);
+            for (int ti = 0; ti < targets.Count; ti++)
             {
-                targetObject.scaleX = targetBaseScaleX;
-                targetObject.scaleY = targetBaseScaleY;
-                targetObject.rotationCenterX = 0f;
-                targetObject.rotationCenterY = 0f;
+                TargetContext t = targets[ti];
+                t.sleepPulseActive = false;
+                t.sleepSoundTimer = 0f;
+                if (t.targetObject != null)
+                {
+                    t.targetObject.scaleX = t.baseScaleX;
+                    t.targetObject.scaleY = t.baseScaleY;
+                    t.targetObject.rotationCenterX = 0f;
+                    t.targetObject.rotationCenterY = 0f;
+                }
             }
 
             if (GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targets.Count))
@@ -408,15 +412,19 @@ namespace CutTheRopeDX.GameMain
             dd.CancelAllDispatches();
 
             // Hide sleep animations and reset sleep state for night levels
-            SetNightSleepVisibility(false);
-            sleepPulseActive = false;
-            sleepSoundTimer = 0f;
-            if (targetObject != null)
+            SetAllNightSleepVisibility(false);
+            for (int ti = 0; ti < targets.Count; ti++)
             {
-                targetObject.scaleX = targetBaseScaleX;
-                targetObject.scaleY = targetBaseScaleY;
-                targetObject.rotationCenterX = 0f;
-                targetObject.rotationCenterY = 0f;
+                TargetContext t = targets[ti];
+                t.sleepPulseActive = false;
+                t.sleepSoundTimer = 0f;
+                if (t.targetObject != null)
+                {
+                    t.targetObject.scaleX = t.baseScaleX;
+                    t.targetObject.scaleY = t.baseScaleY;
+                    t.targetObject.rotationCenterX = 0f;
+                    t.targetObject.rotationCenterY = 0f;
+                }
             }
 
             // Every Om Nom reacts sad on loss (was: only the primary targetAnimationController).
