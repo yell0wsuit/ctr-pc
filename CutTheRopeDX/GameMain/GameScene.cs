@@ -335,10 +335,6 @@ namespace CutTheRopeDX.GameMain
             {
                 ctx.activeRocket = null;
                 ctx.point.disableGravity = false;
-                if (ctx == candies[0])
-                {
-                    activeRocket = null; // keep singleton alias in sync
-                }
             }
         }
 
@@ -798,11 +794,6 @@ namespace CutTheRopeDX.GameMain
         private List<Mouse> mice;
 
         /// <summary>
-        /// The rocket currently carrying the candy anchor, if any.
-        /// </summary>
-        private Rocket activeRocket;
-
-        /// <summary>
         /// Manager for composite mouse interactions.
         /// </summary>
         private MiceObject miceManager;
@@ -1028,21 +1019,6 @@ namespace CutTheRopeDX.GameMain
         /// Whether the second ghost should be restored after a transition.
         /// </summary>
         private bool shouldRestoreSecondGhost;
-
-        /// <summary>
-        /// Cached sock speed used while overriding movement.
-        /// </summary>
-        private float savedSockSpeed;
-
-        /// <summary>
-        /// The sock currently interacting with the candy.
-        /// </summary>
-        private Sock targetSock;
-
-        /// <summary>
-        /// The bamboo tube currently interacting with the candy.
-        /// </summary>
-        private BambooTube targetBambooTube;
 
         /// <summary>
         /// The number of ropes cut within the active combo window.

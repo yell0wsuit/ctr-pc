@@ -24,14 +24,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void Teleport(CandyContext ctx)
         {
-            bool isPrimary = ctx == candies[0];
-            if (isPrimary)
-            {
-                ctx.targetBambooTube ??= targetBambooTube;
-                ctx.targetSock ??= targetSock;
-                ctx.savedSockSpeed = ctx.targetSock != null ? savedSockSpeed : ctx.savedSockSpeed;
-            }
-
             if (ctx.targetBambooTube != null)
             {
                 ctx.noCandy = false;
@@ -60,10 +52,6 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 ctx.targetBambooTube = null;
-                if (isPrimary)
-                {
-                    targetBambooTube = null; // keep singleton alias in sync
-                }
                 return;
             }
 
@@ -96,10 +84,6 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 ctx.targetSock = null;
-                if (isPrimary)
-                {
-                    targetSock = null; // keep singleton alias in sync
-                }
             }
         }
 
@@ -303,7 +287,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Exhausts the rocket bound to <paramref name="ctx"/> (one-time consume) and clears the binding.</summary>
-        private void ExhaustRocketForCandy(CandyContext ctx)
+        private static void ExhaustRocketForCandy(CandyContext ctx)
         {
             if (ctx.activeRocket == null)
             {
@@ -312,10 +296,6 @@ namespace CutTheRopeDX.GameMain
             ctx.activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
             ctx.activeRocket.StopAnimation();
             ctx.activeRocket = null;
-            if (ctx == candies[0])
-            {
-                activeRocket = null; // keep singleton alias in sync
-            }
         }
 
         /// <summary>Exhausts every candy's bound rocket (win/loss cleanup).</summary>

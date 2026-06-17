@@ -1144,11 +1144,6 @@ namespace CutTheRopeDX.GameMain
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
-                            if (ci == 0)
-                            {
-                                savedSockSpeed = ctx.savedSockSpeed; // keep singleton aliases in sync
-                                targetSock = sock4;
-                            }
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
 
@@ -1381,10 +1376,6 @@ namespace CutTheRopeDX.GameMain
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
                             _ = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             ctx.activeRocket = rocket;
-                            if (ci == 0)
-                            {
-                                activeRocket = rocket; // keep singleton alias in sync
-                            }
                             rocket.isOperating = -1;
                             rocket.startCandyRotation = ctx.candyMain.rotation;
 

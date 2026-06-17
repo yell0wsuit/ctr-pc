@@ -304,10 +304,6 @@ namespace CutTheRopeDX.GameMain
             ReleaseRopesForPoint(ctx.point);
             DetachActiveHands();
             ctx.targetBambooTube = bambooTube;
-            if (isPrimary)
-            {
-                targetBambooTube = bambooTube; // keep singleton alias in sync
-            }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
             ctx.noCandy = true;
             ctx.point.disableGravity = true;

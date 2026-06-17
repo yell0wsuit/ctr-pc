@@ -60,7 +60,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 // Resolve collision between light bulb and candy (skip if candy is being teleported by sock)
-                if (targetSock == null)
+                if (candies[0].targetSock == null)
                 {
                     // Half candy mode: check collision with both candy halves
                     if (twoParts != 2)

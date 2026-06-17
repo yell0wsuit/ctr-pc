@@ -32,8 +32,6 @@ namespace CutTheRopeDX.GameMain
             waterSpeed = 0f;
             twoParts = 2;
             partsDist = 0f;
-            targetSock = null;
-            targetBambooTube = null;
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
@@ -54,7 +52,6 @@ namespace CutTheRopeDX.GameMain
             rockets = [];
             hands = [];
             snailobjects = [];
-            activeRocket = null;
             ghosts = [];
             conveyors = new ConveyorBeltObject
             {

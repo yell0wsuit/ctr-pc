@@ -257,14 +257,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            // Draw every candy + its blink in one pass. candies[0] reads the exact singletons it
-            // did before (`noCandy`/`targetSock`); all other fields are the same objects on
-            // candies[0]. candies[0].candyBlink is always non-null, so the null check is harmless.
+            // Draw every candy + its blink in one pass. candies[0] reads the same objects the
+            // old primary-candy aliases exposed. candies[0].candyBlink is always non-null.
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
                 bool gone = ci == 0 ? noCandy : ctx.noCandy;
-                Sock sock = ci == 0 ? targetSock : ctx.targetSock;
+                Sock sock = ctx.targetSock;
                 if (!gone && sock == null)
                 {
                     if (!ctx.inLantern)
