@@ -2157,7 +2157,11 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
 
-                    if (otherHand.state == MechanicalHand.STATE_HAND_CANDY)
+                    // Steal-proximity: only override the grab distance when the other hand
+                    // holds *this* hand's target candy (single-candy legacy measured hand-to-hand
+                    // because the holder sat on the only candy). With multiple candies a hand
+                    // holding a different candy must not corrupt our distance to our own candy.
+                    if (otherHand.state == MechanicalHand.STATE_HAND_CANDY && HandHeldCandy(otherHand) == nearestCandy)
                     {
                         distance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
                     }
