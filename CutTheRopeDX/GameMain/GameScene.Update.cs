@@ -877,10 +877,18 @@ namespace CutTheRopeDX.GameMain
                             break;
                         }
 
-                        if (ctx.noCandy || ctx.bubble != null || bubble3.popped
+                        if (ctx.noCandy || bubble3.popped
                             || !BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                         {
                             continue;
+                        }
+                        // Already carried by a different bubble: release the old one and swap to the
+                        // new bubble, mirroring the candies[0] path. Without this, a bubbled body
+                        // skips every new bubble (e.g. a bubbled bulb phasing through a ghost bubble).
+                        if (ctx.bubble != null && ctx.bubble != bubble3)
+                        {
+                            PopBubbleAtXY(bubble3.x, bubble3.y);
+                            EnableGhostCycleForBubble(ctx.bubble);
                         }
                         bool extraHasGhost = DisableGhostCycleForBubble(bubble3);
                         ctx.bubble = bubble3;
