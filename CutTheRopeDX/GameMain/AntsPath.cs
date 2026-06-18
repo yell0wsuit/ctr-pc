@@ -59,12 +59,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>All ant instances currently alive on this path.</summary>
         public IReadOnlyList<Ant> Ants => antsInternal;
 
-        /// <summary>
-        /// Accumulated seconds for which at least one segment has been carrying the candy.
-        /// Resets to zero when no segment is interacting.
-        /// </summary>
-        public float InteractionTime { get; private set; }
-
         /// <summary>Total world-space length of the path in units (sum of all segment lengths).</summary>
         public float PathLength { get; private set; }
 
@@ -379,15 +373,6 @@ namespace CutTheRopeDX.GameMain
                     antsInternal.Add(CreateAntForOffset(minOffset - gap));
                 }
             }
-
-            bool hasInteraction = false;
-            foreach (AntsPathSegment segment in segmentsInternal)
-            {
-                segment.Update(delta);
-                hasInteraction |= segment.interacting;
-            }
-
-            InteractionTime = hasInteraction ? InteractionTime + delta : 0f;
 
             foreach (Ant ant in antsInternal)
             {

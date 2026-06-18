@@ -5,10 +5,12 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     public static class AntCandyInteraction
     {
-        /// <summary>Returns true when a segment may start carrying a candy.</summary>
+        /// <summary>
+        /// Returns true when a segment may start carrying a candy. A segment can carry any number of
+        /// candies at once (each rides its own marker), so prior occupancy does not block a new candy.
+        /// </summary>
         public static bool CanAttach(
             bool candyPresent,
-            bool segmentInteracting,
             bool segmentCanInteract,
             bool candyWaitingForFly,
             bool isLastSegment,
@@ -16,7 +18,6 @@ namespace CutTheRopeDX.GameMain
             bool candyHeldByHand)
         {
             return candyPresent
-                && !segmentInteracting
                 && segmentCanInteract
                 && !candyWaitingForFly
                 && !isLastSegment

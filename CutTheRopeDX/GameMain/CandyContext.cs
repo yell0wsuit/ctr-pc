@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
@@ -72,6 +73,16 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>True while this candy must leave a segment's external bounds before re-attaching.</summary>
         public bool antWaitForFly;
+
+        /// <summary>
+        /// This candy's own carrier marker on <see cref="antSegment"/>. It starts at the candy's
+        /// projection onto the segment and advances at the segment speed, so multiple candies ride the
+        /// same lane independently, each keeping the spacing it had on entry. Unused when not carried.
+        /// </summary>
+        public Vector antInteractionPoint;
+
+        /// <summary>Seconds since this candy attached to <see cref="antSegment"/> (carry snap + detach grace).</summary>
+        public float antInteractionTime;
 
         /// <summary>The mechanical hand currently holding this candy, if any (one candy per hand).</summary>
         public MechanicalHand capturingHand;

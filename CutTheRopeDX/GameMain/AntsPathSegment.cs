@@ -1,6 +1,5 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -24,21 +23,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>When <see langword="false"/> the segment will not attempt to attach to the candy.</summary>
         public bool canInteract;
-
-        /// <summary><see langword="true"/> while the candy is attached and being carried by this segment.</summary>
-        public bool interacting;
-
-        /// <summary>Elapsed seconds since the last <see cref="StartInteractionWithConstraitedPoint"/> call.</summary>
-        public float interactionTime;
-
-        /// <summary>
-        /// Current world-space position of the carrier marker, advanced each frame at <see cref="speed"/>.
-        /// The candy follows this position via <see cref="AntConveyorLogic.ComputeCarrierFollowPosition"/>.
-        /// </summary>
-        public Vector interactionPoint;
-
-        /// <summary>The physics point (candy) currently attached to this segment, or <see langword="null"/>.</summary>
-        public ConstraintedPoint targetPoint;
 
         /// <summary>Next segment in the path, or the first segment when the path is looped.</summary>
         public AntsPathSegment nextSegment;
@@ -87,61 +71,11 @@ namespace CutTheRopeDX.GameMain
                 : vectZero;
 
             speed = VectMult(direction, speedMagnitude);
-            interacting = false;
-            interactionTime = 0f;
-            interactionPoint = start;
 
             float rawAngle = RADIANS_TO_DEGREES(VectAngleNormalized(direction));
             angleDeg = AngleTo0_360(rawAngle);
 
             internalHalfHeight = AntConveyorLogic.GetSegmentHalfHeight(deviceScale);
-        }
-
-        /// <summary>
-        /// Advances the carrier marker along the segment by <paramref name="delta"/> seconds.
-        /// No-op when not interacting.
-        /// </summary>
-        /// <param name="delta">Elapsed seconds since the last frame.</param>
-        public void Update(float delta)
-        {
-            if (!interacting)
-            {
-                return;
-            }
-
-            interactionTime += delta;
-            interactionPoint = VectAdd(interactionPoint, VectMult(speed, delta));
-        }
-
-        /// <summary>
-        /// Attaches <paramref name="point"/> to this segment. Places the carrier marker at the
-        /// nearest on-segment position to the point and begins the carry update.
-        /// </summary>
-        /// <param name="point">The physics point (candy) to attach, or <see langword="null"/>.</param>
-        public void StartInteractionWithConstraitedPoint(ConstraintedPoint point)
-        {
-            targetPoint = point;
-            interactionPoint = GetPointOnSegmentFromPointtoPointnearestToPoint(startPoint, endPoint, point != null ? point.pos : vectZero);
-            interacting = true;
-            interactionTime = 0f;
-            Update(0.01f);
-        }
-
-        /// <summary>
-        /// Detaches the carried point. When <paramref name="slow"/> is <see langword="true"/>, applies a braking
-        /// horizontal impulse to the candy (velocity.X × −0.7 over 0.01 s), matching iOS deceleration.
-        /// </summary>
-        /// <param name="slow">When <see langword="true"/>, applies a braking impulse to the candy.</param>
-        public void StopInteractionWithCandySlow(bool slow)
-        {
-            if (slow && targetPoint != null)
-            {
-                targetPoint.ApplyImpulseDelta(new Vector(targetPoint.v.X * -0.7f, 0f), 0.01f);
-            }
-
-            targetPoint = null;
-            interacting = false;
-            interactionTime = 0f;
         }
 
         /// <summary>

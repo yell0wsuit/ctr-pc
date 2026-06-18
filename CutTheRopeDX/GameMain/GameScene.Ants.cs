@@ -38,12 +38,22 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                UpdateAntConveyorForCandy(ctx);
+                UpdateAntConveyorForCandy(ctx, delta);
             }
         }
 
-        private void UpdateAntConveyorForCandy(CandyContext ctx)
+        private void UpdateAntConveyorForCandy(CandyContext ctx, float delta)
         {
+            // Advance this candy's own carrier marker along its segment (replaces the segment-level
+            // marker; lets several candies ride one lane, each keeping the spacing it entered with).
+            if (ctx.antSegment != null)
+            {
+                ctx.antInteractionTime += delta;
+                ctx.antInteractionPoint = new Vector(
+                    ctx.antInteractionPoint.X + (ctx.antSegment.speed.X * delta),
+                    ctx.antInteractionPoint.Y + (ctx.antSegment.speed.Y * delta));
+            }
+
             if (ctx.antWaitForFly)
             {
                 ctx.antWaitForFly = false;
@@ -67,8 +77,8 @@ namespace CutTheRopeDX.GameMain
             AntsPathSegment carrier = ctx.antSegment;
             if (AntCandyInteraction.ShouldDetach(
                 candyCarriedBySegment: carrier != null,
-                segmentInteracting: carrier?.interacting == true,
-                interactionTime: carrier?.interactionTime ?? 0f,
+                segmentInteracting: carrier != null,
+                interactionTime: ctx.antInteractionTime,
                 candyInsideInternalBounds: carrier?.ContainsPoint(ctx.point.pos) == true))
             {
                 bool otherSegmentContainsCandyExternally = false;
@@ -83,11 +93,11 @@ namespace CutTheRopeDX.GameMain
 
                 bool shouldSlowStop = AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally);
                 ctx.point.disableGravity = ctx.activeRocket != null;
-                carrier.StopInteractionWithCandySlow(shouldSlowStop);
                 ctx.antSegment = null;
 
                 if (shouldSlowStop)
                 {
+                    ApplyConveyorBrake(ctx);
                     PlayAntConveyorDetachSound();
                 }
             }
@@ -137,8 +147,8 @@ namespace CutTheRopeDX.GameMain
 
                 Vector nextPos = AntConveyorLogic.ComputeCarrierFollowPosition(
                     ctx.point.pos,
-                    ctx.antSegment.interactionPoint,
-                    ctx.antSegment.container?.InteractionTime ?? 0f,
+                    ctx.antInteractionPoint,
+                    ctx.antInteractionTime,
                     snapDistance);
 
                 ctx.point.pos = nextPos;
@@ -180,11 +190,24 @@ namespace CutTheRopeDX.GameMain
             }
 
             ctx.antWaitForFly = true;
-            ctx.antSegment.StopInteractionWithCandySlow(true);
+            ApplyConveyorBrake(ctx);
             ctx.antSegment = null;
             PlayAntConveyorDetachSound();
             point.disableGravity = ctx.activeRocket != null;
             return true;
+        }
+
+        /// <summary>
+        /// Applies the iOS deceleration brake to a candy as it leaves the conveyor
+        /// (horizontal velocity × −0.7 over 0.01 s).
+        /// </summary>
+        /// <param name="ctx">The candy to brake.</param>
+        private static void ApplyConveyorBrake(CandyContext ctx)
+        {
+            if (ctx?.point != null)
+            {
+                ctx.point.ApplyImpulseDelta(new Vector(ctx.point.v.X * -0.7f, 0f), 0.01f);
+            }
         }
 
         /// <summary>
@@ -197,19 +220,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ctx">The candy to detach from the conveyor.</param>
         private static void DetachCandyFromConveyor(CandyContext ctx)
         {
-            AntsPathSegment segment = ctx?.antSegment;
-            if (segment == null)
+            if (ctx?.antSegment == null)
             {
                 return;
             }
 
-            if (segment.interacting)
-            {
-                segment.StopInteractionWithCandySlow(false);
-                PlayAntConveyorDetachSound();
-            }
-
-            segment.canInteract = true;
+            PlayAntConveyorDetachSound();
 
             // A candy can only hold a segment if it had a point when it attached.
             ctx.point.disableGravity = ctx.activeRocket != null;
@@ -239,7 +255,6 @@ namespace CutTheRopeDX.GameMain
             bool contains = ctx.point != null && segment.ContainsPoint(ctx.point.pos, useExternalBounds);
             if (!AntCandyInteraction.CanAttach(
                 candyPresent: ctx.point != null,
-                segmentInteracting: segment.interacting,
                 segmentCanInteract: segment.canInteract,
                 candyWaitingForFly: ctx.antWaitForFly,
                 isLastSegment: segment == ctx.lastAntSegment,
@@ -249,17 +264,28 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
+            // Sound the pickup only when this candy first boards the conveyor, not on the internal
+            // segment-to-segment hops (lastAntSegment is still set while it hops within a path).
+            bool freshPickup = ctx.lastAntSegment == null;
+
             ctx.point.disableGravity = true;
             ctx.antSegment = segment;
             ctx.lastAntSegment = segment;
             ctx.antCooldown = 0.3f;
 
-            if ((segment.container?.InteractionTime ?? 0f) == 0f)
+            // Seed this candy's marker at its projection onto the segment, then nudge it one tick
+            // (mirrors the segment's old StartInteraction + Update(0.01) on attach).
+            ctx.antInteractionPoint = AntsPathSegment.GetPointOnSegmentFromPointtoPointnearestToPoint(
+                segment.startPoint, segment.endPoint, ctx.point.pos);
+            ctx.antInteractionTime = 0.01f;
+            ctx.antInteractionPoint = new Vector(
+                ctx.antInteractionPoint.X + (segment.speed.X * 0.01f),
+                ctx.antInteractionPoint.Y + (segment.speed.Y * 0.01f));
+
+            if (freshPickup)
             {
                 PlayAntConveyorAttachSound();
             }
-
-            segment.StartInteractionWithConstraitedPoint(ctx.point);
 
             if (ctx == candies[0] && candyBubble != null)
             {

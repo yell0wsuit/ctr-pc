@@ -7,11 +7,10 @@ namespace CutTheRopeDX.Tests
     public class AntCandyInteractionTests
     {
         [Fact]
-        public void CanAttach_TrueForAvailableSegmentAndCandyInsideBounds()
+        public void CanAttach_TrueForInteractableSegmentAndCandyInsideBounds()
         {
             Assert.True(AntCandyInteraction.CanAttach(
                 candyPresent: true,
-                segmentInteracting: false,
                 segmentCanInteract: true,
                 candyWaitingForFly: false,
                 isLastSegment: false,
@@ -20,21 +19,27 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void CanAttach_TrueEvenWhenSegmentAlreadyCarriesAnotherCandy()
+        {
+            // A lane carries multiple candies at once; an occupied segment must not block a new one.
+            Assert.True(AntCandyInteraction.CanAttach(true, true, false, false, true, false));
+        }
+
+        [Fact]
         public void CanAttach_FalseWhenCandyOrSegmentStateBlocksInteraction()
         {
-            Assert.False(AntCandyInteraction.CanAttach(false, false, true, false, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, segmentInteracting: true, true, false, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, segmentCanInteract: false, false, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, candyWaitingForFly: true, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, isLastSegment: true, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, false, candyInsideBounds: false, false));
+            Assert.False(AntCandyInteraction.CanAttach(false, true, false, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, segmentCanInteract: false, false, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, candyWaitingForFly: true, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, isLastSegment: true, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, candyInsideBounds: false, false));
         }
 
         [Fact]
         public void CanAttach_FalseWhenCandyHeldByHand()
         {
             // A mechanical hand owns the candy; ants must not steal it back onto the conveyor.
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, false, true, candyHeldByHand: true));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, true, candyHeldByHand: true));
         }
 
         [Fact]
