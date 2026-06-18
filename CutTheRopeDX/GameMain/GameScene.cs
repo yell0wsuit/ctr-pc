@@ -507,11 +507,6 @@ namespace CutTheRopeDX.GameMain
         private const float NightSleepSoundInterval = 4f;
 
         /// <summary>
-        /// The number of physics relaxation steps used for night levels.
-        /// </summary>
-        private const int NightConstraintRelaxationSteps = 30;
-
-        /// <summary>
         /// The interaction radius for remote-control objects.
         /// </summary>
         public const int RC_CONTROLLER_RADIUS = 90;

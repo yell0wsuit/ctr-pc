@@ -1,7 +1,6 @@
 using System;
 
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -33,14 +32,12 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         private void UpdateLightEmitterPhysics(float delta)
         {
-            float timeStep = delta * ropePhysicsSpeed;
+            // Integration and whole-body collision for light emitters are now owned by the shared
+            // candy path (the main candy loop in Update() and ResolveCandyCollisions()). Re-stepping
+            // the points here double-integrated them, doubling gravity and causing erratic swinging.
+            // This loop only syncs the bulb's visual/animation to its (already-integrated) point.
             foreach (CandyContext ctx in LightEmitters())
             {
-                ctx.point.Update(timeStep);
-                for (int i = 0; i < NightConstraintRelaxationSteps; i++)
-                {
-                    ConstraintedPoint.SatisfyConstraints(ctx.point);
-                }
                 ctx.lightBulb?.SyncFromContext(ctx);
                 ctx.lightBulb?.Update(delta);
             }
