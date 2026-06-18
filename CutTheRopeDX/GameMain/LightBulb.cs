@@ -231,6 +231,16 @@ namespace CutTheRopeDX.GameMain
             CalculateTopLeft(this);
         }
 
+        public void SyncFromContext(CandyContext ctx)
+        {
+            visible = !ctx.noCandy && ctx.targetSock == null;
+            capturingBubble = ctx.bubble as Bubble;
+            capturingGhostBubble = ctx.bubbleHasGhost;
+            sockSpeed = ctx.savedSockSpeed;
+            attachedSock = ctx.targetSock;
+            SyncToConstraint();
+        }
+
         /// <inheritdoc />
         public override void Draw()
         {

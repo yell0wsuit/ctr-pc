@@ -29,5 +29,13 @@ namespace CutTheRopeDX.Tests
             Assert.False(LightProximity.IsWithinLight(point, lightPos, 5f));
             Assert.True(LightProximity.IsWithinLight(point, lightPos, 6f));
         }
+
+        [Fact]
+        public void LightBulbDefinition_UsesLightBulbCapabilities()
+        {
+            Assert.True(LightBulbDefinition.EmitsLight);
+            Assert.False(LightBulbDefinition.Capabilities.CanBeEaten);
+            Assert.False(LightBulbDefinition.Capabilities.CanCollectStars);
+        }
     }
 }

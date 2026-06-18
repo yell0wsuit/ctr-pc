@@ -82,6 +82,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Behavior flags for this candy-like physics body.</summary>
         public CandyCapabilities Capabilities = CandyCapabilities.Candy;
 
+        /// <summary>Optional light-bulb identifier from XML.</summary>
+        public string lightBulbNumber;
+
+        /// <summary>Transitional light-bulb visual root while bulb visuals migrate into candy contexts.</summary>
+        public LightBulb lightBulb;
+
         /// <summary>Light radius when this context emits light.</summary>
         public float lightRadius;
 
