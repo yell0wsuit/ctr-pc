@@ -15,5 +15,17 @@ namespace CutTheRopeDX.GameMain
         {
             return !gameWonTriggered && !gameLostTriggered;
         }
+
+        /// <summary>
+        /// Returns whether candy may still be eaten by an Om Nom. Once a win or loss transition is
+        /// active, remaining candy must not be consumed (e.g. a sad Om Nom must not eat during the
+        /// loss reaction).
+        /// </summary>
+        /// <param name="outcomeTransitionActive">Whether a game win/loss transition is currently active.</param>
+        /// <returns><see langword="true"/> while no terminal outcome transition is active; otherwise, <see langword="false"/>.</returns>
+        public static bool CanConsumeCandy(bool outcomeTransitionActive)
+        {
+            return !outcomeTransitionActive;
+        }
     }
 }

@@ -23,5 +23,17 @@ namespace CutTheRopeDX.Tests
         {
             Assert.True(GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered: false, gameLostTriggered: false));
         }
+
+        [Fact]
+        public void CanConsumeCandy_TrueWhileNoOutcomeTransition()
+        {
+            Assert.True(GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive: false));
+        }
+
+        [Fact]
+        public void CanConsumeCandy_FalseOnceOutcomeTransitionActive()
+        {
+            Assert.False(GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive: true));
+        }
     }
 }
