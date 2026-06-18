@@ -603,7 +603,10 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < count; i++)
             {
                 ConstraintedPoint constraintedPoint = parts[i];
-                if (constraintedPoint != tail)
+                // Don't integrate an endpoint the rope doesn't own: tail is always external,
+                // and a non-owned head (a candy point in a candiesConnected link) is integrated
+                // by the candy system. Owned anchors (normal/kicked grabs) still integrate.
+                if (constraintedPoint != tail && (constraintedPoint != bungeeAnchor || ownsAnchor))
                 {
                     ConstraintedPoint.Qcpupdate(constraintedPoint, delta, koeff);
                 }

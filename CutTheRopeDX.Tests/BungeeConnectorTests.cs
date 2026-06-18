@@ -39,5 +39,32 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0.02f, bungee.bungeeAnchor.weight);
         }
+
+        [Fact]
+        public void Update_SkipsBothCandyEnds_WhenHeadNotOwned()
+        {
+            ConstraintedPoint head = PointAt(100f, 100f, 1f);
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
+
+            connector.Update(0.016f, 1f);
+
+            Assert.Equal(UNDEFINED_COORDINATE, head.prevPos.X);
+            Assert.Equal(UNDEFINED_COORDINATE, tail.prevPos.X);
+            Assert.NotEqual(UNDEFINED_COORDINATE, connector.parts[1].prevPos.X);
+        }
+
+        [Fact]
+        public void Update_IntegratesHead_WhenOwned()
+        {
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                null, 100f, 100f, tail, tail.pos.X, tail.pos.Y, 60f);
+
+            grabRope.Update(0.016f, 1f);
+
+            Assert.NotEqual(UNDEFINED_COORDINATE, grabRope.bungeeAnchor.prevPos.X);
+        }
     }
 }
