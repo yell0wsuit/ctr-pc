@@ -198,6 +198,10 @@ namespace CutTheRopeDX.GameMain
                 grab.DrawBack();
                 grab.Draw();
             }
+            // candiesConnected elastic: not a Grab, so draw it directly after the grab ropes.
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            candyConnector?.Draw();
+
             foreach (object bungeeGun in bungees)
             {
                 Grab grab = (Grab)bungeeGun;
