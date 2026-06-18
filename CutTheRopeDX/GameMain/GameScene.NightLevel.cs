@@ -17,29 +17,30 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Updates physics simulation for all light emitters in the level.
+        /// Per-frame upkeep for light emitters that the shared candy path does not cover.
         /// </summary>
-        /// <param name="delta">Time elapsed since the last frame in seconds.</param>
         /// <remarks>
-        /// This method handles:
+        /// Integration, the bulb visual's own Update, and whole-body collision are handled by the
+        /// shared candy path (main candy loop + <see cref="ResolveCandyCollisions"/>). This method
+        /// only handles:
         /// <list type="bullet">
-        ///   <item><description>Constraint physics and relaxation for each light bulb</description></item>
-        ///   <item><description>Collision between light bulbs and the candy</description></item>
-        ///   <item><description>Collision between multiple light bulbs</description></item>
-        ///   <item><description>Removal of light bulbs that fall off screen</description></item>
-        ///   <item><description>Game over trigger when all light bulbs are lost (night levels only)</description></item>
+        ///   <item><description>Syncing capture/sock state from the context onto the bulb visual</description></item>
+        ///   <item><description>Collision between light emitters and the legacy split-candy halves</description></item>
+        ///   <item><description>Removal of light emitters that fall off screen</description></item>
+        ///   <item><description>Game over trigger when all light emitters are lost (night levels only)</description></item>
         /// </list>
         /// </remarks>
-        private void UpdateLightEmitterPhysics(float delta)
+        private void UpdateLightEmitterPhysics()
         {
-            // Integration and whole-body collision for light emitters are now owned by the shared
-            // candy path (the main candy loop in Update() and ResolveCandyCollisions()). Re-stepping
-            // the points here double-integrated them, doubling gravity and causing erratic swinging.
-            // This loop only syncs the bulb's visual/animation to its (already-integrated) point.
+            // Integration, whole-body collision, and the bulb visual's own Update() are all owned by
+            // the shared candy path now: the main candy loop integrates the point and calls
+            // ctx.candy.Update(delta) (ctx.candy IS the bulb), and ResolveCandyCollisions() handles
+            // collision. Re-stepping the point here double-integrated it (erratic swing); calling
+            // Update() here too double-advanced the bulb's animations (bubble/firefly ran ~2x fast).
+            // This loop only syncs capture/sock state from the context onto the bulb visual.
             foreach (CandyContext ctx in LightEmitters())
             {
                 ctx.lightBulb?.SyncFromContext(ctx);
-                ctx.lightBulb?.Update(delta);
             }
 
             // Split candy halves are still legacy singleton points, so they need explicit

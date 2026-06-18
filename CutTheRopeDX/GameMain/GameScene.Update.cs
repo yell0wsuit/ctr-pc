@@ -658,7 +658,7 @@ namespace CutTheRopeDX.GameMain
             {
                 targets[ti].targetObject?.Update(delta);
             }
-            UpdateLightEmitterPhysics(delta);
+            UpdateLightEmitterPhysics();
             UpdateNightLevel(delta);
             conveyors.Update(delta);
 
