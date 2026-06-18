@@ -1611,6 +1611,10 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
+                    if (!ctx.Capabilities.CanFloatInWater)
+                    {
+                        continue;
+                    }
                     if (!WaterSubmersion.IsSubmerged(ctx.point.pos.X, ctx.point.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius))
                     {
                         continue;
@@ -1666,7 +1670,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             CandyContext ctx = candies[ci];
                             bool gone = ci == 0 ? noCandy : ctx.noCandy;
-                            if (gone || !GameObject.ObjectsIntersect(ctx.candy, snail))
+                            if (gone || !ctx.Capabilities.CanBeDraggedBySnail || !GameObject.ObjectsIntersect(ctx.candy, snail))
                             {
                                 continue;
                             }

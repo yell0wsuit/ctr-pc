@@ -18,10 +18,12 @@ namespace CutTheRopeDX.GameMain
     /// <param name="CanBeGrabbedByMouse">Whether a mouse can carry this body away.</param>
     /// <param name="CanBeGrabbedByHand">Whether a mechanical hand can grab and hold this body.</param>
     /// <param name="CanEnterLantern">Whether a lantern can capture this body.</param>
-    /// <param name="CanEnterTransport">Whether this body can travel through socks and bamboo tubes.</param>
+    /// <param name="CanEnterTransport">Whether this body can travel through hats/socks and bamboo tubes.</param>
     /// <param name="CanBindRocket">Whether a rocket can bind to and fly this body.</param>
     /// <param name="CanAttachAnts">Whether ants can attach to and carry this body along their path.</param>
     /// <param name="CanBeBrokenByHazards">Whether hazards (spikes) destroy this body on contact.</param>
+    /// <param name="CanFloatInWater">Whether water buoyancy pushes this body upward when submerged.</param>
+    /// <param name="CanBeDraggedBySnail">Whether a snail can crawl onto this body and weigh it down.</param>
     internal sealed record CandyCapabilities(
         bool CanCollectStars = true,
         bool CanOpenMouth = true,
@@ -34,7 +36,9 @@ namespace CutTheRopeDX.GameMain
         bool CanEnterTransport = true,
         bool CanBindRocket = true,
         bool CanAttachAnts = true,
-        bool CanBeBrokenByHazards = true)
+        bool CanBeBrokenByHazards = true,
+        bool CanFloatInWater = true,
+        bool CanBeDraggedBySnail = true)
     {
         /// <summary>A normal candy: every candy-like interaction is enabled.</summary>
         public static CandyCapabilities Candy { get; } = new();
@@ -55,6 +59,8 @@ namespace CutTheRopeDX.GameMain
             CanEnterLantern: false,
             CanBindRocket: false,
             CanAttachAnts: false,
-            CanBeBrokenByHazards: false);
+            CanBeBrokenByHazards: false,
+            CanFloatInWater: false,
+            CanBeDraggedBySnail: false);
     }
 }

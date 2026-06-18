@@ -21,6 +21,8 @@ namespace CutTheRopeDX.Tests
             Assert.True(candy.CanBeGrabbedByMouse);
             Assert.True(candy.CanBeGrabbedByHand);
             Assert.True(candy.CanEnterTransport);
+            Assert.True(candy.CanFloatInWater);
+            Assert.True(candy.CanBeDraggedBySnail);
         }
 
         [Fact]
@@ -36,6 +38,8 @@ namespace CutTheRopeDX.Tests
             Assert.False(bulb.CanBeGrabbedByMouse);
             Assert.False(bulb.CanBeGrabbedByHand);
             Assert.True(bulb.CanEnterTransport);
+            Assert.False(bulb.CanFloatInWater);
+            Assert.False(bulb.CanBeDraggedBySnail);
         }
 
         [Fact]
