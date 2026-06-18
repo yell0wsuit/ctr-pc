@@ -288,18 +288,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Timeline selector callback that drops a light bulb from a sock when the payload contains one.
-        /// </summary>
-        /// <param name="param">The timeline payload that may contain a <see cref="LightBulb"/>.</param>
-        private void Selector_dropLightBulbFromSock(FrameworkTypes param)
-        {
-            if (param is LightBulb bulb)
-            {
-                DropLightBulbFromSock(bulb);
-            }
-        }
-
-        /// <summary>
         /// Timeline selector callback that restores the candy after it leaves a lantern.
         /// </summary>
         /// <param name="param">Released candy physics point.</param>
@@ -741,11 +729,6 @@ namespace CutTheRopeDX.GameMain
         /// All active bamboo tube objects in the loaded level.
         /// </summary>
         private List<BambooTube> bambooTubes;
-
-        /// <summary>
-        /// All active light bulb objects in the loaded level.
-        /// </summary>
-        private List<LightBulb> lightBulbs;
 
         /// <summary>
         /// All active sock objects in the loaded level.

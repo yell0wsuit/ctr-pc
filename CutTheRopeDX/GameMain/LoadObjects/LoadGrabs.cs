@@ -1,4 +1,3 @@
-using System;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
@@ -92,10 +91,10 @@ namespace CutTheRopeDX.GameMain
                     constraintedPoint = star;
                     if (bindBulb)
                     {
-                        LightBulb bulb = FindLightBulbForBinding(bulbNumber);
+                        CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
                         if (bulb != null)
                         {
-                            constraintedPoint = bulb.constraint;
+                            constraintedPoint = bulb.point;
                         }
                         else if (twoParts != 2)
                         {
@@ -145,29 +144,5 @@ namespace CutTheRopeDX.GameMain
             return null;
         }
 
-        /// <summary>
-        /// Finds the light bulb that should be bound to a grab by bulb number.
-        /// </summary>
-        /// <param name="bulbNumber">The optional bulb identifier requested by the XML node.</param>
-        /// <returns>The matching light bulb, or the last loaded bulb when no explicit match exists.</returns>
-        private LightBulb FindLightBulbForBinding(string bulbNumber)
-        {
-            if (lightBulbs.Count == 0)
-            {
-                return null;
-            }
-            if (!string.IsNullOrEmpty(bulbNumber))
-            {
-                for (int i = 0; i < lightBulbs.Count; i++)
-                {
-                    LightBulb bulb = lightBulbs[i];
-                    if (bulb != null && string.Equals(bulb.bulbNumber, bulbNumber, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return bulb;
-                    }
-                }
-            }
-            return lightBulbs[^1];
-        }
     }
 }

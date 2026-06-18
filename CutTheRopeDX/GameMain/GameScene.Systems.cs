@@ -208,18 +208,6 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            if (lightBulbs.Count > 0)
-            {
-                for (int i = 0; i < lightBulbs.Count; i++)
-                {
-                    LightBulb bulb = lightBulbs[i];
-                    if (bulb == null || bulb.attachedSock != null)
-                    {
-                        continue;
-                    }
-                    _ = ApplyImpulse(bulb.constraint);
-                }
-            }
         }
 
         /// <summary>
@@ -259,17 +247,6 @@ namespace CutTheRopeDX.GameMain
                 else if (!(ci == 0 ? noCandy : ctx.noCandy))
                 {
                     HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
-                }
-            }
-            if (lightBulbs.Count > 0)
-            {
-                for (int i = 0; i < lightBulbs.Count; i++)
-                {
-                    LightBulb bulb = lightBulbs[i];
-                    if (bulb != null && bulb.attachedSock == null)
-                    {
-                        HandlePumpFlowPtSkin(p, bulb.constraint, bulb);
-                    }
                 }
             }
             foreach (object bungee in bungees)

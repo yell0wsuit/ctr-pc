@@ -44,7 +44,6 @@ namespace CutTheRopeDX.GameMain
             pumps = [];
             tubes = [];
             bambooTubes = [];
-            lightBulbs = [];
             socks = [];
             tutorialImages = [];
             tutorials = [];

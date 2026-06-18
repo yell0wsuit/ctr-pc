@@ -44,27 +44,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Handles tapping a bubble captured by a light bulb.
-        /// </summary>
-        /// <param name="bulb">Light bulb that may currently hold a bubble.</param>
-        /// <param name="tx">Touch x-coordinate in screen space.</param>
-        /// <param name="ty">Touch y-coordinate in screen space.</param>
-        /// <returns><see langword="true"/> when the captured bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
-        private bool HandleLightBulbBubbleTouch(LightBulb bulb, float tx, float ty)
-        {
-            if (bulb?.capturingBubble == null)
-            {
-                return false;
-            }
-            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bulb.constraint.pos.X - BUBBLE_RADIUS, bulb.constraint.pos.Y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
-            {
-                PopLightBulbBubble(bulb);
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
         /// Ends any in-progress rope-cut finger traces so they fade out instead of lingering
         /// (used when a win/loss transition interrupts an active drag). Mirrors the touch-up cleanup.
         /// </summary>
@@ -180,16 +159,6 @@ namespace CutTheRopeDX.GameMain
                     PopCandyBubble(ctx);
                     RegisterBubblePopped();
                     return true;
-                }
-            }
-            if (lightBulbs.Count > 0)
-            {
-                foreach (LightBulb bulb in lightBulbs)
-                {
-                    if (HandleLightBulbBubbleTouch(bulb, tx, ty))
-                    {
-                        return true;
-                    }
                 }
             }
             if (!dragging[ti])

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -30,6 +33,51 @@ namespace CutTheRopeDX.GameMain
 
             CandyContext ctx = CandyForPointOrNull(point);
             return ctx != null && ctx.Capabilities.CanBeGrabbedBySpider;
+        }
+
+        private IEnumerable<CandyContext> LightEmitters()
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                CandyContext ctx = candies[i];
+                if (ctx.emitsLight && !ctx.noCandy)
+                {
+                    yield return ctx;
+                }
+            }
+        }
+
+        private IEnumerable<LightBulb> LightEmitterVisuals()
+        {
+            foreach (CandyContext ctx in LightEmitters())
+            {
+                if (ctx.lightBulb != null)
+                {
+                    yield return ctx.lightBulb;
+                }
+            }
+        }
+
+        private CandyContext FindLightEmitterByNumber(string bulbNumber)
+        {
+            CandyContext fallback = null;
+            for (int i = 0; i < candies.Count; i++)
+            {
+                CandyContext ctx = candies[i];
+                if (!ctx.emitsLight || ctx.lightBulb == null)
+                {
+                    continue;
+                }
+
+                fallback = ctx;
+                if (!string.IsNullOrEmpty(bulbNumber)
+                    && string.Equals(ctx.lightBulbNumber, bulbNumber, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ctx;
+                }
+            }
+
+            return fallback;
         }
 
         /// <summary>
@@ -97,40 +145,8 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 ctx.targetSock = null;
+                ctx.lightBulb?.SyncFromContext(ctx);
             }
-        }
-
-        /// <summary>
-        /// Releases a light bulb from its attached sock and applies the sock exit velocity.
-        /// </summary>
-        /// <param name="bulb">Light bulb to drop from its attached sock.</param>
-        private static void DropLightBulbFromSock(LightBulb bulb)
-        {
-            if (bulb == null || bulb.attachedSock == null)
-            {
-                return;
-            }
-
-            Sock sock = bulb.attachedSock;
-            if (sock.light != null)
-            {
-                sock.light.PlayTimeline(0);
-                sock.light.visible = true;
-            }
-
-            Vector v = Vect(0f, -16f);
-            v = VectRotate(v, DEGREES_TO_RADIANS(sock.rotation));
-            bulb.constraint.pos.X = sock.x;
-            bulb.constraint.pos.Y = sock.y;
-            bulb.constraint.pos = VectAdd(bulb.constraint.pos, v);
-            bulb.constraint.prevPos.X = bulb.constraint.pos.X;
-            bulb.constraint.prevPos.Y = bulb.constraint.pos.Y;
-            bulb.constraint.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(sock.rotation)), bulb.sockSpeed);
-            bulb.constraint.posDelta = VectDiv(bulb.constraint.v, 60f);
-            bulb.constraint.prevPos = VectSub(bulb.constraint.pos, bulb.constraint.posDelta);
-            bulb.attachedSock = null;
-            bulb.sockSpeed = 0f;
-            bulb.SyncToConstraint();
         }
 
         /// <summary>
@@ -140,40 +156,6 @@ namespace CutTheRopeDX.GameMain
         {
             restartState = 0;
             dimTime = 0.15f;
-        }
-
-        /// <summary>
-        /// Cuts or hides ropes attached to a light bulb.
-        /// </summary>
-        /// <param name="bulb">Light bulb whose ropes should be released.</param>
-        private void ReleaseLightBulbRopes(LightBulb bulb)
-        {
-            if (bulb == null)
-            {
-                return;
-            }
-
-            int grabCount = bungees.Count;
-            for (int i = 0; i < grabCount; i++)
-            {
-                Grab grab = bungees[i];
-                Bungee rope = grab.rope;
-                if (rope != null && rope.tail == bulb.constraint)
-                {
-                    if (rope.cut == -1)
-                    {
-                        rope.SetCut(rope.parts.Count - 2);
-                    }
-                    else
-                    {
-                        rope.hideTailParts = true;
-                    }
-                    if (grab.hasSpider && grab.spiderActive)
-                    {
-                        SpiderBusted(grab);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -575,8 +557,13 @@ namespace CutTheRopeDX.GameMain
             {
                 EnableGhostCycleForBubble(ctx.bubble);
             }
+            if (ctx.bubble is Bubble bubble)
+            {
+                bubble.capturedByBulb = false;
+            }
             ctx.bubble = null;
             ctx.bubbleHasGhost = false;
+            ctx.lightBulb?.SyncFromContext(ctx);
             _ = (ctx.candyBubbleAnimation?.visible = false);
             _ = (ctx.candyGhostBubbleAnimation?.visible = false);
             PopBubbleAtXY(ctx.candy.x, ctx.candy.y);
@@ -624,28 +611,6 @@ namespace CutTheRopeDX.GameMain
             candyBreak.StartSystem(5);
             _ = aniPool.AddChild(candyBreak);
             CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
-        }
-
-        /// <summary>
-        /// Pops the bubble captured by a light bulb and restores any ghost cycling state.
-        /// </summary>
-        /// <param name="bulb">Light bulb whose captured bubble should be popped.</param>
-        private void PopLightBulbBubble(LightBulb bulb)
-        {
-            if (bulb?.capturingBubble == null)
-            {
-                return;
-            }
-
-            EnableGhostCycleForBubble(bulb.capturingBubble);
-            bulb.capturingBubble.capturedByBulb = false;
-            bulb.capturingBubble.popped = true;
-            bulb.capturingBubble.RemoveChildWithID(0);
-            conveyors.Remove(bulb.capturingBubble);
-            bulb.capturingBubble = null;
-            bulb.capturingGhostBubble = false;
-
-            PopBubbleAtXY(bulb.x, bulb.y);
         }
 
         /// <summary>

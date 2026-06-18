@@ -29,8 +29,7 @@ namespace CutTheRopeDX.GameMain
             constraint.disableGravity = false;
             constraint.pos = Vect(x, y);
 
-            LightBulb bulb = new(litRadius, constraint, bulbNumber);
-            lightBulbs.Add(bulb);
+            candies.Add(LightBulbVisualFactory.Create(litRadius, constraint, bulbNumber));
         }
     }
 }

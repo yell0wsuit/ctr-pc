@@ -44,7 +44,7 @@ namespace CutTheRopeDX.GameMain
             conveyors.ProcessItems(tubes);
             conveyors.ProcessItems(pumps);
             conveyors.ProcessItems(bungees);
-            conveyors.ProcessItems(lightBulbs);
+            conveyors.ProcessItems(LightEmitterVisuals());
 
             // Load two-parts candy bubble animations
             LoadCandyBubbleAnimations();

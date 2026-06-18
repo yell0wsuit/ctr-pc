@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Updates physics simulation for all light bulbs in the level.
+        /// Updates physics simulation for all light emitters in the level.
         /// </summary>
         /// <param name="delta">Time elapsed since the last frame in seconds.</param>
         /// <remarks>
@@ -31,91 +31,54 @@ namespace CutTheRopeDX.GameMain
         ///   <item><description>Game over trigger when all light bulbs are lost (night levels only)</description></item>
         /// </list>
         /// </remarks>
-        private void UpdateLightBulbPhysics(float delta)
+        private void UpdateLightEmitterPhysics(float delta)
         {
-            if (lightBulbs.Count == 0)
-            {
-                return;
-            }
-
             float timeStep = delta * ropePhysicsSpeed;
-            foreach (LightBulb bulb in lightBulbs)
+            foreach (CandyContext ctx in LightEmitters())
             {
-                bulb.constraint.Update(timeStep);
+                ctx.point.Update(timeStep);
                 for (int i = 0; i < NightConstraintRelaxationSteps; i++)
                 {
-                    ConstraintedPoint.SatisfyConstraints(bulb.constraint);
+                    ConstraintedPoint.SatisfyConstraints(ctx.point);
                 }
-                bulb.SyncToConstraint();
-                bulb.Update(delta);
+                ctx.lightBulb?.SyncFromContext(ctx);
+                ctx.lightBulb?.Update(delta);
             }
 
-            // Light bulb collision with candy and other light bulbs
-            float lightBulbCollisionDistance = 2.25f * STAR_RADIUS;
-            for (int i = 0; i < lightBulbs.Count; i++)
+            // Split candy halves are still legacy singleton points, so they need explicit
+            // collision with light emitters. Whole-body collisions use ResolveCandyCollisions().
+            if (twoParts != 2)
             {
-                LightBulb bulb = lightBulbs[i];
-                if (bulb == null || bulb.attachedSock != null)
-                {
-                    continue;
-                }
-                // Resolve collision between light bulb and candy (skip a candy being teleported by its own sock)
-                // Half candy mode: check collision with both candy halves. A split candy can't enter a
-                // sock (TransportEntry blocks it), so there's no per-half sock gate here.
-                if (twoParts != 2)
+                foreach (CandyContext ctx in LightEmitters())
                 {
                     if (!noCandyL)
                     {
-                        HandleCandyIntersection(bulb.constraint, starL, lightBulbCollisionDistance);
+                        HandleCandyIntersection(ctx.point, starL, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
                     if (!noCandyR)
                     {
-                        HandleCandyIntersection(bulb.constraint, starR, lightBulbCollisionDistance);
+                        HandleCandyIntersection(ctx.point, starR, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
-                }
-                // Full candy mode: check collision with every candy, each gated on its own sock
-                else
-                {
-                    if (!noCandy && candies[0].targetSock == null)
-                    {
-                        HandleCandyIntersection(bulb.constraint, star, lightBulbCollisionDistance);
-                    }
-                    for (int ci = 1; ci < candies.Count; ci++)
-                    {
-                        CandyContext ctx = candies[ci];
-                        if (!ctx.noCandy && ctx.targetSock == null)
-                        {
-                            HandleCandyIntersection(bulb.constraint, ctx.point, lightBulbCollisionDistance);
-                        }
-                    }
-                }
-                for (int j = i + 1; j < lightBulbs.Count; j++)
-                {
-                    LightBulb other = lightBulbs[j];
-                    if (other == null || other.attachedSock != null)
-                    {
-                        continue;
-                    }
-                    HandleCandyIntersection(bulb.constraint, other.constraint, lightBulbCollisionDistance);
                 }
             }
 
-            foreach (LightBulb bulb in lightBulbs)
+            bool hasActiveLightEmitter = false;
+            for (int i = 0; i < candies.Count; i++)
             {
-                bulb.SyncToConstraint();
-            }
-
-            // Remove light bulbs that fall off screen
-            for (int i = lightBulbs.Count - 1; i >= 0; i--)
-            {
-                LightBulb bulb = lightBulbs[i];
-                if (bulb != null && PointOutOfScreen(bulb.constraint))
+                CandyContext ctx = candies[i];
+                if (!ctx.emitsLight)
                 {
-                    _ = lightBulbs.Remove(bulb);
+                    continue;
                 }
+                if (!ctx.noCandy && PointOutOfScreen(ctx.point))
+                {
+                    ctx.noCandy = true;
+                    ctx.lightBulb?.SyncFromContext(ctx);
+                }
+                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy;
             }
 
-            if (nightLevel && lightBulbs.Count == 0 && restartState != 0 && !noCandy)
+            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && !noCandy)
             {
                 GameLost();
             }
@@ -154,9 +117,9 @@ namespace CutTheRopeDX.GameMain
 
                 bool isAwake = false;
                 Vector targetPosition = Vect(t.targetObject.x, t.targetObject.y);
-                foreach (LightBulb bulb in lightBulbs)
+                foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(targetPosition, bulb.constraint.pos, bulb.lightRadius))
+                    if (LightProximity.IsWithinLight(targetPosition, light.point.pos, light.lightRadius))
                     {
                         isAwake = true;
                         break;
@@ -232,9 +195,9 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 bool lit = false;
-                foreach (LightBulb bulb in lightBulbs)
+                foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), bulb.constraint.pos, bulb.lightRadius))
+                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), light.point.pos, light.lightRadius))
                     {
                         lit = true;
                         break;

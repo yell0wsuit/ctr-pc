@@ -347,36 +347,6 @@ namespace CutTheRopeDX.GameMain
                                     break;
                                 }
                             }
-                            if (grab.rope == null && lightBulbs.Count > 0)
-                            {
-                                foreach (LightBulb bulb in lightBulbs)
-                                {
-                                    if (bulb == null || bulb.attachedSock != null)
-                                    {
-                                        continue;
-                                    }
-                                    if (VectDistance(Vect(grab.x, grab.y), bulb.constraint.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding)
-                                    {
-                                        Bungee bungeeBulb = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, bulb.constraint, bulb.constraint.pos.X, bulb.constraint.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
-                                        bungeeBulb.bungeeAnchor.pin = bungeeBulb.bungeeAnchor.pos;
-                                        grab.hideRadius = true;
-                                        grab.SetRope(bungeeBulb);
-
-                                        // Spider can't grab light bulbs - keep it idle
-                                        if (grab.hasSpider)
-                                        {
-                                            grab.shouldActivate = false;
-                                        }
-
-                                        CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                                        if (grab.mover != null)
-                                        {
-                                            CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
                         }
                         if (rope != null)
                         {
@@ -688,7 +658,7 @@ namespace CutTheRopeDX.GameMain
             {
                 targets[ti].targetObject?.Update(delta);
             }
-            UpdateLightBulbPhysics(delta);
+            UpdateLightEmitterPhysics(delta);
             UpdateNightLevel(delta);
             conveyors.Update(delta);
 
@@ -915,9 +885,17 @@ namespace CutTheRopeDX.GameMain
                         bool extraHasGhost = DisableGhostCycleForBubble(bubble3);
                         ctx.bubble = bubble3;
                         ctx.bubbleHasGhost = extraHasGhost;
-                        BubbleVisualState visualState = BubbleVisualState.ForCapture(extraHasGhost, ctx.candyGhostBubbleAnimation != null);
-                        ctx.candyBubbleAnimation.visible = visualState.ShowNormalBubble;
-                        ctx.candyGhostBubbleAnimation.visible = visualState.ShowGhostBubble;
+                        if (ctx.lightBulb != null)
+                        {
+                            bubble3.capturedByBulb = !extraHasGhost;
+                            ctx.lightBulb.SyncFromContext(ctx);
+                        }
+                        else
+                        {
+                            BubbleVisualState visualState = BubbleVisualState.ForCapture(extraHasGhost, ctx.candyGhostBubbleAnimation != null);
+                            ctx.candyBubbleAnimation.visible = visualState.ShowNormalBubble;
+                            ctx.candyGhostBubbleAnimation.visible = visualState.ShowGhostBubble;
+                        }
                         CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
@@ -928,33 +906,6 @@ namespace CutTheRopeDX.GameMain
                     if (captured)
                     {
                         break;
-                    }
-                }
-                if (!bubble3.popped && lightBulbs.Count > 0)
-                {
-                    foreach (LightBulb bulb in lightBulbs)
-                    {
-                        if (bulb == null || bulb.attachedSock != null)
-                        {
-                            continue;
-                        }
-                        if (PointInRect(bulb.x, bulb.y, bubble3.x - BUBBLE_RADIUS, bubble3.y - BUBBLE_RADIUS, BUBBLE_RADIUS * 2f, BUBBLE_RADIUS * 2f))
-                        {
-                            if (bulb.capturingBubble != null && bulb.capturingBubble != bubble3)
-                            {
-                                PopLightBulbBubble(bulb);
-                            }
-
-                            bool isGhost = DisableGhostCycleForBubble(bubble3);
-                            bulb.capturingBubble = bubble3;
-                            bulb.capturingGhostBubble = isGhost;
-                            bubble3.capturedByBulb = !isGhost;
-                            bubble3.popped = true;
-                            bubble3.RemoveChildWithID(0);
-                            conveyors.Remove(bubble3);
-                            CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
-                            break;
-                        }
                     }
                 }
                 if (!bubble3.withoutShadow)
@@ -1219,6 +1170,7 @@ namespace CutTheRopeDX.GameMain
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
+                            ctx.lightBulb?.SyncFromContext(ctx);
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
 
@@ -1237,92 +1189,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                bool bulbHits = false;
-                if (!wasIdle && lightBulbs.Count > 0)
-                {
-                    foreach (LightBulb bulb in lightBulbs)
-                    {
-                        if (bulb == null || bulb.attachedSock != null)
-                        {
-                            continue;
-                        }
-                        Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
-                        float bulbX = bulb.constraint.pos.X - collisionHalfSize;
-                        float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
-                        bool bulbHit = bulbDelta.Y >= 0 &&
-                            (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
-                             LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
-                        if (bulbHit)
-                        {
-                            bulbHits = true;
-                            break;
-                        }
-                    }
-                }
-
                 if (!wasIdle)
                 {
-                    if (!anyCandyHits && !bulbHits && sock3.idleTimeout == 0f)
+                    if (!anyCandyHits && sock3.idleTimeout == 0f)
                     {
                         sock3.idleTimeout = 0.8f;
                     }
                     continue;
-                }
-
-                if (lightBulbs.Count > 0)
-                {
-                    bool bulbTeleported = false;
-                    foreach (LightBulb bulb in lightBulbs)
-                    {
-                        if (bulb == null || bulb.attachedSock != null)
-                        {
-                            continue;
-                        }
-                        Vector bulbDelta = VectRotate(bulb.constraint.posDelta, invRotation);
-                        float bulbX = bulb.constraint.pos.X - collisionHalfSize;
-                        float bulbY = bulb.constraint.pos.Y - collisionHalfSize;
-                        bool bulbHit = bulbDelta.Y >= 0 &&
-                            (LineInRect(sock3.t1.X, sock3.t1.Y, sock3.t2.X, sock3.t2.Y, bulbX, bulbY, bbSize, bbSize) ||
-                             LineInRect(sock3.b1.X, sock3.b1.Y, sock3.b2.X, sock3.b2.Y, bulbX, bulbY, bbSize, bbSize));
-
-                        if (!bulbHit)
-                        {
-                            continue;
-                        }
-
-                        foreach (Sock sock4 in socks)
-                        {
-                            if (sock4 != sock3 && sock4.group == sock3.group)
-                            {
-                                sock4.state = Sock.SOCK_THROWING;
-                                sock4.idleTimeout = 0.8f;
-                                ReleaseLightBulbRopes(bulb);
-                                bulb.sockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(bulb.constraint.v);
-                                bulb.sockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
-                                bulb.attachedSock = sock4;
-                                sock3.light.PlayTimeline(0);
-                                sock3.light.visible = true;
-
-                                if (SpecialEvents.IsXmas)
-                                {
-                                    CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
-                                }
-                                else
-                                {
-                                    CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
-                                }
-
-                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_dropLightBulbFromSock), bulb, 0.1f);
-                                bulbTeleported = true;
-                                break;
-                            }
-                        }
-
-                        if (bulbTeleported)
-                        {
-                            break;
-                        }
-                    }
                 }
             }
             if (rockets != null)
@@ -1708,23 +1581,7 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
                 }
-                bool bulbHit = false;
-                if (lightBulbs.Count > 0)
-                {
-                    foreach (LightBulb bulb in lightBulbs)
-                    {
-                        if (bulb == null || bulb.attachedSock != null)
-                        {
-                            continue;
-                        }
-                        if (LineInRect(bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInRect(bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y, bulb.constraint.pos.X - bouncerCollisionRadius, bulb.constraint.pos.Y - bouncerCollisionRadius, bouncerCollisionRadius * 2f, bouncerCollisionRadius * 2f) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y) || LineInLine(bulb.constraint.prevPos.X, bulb.constraint.prevPos.Y, bulb.constraint.pos.X, bulb.constraint.pos.Y, bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y))
-                        {
-                            HandleBouncePtDelta(bouncer, bulb.constraint, delta);
-                            bulbHit = true;
-                        }
-                    }
-                }
-                if (!anyCandyHit && !bulbHit)
+                if (!anyCandyHit)
                 {
                     bouncer.skip = false;
                 }
@@ -1899,25 +1756,6 @@ namespace CutTheRopeDX.GameMain
                 float rocketDamping = inWater ? waterRocketDamping : ActivePhysicsConstants.RocketActiveVelocityDamping;
                 ctx.point.ApplyImpulseDelta(Vect(-ctx.point.v.X / rocketDamping, -ctx.point.v.Y / rocketDamping), delta);
             }
-            if (lightBulbs.Count > 0)
-            {
-                foreach (LightBulb bulb in lightBulbs)
-                {
-                    if (bulb == null || bulb.attachedSock != null || bulb.capturingBubble == null)
-                    {
-                        continue;
-                    }
-                    if (gravityButton != null && !gravityNormal)
-                    {
-                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / bubbleDamping, ((0f - bulb.constraint.v.Y) / bubbleDamping) - bubbleLift), delta);
-                    }
-                    else
-                    {
-                        bulb.constraint.ApplyImpulseDelta(Vect((0f - bulb.constraint.v.X) / bubbleDamping, ((0f - bulb.constraint.v.Y) / bubbleDamping) + bubbleLift), delta);
-                    }
-                }
-            }
-
             ApplyAntCarryToCandyPosition();
 
             // Snapshot candies for pure decisions.

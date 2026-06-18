@@ -230,7 +230,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            foreach (LightBulb bulb in lightBulbs)
+            foreach (LightBulb bulb in LightEmitterVisuals())
             {
                 bulb?.DrawLight();
             }
@@ -268,6 +268,10 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
+                if (ctx.emitsLight)
+                {
+                    continue;
+                }
                 bool gone = ci == 0 ? noCandy : ctx.noCandy;
                 Sock sock = ctx.targetSock;
                 if (!gone && sock == null)
@@ -319,7 +323,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             waterLayer?.DrawFront(camera.pos.Y);
-            foreach (LightBulb bulb in lightBulbs)
+            foreach (LightBulb bulb in LightEmitterVisuals())
             {
                 bulb?.DrawBottleAndFirefly();
             }
