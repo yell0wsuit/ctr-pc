@@ -188,68 +188,36 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Immediately detaches the candy from any active segment and restores all segments to the
-        /// interactable state. Used when the level resets.
+        /// Detaches a single candy from the segment currently carrying it (no-op if it is not being
+        /// carried) and restores it to physics. Used when another mechanic (e.g. a mechanical hand)
+        /// takes ownership of that candy. Other candies on the conveyor are unaffected; ants are kept
+        /// off this candy while a hand holds it via the <c>candyHeldByHand</c> guard in
+        /// <see cref="AntCandyInteraction.CanAttach"/>.
         /// </summary>
-        private void ResetConveyor()
+        /// <param name="ctx">The candy to detach from the conveyor.</param>
+        private static void DetachCandyFromConveyor(CandyContext ctx)
         {
-            if (antsPathsSegments == null || antsPathsSegments.Count == 0)
+            AntsPathSegment segment = ctx?.antSegment;
+            if (segment == null)
             {
                 return;
             }
 
-            foreach (AntsPathSegment segment in antsPathsSegments)
+            if (segment.interacting)
             {
-                if (segment.interacting)
-                {
-                    segment.StopInteractionWithCandySlow(false);
-                    PlayAntConveyorDetachSound();
-                }
-
-                segment.canInteract = true;
+                segment.StopInteractionWithCandySlow(false);
+                PlayAntConveyorDetachSound();
             }
 
-            for (int ci = 0; ci < candies.Count; ci++)
-            {
-                CandyContext ctx = candies[ci];
-                if (ctx.antSegment != null && ctx.point != null)
-                {
-                    ctx.point.disableGravity = ctx.activeRocket != null;
-                }
+            segment.canInteract = true;
 
-                ctx.antWaitForFly = false;
-                ctx.antSegment = null;
-                ctx.lastAntSegment = null;
-                ctx.antCooldown = 0f;
-            }
-        }
+            // A candy can only hold a segment if it had a point when it attached.
+            ctx.point.disableGravity = ctx.activeRocket != null;
 
-        /// <summary>Prevents all segments from attaching to the candy. Used during certain game-state transitions.</summary>
-        private void BlockConveyor()
-        {
-            if (antsPathsSegments == null)
-            {
-                return;
-            }
-
-            foreach (AntsPathSegment segment in antsPathsSegments)
-            {
-                segment.canInteract = false;
-            }
-        }
-
-        /// <summary>Re-enables all segments to attach to the candy after a <see cref="BlockConveyor"/> call.</summary>
-        private void UnblockConveyor()
-        {
-            if (antsPathsSegments == null)
-            {
-                return;
-            }
-
-            foreach (AntsPathSegment segment in antsPathsSegments)
-            {
-                segment.canInteract = true;
-            }
+            ctx.antWaitForFly = false;
+            ctx.antSegment = null;
+            ctx.lastAntSegment = null;
+            ctx.antCooldown = 0f;
         }
 
         /// <summary>
@@ -275,7 +243,8 @@ namespace CutTheRopeDX.GameMain
                 segmentCanInteract: segment.canInteract,
                 candyWaitingForFly: ctx.antWaitForFly,
                 isLastSegment: segment == ctx.lastAntSegment,
-                candyInsideBounds: contains))
+                candyInsideBounds: contains,
+                candyHeldByHand: ctx.capturingHand != null))
             {
                 return false;
             }

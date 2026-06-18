@@ -685,7 +685,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Releases all mechanical hands currently holding the candy and unblocks conveyors if needed.
+        /// Releases all mechanical hands currently holding a candy. Once a candy's
+        /// <see cref="CandyContext.capturingHand"/> is cleared the ant conveyor is free to pick it up
+        /// again, so no global conveyor unblock is needed.
         /// </summary>
         public void DetachActiveHands()
         {
@@ -694,7 +696,6 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool releasedHand = false;
             foreach (MechanicalHand hand in hands)
             {
                 if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
@@ -707,14 +708,7 @@ namespace CutTheRopeDX.GameMain
                     hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = (held?.capturingHand = null);
-                    releasedHand = true;
                 }
-            }
-
-            if (releasedHand)
-            {
-                ResetConveyor();
-                UnblockConveyor();
             }
         }
 

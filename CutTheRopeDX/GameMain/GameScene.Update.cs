@@ -2175,8 +2175,9 @@ namespace CutTheRopeDX.GameMain
                     selectedHandIndex = hands.IndexOf(hand);
                     ctx.capturingHand = hand;
 
-                    ResetConveyor();
-                    BlockConveyor();
+                    // Take this candy off the ants (if it was riding them). Other candies keep
+                    // their conveyor; ants won't re-grab this one while the hand holds it.
+                    DetachCandyFromConveyor(ctx);
 
                     if (ctx == candies[0] && candyBubble != null)
                     {

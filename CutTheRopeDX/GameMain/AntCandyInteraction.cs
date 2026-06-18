@@ -12,14 +12,16 @@ namespace CutTheRopeDX.GameMain
             bool segmentCanInteract,
             bool candyWaitingForFly,
             bool isLastSegment,
-            bool candyInsideBounds)
+            bool candyInsideBounds,
+            bool candyHeldByHand)
         {
             return candyPresent
                 && !segmentInteracting
                 && segmentCanInteract
                 && !candyWaitingForFly
                 && !isLastSegment
-                && candyInsideBounds;
+                && candyInsideBounds
+                && !candyHeldByHand;
         }
 
         /// <summary>Returns true when a carried candy has left its carrier after the snap grace period.</summary>

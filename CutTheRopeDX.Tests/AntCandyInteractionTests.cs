@@ -15,18 +15,26 @@ namespace CutTheRopeDX.Tests
                 segmentCanInteract: true,
                 candyWaitingForFly: false,
                 isLastSegment: false,
-                candyInsideBounds: true));
+                candyInsideBounds: true,
+                candyHeldByHand: false));
         }
 
         [Fact]
         public void CanAttach_FalseWhenCandyOrSegmentStateBlocksInteraction()
         {
-            Assert.False(AntCandyInteraction.CanAttach(false, false, true, false, false, true));
-            Assert.False(AntCandyInteraction.CanAttach(true, segmentInteracting: true, true, false, false, true));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, segmentCanInteract: false, false, false, true));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, candyWaitingForFly: true, false, true));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, isLastSegment: true, true));
-            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, false, candyInsideBounds: false));
+            Assert.False(AntCandyInteraction.CanAttach(false, false, true, false, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, segmentInteracting: true, true, false, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, false, segmentCanInteract: false, false, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, false, true, candyWaitingForFly: true, false, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, isLastSegment: true, true, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, false, candyInsideBounds: false, false));
+        }
+
+        [Fact]
+        public void CanAttach_FalseWhenCandyHeldByHand()
+        {
+            // A mechanical hand owns the candy; ants must not steal it back onto the conveyor.
+            Assert.False(AntCandyInteraction.CanAttach(true, false, true, false, false, true, candyHeldByHand: true));
         }
 
         [Fact]

@@ -280,13 +280,13 @@ namespace CutTheRopeDX.GameMain
 
                     if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
                     {
-                        hand.cPoint.RemoveConstraint(star);
+                        CandyContext held = HandHeldCandy(hand);
+                        hand.cPoint.RemoveConstraint(held?.point ?? star);
                         hand.state = MechanicalHand.STATE_HAND_RELEASE;
                         hand.doRotateCandy = false;
                         hand.releaseSoundPlayed = true;
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
-                        ResetConveyor();
-                        UnblockConveyor();
+                        _ = (held?.capturingHand = null);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                         return true;
                     }
