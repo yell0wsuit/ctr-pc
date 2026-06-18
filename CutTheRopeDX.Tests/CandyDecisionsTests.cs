@@ -84,6 +84,21 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AnyUneatenOutOfScreen_FalseForCandyLikeObjectThatCannotLoseLevel()
+        {
+            List<CandyView> candies =
+            [
+                new CandyView(new Vector(999, 0), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
+            ];
+            static bool IsOut(Vector p)
+            {
+                return p.X >= 500;
+            }
+
+            Assert.False(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut));
+        }
+
+        [Fact]
         public void AnyUneatenOutOfScreen_TrueWhenUneatenSplitHalfLeaves()
         {
             List<CandyView> candies = [];

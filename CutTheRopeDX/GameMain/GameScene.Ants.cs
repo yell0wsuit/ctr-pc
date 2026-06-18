@@ -33,7 +33,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.noCandy) || ctx.point == null)
+                if ((ci != 0 && ctx.noCandy) || ctx.point == null || !ctx.Capabilities.CanAttachAnts)
                 {
                     continue;
                 }
@@ -263,7 +263,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> if the candy was attached to the segment; otherwise, <see langword="false"/>.</returns>
         private bool TryStartAntInteraction(AntsPathSegment segment, CandyContext ctx, bool useExternalBounds)
         {
-            if (segment == null || ctx == null)
+            if (segment == null || !CandyInteraction.CanAttachAnts(ctx))
             {
                 return false;
             }

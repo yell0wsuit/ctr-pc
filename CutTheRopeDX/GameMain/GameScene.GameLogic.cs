@@ -8,15 +8,28 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
-        /// <summary>
-        /// Checks if the given constraint point is a candy (star, starL, or starR).
-        /// Used to distinguish candy from other objects like light bulbs.
-        /// </summary>
-        /// <param name="point">Constraint point to test.</param>
-        /// <returns><see langword="true"/> if the point belongs to a candy body; otherwise, <see langword="false"/>.</returns>
-        private bool IsCandyPoint(ConstraintedPoint point)
+        private CandyContext CandyForPointOrNull(ConstraintedPoint point)
         {
-            return point == star || point == starL || point == starR;
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].point == point)
+                {
+                    return candies[i];
+                }
+            }
+
+            return null;
+        }
+
+        private bool IsSpiderGrabbableCandyPoint(ConstraintedPoint point)
+        {
+            if (point == star || point == starL || point == starR)
+            {
+                return true;
+            }
+
+            CandyContext ctx = CandyForPointOrNull(point);
+            return ctx != null && ctx.Capabilities.CanBeGrabbedBySpider;
         }
 
         /// <summary>
@@ -288,7 +301,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null)
+                if (!CandyInteraction.CanBeGrabbedByHand(ctx) || ctx.inLantern || ctx.targetSock != null)
                 {
                     continue;
                 }

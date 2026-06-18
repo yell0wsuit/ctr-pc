@@ -241,7 +241,7 @@ namespace CutTheRopeDX.GameMain
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
                                     // Don't let spider activate if rope is not attached to candy
-                                    if (grab.shouldActivate && !IsCandyPoint(rope.tail))
+                                    if (grab.shouldActivate && !IsSpiderGrabbableCandyPoint(rope.tail))
                                     {
                                         grab.shouldActivate = false;
                                     }
@@ -250,7 +250,7 @@ namespace CutTheRopeDX.GameMain
                                 if (grab.spiderPos == -1f)
                                 {
                                     // Only let spider win if rope is attached to candy
-                                    if (IsCandyPoint(rope.tail))
+                                    if (IsSpiderGrabbableCandyPoint(rope.tail))
                                     {
                                         SpiderWon(grab);
                                         break;
@@ -723,6 +723,10 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
+                        if (!ctx.Capabilities.CanCollectStars)
+                        {
+                            continue;
+                        }
                         bool touches = ci == 0
                             ? (twoParts == 2
                                 ? GameObject.ObjectsIntersect(candy, star) && !noCandy
@@ -1001,6 +1005,10 @@ namespace CutTheRopeDX.GameMain
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     CandyContext ctx = candies[ci];
+                    if (!ctx.Capabilities.CanEnterTransport)
+                    {
+                        continue;
+                    }
                     bool splitActive = ci == 0 && twoParts != PARTS_NONE;
                     bool inRange = !ctx.noCandy && bambooTube.TryCatchCandy(ctx.point);
                     if (TransportEntry.ShouldEnter(!ctx.noCandy, ctx.targetSock != null, ctx.targetBambooTube != null, ctx.inLantern, splitActive, inRange))
@@ -1036,6 +1044,10 @@ namespace CutTheRopeDX.GameMain
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     CandyContext ctx = candies[ci];
+                    if (!ctx.Capabilities.CanEnterLantern)
+                    {
+                        continue;
+                    }
                     bool inRange = VectDistance(ctx.point.pos, Vect(lantern.x, lantern.y)) < 82f;
                     if (!LanternCapture.ShouldCapture(lanternInactive, groupOccupied, !ctx.noCandy, ctx.inLantern, inRange))
                     {
@@ -1131,7 +1143,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null || ctx.targetBambooTube != null)
+                        if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null || ctx.targetBambooTube != null || !ctx.Capabilities.CanBeGrabbedByMouse)
                         {
                             continue;
                         }
@@ -1178,6 +1190,10 @@ namespace CutTheRopeDX.GameMain
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     CandyContext ctx = candies[ci];
+                    if (!ctx.Capabilities.CanEnterTransport)
+                    {
+                        continue;
+                    }
                     Vector ptr = VectRotate(ctx.point.posDelta, invRotation);
                     float bbX = ctx.point.pos.X - collisionHalfSize;
                     float bbY = ctx.point.pos.Y - collisionHalfSize;
@@ -1401,6 +1417,10 @@ namespace CutTheRopeDX.GameMain
                         for (int ci = 0; ci < candies.Count; ci++)
                         {
                             CandyContext ctx = candies[ci];
+                            if (!ctx.Capabilities.CanBindRocket)
+                            {
+                                continue;
+                            }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
                             bool mouseHasCandy = miceManager?.ActiveMouseHasCandy() ?? false;
                             if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
@@ -1494,6 +1514,10 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
+                        if (!ctx.Capabilities.CanBeBrokenByHazards)
+                        {
+                            continue;
+                        }
                         if (ci == 0 && twoParts != 2)
                         {
                             if (candies[0].inLantern)
@@ -1971,6 +1995,10 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
+                        if (!ctx.Capabilities.CanBeEaten)
+                        {
+                            continue;
+                        }
                         if (ctx.noCandy)
                         {
                             continue;
@@ -2012,6 +2040,10 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
+                if (!ctx.Capabilities.CanLoseLevelWhenOffScreen)
+                {
+                    continue;
+                }
                 if (!ctx.noCandy && PointOutOfScreen(ctx.point))
                 {
                     ctx.noCandy = true;

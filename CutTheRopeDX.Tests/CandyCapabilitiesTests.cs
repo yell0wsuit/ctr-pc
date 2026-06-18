@@ -55,5 +55,19 @@ namespace CutTheRopeDX.Tests
             Assert.False(view.Capabilities.CanBeEaten);
             Assert.False(view.Capabilities.CanCollectStars);
         }
+
+        [Fact]
+        public void CandyInteraction_GatesLightBulbCandyOnlyInteractions()
+        {
+            CandyContext bulb = new()
+            {
+                Capabilities = CandyCapabilities.LightBulb
+            };
+
+            Assert.False(CandyInteraction.CanCollectStar(bulb));
+            Assert.False(CandyInteraction.CanBeGrabbedByHand(bulb));
+            Assert.False(CandyInteraction.CanAttachAnts(bulb));
+            Assert.False(CandyInteraction.CanBeBrokenByHazards(bulb));
+        }
     }
 }

@@ -7,11 +7,6 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Candy body collision radius in pixels (engine: 32 for a normal candy, 46.4 for disco).
-        /// </summary>
-        private const float CandyCollisionRadius = 32f;
-
-        /// <summary>
         /// Resolves candy-to-candy collisions for all independent candies, matching the engine's
         /// pairwise <c>handleCandyIntersection</c> loop. No-ops for single-candy levels.
         /// Candies that are eaten, carried by a bubble, or captured in a lantern do not collide.
@@ -38,7 +33,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    float collisionDist = CandyCollisionRadius + CandyCollisionRadius;
+                    float collisionDist = CandyCollision.PairDistance(ca, cb);
                     float dx = ca.point.pos.X - cb.point.pos.X;
                     float dy = ca.point.pos.Y - cb.point.pos.Y;
                     if (((dx * dx) + (dy * dy)) < (collisionDist * collisionDist))
