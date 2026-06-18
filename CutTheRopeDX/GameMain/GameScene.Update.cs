@@ -502,6 +502,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            // candiesConnected elastic: simulate alongside grab ropes (same timestep) so its
+            // SatisfyConstraints pulls both candies. Update only while uncut or fading.
+            if (candyConnector != null && (candyConnector.cut == -1 || candyConnector.cutTime != 0f))
+            {
+                candyConnector.Update(delta * ropePhysicsSpeed);
+            }
+
             // Step every candy point + visual in one pass. candies[0]'s "gone" flag is the
             // singleton `noCandy` (not synced to candies[0].noCandy - see plan); index 1+ use
             // their own noCandy. During split-candy, singleton noCandy is true, so candies[0] is
