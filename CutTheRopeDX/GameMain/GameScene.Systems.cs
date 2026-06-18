@@ -397,6 +397,51 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            // candiesConnected elastic: not in `bungees`, so test it with the same per-segment cut.
+            if (candyConnector != null && candyConnector.cut == -1)
+            {
+                for (int j = 0; j < candyConnector.parts.Count - 1; j++)
+                {
+                    ConstraintedPoint a = candyConnector.parts[j];
+                    ConstraintedPoint b = candyConnector.parts[j + 1];
+                    bool hit;
+                    if (r == null)
+                    {
+                        hit = LineInLine(v1.X, v1.Y, v2.X, v2.Y, a.pos.X, a.pos.Y, b.pos.X, b.pos.Y);
+                    }
+                    else if (a.prevPos.X != UNDEFINED_COORDINATE)
+                    {
+                        float minX = MinOf4(a.pos.X, a.prevPos.X, b.pos.X, b.prevPos.X);
+                        float minY = MinOf4(a.pos.Y, a.prevPos.Y, b.pos.Y, b.prevPos.Y);
+                        float maxX = MaxOf4(a.pos.X, a.prevPos.X, b.pos.X, b.prevPos.X);
+                        float maxY = MaxOf4(a.pos.Y, a.prevPos.Y, b.pos.Y, b.prevPos.Y);
+                        hit = RectInRect(minX, minY, maxX, maxY, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
+                    }
+                    else
+                    {
+                        hit = false;
+                    }
+                    if (hit)
+                    {
+                        ropesCutCount++;
+                        string ropeSound = candyConnector.relaxed switch
+                        {
+                            0 => Resources.Snd.RopeBleak1,
+                            1 => Resources.Snd.RopeBleak2,
+                            2 => Resources.Snd.RopeBleak3,
+                            _ => Resources.Snd.RopeBleak4
+                        };
+                        CTRSoundMgr.PlaySound(ropeSound);
+                        candyConnector.SetCut(j);
+                        if (im)
+                        {
+                            candyConnector.cutTime = 0f;
+                            candyConnector.RemovePart(j);
+                        }
+                        return ropesCutCount;
+                    }
+                }
+            }
             return ropesCutCount;
         }
 
