@@ -272,6 +272,9 @@ namespace CutTheRopeDX.GameMain
             lightGlow.Draw();
             // Reset blend mode to premultiplied alpha after additive glow
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            // Restore the transform immediately so the bulb's swing rotation does not leak onto
+            // whatever is drawn between this glow pass and DrawBottleAndFirefly (candy, stars).
+            PostDrawNoChildren();
         }
 
         /// <summary>
@@ -287,6 +290,10 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
+
+            // Re-apply the bulb transform (DrawLight restored it) so the bottle/firefly still
+            // rotate with the bulb without affecting elements drawn in between.
+            PreDraw();
 
             // Draw main light bulb visual components
             bottle.Draw();
