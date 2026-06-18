@@ -175,6 +175,7 @@ namespace CutTheRopeDX.GameMain
                 candyTop = candyTopObj,
                 candyBlink = candyBlinkAnim,
                 candyBubbleAnimation = candyBubbleAnimation,
+                Capabilities = CandyCapabilities.Candy,
                 noCandy = false,
             });
         }
@@ -255,6 +256,7 @@ namespace CutTheRopeDX.GameMain
                 candyBlink = blink,
                 candyBubbleAnimation = bubbleAnim,
                 candyGhostBubbleAnimation = ghostBubbleAnim,
+                Capabilities = CandyCapabilities.Candy,
                 noCandy = false,
             };
             candies.Add(ctx);

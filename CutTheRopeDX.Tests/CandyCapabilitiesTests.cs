@@ -1,4 +1,6 @@
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Physics;
 
 using Xunit;
 
@@ -34,6 +36,24 @@ namespace CutTheRopeDX.Tests
             Assert.False(bulb.CanBeGrabbedByMouse);
             Assert.False(bulb.CanBeGrabbedByHand);
             Assert.True(bulb.CanEnterTransport);
+        }
+
+        [Fact]
+        public void CandyContext_ToView_PreservesCapabilities()
+        {
+            CandyContext ctx = new()
+            {
+                point = new ConstraintedPoint
+                {
+                    pos = new Vector(1f, 2f)
+                },
+                Capabilities = CandyCapabilities.LightBulb
+            };
+
+            CandyView view = ctx.ToView();
+
+            Assert.False(view.Capabilities.CanBeEaten);
+            Assert.False(view.Capabilities.CanCollectStars);
         }
     }
 }

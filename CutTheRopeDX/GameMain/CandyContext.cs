@@ -9,6 +9,8 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class CandyContext
     {
+        private const float DefaultCandyCollisionRadius = 32f;
+
         /// <summary>Rope-binding key from XML (<c>"first"</c>/<c>"second"</c>); see <see cref="CandyMatch"/>.</summary>
         public string candyNumber;
 
@@ -77,6 +79,21 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True while this candy is the one carried by the active mouse (single-occupancy).</summary>
         public bool carriedByMouse;
 
+        /// <summary>Behavior flags for this candy-like physics body.</summary>
+        public CandyCapabilities Capabilities = CandyCapabilities.Candy;
+
+        /// <summary>Light radius when this context emits light.</summary>
+        public float lightRadius;
+
+        /// <summary>True when this candy-like context contributes to night-level lighting.</summary>
+        public bool emitsLight;
+
+        /// <summary>Additive collision radius used when no absolute pair distance is specified.</summary>
+        public float collisionRadius = DefaultCandyCollisionRadius;
+
+        /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
+        public float? collisionDistanceOverride;
+
         /// <summary>Edge-detect flag: candy is breaking the water surface (splash played once).</summary>
         public bool splashes;
 
@@ -86,7 +103,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {
-            return new CandyView(point.pos, noCandy, targetSock != null || targetBambooTube != null);
+            return new CandyView(point.pos, noCandy, targetSock != null || targetBambooTube != null, Capabilities);
         }
     }
 }
