@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -53,12 +51,6 @@ namespace CutTheRopeDX.GameMain
         /// illuminating stars.
         /// </summary>
         public readonly float lightRadius;
-
-        /// <summary>
-        /// Current rotational velocity of the light bulb in degrees per frame.
-        /// Decays over time due to friction (0.98 multiplier).
-        /// </summary>
-        public float rotationVelocity;
 
         /// <summary>
         /// The physics constraint point that determines the bulb's position.
@@ -123,7 +115,6 @@ namespace CutTheRopeDX.GameMain
         {
             // Initialize state
             this.lightRadius = lightRadius;
-            rotationVelocity = 0f;
             this.constraint = constraint;
             this.bulbNumber = bulbNumber ?? string.Empty;
             attachedSock = null;
@@ -371,13 +362,6 @@ namespace CutTheRopeDX.GameMain
             bool hasBubble = capturingBubble != null && attachedSock == null;
             bubbleAnimation.visible = hasBubble && !capturingGhostBubble;
             ghostBubbleAnimation.visible = hasBubble && capturingGhostBubble;
-
-            // Apply rotation with velocity decay (simulates friction/air resistance)
-            if (rotationVelocity != 0f)
-            {
-                rotation += MathF.Min(5f, rotationVelocity); // Cap rotation speed at 5 degrees/frame
-                rotationVelocity *= 0.98f; // Apply friction decay
-            }
         }
     }
 }
