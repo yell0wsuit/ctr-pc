@@ -5,9 +5,9 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal static class CandyCollision
     {
-        public static bool ShouldParticipate(bool noCandy, bool inBubble, bool inLantern)
+        public static bool ShouldParticipate(bool noCandy, bool inLantern)
         {
-            return !noCandy && !inBubble && !inLantern;
+            return !noCandy && !inLantern;
         }
 
         public static float PairDistance(CandyContext a, CandyContext b)

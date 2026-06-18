@@ -9,15 +9,21 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldParticipate_FalseWhenCandyIsInLantern()
         {
-            Assert.False(CandyCollision.ShouldParticipate(noCandy: false, inBubble: false, inLantern: true));
+            Assert.False(CandyCollision.ShouldParticipate(noCandy: false, inLantern: true));
         }
 
         [Fact]
-        public void ShouldParticipate_TrueOnlyForFreeUneatenCandy()
+        public void ShouldParticipate_TrueForUneatenCandyOutsideLantern()
         {
-            Assert.True(CandyCollision.ShouldParticipate(noCandy: false, inBubble: false, inLantern: false));
-            Assert.False(CandyCollision.ShouldParticipate(noCandy: true, inBubble: false, inLantern: false));
-            Assert.False(CandyCollision.ShouldParticipate(noCandy: false, inBubble: true, inLantern: false));
+            Assert.True(CandyCollision.ShouldParticipate(noCandy: false, inLantern: false));
+            Assert.False(CandyCollision.ShouldParticipate(noCandy: true, inLantern: false));
+        }
+
+        [Fact]
+        public void ShouldParticipate_TrueForBubbledCandy()
+        {
+            // A bubbled (or ghost-bubbled) body still collides; bubble state is not an exclusion.
+            Assert.True(CandyCollision.ShouldParticipate(noCandy: false, inLantern: false));
         }
 
         [Fact]
