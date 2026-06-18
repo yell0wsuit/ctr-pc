@@ -359,7 +359,10 @@ namespace CutTheRopeDX.GameMain
                 tail.SetWeight(1f);
                 ownsTail = true;
             }
-            bungeeAnchor.SetWeight(0.02f);
+            if (ownsAnchor)
+            {
+                bungeeAnchor.SetWeight(0.02f);
+            }
             bungeeAnchor.pos = Vect(hx, hy);
             tail.pos = Vect(tx, ty);
             AddPart(bungeeAnchor);
