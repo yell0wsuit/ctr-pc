@@ -47,6 +47,18 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AllConsumed_IgnoresObjectsThatCannotBeEaten()
+        {
+            List<CandyView> candies =
+            [
+                new CandyView(new Vector(0, 0), Consumed: true, InTransport: false, CandyCapabilities.Candy),
+                new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
+            ];
+
+            Assert.True(CandyDecisions.AllConsumed(candies));
+        }
+
+        [Fact]
         public void AnyUneatenOutOfScreen_TrueOnlyForUneatenOutside()
         {
             List<CandyView> candies = [Candy(0, 0, false), Candy(999, 999, true)];
@@ -97,6 +109,18 @@ namespace CutTheRopeDX.Tests
         {
             Vector target = new(100, 100);
             List<CandyView> candies = [Candy(150, 100, true)];
+            Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
+        }
+
+        [Fact]
+        public void ShouldOpenMouth_FalseForCandyLikeObjectThatCannotOpenMouth()
+        {
+            Vector target = new(100, 100);
+            List<CandyView> candies =
+            [
+                new CandyView(new Vector(150, 100), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
+            ];
+
             Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
         }
 

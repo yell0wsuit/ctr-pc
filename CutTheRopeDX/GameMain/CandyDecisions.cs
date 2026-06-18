@@ -19,6 +19,10 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < candies.Count; i++)
             {
+                if (!candies[i].CanBeEaten)
+                {
+                    continue;
+                }
                 if (!candies[i].Consumed || candies[i].InTransport)
                 {
                     return false;
@@ -36,7 +40,9 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < candies.Count; i++)
             {
-                if (!candies[i].Consumed && isOutOfScreen(candies[i].Position))
+                if (candies[i].CanLoseLevelWhenOffScreen
+                    && !candies[i].Consumed
+                    && isOutOfScreen(candies[i].Position))
                 {
                     return true;
                 }
@@ -64,7 +70,7 @@ namespace CutTheRopeDX.GameMain
             float rangeSq = range * range;
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].Consumed)
+                if (candies[i].Consumed || !candies[i].CanOpenMouth)
                 {
                     continue;
                 }
