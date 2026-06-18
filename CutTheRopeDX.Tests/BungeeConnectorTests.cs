@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Tests
         private static GameScene SceneWithConnector(Bungee connector)
         {
             GameScene scene = (GameScene)RuntimeHelpers.GetUninitializedObject(typeof(GameScene));
-            typeof(GameScene).GetField("bungees", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(scene, new List<Grab>());
-            typeof(GameScene).GetField("candyConnector", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(scene, connector);
+            typeof(GameScene).GetField("bungees", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(scene, new List<Grab>());
+            typeof(GameScene).GetField("candyConnector", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(scene, connector);
             return scene;
         }
 
@@ -120,6 +120,34 @@ namespace CutTheRopeDX.Tests
             scene.ReleaseRopesForPoint(tail);
 
             Assert.True(connector.hideTailParts);
+        }
+
+        [Fact]
+        public void RemovePart_PreservesEndpointWeights_WhenEndpointsNotOwned()
+        {
+            ConstraintedPoint head = PointAt(100f, 100f, 1f);
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
+
+            connector.RemovePart(connector.parts.Count / 2);
+
+            // The shared candy points must keep their mass; only limp segment points go weightless.
+            Assert.Equal(1f, head.weight);
+            Assert.Equal(1f, tail.weight);
+        }
+
+        [Fact]
+        public void RemovePart_WeakensOwnedAnchor()
+        {
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                null, 100f, 100f, tail, tail.pos.X, tail.pos.Y, 60f);
+
+            grabRope.RemovePart(grabRope.parts.Count / 2);
+
+            // A bungee-owned anchor still goes limp after a cut (unchanged behavior).
+            Assert.Equal(1E-05f, grabRope.bungeeAnchor.weight);
         }
     }
 }

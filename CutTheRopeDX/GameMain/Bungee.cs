@@ -533,7 +533,10 @@ namespace CutTheRopeDX.GameMain
             for (int j = 0; j < parts.Count; j++)
             {
                 ConstraintedPoint constraintedPoint4 = parts[j];
-                if (constraintedPoint4 != tail)
+                // Don't weaken an endpoint the rope doesn't own: tail is always external, and a
+                // non-owned head (a candy point in a candiesConnected link) must keep its mass.
+                // Owned anchors (normal/kicked grabs) still go limp, as before.
+                if (constraintedPoint4 != tail && (constraintedPoint4 != bungeeAnchor || ownsAnchor))
                 {
                     constraintedPoint4.SetWeight(1E-05f);
                 }
