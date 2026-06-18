@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Physics;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -101,6 +102,8 @@ namespace CutTheRopeDX.GameMain
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
                             globalGravityX = (item2.Attribute("globalGravityX") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityX")?.Value) : 0f;
                             globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
+                            _ = bool.TryParse(item2.Attribute("candiesConnected")?.Value, out candiesConnected);
+                            candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
                             break;
                         case "candyL":
                             starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -169,6 +172,19 @@ namespace CutTheRopeDX.GameMain
             candy.bb = GetCandyBoundingBox();
             _ = (candyL?.bb = GetSplitCandyBoundingBox());
             _ = (candyR?.bb = GetSplitCandyBoundingBox());
+
+            // candiesConnected: join the two candies with a mutual elastic. Both candy points are
+            // passed directly as head/tail; Bungee preserves their weights and skips integrating
+            // non-owned endpoints.
+            if (candiesConnected && candies.Count >= 2)
+            {
+                ConstraintedPoint connectorHead = candies[0].point;
+                ConstraintedPoint connectorTail = candies[1].point;
+                candyConnector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                    connectorHead, connectorHead.pos.X, connectorHead.pos.Y,
+                    connectorTail, connectorTail.pos.X, connectorTail.pos.Y,
+                    candiesConnectedLength);
+            }
         }
     }
 }

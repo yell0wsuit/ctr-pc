@@ -698,6 +698,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private List<Grab> bungees;
 
+        /// <summary>The elastic rope joining the two candies in a candiesConnected level, or null.</summary>
+        private Bungee candyConnector;
+
+        /// <summary>Whether the level joins its two candies with the connecting elastic.</summary>
+        private bool candiesConnected;
+
+        /// <summary>Rest/limit length of the connecting elastic, already scaled.</summary>
+        private float candiesConnectedLength;
+
         /// <summary>
         /// All active razor objects in the loaded level.
         /// </summary>

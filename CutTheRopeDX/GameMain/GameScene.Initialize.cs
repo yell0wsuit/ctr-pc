@@ -35,6 +35,8 @@ namespace CutTheRopeDX.GameMain
 
             // Initialize object collections
             bungees = [];
+            candyConnector = null;
+            candiesConnected = false;
             razors = [];
             spikes = [];
             stars = [];
