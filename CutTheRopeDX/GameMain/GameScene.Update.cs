@@ -67,6 +67,12 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
+                    // Bodies that don't interact with water (e.g. light bulbs) make no splash and
+                    // don't count toward the "Deep Diver" underwater achievement.
+                    if (!ctx.Capabilities.CanFloatInWater)
+                    {
+                        continue;
+                    }
                     if (GameObject.RectInObject(
                             waterLeftX,
                             waterSurfaceY - ActivePhysicsConstants.WaterSurfaceDetectionHeight,
