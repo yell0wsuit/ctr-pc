@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
@@ -15,6 +19,14 @@ namespace CutTheRopeDX.Tests
             p.SetWeight(weight);
             p.pos = Vect(x, y);
             return p;
+        }
+
+        private static GameScene SceneWithConnector(Bungee connector)
+        {
+            GameScene scene = (GameScene)RuntimeHelpers.GetUninitializedObject(typeof(GameScene));
+            typeof(GameScene).GetField("bungees", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(scene, new List<Grab>());
+            typeof(GameScene).GetField("candyConnector", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(scene, connector);
+            return scene;
         }
 
         [Fact]
@@ -65,6 +77,49 @@ namespace CutTheRopeDX.Tests
             grabRope.Update(0.016f, 1f);
 
             Assert.NotEqual(UNDEFINED_COORDINATE, grabRope.bungeeAnchor.prevPos.X);
+        }
+
+        [Fact]
+        public void ReleaseRopesForPoint_CutsConnectorAtTailEnd_WhenTailCandyReleased()
+        {
+            ConstraintedPoint head = PointAt(100f, 100f, 1f);
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
+            GameScene scene = SceneWithConnector(connector);
+
+            scene.ReleaseRopesForPoint(tail);
+
+            Assert.Equal(connector.parts.Count - 2, connector.cut);
+        }
+
+        [Fact]
+        public void ReleaseRopesForPoint_CutsConnectorAtHeadEnd_WhenHeadCandyReleased()
+        {
+            ConstraintedPoint head = PointAt(100f, 100f, 1f);
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
+            GameScene scene = SceneWithConnector(connector);
+
+            scene.ReleaseRopesForPoint(head);
+
+            Assert.Equal(0, connector.cut);
+        }
+
+        [Fact]
+        public void ReleaseRopesForPoint_HidesConnectorTailParts_WhenConnectorAlreadyCut()
+        {
+            ConstraintedPoint head = PointAt(100f, 100f, 1f);
+            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
+            connector.SetCut(0);
+            GameScene scene = SceneWithConnector(connector);
+
+            scene.ReleaseRopesForPoint(tail);
+
+            Assert.True(connector.hideTailParts);
         }
     }
 }

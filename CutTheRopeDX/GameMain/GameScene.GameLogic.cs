@@ -220,6 +220,22 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            // candiesConnected elastic: not in `bungees`. When one of its candy endpoints is
+            // released, cut it at the matching end (tail end vs head end), like the engine's
+            // releaseRopeForTheCandy. If already cut, hide the dangling tail segments.
+            if (candyConnector != null
+                && (candyPoint == candyConnector.tail || candyPoint == candyConnector.bungeeAnchor))
+            {
+                if (candyConnector.cut == -1)
+                {
+                    int cutPart = candyPoint == candyConnector.tail ? candyConnector.parts.Count - 2 : 0;
+                    candyConnector.SetCut(cutPart);
+                }
+                else
+                {
+                    candyConnector.hideTailParts = true;
+                }
+            }
         }
 
         /// <summary>True when any candy is currently captured in the lantern group (group single-occupancy).</summary>
