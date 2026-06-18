@@ -1,6 +1,6 @@
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.GameMain;
 
 using Xunit;
 
