@@ -225,6 +225,7 @@ namespace CutTheRopeDX.GameMain
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
+            bool breakable = ParseBool(node.Attribute("breakable")?.Value);
 
             if (bee)
             {
@@ -238,8 +239,11 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = resources.Add(Resources.Img.ObjSticker);
             }
+            if (breakable)
+            {
+                _ = resources.Add(Resources.Img.ObjExpChain);
+            }
         }
-
 
         /// <summary>
         /// Adds Om Nom animation resources for a single target, using its resolved skin.

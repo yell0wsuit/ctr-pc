@@ -320,6 +320,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
+            public const string ObjExpChain = "obj_exp_chain";
             public const string ObjStarIdle = "obj_star_idle";
             public const string ObjStarNight = "obj_star_night";
             public const string CharAnimations = "char_animations";

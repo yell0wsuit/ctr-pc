@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
@@ -38,6 +39,7 @@ namespace CutTheRopeDX.GameMain
             _ = bool.TryParse(xmlNode.Attribute("bindBulb")?.Value, out bool bindBulb);
             string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
             _ = bool.TryParse(xmlNode.Attribute("gun")?.Value, out bool gun);
+            bool breakable = HasTrueAttribute(xmlNode, "breakable");
             string grabCandyNumber = xmlNode.Attribute("candyNumber")?.Value;
             Grab grab = new();
             grab.initial_x = grab.x = hx;
@@ -113,6 +115,10 @@ namespace CutTheRopeDX.GameMain
                 {
                     Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                    if (breakable)
+                    {
+                        bungee.SetUnBreakable();
+                    }
                     grab.SetRope(bungee);
                     if (grab.kicked)
                     {
@@ -147,6 +153,34 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Reads a boolean attribute by local name, allowing older imported Time Travel names as aliases.
+        /// </summary>
+        /// <param name="node">XML node to inspect.</param>
+        /// <param name="name">Attribute local name.</param>
+        /// <returns><see langword="true"/> when the attribute exists and parses true.</returns>
+        private static bool HasTrueAttribute(XElement node, string name)
+        {
+            foreach (XAttribute attribute in node.Attributes())
+            {
+                if (attribute.Name.LocalName == name)
+                {
+                    return IsTruthy(attribute.Value);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Parses imported boolean-like values used by level XML.
+        /// </summary>
+        /// <param name="value">Attribute value.</param>
+        /// <returns><see langword="true"/> for <c>true</c> or <c>1</c>.</returns>
+        private static bool IsTruthy(string value)
+        {
+            return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) || value == "1";
         }
 
     }
