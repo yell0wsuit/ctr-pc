@@ -1,5 +1,5 @@
 <FlashAnimation width="200" height="200">
- <Image rotationCenterY="8.14812" anchorX="17.4864" anchorY="23.9228" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="circle" src="98" quadToDraw="0" rotationCenterX="8.5404">
+ <Image rotationCenterY="8.14812" anchorX="17.4864" anchorY="23.9228" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="circle" src="fx_cut_chain" quadToDraw="0" rotationCenterX="8.5404">
   <Timeline ID="0">
    <Pos>42.7911,56.6271(1)@0+43.1095,56.5605(3)@0.1+43.274,53.8548(0)@0.03333334+43.6487,51.7477(2)@0.1333333+43.6487,51.7477(0)@0.03333334</Pos>
    <Scale>0.589322,0.0874873(1)@0+1.55738,1.23511(3)@0.1+0.885902,0.60816(0)@0.03333334+0.384572,0.290261(2)@0.1333333+0.384572,0.290261(0)@0.03333334</Scale>
