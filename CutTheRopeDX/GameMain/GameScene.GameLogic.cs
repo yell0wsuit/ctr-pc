@@ -679,6 +679,24 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Lazily-parsed chain-cut burst effect, shared across all spawns.
+        /// </summary>
+        private static FlashXmlOneShotEffect s_chainCutEffect;
+
+        /// <summary>
+        /// Spawns the chain-cut burst animation at a world position and plays the chain-cut sound.
+        /// Reusable hook: called wherever a breakable (chain) rope is cut, including the future axe path.
+        /// </summary>
+        /// <param name="x">World-space X for the burst.</param>
+        /// <param name="y">World-space Y for the burst.</param>
+        public void SpawnChainCutEffectAtXY(float x, float y)
+        {
+            s_chainCutEffect ??= new FlashXmlOneShotEffect("fx_cut_chain.xml", Resources.Img.FxCutChain);
+            s_chainCutEffect.SpawnInto(aniPool, x, y, 0);
+            CTRSoundMgr.PlaySound(Resources.Snd.ChainCut);
+        }
+
+        /// <summary>
         /// Spawns the candy-break particle burst at a world position and plays the break sound.
         /// </summary>
         /// <param name="bx">World-space X for the burst.</param>

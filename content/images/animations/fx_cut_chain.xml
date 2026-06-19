@@ -1,4 +1,4 @@
-<FlashAnimation width="200" height="200">
+<FlashAnimation width="200" height="200" src="fx_cut_chain">
  <Image rotationCenterY="8.14812" anchorX="17.4864" anchorY="23.9228" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="circle" src="fx_cut_chain" quadToDraw="0" rotationCenterX="8.5404">
   <Timeline ID="0">
    <Pos>42.7911,56.6271(1)@0+43.1095,56.5605(3)@0.1+43.274,53.8548(0)@0.03333334+43.6487,51.7477(2)@0.1333333+43.6487,51.7477(0)@0.03333334</Pos>

@@ -349,6 +349,14 @@ namespace CutTheRopeDX.GameMain
                             };
                             CTRSoundMgr.PlaySound(ropeSound);
                             rope.SetCut(j);
+                            if (rope.breakable)
+                            {
+                                // Chain links get the dedicated cut burst + sound at the cut point.
+                                Vector cutMid = Vect(
+                                    (constraintedPoint.pos.X + constraintedPoint2.pos.X) * 0.5f,
+                                    (constraintedPoint.pos.Y + constraintedPoint2.pos.Y) * 0.5f);
+                                SpawnChainCutEffectAtXY(cutMid.X, cutMid.Y);
+                            }
                             if (im)
                             {
                                 rope.cutTime = 0f;

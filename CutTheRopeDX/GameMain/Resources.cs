@@ -328,6 +328,7 @@ namespace CutTheRopeDX.GameMain
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string FxSleep = "fx_sleep";
             public const string FxBubbles = "fx_bubbles";
+            public const string FxCutChain = "fx_cut_chain";
             public const string HatHalloween = "hat_halloween";
             public const string HatXmas = "hat_xmas";
             public const string CharAnimationsPrehistoric = "char_animations_body_prehistoric";
@@ -573,6 +574,7 @@ namespace CutTheRopeDX.GameMain
             public const string RopeBleak2 = "rope_bleak_2";
             public const string RopeBleak3 = "rope_bleak_3";
             public const string RopeBleak4 = "rope_bleak_4";
+            public const string ChainCut = "chain_cut";
             public const string RopeGet = "rope_get";
             public const string Star1 = "star_1";
             public const string Star2 = "star_2";
