@@ -348,21 +348,64 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Builds white per-vertex colors for chain sprites with alpha fade applied only to alpha.
+        /// Builds per-vertex colors for chain sprites, reproducing the original renderer's per-link
+        /// masking: each link randomly stays opaque white or is tinted with a "chain mask" shade.
+        /// The RGB choice is stable per link (driven by <paramref name="seed" /> + link index, so it
+        /// matches the original's generate-once-and-cache behavior without flickering across frames
+        /// or head/tail draw calls), while the alpha is always the current fade value.
         /// </summary>
         /// <param name="spriteCount">Number of chain sprites.</param>
         /// <param name="alpha">Alpha to apply to each vertex.</param>
+        /// <param name="seed">Per-bungee seed selecting which links are masked.</param>
         /// <returns>Four colors per sprite.</returns>
-        internal static RGBAColor[] BuildChainSpriteColors(int spriteCount, float alpha)
+        internal static RGBAColor[] BuildChainSpriteColors(int spriteCount, float alpha, int seed)
         {
             RGBAColor[] colors = new RGBAColor[spriteCount * 4];
-            RGBAColor color = RGBAColor.whiteRGBA;
-            color.AlphaChannel = alpha;
-            for (int i = 0; i < colors.Length; i++)
+            for (int i = 0; i < spriteCount; i++)
             {
-                colors[i] = color;
+                uint hash = HashChainSprite(seed, i);
+                RGBAColor color = (hash & 1) != 0 ? RGBAColor.whiteRGBA : GetChainMaskColor(hash);
+                color.AlphaChannel = alpha;
+                int baseIndex = i * 4;
+                colors[baseIndex] = color;
+                colors[baseIndex + 1] = color;
+                colors[baseIndex + 2] = color;
+                colors[baseIndex + 3] = color;
             }
             return colors;
+        }
+
+        /// <summary>
+        /// Returns the per-link tint applied to the masked half of the chain sprites.
+        /// </summary>
+        /// <remarks>
+        /// In the original the unmasked half stays opaque white (<c>solidOpaqueRGBA</c>) and the rest
+        /// are tinted by <c>Bungee::getChainMaskColor</c>. That function's body did not survive
+        /// decompilation (it reduced to a bare <c>rand()</c> and took the fade alpha), so the tint is
+        /// reconstructed here as a random grey shade, which matches the "mask" semantics of varied
+        /// link shading. Adjust the range if the captured asset behavior differs.
+        /// </remarks>
+        /// <param name="hash">Stable per-link hash supplying the random grey value.</param>
+        /// <returns>An opaque grey color; alpha is overwritten by the caller.</returns>
+        private static RGBAColor GetChainMaskColor(uint hash)
+        {
+            float grey = 0.5f + (((hash >> 8) & 0xFF) / 255f * 0.5f);
+            return RGBAColor.MakeRGBA(grey, grey, grey, 1f);
+        }
+
+        /// <summary>
+        /// Produces a stable pseudo-random hash for a chain link from the bungee seed and link index.
+        /// </summary>
+        /// <param name="seed">Per-bungee seed.</param>
+        /// <param name="index">Link index.</param>
+        /// <returns>A well-mixed 32-bit hash.</returns>
+        private static uint HashChainSprite(int seed, int index)
+        {
+            uint h = (uint)(seed * 73856093) ^ (uint)((index + 1) * 19349663);
+            h ^= h >> 13;
+            h *= 0x5BD1E995u;
+            h ^= h >> 15;
+            return h;
         }
 
         /// <summary>
@@ -448,7 +491,7 @@ namespace CutTheRopeDX.GameMain
 
             VertexPositionColorTexture[] vertexBuffer = new VertexPositionColorTexture[sprites.Length * 4];
             short[] indices = BuildQuadIndices(sprites.Length);
-            RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, GetCutFadeAlpha(b));
+            RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, GetCutFadeAlpha(b), b.ChainColorSeed);
             Renderer.FillTexturedColoredVertices(vertices, texCoordinates, colors, vertexBuffer, sprites.Length);
 
             Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
@@ -844,6 +887,7 @@ namespace CutTheRopeDX.GameMain
         {
             int count = parts.Count;
             int drawSamplePoints = ActivePhysicsConstants.BungeeDrawSamplePoints;
+            int chainSamplePoints = ChainDrawSamplePoints;
             Renderer.SetColor(s_Color1);
             if (cut == -1)
             {
@@ -858,7 +902,7 @@ namespace CutTheRopeDX.GameMain
                 s_lightEndSkip = 8;
                 if (breakable)
                 {
-                    DrawChain(this, array, count, drawSamplePoints);
+                    DrawChain(this, array, count, chainSamplePoints);
                 }
                 else
                 {
@@ -906,7 +950,7 @@ namespace CutTheRopeDX.GameMain
                 s_lightEndSkip = tailPartCount > 0 ? 0 : 8;
                 if (breakable)
                 {
-                    DrawChain(this, array2, headPartCount, drawSamplePoints);
+                    DrawChain(this, array2, headPartCount, chainSamplePoints);
                 }
                 else
                 {
@@ -918,7 +962,7 @@ namespace CutTheRopeDX.GameMain
                 s_lightStartCoord = headPartCount > 0 ? s_lightSavedEnd : 8;
                 if (breakable)
                 {
-                    DrawChain(this, array3, tailPartCount, drawSamplePoints);
+                    DrawChain(this, array3, tailPartCount, chainSamplePoints);
                 }
                 else
                 {
@@ -1134,6 +1178,22 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Texture quad used between sampled chain points.</summary>
         private const int ChainMidpointQuad = 1;
+
+        /// <summary>
+        /// Bezier samples per segment for chain rendering. The original always passes 2 to
+        /// <c>drawChain</c>, independent of the (higher) bungee rope sample density.
+        /// </summary>
+        private const int ChainDrawSamplePoints = 2;
+
+        /// <summary>Backing seed for <see cref="ChainColorSeed" />; <c>null</c> until first use.</summary>
+        private int? chainColorSeed;
+
+        /// <summary>
+        /// Stable per-bungee seed driving which chain links are masked. Generated once on first
+        /// access (via the shared <see cref="CTRMathHelper" /> RNG) so the masking pattern stays
+        /// fixed for the rope's lifetime.
+        /// </summary>
+        private int ChainColorSeed => chainColorSeed ??= (int)Arc4random();
 
         /// <summary>
         /// A planned chain sprite draw.

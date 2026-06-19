@@ -207,18 +207,44 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BuildChainSpriteColors_FadesAlphaWithoutDarkeningRgb()
+        public void BuildChainSpriteColors_AppliesFadeAlphaAndPerLinkMasking()
         {
-            RGBAColor[] colors = Bungee.BuildChainSpriteColors(2, 0.5f);
+            RGBAColor[] colors = Bungee.BuildChainSpriteColors(2, 0.5f, seed: 12345);
 
             Assert.Equal(8, colors.Length);
-            Assert.All(colors, color =>
+
+            // Alpha is always the fade value, and each link's four vertices share one color.
+            Assert.All(colors, color => Assert.Equal(0.5f, color.AlphaChannel));
+            for (int link = 0; link < 2; link++)
             {
-                Assert.Equal(1f, color.RedColor);
-                Assert.Equal(1f, color.GreenColor);
-                Assert.Equal(1f, color.BlueColor);
-                Assert.Equal(0.5f, color.AlphaChannel);
-            });
+                RGBAColor first = colors[link * 4];
+                for (int v = 1; v < 4; v++)
+                {
+                    RGBAColor vertex = colors[(link * 4) + v];
+                    Assert.Equal(first.RedColor, vertex.RedColor);
+                    Assert.Equal(first.GreenColor, vertex.GreenColor);
+                    Assert.Equal(first.BlueColor, vertex.BlueColor);
+                }
+
+                // Each link is either opaque white or a grey mask shade (r == g == b, <= 1).
+                Assert.Equal(first.RedColor, first.GreenColor);
+                Assert.Equal(first.GreenColor, first.BlueColor);
+                Assert.InRange(first.RedColor, 0f, 1f);
+            }
+        }
+
+        [Fact]
+        public void BuildChainSpriteColors_IsStableForSameSeed()
+        {
+            RGBAColor[] first = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);
+            RGBAColor[] second = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);
+
+            for (int i = 0; i < first.Length; i++)
+            {
+                Assert.Equal(first[i].RedColor, second[i].RedColor);
+                Assert.Equal(first[i].GreenColor, second[i].GreenColor);
+                Assert.Equal(first[i].BlueColor, second[i].BlueColor);
+            }
         }
     }
 }
