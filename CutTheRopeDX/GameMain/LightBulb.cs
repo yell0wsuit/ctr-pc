@@ -153,20 +153,11 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(firefly);
 
             // Create bubble capture animation (shown when inside a normal bubble)
-            bubbleAnimation = Animation_createWithResID(Resources.Img.ObjBubble);
-            bubbleAnimation.anchor = bubbleAnimation.parentAnchor = 18;
-            _ = bubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-            bubbleAnimation.PlayTimeline(0);
-            bubbleAnimation.visible = false; // Hidden until captured
+            bubbleAnimation = BubbleAnimationFactory.CreateBubble();
             _ = AddChild(bubbleAnimation);
 
             // Create ghost bubble animation (shown when inside a ghost bubble)
-            ghostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
-            ghostBubbleAnimation.anchor = ghostBubbleAnimation.parentAnchor = 18;
-            ghostBubbleAnimation.visible = false; // Hidden until captured
-            ghostBubbleAnimation.AddSupportingCloudsTimelines();
-            _ = ghostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-            ghostBubbleAnimation.PlayTimeline(0);
+            ghostBubbleAnimation = BubbleAnimationFactory.CreateGhostBubble();
             _ = AddChild(ghostBubbleAnimation);
 
             // Set bounding box based on bottle dimensions (the main visual element)

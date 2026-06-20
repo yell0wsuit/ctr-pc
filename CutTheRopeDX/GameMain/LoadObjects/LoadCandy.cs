@@ -1,5 +1,3 @@
-using CutTheRopeDX.Framework.Visual;
-
 namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
@@ -13,20 +11,12 @@ namespace CutTheRopeDX.GameMain
             if (twoParts != 2)
             {
                 // Setup left candy bubble animation
-                candyBubbleAnimationL = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
-                candyBubbleAnimationL.parentAnchor = candyBubbleAnimationL.anchor = 18;
-                _ = candyBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-                candyBubbleAnimationL.PlayTimeline(0);
+                candyBubbleAnimationL = BubbleAnimationFactory.CreateBubble();
                 _ = candyL.AddChild(candyBubbleAnimationL);
-                candyBubbleAnimationL.visible = false;
 
                 // Setup right candy bubble animation
-                candyBubbleAnimationR = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
-                candyBubbleAnimationR.parentAnchor = candyBubbleAnimationR.anchor = 18;
-                _ = candyBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-                candyBubbleAnimationR.PlayTimeline(0);
+                candyBubbleAnimationR = BubbleAnimationFactory.CreateBubble();
                 _ = candyR.AddChild(candyBubbleAnimationR);
-                candyBubbleAnimationR.visible = false;
             }
         }
     }

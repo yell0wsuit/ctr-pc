@@ -151,14 +151,10 @@ namespace CutTheRopeDX.GameMain
             _ = candyObj.AddChild(candyBlinkAnim);
 
             // Setup candy bubble animation
-            candyBubbleAnimation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
+            candyBubbleAnimation = BubbleAnimationFactory.CreateBubble();
             candyBubbleAnimation.x = candyObj.x;
             candyBubbleAnimation.y = candyObj.y;
-            candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-            candyBubbleAnimation.PlayTimeline(0);
             _ = candyObj.AddChild(candyBubbleAnimation);
-            candyBubbleAnimation.visible = false;
 
             // Register the primary candy as candies[0] so multi-candy logic and legacy
             // single-candy code share the same objects. Its candyNumber is unassigned here;
@@ -228,22 +224,12 @@ namespace CutTheRopeDX.GameMain
             blink.scaleX = blink.scaleY = 0.71f;
             _ = c.AddChild(blink);
 
-            // Per-candy bubble animation (mirrors the primary candy's candyBubbleAnimation,
-            // GameScene.Initialize.cs:171-178). Child of the candy so it draws with candy.Draw().
-            Animation bubbleAnim = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
-            bubbleAnim.parentAnchor = bubbleAnim.anchor = 18;
-            _ = bubbleAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-            bubbleAnim.PlayTimeline(0);
+            // Per-candy bubble animation (child of the candy so it draws with candy.Draw()).
+            Animation bubbleAnim = BubbleAnimationFactory.CreateBubble();
             _ = c.AddChild(bubbleAnim);
-            bubbleAnim.visible = false;
 
-            CandyInGhostBubbleAnimation ghostBubbleAnim = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
-            ghostBubbleAnim.parentAnchor = ghostBubbleAnim.anchor = 18;
+            CandyInGhostBubbleAnimation ghostBubbleAnim = BubbleAnimationFactory.CreateGhostBubble();
             _ = c.AddChild(ghostBubbleAnim);
-            ghostBubbleAnim.visible = false;
-            ghostBubbleAnim.AddSupportingCloudsTimelines();
-            _ = ghostBubbleAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-            ghostBubbleAnim.PlayTimeline(0);
 
             CandyContext ctx = new()
             {
@@ -284,35 +270,20 @@ namespace CutTheRopeDX.GameMain
         {
             if (!isCandyInGhostBubbleAnimationLoaded && candy != null)
             {
-                candyGhostBubbleAnimation = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
-                candyGhostBubbleAnimation.parentAnchor = candyGhostBubbleAnimation.anchor = 18;
+                candyGhostBubbleAnimation = BubbleAnimationFactory.CreateGhostBubble();
                 _ = candy.AddChild(candyGhostBubbleAnimation);
-                candyGhostBubbleAnimation.visible = false;
-                candyGhostBubbleAnimation.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-                candyGhostBubbleAnimation.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLoaded = true;
             }
             if (!isCandyInGhostBubbleAnimationLeftLoaded && candyL != null)
             {
-                candyGhostBubbleAnimationL = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
-                candyGhostBubbleAnimationL.parentAnchor = candyGhostBubbleAnimationL.anchor = 18;
+                candyGhostBubbleAnimationL = BubbleAnimationFactory.CreateGhostBubble();
                 _ = candyL.AddChild(candyGhostBubbleAnimationL);
-                candyGhostBubbleAnimationL.visible = false;
-                candyGhostBubbleAnimationL.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-                candyGhostBubbleAnimationL.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLeftLoaded = true;
             }
             if (!isCandyInGhostBubbleAnimationRightLoaded && candyR != null)
             {
-                candyGhostBubbleAnimationR = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
-                candyGhostBubbleAnimationR.parentAnchor = candyGhostBubbleAnimationR.anchor = 18;
+                candyGhostBubbleAnimationR = BubbleAnimationFactory.CreateGhostBubble();
                 _ = candyR.AddChild(candyGhostBubbleAnimationR);
-                candyGhostBubbleAnimationR.visible = false;
-                candyGhostBubbleAnimationR.AddSupportingCloudsTimelines();
-                _ = candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 4, 16);
-                candyGhostBubbleAnimationR.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationRightLoaded = true;
             }
         }
