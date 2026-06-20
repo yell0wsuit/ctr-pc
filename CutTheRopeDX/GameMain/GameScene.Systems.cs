@@ -355,7 +355,7 @@ namespace CutTheRopeDX.GameMain
                                 Vector cutMid = Vect(
                                     (constraintedPoint.pos.X + constraintedPoint2.pos.X) * 0.5f,
                                     (constraintedPoint.pos.Y + constraintedPoint2.pos.Y) * 0.5f);
-                                SpawnChainCutEffectAtXY(cutMid.X, cutMid.Y);
+                                SpawnChainCutEffectAtXY(cutMid.X, cutMid.Y, GetChainCutSwingAngleDegrees(rope.tail));
                             }
                             if (im)
                             {
