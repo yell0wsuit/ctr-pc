@@ -60,6 +60,7 @@ namespace CutTheRopeDX.GameMain
             grab.kickable = kickable;
             grab.kicked = kicked;
             grab.invisible = invisible;
+            grab.cutOnlyByAxe = !breakable;
             grab.SetSpider(spider);
             grab.ParseMover(xmlNode);
             if (grab.mover != null)

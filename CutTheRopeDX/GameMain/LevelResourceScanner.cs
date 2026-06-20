@@ -227,9 +227,12 @@ namespace CutTheRopeDX.GameMain
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
-            bool breakable = ParseBool(node.Attribute("breakable")?.Value);
+            bool chain = node.Attribute("breakable") is XAttribute breakableAttr && !ParseBool(breakableAttr.Value);
+            bool autoHook = node.Attribute("radius")?.Value is string radius && radius != "-1" && !gun;
 
-            _ = resources.Add(breakable ? Resources.Img.ObjHookChain : Resources.Img.ObjHook);
+            _ = resources.Add(chain
+                ? autoHook ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHookChain
+                : Resources.Img.ObjHook);
 
             if (bee)
             {
@@ -243,7 +246,7 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = resources.Add(Resources.Img.ObjSticker);
             }
-            if (breakable)
+            if (chain)
             {
                 _ = resources.Add(Resources.Img.ObjExpChain);
             }

@@ -1681,6 +1681,10 @@ namespace CutTheRopeDX.GameMain
             CandyContext ctx = body.Owner;
             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+            if (grab.cutOnlyByAxe)
+            {
+                bungee.SetCutOnlyByAxe();
+            }
             grab.hideRadius = true;
             grab.SetRope(bungee);
             if (ctx.HasActiveRocket)
