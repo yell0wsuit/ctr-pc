@@ -224,12 +224,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)
         {
-            _ = resources.Add(Resources.Img.ObjHook);
-
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
             bool breakable = ParseBool(node.Attribute("breakable")?.Value);
+
+            _ = resources.Add(breakable ? Resources.Img.ObjHookChain : Resources.Img.ObjHook);
 
             if (bee)
             {

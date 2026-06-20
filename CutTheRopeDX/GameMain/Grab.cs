@@ -413,6 +413,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Returns the hook texture atlas for this grab's attached rope.
+        /// </summary>
+        /// <returns>The chain hook atlas for chain bungees; otherwise the default hook atlas.</returns>
+        internal string GetHookTextureResource()
+        {
+            return rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
+        }
+
+        /// <summary>
         /// Configures this grab as a launcher that oscillates along a circular path.
         /// </summary>
         public void SetLauncher()
@@ -500,11 +509,12 @@ namespace CutTheRopeDX.GameMain
             }
             else if (radius == -1f)
             {
-                int hookBaseQuad = RandomHookBaseQuad();
-                back = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad);
+                string hookTexture = GetHookTextureResource();
+                int hookBaseQuad = hookTexture == Resources.Img.ObjHookChain ? Hook01BackQuad : RandomHookBaseQuad();
+                back = Image_createWithResIDQuad(hookTexture, hookBaseQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad + 1);
+                front = Image_createWithResIDQuad(hookTexture, hookBaseQuad + 1);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
