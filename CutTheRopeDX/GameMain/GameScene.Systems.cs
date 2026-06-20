@@ -544,7 +544,7 @@ namespace CutTheRopeDX.GameMain
             DetachSnailsForPoint(capturedStar);
             if (restartState != 0)
             {
-                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 2);
+                ScheduleGameLost(2);
             }
         }
 

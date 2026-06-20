@@ -614,6 +614,129 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Flags every ghost so its captured-candy reacts to a candy break this frame.
+        /// </summary>
+        private void MarkGhostsCandyBreak()
+        {
+            if (ghosts == null)
+            {
+                return;
+            }
+            foreach (object objGhost in ghosts)
+            {
+                Ghost ghost = (Ghost)objGhost;
+                _ = (ghost?.candyBreak = true);
+            }
+        }
+
+        /// <summary>
+        /// Schedules the loss sequence after a delay (e.g. while a candy-break animation plays) and
+        /// immediately marks the outcome transition active. A destroyed candy sets <c>noCandy</c> but
+        /// defers <see cref="GameLost"/>; without marking the transition, another candy eaten during
+        /// that window would satisfy the win check and trigger a false win in a multi-candy level.
+        /// </summary>
+        /// <param name="delay">Seconds to wait before running the loss sequence.</param>
+        private void ScheduleGameLost(float delay)
+        {
+            outcomeTransitionActive = true;
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, delay);
+        }
+
+        /// <summary>
+        /// Destroys a whole candy that touched a hazard (spike, axe, ...): pops its bubble, marks it
+        /// gone, releases its ropes, detaches transports, schedules the loss, and flags ghosts. The
+        /// per-index effect calls differ deliberately: candies[0] uses the singleton paths
+        /// (candyBubble, ReleaseAllRopes + gun-cup drop, singleton noCandy) which are NOT equivalent
+        /// to the per-candy paths used by candies[1..].
+        /// </summary>
+        /// <param name="index">Index of the candy in <c>candies</c>.</param>
+        /// <param name="ctx">The candy being destroyed.</param>
+        private void BreakCandyFromHazard(int index, CandyContext ctx)
+        {
+            if (index == 0)
+            {
+                if (candyBubble != null)
+                {
+                    PopCandyBubble(false);
+                }
+            }
+            else
+            {
+                PopCandyBubble(ctx);
+            }
+            ctx.candy.x = ctx.point.pos.X;
+            ctx.candy.y = ctx.point.pos.Y;
+            if (index == 0)
+            {
+                noCandy = true;
+            }
+            else
+            {
+                ctx.noCandy = true;
+            }
+            ExhaustAllActiveRockets();
+            SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
+            if (index == 0)
+            {
+                ReleaseAllRopes(false);
+            }
+            else
+            {
+                ReleaseRopesForPoint(ctx.point);
+            }
+            DetachActiveHands();
+            DetachSnailsForPoint(ctx.point);
+            if (restartState != 0)
+            {
+                ScheduleGameLost(0.3f);
+            }
+            MarkGhostsCandyBreak();
+        }
+
+        /// <summary>
+        /// Destroys one half of the split candy (candies[0], <c>twoParts != 2</c>) that touched a
+        /// hazard. Keeps the half-aware singleton effect calls verbatim.
+        /// </summary>
+        /// <param name="left"><see langword="true"/> when the left half was hit; otherwise the right half.</param>
+        private void BreakSplitCandyHalf(bool left)
+        {
+            if (left)
+            {
+                if (candyBubbleL != null)
+                {
+                    PopCandyBubble(true);
+                }
+            }
+            else if (candyBubbleR != null)
+            {
+                PopCandyBubble(false);
+            }
+            float breakX, breakY;
+            if (left)
+            {
+                breakX = candyL.x;
+                breakY = candyL.y;
+                noCandyL = true;
+            }
+            else
+            {
+                breakX = candyR.x;
+                breakY = candyR.y;
+                noCandyR = true;
+            }
+            ExhaustAllActiveRockets();
+            SpawnCandyBreakParticles(breakX, breakY);
+            ReleaseAllRopes(left);
+            DetachActiveHands();
+            DetachActiveSnails();
+            if (restartState != 0 && (!noCandyL || !noCandyR))
+            {
+                ScheduleGameLost(0.3f);
+            }
+            MarkGhostsCandyBreak();
+        }
+
+        /// <summary>
         /// Cuts all ropes for the specified candy number, except the one belonging to the given Grab.
         /// Matches iOS destroyRopesForCandy:except:.
         /// </summary>

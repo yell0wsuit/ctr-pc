@@ -1433,47 +1433,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
-                            if (flag5)
-                            {
-                                if (candyBubbleL != null)
-                                {
-                                    PopCandyBubble(true);
-                                }
-                            }
-                            else if (candyBubbleR != null)
-                            {
-                                PopCandyBubble(false);
-                            }
-                            float breakX, breakY;
-                            if (flag5)
-                            {
-                                breakX = candyL.x;
-                                breakY = candyL.y;
-                                noCandyL = true;
-                            }
-                            else
-                            {
-                                breakX = candyR.x;
-                                breakY = candyR.y;
-                                noCandyR = true;
-                            }
-                            ExhaustAllActiveRockets();
-                            SpawnCandyBreakParticles(breakX, breakY);
-                            ReleaseAllRopes(flag5);
-                            DetachActiveHands();
-                            DetachActiveSnails();
-                            if (restartState != 0 && (!noCandyL || !noCandyR))
-                            {
-                                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
-                            }
-                            if (ghosts != null)
-                            {
-                                foreach (object objGhost in ghosts)
-                                {
-                                    Ghost ghost = (Ghost)objGhost;
-                                    _ = (ghost?.candyBreak = true);
-                                }
-                            }
+                            BreakSplitCandyHalf(flag5);
                             return;
                         }
 
@@ -1491,51 +1451,7 @@ namespace CutTheRopeDX.GameMain
                             continue;
                         }
 
-                        if (ci == 0)
-                        {
-                            if (candyBubble != null)
-                            {
-                                PopCandyBubble(false);
-                            }
-                        }
-                        else
-                        {
-                            PopCandyBubble(ctx);
-                        }
-                        ctx.candy.x = ctx.point.pos.X;
-                        ctx.candy.y = ctx.point.pos.Y;
-                        if (ci == 0)
-                        {
-                            noCandy = true;
-                        }
-                        else
-                        {
-                            ctx.noCandy = true;
-                        }
-                        ExhaustAllActiveRockets();
-                        SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
-                        if (ci == 0)
-                        {
-                            ReleaseAllRopes(false);
-                        }
-                        else
-                        {
-                            ReleaseRopesForPoint(ctx.point);
-                        }
-                        DetachActiveHands();
-                        DetachSnailsForPoint(ctx.point);
-                        if (restartState != 0)
-                        {
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, 0.3f);
-                        }
-                        if (ghosts != null)
-                        {
-                            foreach (object objGhost in ghosts)
-                            {
-                                Ghost ghost = (Ghost)objGhost;
-                                _ = (ghost?.candyBreak = true);
-                            }
-                        }
+                        BreakCandyFromHazard(ci, ctx);
                         return;
                     }
                 }
