@@ -35,6 +35,7 @@ namespace CutTheRopeDX.GameMain
             bungees = [];
             candyConnector = null;
             candiesConnected = false;
+            candiesConnectedBreakable = true;
             razors = [];
             spikes = [];
             stars = [];

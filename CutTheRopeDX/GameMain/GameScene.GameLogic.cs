@@ -715,6 +715,44 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Breaks candy bodies that touch a Time Travel axe blade. Mirrors the spike pass: one
+        /// sweep over every hazard-eligible body (whole candies and split halves alike), breaking
+        /// the first one the blade reaches.
+        /// </summary>
+        /// <returns><see langword="true"/> when a body was broken and update should stop.</returns>
+        private bool BreakCandyTouchedByAxes()
+        {
+            for (int ai = 0; ai < candies.Count; ai++)
+            {
+                CandyContext axeCtx = candies[ai];
+                if (axeCtx.axe == null || axeCtx.HasNoWholeBodyInPlay)
+                {
+                    continue;
+                }
+
+                ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
+                {
+                    CandyContext ctx = body.Owner;
+                    if (!ctx.Capabilities.CanBeBrokenByHazards || ctx.inLantern)
+                    {
+                        continue;
+                    }
+
+                    if (VectDistance(body.Point.pos, bladePoint.pos) > AxeDefinition.HazardCollisionDistance)
+                    {
+                        continue;
+                    }
+
+                    BreakCandyBody(body);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Spawns the additive spark burst at a world position.
         /// </summary>
         /// <param name="x">World-space X for the sparks.</param>

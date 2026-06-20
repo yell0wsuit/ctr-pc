@@ -630,11 +630,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Marks this bungee to render as a chain.
+        /// Marks this bungee as a chain: it renders as a chain and can only be cut by the Time Travel
+        /// axe (the original's single <c>isUnBreakable</c> flag), ignoring finger/razor cuts.
         /// </summary>
-        public void SetUnBreakable()
+        public void SetCutOnlyByAxe()
         {
             breakable = true;
+            cutOnlyByAxe = true;
         }
 
         /// <summary>
@@ -1172,6 +1174,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether this bungee renders as a chain.</summary>
         public bool breakable;
+
+        /// <summary>Whether this chain can only be cut by an axe blade, not a finger trace or razor.</summary>
+        public bool cutOnlyByAxe;
 
         /// <summary>Texture quad used at each sampled chain point.</summary>
         private const int ChainPointQuad = 0;

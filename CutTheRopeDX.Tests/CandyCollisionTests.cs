@@ -35,6 +35,15 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void ShouldParticipate_FalseForAxeBodyCollision()
+        {
+            CandyContext axe = Context();
+            axe.Capabilities = CandyCapabilities.Axe;
+
+            Assert.False(CandyCollision.ShouldParticipate(axe));
+        }
+
+        [Fact]
         public void PairDistance_UsesExplicitAdditiveRadii()
         {
             CandyContext a = Context();

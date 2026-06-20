@@ -1210,6 +1210,11 @@ namespace CutTheRopeDX.GameMain
                 razor.Update(delta);
                 _ = CutWithRazorOrLine1Line2Immediate(razor, vectZero, vectZero, false);
             }
+            CutAxeOnlyChainsWithAxes();
+            if (BreakCandyTouchedByAxes())
+            {
+                return;
+            }
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;

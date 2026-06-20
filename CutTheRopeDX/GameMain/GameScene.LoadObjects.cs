@@ -22,7 +22,8 @@ namespace CutTheRopeDX.GameMain
             // fixed rope to candy that starts inside a lantern.
             candies[0].inLantern = NormalRopeLoad.CandyStartsInLantern(map);
 
-            // Preload light bulbs so bindBulb grabs can resolve regardless of XML order.
+            // Preload candy-like auxiliary bodies (light bulbs, axes) so grabs can resolve them
+            // regardless of XML order.
             foreach (XElement xmlnode2 in list)
             {
                 foreach (XElement item3 in xmlnode2.Elements())
@@ -32,6 +33,9 @@ namespace CutTheRopeDX.GameMain
                         case "lightBulb":
                         case "lightbulb":
                             LoadLightBulb(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
+                        case "axe":
+                            LoadAxe(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         default:
                             break;
@@ -125,6 +129,7 @@ namespace CutTheRopeDX.GameMain
                             break;
                         case "lightBulb":
                         case "lightbulb":
+                        case "axe":
                             // Preloaded above.
                             break;
                         case "gap":

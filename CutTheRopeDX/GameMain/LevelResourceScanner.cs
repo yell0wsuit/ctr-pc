@@ -80,6 +80,10 @@ namespace CutTheRopeDX.GameMain
                     case "rocket":
                         _ = resources.Add(Resources.Img.ObjRocket);
                         break;
+                    case "axe":
+                        _ = resources.Add(Resources.Img.ObjAxe);
+                        _ = resources.Add(Resources.Img.FxCutChain);
+                        break;
                     case "load":
                         _ = resources.Add(Resources.Img.ObjSnail);
                         break;

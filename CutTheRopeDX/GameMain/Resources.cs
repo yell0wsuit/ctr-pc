@@ -382,6 +382,7 @@ namespace CutTheRopeDX.GameMain
             public const string BoxLabel = "box_label";
             public const string ObjConveyor = "obj_conveyor";
             public const string ObjRocket = "obj_rocket";
+            public const string ObjAxe = "obj_axe";
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";
             public const string ObjRoboHand = "obj_robohand";

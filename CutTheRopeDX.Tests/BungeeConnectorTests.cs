@@ -207,6 +207,17 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void SetCutOnlyByAxe_MarksChainAndBlocksFingerCut()
+        {
+            Bungee bungee = new();
+
+            bungee.SetCutOnlyByAxe();
+
+            Assert.True(bungee.breakable);
+            Assert.True(bungee.cutOnlyByAxe);
+        }
+
+        [Fact]
         public void BuildChainSpriteColors_AppliesFadeAlphaAndPerLinkMasking()
         {
             RGBAColor[] colors = Bungee.BuildChainSpriteColors(2, 0.5f, seed: 12345);

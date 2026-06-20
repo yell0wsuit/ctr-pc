@@ -4,7 +4,7 @@ namespace CutTheRopeDX.GameMain
     /// Per-object opt-in/opt-out flags for the candy-like interactions a physics body supports.
     /// Travels on a <see cref="CandyContext"/> so the shared candy code can gate each interaction
     /// without asking what kind of object it is holding. Defaults describe a normal candy; use the
-    /// <see cref="Candy"/> and <see cref="LightBulb"/> presets rather than constructing ad hoc.
+    /// <see cref="Candy"/>, <see cref="LightBulb"/>, and <see cref="Axe"/> presets rather than constructing ad hoc.
     /// </summary>
     /// <param name="CanCollectStars">Whether touching a star collects it.</param>
     /// <param name="CanOpenMouth">Whether Om Nom opens his mouth when this body is in range.</param>
@@ -21,6 +21,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="CanEnterTransport">Whether this body can travel through hats/socks and bamboo tubes.</param>
     /// <param name="CanBindRocket">Whether a rocket can bind to and fly this body.</param>
     /// <param name="CanAttachAnts">Whether ants can attach to and carry this body along their path.</param>
+    /// <param name="CanCollideWithCandyBodies">Whether this body participates in elastic candy-body separation.</param>
     /// <param name="CanBeBrokenByHazards">Whether hazards (spikes) destroy this body on contact.</param>
     /// <param name="CanFloatInWater">Whether water buoyancy pushes this body upward when submerged.</param>
     /// <param name="CanBeDraggedBySnail">Whether a snail can crawl onto this body and weigh it down.</param>
@@ -37,6 +38,7 @@ namespace CutTheRopeDX.GameMain
         bool CanEnterTransport = true,
         bool CanBindRocket = true,
         bool CanAttachAnts = true,
+        bool CanCollideWithCandyBodies = true,
         bool CanBeBrokenByHazards = true,
         bool CanFloatInWater = true,
         bool CanBeDraggedBySnail = true,
@@ -59,5 +61,24 @@ namespace CutTheRopeDX.GameMain
             CanEnterLantern: false,
             CanBeBrokenByHazards: false,
             CanRotateWithRopes: false);
+
+        /// <summary>
+        /// An axe blade: a physical, rocket/transport-capable body that behaves like a hazard instead
+        /// of candy. It does not collect stars, emit win/loss candy signals, or get destroyed by hazards.
+        /// </summary>
+        public static CandyCapabilities Axe { get; } = new(
+            CanCollectStars: false,
+            CanOpenMouth: false,
+            CanBeEaten: false,
+            CanLoseLevelWhenOffScreen: false,
+            CanBeGrabbedBySpider: false,
+            CanBeGrabbedByMouse: false,
+            CanBeGrabbedByHand: false,
+            CanEnterLantern: false,
+            CanAttachAnts: false,
+            CanCollideWithCandyBodies: false,
+            CanBeBrokenByHazards: false,
+            CanFloatInWater: false,
+            CanBeDraggedBySnail: false);
     }
 }

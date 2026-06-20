@@ -101,6 +101,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Transitional light-bulb visual root while bulb visuals migrate into candy contexts.</summary>
         public LightBulb lightBulb;
 
+        /// <summary>Optional axe identifier from XML.</summary>
+        public string axeNumber;
+
+        /// <summary>Blade visual root for Time Travel axe bodies.</summary>
+        public Axe axe;
+
         /// <summary>Light radius when this context emits light.</summary>
         public float lightRadius;
 

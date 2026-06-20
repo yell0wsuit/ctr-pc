@@ -130,6 +130,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void Axe_IsPhysicalHazardButNotCandyConsumable()
+        {
+            CandyCapabilities axe = CandyCapabilities.Axe;
+
+            Assert.False(axe.CanCollectStars);
+            Assert.False(axe.CanOpenMouth);
+            Assert.False(axe.CanBeEaten);
+            Assert.False(axe.CanLoseLevelWhenOffScreen);
+            Assert.False(axe.CanBeGrabbedBySpider);
+            Assert.False(axe.CanBeGrabbedByMouse);
+            Assert.False(axe.CanBeGrabbedByHand);
+            Assert.False(axe.CanEnterLantern);
+            Assert.True(axe.CanEnterTransport);
+            Assert.True(axe.CanBindRocket);
+            Assert.False(axe.CanAttachAnts);
+            Assert.False(axe.CanCollideWithCandyBodies);
+            Assert.False(axe.CanBeBrokenByHazards);
+            Assert.False(axe.CanFloatInWater);
+            Assert.False(axe.CanBeDraggedBySnail);
+        }
+
+        [Fact]
         public void CandyBody_ToView_PreservesItsOwnersCapabilities()
         {
             CandyContext ctx = Context(point: new ConstraintedPoint { pos = new Vector(1f, 2f) });
@@ -168,6 +190,20 @@ namespace CutTheRopeDX.Tests
             ctx.Capabilities = CandyCapabilities.LightBulb;
 
             Assert.Equal(0f, ctx.InteractionRotation);
+        }
+
+        [Fact]
+        public void CandyInteraction_GatesAxeCandyOnlyInteractions()
+        {
+            CandyContext axe = new()
+            {
+                Capabilities = CandyCapabilities.Axe
+            };
+
+            Assert.False(CandyInteraction.CanCollectStar(axe));
+            Assert.False(CandyInteraction.CanBeGrabbedByHand(axe));
+            Assert.False(CandyInteraction.CanAttachAnts(axe));
+            Assert.False(CandyInteraction.CanBeBrokenByHazards(axe));
         }
     }
 }

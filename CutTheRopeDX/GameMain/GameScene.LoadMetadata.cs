@@ -154,6 +154,7 @@ namespace CutTheRopeDX.GameMain
                             globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
                             _ = bool.TryParse(item2.Attribute("candiesConnected")?.Value, out candiesConnected);
                             candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
+                            candiesConnectedBreakable = GetBoolAttribute(item2, "candiesConnectedBreakable", defaultValue: true);
                             break;
                         case "candyL":
                             pendingLeftHalf = CreateSplitHalfBody(
@@ -221,6 +222,11 @@ namespace CutTheRopeDX.GameMain
                     connectorHead, connectorHead.pos.X, connectorHead.pos.Y,
                     connectorTail, connectorTail.pos.X, connectorTail.pos.Y,
                     candiesConnectedLength);
+                if (!candiesConnectedBreakable)
+                {
+                    // The connecting elastic is a chain: renders as a chain and is not finger-cuttable.
+                    candyConnector.SetCutOnlyByAxe();
+                }
             }
         }
     }

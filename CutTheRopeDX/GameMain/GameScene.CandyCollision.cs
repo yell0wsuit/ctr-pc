@@ -26,14 +26,14 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < count; i++)
             {
                 CandyContext ca = candies[i];
-                if (!CandyCollision.ShouldParticipate(ca.HasNoWholeBodyInPlay, ca.inLantern))
+                if (!CandyCollision.ShouldParticipate(ca))
                 {
                     continue;
                 }
                 for (int j = i + 1; j < count; j++)
                 {
                     CandyContext cb = candies[j];
-                    if (!CandyCollision.ShouldParticipate(cb.HasNoWholeBodyInPlay, cb.inLantern))
+                    if (!CandyCollision.ShouldParticipate(cb))
                     {
                         continue;
                     }
