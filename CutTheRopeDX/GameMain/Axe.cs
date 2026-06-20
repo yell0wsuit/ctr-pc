@@ -88,11 +88,7 @@ namespace CutTheRopeDX.GameMain
         {
             base.Update(delta);
 
-            if (constraint.prevPos.X != UNDEFINED_COORDINATE)
-            {
-                float speed = VectLength(VectSub(constraint.pos, constraint.prevPos)) / 20f;
-                bladeSprite.rotation -= MIN(speed, 40f);
-            }
+            bladeSprite.rotation -= AxeSpin.RotationStepForVelocity(constraint.v);
 
             SyncToConstraint();
         }
