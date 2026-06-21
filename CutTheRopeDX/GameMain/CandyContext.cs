@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
@@ -123,6 +125,32 @@ namespace CutTheRopeDX.GameMain
         /// Rotation used by interactions that follow this body's visual orientation.
         /// </summary>
         public float InteractionRotation => (candyMain ?? candy)?.rotation ?? 0f;
+
+        /// <summary>
+        /// Distinct visual elements that should receive mechanical-hand catch/restoration effects.
+        /// </summary>
+        public List<BaseElement> HandCatchVisuals()
+        {
+            List<BaseElement> visuals = [];
+            AddDistinctVisual(visuals, candy);
+            AddDistinctVisual(visuals, candyMain);
+            AddDistinctVisual(visuals, candyTop);
+            return visuals;
+        }
+
+        /// <summary>
+        /// Base scale for mechanical-hand catch/restoration effects.
+        /// </summary>
+        public float HandCatchScale =>
+            candyMain != null && candyTop != null && candyMain != candy && candyTop != candy ? 0.71f : 0.9f;
+
+        private static void AddDistinctVisual(List<BaseElement> visuals, BaseElement visual)
+        {
+            if (visual != null && !visuals.Contains(visual))
+            {
+                visuals.Add(visual);
+            }
+        }
 
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;

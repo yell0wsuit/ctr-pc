@@ -178,8 +178,9 @@ namespace CutTheRopeDX.GameMain
         /// Plays catch bounce animation on the claw and optional candy visuals.
         /// </summary>
         /// <param name="candyParts">Candy parts to animate alongside the claw.</param>
+        /// <param name="initialScale">Base scale for the caught object visuals.</param>
         /// <param name="animationPool">Animation pool responsible for timeline lifecycle.</param>
-        public void AnimateCatchWithCandyPartsandAnimationsPool(List<BaseElement> candyParts, AnimationsPool animationPool)
+        public void AnimateCatchWithCandyPartsandAnimationsPool(List<BaseElement> candyParts, float initialScale, AnimationsPool animationPool)
         {
             const float amplitude = 0.1f;
 
@@ -198,7 +199,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                Timeline candyTimeline = CatchBounceTimelineWithInitialScaleandAmplitude(0.71f, amplitude);
+                Timeline candyTimeline = CatchBounceTimelineWithInitialScaleandAmplitude(initialScale, amplitude);
                 candyTimeline.delegateTimelineDelegate = animationPool;
                 int candyTimelineId = candyPart.AddTimeline(candyTimeline);
                 candyPart.PlayTimeline(candyTimelineId);

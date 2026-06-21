@@ -265,9 +265,10 @@ namespace CutTheRopeDX.GameMain
         private static void RestoreCandyProperties(CandyContext ctx)
         {
             ctx.candy.passTransformationsToChilds = false;
-            ctx.candyTop.scaleX = ctx.candyTop.scaleY = 0.71f;
-            ctx.candyMain.scaleX = ctx.candyMain.scaleY = 0.71f;
-            ctx.candy.scaleX = ctx.candy.scaleY = 0.71f;
+            foreach (BaseElement visual in ctx.HandCatchVisuals())
+            {
+                visual.scaleX = visual.scaleY = ctx.HandCatchScale;
+            }
             ctx.candy.color = RGBAColor.solidOpaqueRGBA;
         }
 

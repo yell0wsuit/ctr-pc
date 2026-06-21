@@ -2010,7 +2010,8 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (hand.rotatingSegment != null)
                         {
-                            heldCandy.candyMain.rotation += hand.rotatingSegment.RotationDelta();
+                            GameObject rotatingCandyVisual = heldCandy.candyMain ?? heldCandy.candy;
+                            rotatingCandyVisual.rotation += hand.rotatingSegment.RotationDelta();
                         }
                     }
                     else if (heldCandy.activeRocket != null)
@@ -2122,7 +2123,7 @@ namespace CutTheRopeDX.GameMain
                     DetachSnailsForPoint(ctx.point);
                     miceManager?.ForceDropCandy();
                     RestoreCandyProperties(ctx);
-                    hand.AnimateCatchWithCandyPartsandAnimationsPool([ctx.candy, ctx.candyMain, ctx.candyTop], aniPool);
+                    hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }
 

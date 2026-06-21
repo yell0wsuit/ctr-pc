@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -58,6 +61,45 @@ namespace CutTheRopeDX.Tests
             };
 
             Assert.Equal(225f, GameObject.BoundsTopY(ctx.candy));
+        }
+
+        [Fact]
+        public void HandCatchVisuals_UsesSingleRootForGenericCandyLikeObject()
+        {
+            GameObject body = new();
+            CandyContext ctx = new()
+            {
+                candy = body,
+                candyMain = body
+            };
+
+            List<BaseElement> visuals = ctx.HandCatchVisuals();
+
+            Assert.Single(visuals);
+            Assert.Same(body, visuals[0]);
+            Assert.Equal(1f, ctx.HandCatchScale);
+        }
+
+        [Fact]
+        public void HandCatchVisuals_UsesAllDistinctCandyParts()
+        {
+            GameObject root = new();
+            GameObject main = new();
+            GameObject top = new();
+            CandyContext ctx = new()
+            {
+                candy = root,
+                candyMain = main,
+                candyTop = top
+            };
+
+            List<BaseElement> visuals = ctx.HandCatchVisuals();
+
+            Assert.Equal(3, visuals.Count);
+            Assert.Same(root, visuals[0]);
+            Assert.Same(main, visuals[1]);
+            Assert.Same(top, visuals[2]);
+            Assert.Equal(0.71f, ctx.HandCatchScale);
         }
 
         [Fact]
