@@ -75,9 +75,9 @@ namespace CutTheRopeDX.Tests
 
             List<BaseElement> visuals = ctx.HandCatchVisuals();
 
-            Assert.Single(visuals);
+            _ = Assert.Single(visuals);
             Assert.Same(body, visuals[0]);
-            Assert.Equal(1f, ctx.HandCatchScale);
+            Assert.Equal(0.9f, ctx.HandCatchScale);
         }
 
         [Fact]
