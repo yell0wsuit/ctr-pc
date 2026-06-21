@@ -1,4 +1,6 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
@@ -40,6 +42,22 @@ namespace CutTheRopeDX.Tests
             Assert.True(bulb.CanEnterTransport);
             Assert.False(bulb.CanFloatInWater);
             Assert.False(bulb.CanBeDraggedBySnail);
+        }
+
+        [Fact]
+        public void BoundsTopY_UsesSpecificObjectBoundingBox()
+        {
+            GameObject body = new()
+            {
+                drawY = 200f,
+                bb = new CTRRectangle(10f, 25f, 30f, 40f)
+            };
+            CandyContext ctx = new()
+            {
+                candy = body
+            };
+
+            Assert.Equal(225f, GameObject.BoundsTopY(ctx.candy));
         }
 
         [Fact]

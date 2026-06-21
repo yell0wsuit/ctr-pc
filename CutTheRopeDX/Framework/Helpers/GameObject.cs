@@ -260,6 +260,16 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
+        /// Returns the world-space top edge of <paramref name="o"/>'s bounding box.
+        /// </summary>
+        /// <param name="o">Object whose bounding box top edge to return.</param>
+        /// <returns>The world-space Y coordinate of the top edge.</returns>
+        public static float BoundsTopY(GameObject o)
+        {
+            return o.drawY + o.bb.y;
+        }
+
+        /// <summary>
         /// Maximum number of path points a mover can hold.
         /// </summary>
         public const int MAX_MOVER_CAPACITY = 100;

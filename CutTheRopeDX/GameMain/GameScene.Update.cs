@@ -92,7 +92,7 @@ namespace CutTheRopeDX.GameMain
                         ctx.splashes = false;
                     }
 
-                    if (ctx.candy.y - (ctx.candy.texture.quadRects[0].h / 2f) > waterSurfaceY)
+                    if (GameObject.BoundsTopY(ctx.candy) > waterSurfaceY)
                     {
                         if (!ctx.underwater)
                         {
