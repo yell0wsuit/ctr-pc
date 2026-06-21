@@ -415,20 +415,33 @@ namespace CutTheRopeDX.GameMain
                                 else if (rotateCandy != null)
                                 {
                                     GameObject candyObj = rotateCandy.candyMain;
-                                    if (!rope.chosenOne)
+                                    if (rotateCandy.Capabilities.CanRotateWithRopes)
                                     {
-                                        rope.initialCandleAngle = candyObj.rotation - ropeAngle;
+                                        if (!rope.chosenOne)
+                                        {
+                                            rope.initialCandleAngle = candyObj.rotation - ropeAngle;
+                                        }
+                                        float rotateDelta = ropeAngle + rope.initialCandleAngle - candyObj.rotation;
+                                        candyObj.rotation = ropeAngle + rope.initialCandleAngle;
+                                        if (rotateCandyIndex == 0)
+                                        {
+                                            lastCandyRotateDelta = rotateDelta;
+                                            flag = true;
+                                        }
+                                        else
+                                        {
+                                            rotateCandy.lastCandyRotateDelta = rotateDelta;
+                                            candyRotated[rotateCandyIndex] = true;
+                                        }
                                     }
-                                    float rotateDelta = ropeAngle + rope.initialCandleAngle - candyObj.rotation;
-                                    candyObj.rotation = ropeAngle + rope.initialCandleAngle;
-                                    if (rotateCandyIndex == 0)
+                                    else if (rotateCandyIndex == 0)
                                     {
-                                        lastCandyRotateDelta = rotateDelta;
+                                        lastCandyRotateDelta = 0f;
                                         flag = true;
                                     }
                                     else
                                     {
-                                        rotateCandy.lastCandyRotateDelta = rotateDelta;
+                                        rotateCandy.lastCandyRotateDelta = 0f;
                                         candyRotated[rotateCandyIndex] = true;
                                     }
                                 }
@@ -470,7 +483,11 @@ namespace CutTheRopeDX.GameMain
                             }
                             continue;
                         }
-                        if (!candyRotated[ci] && !ctx.noCandy && ctx.capturingHand == null)
+                        if (!ctx.Capabilities.CanRotateWithRopes)
+                        {
+                            ctx.lastCandyRotateDelta = 0f;
+                        }
+                        else if (!candyRotated[ci] && !ctx.noCandy && ctx.capturingHand == null)
                         {
                             ctx.candyMain.rotation += MIN(5, ctx.lastCandyRotateDelta);
                             ctx.lastCandyRotateDelta *= 0.98f;

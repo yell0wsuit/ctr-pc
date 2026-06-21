@@ -24,6 +24,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="CanBeBrokenByHazards">Whether hazards (spikes) destroy this body on contact.</param>
     /// <param name="CanFloatInWater">Whether water buoyancy pushes this body upward when submerged.</param>
     /// <param name="CanBeDraggedBySnail">Whether a snail can crawl onto this body and weigh it down.</param>
+    /// <param name="CanRotateWithRopes">Whether rope swing logic rotates this body's visual.</param>
     internal sealed record CandyCapabilities(
         bool CanCollectStars = true,
         bool CanOpenMouth = true,
@@ -38,7 +39,8 @@ namespace CutTheRopeDX.GameMain
         bool CanAttachAnts = true,
         bool CanBeBrokenByHazards = true,
         bool CanFloatInWater = true,
-        bool CanBeDraggedBySnail = true)
+        bool CanBeDraggedBySnail = true,
+        bool CanRotateWithRopes = true)
     {
         /// <summary>A normal candy: every candy-like interaction is enabled.</summary>
         public static CandyCapabilities Candy { get; } = new();
@@ -55,6 +57,7 @@ namespace CutTheRopeDX.GameMain
             CanLoseLevelWhenOffScreen: false,
             CanBeGrabbedBySpider: false,
             CanEnterLantern: false,
-            CanBeBrokenByHazards: false);
+            CanBeBrokenByHazards: false,
+            CanRotateWithRopes: false);
     }
 }

@@ -124,7 +124,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Rotation used by interactions that follow this body's visual orientation.
         /// </summary>
-        public float InteractionRotation => (candyMain ?? candy)?.rotation ?? 0f;
+        public float InteractionRotation => Capabilities.CanRotateWithRopes ? (candyMain ?? candy)?.rotation ?? 0f : 0f;
 
         /// <summary>
         /// Distinct visual elements that should receive mechanical-hand catch/restoration effects.

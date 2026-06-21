@@ -49,6 +49,7 @@ namespace CutTheRopeDX.Tests
             Assert.True(bulb.CanEnterTransport);
             Assert.True(bulb.CanFloatInWater);
             Assert.True(bulb.CanBeDraggedBySnail);
+            Assert.False(bulb.CanRotateWithRopes);
         }
 
         [Fact]
@@ -187,6 +188,25 @@ namespace CutTheRopeDX.Tests
             };
 
             Assert.Equal(30f, ctx.InteractionRotation);
+        }
+
+        [Fact]
+        public void InteractionRotation_IsZeroForNonRotatingBodies()
+        {
+            CandyContext ctx = new()
+            {
+                Capabilities = CandyCapabilities.LightBulb,
+                candy = new GameObject
+                {
+                    rotation = 30f
+                },
+                candyMain = new GameObject
+                {
+                    rotation = 45f
+                }
+            };
+
+            Assert.Equal(0f, ctx.InteractionRotation);
         }
     }
 }
