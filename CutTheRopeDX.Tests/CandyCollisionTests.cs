@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -27,12 +28,48 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PairDistance_UsesAdditiveRadiiForNormalCandy()
+        public void PairDistance_UsesExplicitAdditiveRadii()
         {
             CandyContext a = new() { collisionRadius = 32f };
             CandyContext b = new() { collisionRadius = 32f };
 
             Assert.Equal(64f, CandyCollision.PairDistance(a, b));
+        }
+
+        [Fact]
+        public void PairDistance_UsesDesktopCandyBodyRatioForNormalCandy()
+        {
+            bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
+            try
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = false;
+                CandyContext a = new();
+                CandyContext b = new();
+
+                Assert.Equal(102.4f, CandyCollision.PairDistance(a, b), precision: 3);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
+        }
+
+        [Fact]
+        public void PairDistance_UsesMobileCandyBodyRatioForNormalCandy()
+        {
+            bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
+            try
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = true;
+                CandyContext a = new();
+                CandyContext b = new();
+
+                Assert.Equal(96f, CandyCollision.PairDistance(a, b), precision: 3);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
         }
 
         [Fact]

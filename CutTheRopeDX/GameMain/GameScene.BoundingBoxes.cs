@@ -37,7 +37,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Returns the bounding box for the candy.</summary>
         /// <returns>The candy bounding box.</returns>
-        private static CTRRectangle GetCandyBoundingBox()
+        internal static CTRRectangle GetCandyBoundingBox()
         {
             return SelectPhysicsBoundingBox(142f, 157f, 112f, 104f, 46f, 49f, 35f, 35f);
         }

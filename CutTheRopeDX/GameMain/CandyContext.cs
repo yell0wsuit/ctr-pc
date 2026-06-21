@@ -10,7 +10,15 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class CandyContext
     {
-        private const float DefaultCandyCollisionRadius = 32f;
+        // Cut the Rope: Time Travel's candy bounding box is 70x70 with a
+        // candy↔candy collision radius of 32. Preserve that radius-to-body ratio by scaling it
+        // against DX's candy bounding-box width, which already resolves the correct desktop/mobile
+        // value, so the hitbox stays locked to the rendered candy size in both physics models.
+        private const float TimeTravelCandyBodyWidth = 70f;
+        private const float TimeTravelCandyCollisionRadius = 32f;
+
+        private static float DefaultCandyCollisionRadius =>
+            GameScene.GetCandyBoundingBox().w * TimeTravelCandyCollisionRadius / TimeTravelCandyBodyWidth;
 
         /// <summary>Rope-binding key from XML (<c>"first"</c>/<c>"second"</c>); see <see cref="CandyMatch"/>.</summary>
         public string candyNumber;
@@ -106,7 +114,10 @@ namespace CutTheRopeDX.GameMain
         public bool emitsLight;
 
         /// <summary>Additive collision radius used when no absolute pair distance is specified.</summary>
-        public float collisionRadius = DefaultCandyCollisionRadius;
+        public float? collisionRadius;
+
+        /// <summary>Effective additive collision radius in the current physics model.</summary>
+        public float CollisionRadius => collisionRadius ?? DefaultCandyCollisionRadius;
 
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;

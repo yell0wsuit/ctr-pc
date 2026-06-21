@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         {
             return a.collisionDistanceOverride.HasValue || b.collisionDistanceOverride.HasValue
                 ? System.MathF.Max(a.collisionDistanceOverride ?? 0f, b.collisionDistanceOverride ?? 0f)
-                : a.collisionRadius + b.collisionRadius;
+                : a.CollisionRadius + b.CollisionRadius;
         }
     }
 }
