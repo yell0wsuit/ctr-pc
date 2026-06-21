@@ -119,6 +119,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Effective additive collision radius in the current physics model.</summary>
         public float CollisionRadius => collisionRadius ?? DefaultCandyCollisionRadius;
 
+        /// <summary>
+        /// Rotation used by interactions that follow this body's visual orientation.
+        /// </summary>
+        public float InteractionRotation => (candyMain ?? candy)?.rotation ?? 0f;
+
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;
 

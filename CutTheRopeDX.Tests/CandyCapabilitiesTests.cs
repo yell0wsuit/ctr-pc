@@ -79,6 +79,38 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void InteractionRotation_UsesCandyMainWhenAvailable()
+        {
+            CandyContext ctx = new()
+            {
+                candy = new GameObject
+                {
+                    rotation = 15f
+                },
+                candyMain = new GameObject
+                {
+                    rotation = 45f
+                }
+            };
+
+            Assert.Equal(45f, ctx.InteractionRotation);
+        }
+
+        [Fact]
+        public void InteractionRotation_FallsBackToRootObjectRotation()
+        {
+            CandyContext ctx = new()
+            {
+                candy = new GameObject
+                {
+                    rotation = 30f
+                }
+            };
+
+            Assert.Equal(30f, ctx.InteractionRotation);
+        }
+
+        [Fact]
         public void CandyInteraction_GatesLightBulbCandyOnlyInteractions()
         {
             CandyContext bulb = new()

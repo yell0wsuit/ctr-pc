@@ -1583,7 +1583,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (snail.state == Snail.SNAIL_STATE_ACTIVE)
                     {
-                        snail.rotation = CandyForPoint(snail.AttachedPoint()).candyMain.rotation - snail.startRotation;
+                        snail.rotation = CandyForPoint(snail.AttachedPoint()).InteractionRotation - snail.startRotation;
                     }
 
                     if (snail.state == Snail.SNAIL_STATE_INACTIVE)
@@ -1598,7 +1598,7 @@ namespace CutTheRopeDX.GameMain
                             }
 
                             DetachSnailsForPoint(ctx.point);
-                            snail.startRotation += ctx.candyMain.rotation;
+                            snail.startRotation += ctx.InteractionRotation;
                             snail.AttachToPoint(ctx.point);
                             ctx.point.SetWeight(ctx.point.weight + 3f);
                             break;
