@@ -144,6 +144,25 @@ namespace CutTheRopeDX.GameMain
         public float HandCatchScale =>
             candyMain != null && candyTop != null && candyMain != candy && candyTop != candy ? 0.71f : 0.9f;
 
+        /// <summary>
+        /// Distinct child visual parts that should be normalized when the root carries transformations.
+        /// </summary>
+        public List<BaseElement> TransformChildVisuals()
+        {
+            List<BaseElement> visuals = [];
+            AddDistinctChildVisual(visuals, candyMain);
+            AddDistinctChildVisual(visuals, candyTop);
+            return visuals;
+        }
+
+        private void AddDistinctChildVisual(List<BaseElement> visuals, BaseElement visual)
+        {
+            if (visual != null && visual != candy && !visuals.Contains(visual))
+            {
+                visuals.Add(visual);
+            }
+        }
+
         private static void AddDistinctVisual(List<BaseElement> visuals, BaseElement visual)
         {
             if (visual != null && !visuals.Contains(visual))

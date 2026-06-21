@@ -99,7 +99,8 @@ namespace CutTheRopeDX.GameMain
                     ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
                     ctx.activeRocket.startRotation = ctx.activeRocket.rotation;
                     ctx.activeRocket.startCandyRotation = 0f;
-                    ctx.candyMain.rotation = 0f;
+                    GameObject rocketCandyVisual = ctx.candyMain ?? ctx.candy;
+                    rocketCandyVisual.rotation = 0f;
                     ctx.activeRocket.additionalAngle = 0f;
                     ctx.activeRocket.UpdateRotation();
                     ctx.activeRocket.point.posDelta = vectZero;

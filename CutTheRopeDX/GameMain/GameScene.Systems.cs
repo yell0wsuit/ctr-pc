@@ -285,8 +285,10 @@ namespace CutTheRopeDX.GameMain
             ctx.noCandy = true;
             ctx.point.disableGravity = true;
             ctx.candy.passTransformationsToChilds = true;
-            ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
-            ctx.candyTop.scaleX = ctx.candyTop.scaleY = 1f;
+            foreach (BaseElement visual in ctx.TransformChildVisuals())
+            {
+                visual.scaleX = visual.scaleY = 1f;
+            }
 
             if (ctx.candy.GetTimeline(1) != null)
             {

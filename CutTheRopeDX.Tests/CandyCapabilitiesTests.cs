@@ -103,6 +103,39 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TransformChildVisuals_IsEmptyForGenericCandyLikeObject()
+        {
+            GameObject body = new();
+            CandyContext ctx = new()
+            {
+                candy = body,
+                candyMain = body
+            };
+
+            Assert.Empty(ctx.TransformChildVisuals());
+        }
+
+        [Fact]
+        public void TransformChildVisuals_UsesDistinctCandyChildParts()
+        {
+            GameObject root = new();
+            GameObject main = new();
+            GameObject top = new();
+            CandyContext ctx = new()
+            {
+                candy = root,
+                candyMain = main,
+                candyTop = top
+            };
+
+            List<BaseElement> visuals = ctx.TransformChildVisuals();
+
+            Assert.Equal(2, visuals.Count);
+            Assert.Same(main, visuals[0]);
+            Assert.Same(top, visuals[1]);
+        }
+
+        [Fact]
         public void CandyContext_ToView_PreservesCapabilities()
         {
             CandyContext ctx = new()
