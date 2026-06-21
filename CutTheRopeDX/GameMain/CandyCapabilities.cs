@@ -54,13 +54,7 @@ namespace CutTheRopeDX.GameMain
             CanBeEaten: false,
             CanLoseLevelWhenOffScreen: false,
             CanBeGrabbedBySpider: false,
-            CanBeGrabbedByMouse: false,
-            CanBeGrabbedByHand: false,
             CanEnterLantern: false,
-            CanBindRocket: false,
-            CanAttachAnts: false,
-            CanBeBrokenByHazards: false,
-            CanFloatInWater: false,
-            CanBeDraggedBySnail: false);
+            CanBeBrokenByHazards: false);
     }
 }

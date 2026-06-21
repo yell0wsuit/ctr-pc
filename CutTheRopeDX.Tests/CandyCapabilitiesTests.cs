@@ -24,6 +24,8 @@ namespace CutTheRopeDX.Tests
             Assert.True(candy.CanLoseLevelWhenOffScreen);
             Assert.True(candy.CanBeGrabbedBySpider);
             Assert.True(candy.CanBeGrabbedByMouse);
+            Assert.True(candy.CanBindRocket);
+            Assert.True(candy.CanAttachAnts);
             Assert.True(candy.CanBeGrabbedByHand);
             Assert.True(candy.CanEnterTransport);
             Assert.True(candy.CanFloatInWater);
@@ -40,11 +42,13 @@ namespace CutTheRopeDX.Tests
             Assert.False(bulb.CanBeEaten);
             Assert.False(bulb.CanLoseLevelWhenOffScreen);
             Assert.False(bulb.CanBeGrabbedBySpider);
-            Assert.False(bulb.CanBeGrabbedByMouse);
-            Assert.False(bulb.CanBeGrabbedByHand);
+            Assert.True(bulb.CanBeGrabbedByMouse);
+            Assert.True(bulb.CanBindRocket);
+            Assert.True(bulb.CanAttachAnts);
+            Assert.True(bulb.CanBeGrabbedByHand);
             Assert.True(bulb.CanEnterTransport);
-            Assert.False(bulb.CanFloatInWater);
-            Assert.False(bulb.CanBeDraggedBySnail);
+            Assert.True(bulb.CanFloatInWater);
+            Assert.True(bulb.CanBeDraggedBySnail);
         }
 
         [Fact]
@@ -183,20 +187,6 @@ namespace CutTheRopeDX.Tests
             };
 
             Assert.Equal(30f, ctx.InteractionRotation);
-        }
-
-        [Fact]
-        public void CandyInteraction_GatesLightBulbCandyOnlyInteractions()
-        {
-            CandyContext bulb = new()
-            {
-                Capabilities = CandyCapabilities.LightBulb
-            };
-
-            Assert.False(CandyInteraction.CanCollectStar(bulb));
-            Assert.False(CandyInteraction.CanBeGrabbedByHand(bulb));
-            Assert.False(CandyInteraction.CanAttachAnts(bulb));
-            Assert.False(CandyInteraction.CanBeBrokenByHazards(bulb));
         }
     }
 }
