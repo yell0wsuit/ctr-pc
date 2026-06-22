@@ -85,24 +85,37 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldHtmlNudge_TrueWhenWithinNineTenthsRadiusAndClosing()
+        public void ShouldHtmlNudge_TrueWhenWithinNineTenthsBodyWidthAndClosing()
         {
-            // radius 50 -> trigger threshold 45; distance 40 <= 45 and 40 < previous 50 (closing in)
-            Assert.True(CandyCollision.ShouldHtmlNudge(distance: 40f, previousDistance: 50f, candyRadius: 50f));
+            // body width 100 -> trigger threshold 90; distance 80 <= 90 and 80 < previous 100 (closing in)
+            Assert.True(CandyCollision.ShouldHtmlNudge(distance: 80f, previousDistance: 100f, candyBodyWidth: 100f));
         }
 
         [Fact]
         public void ShouldHtmlNudge_FalseWhenSeparating()
         {
-            // within threshold (40 <= 45) but distance grew vs last frame (40 >= 35) -> not closing in
-            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 40f, previousDistance: 35f, candyRadius: 50f));
+            // within threshold (80 <= 90) but distance grew vs last frame (80 >= 70) -> not closing in
+            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 80f, previousDistance: 70f, candyBodyWidth: 100f));
         }
 
         [Fact]
-        public void ShouldHtmlNudge_FalseBeyondTriggerRadius()
+        public void ShouldHtmlNudge_FalseBeyondTriggerWidth()
         {
-            // 46 > 0.9 * 50 = 45
-            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 46f, previousDistance: 50f, candyRadius: 50f));
+            // 91 > 0.9 * 100 = 90
+            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 91f, previousDistance: 100f, candyBodyWidth: 100f));
+        }
+
+        [Fact]
+        public void ShouldHtmlNudge_FiresNearSurfaceTouchUsingBodyWidth()
+        {
+            // Regression: the HTML trigger is 0.9 × candy bounding-box WIDTH (M.lm.N = 112), i.e. ~the
+            // surface-touch distance — NOT 0.9 × radius (~46), which let candies overlap to near-center.
+            const float bodyWidth = 112f; // GetCandyBoundingBox().w (PC) == HTML M.lm width
+            const float radius = 51.2f;   // DefaultCandyCollisionRadius (the previous, buggy arg)
+            const float nearTouch = 100f; // approaching; surfaces about to meet (prev was larger)
+
+            Assert.True(CandyCollision.ShouldHtmlNudge(nearTouch, previousDistance: 110f, candyBodyWidth: bodyWidth));
+            Assert.False(CandyCollision.ShouldHtmlNudge(nearTouch, previousDistance: 110f, candyBodyWidth: radius));
         }
 
         [Fact]

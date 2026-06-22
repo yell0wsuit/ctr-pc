@@ -55,11 +55,11 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        // PC: 0.9 * radius trigger + closing-in guard + velocity-only nudge.
+                        // PC: 0.9 * candy body width trigger (≈ surface touch, + closing-in guard + velocity-only nudge.
                         (int, int) key = (i, j);
                         float distance = VectDistance(ca.point.pos, cb.point.pos);
                         float previousDistance = candyPairPrevDistance.GetValueOrDefault(key);
-                        if (CandyCollision.ShouldHtmlNudge(distance, previousDistance, ca.CollisionRadius))
+                        if (CandyCollision.ShouldHtmlNudge(distance, previousDistance, GetCandyBoundingBox().w))
                         {
                             ResolveCandyPairHtml(ca.point, cb.point, delta);
                         }

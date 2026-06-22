@@ -14,8 +14,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>HTML nudge: Y-axis reverse-velocity scale (engine constant).</summary>
         public const float HtmlNudgeScaleY = 75f;
 
-        /// <summary>HTML candy↔candy trigger: fraction of one candy's radius (centers must nearly overlap).</summary>
-        public const float HtmlTriggerRadiusFactor = 0.9f;
+        /// <summary>
+        /// HTML candy↔candy trigger: fraction of the candy's bounding-box WIDTH. The HTML engine
+        /// uses the width of the candy bounds (112 wide), not the
+        /// radius — so 0.9× of it is roughly the surface-touch distance (≈ the radius sum), not a
+        /// near-center overlap.
+        /// </summary>
+        public const float HtmlTriggerWidthFactor = 0.9f;
 
         public static bool ShouldParticipate(bool noCandy, bool inLantern)
         {
@@ -31,12 +36,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// HTML-build candy↔candy trigger: fire only when the centers are within
-        /// <see cref="HtmlTriggerRadiusFactor"/> × one candy's radius AND still closing in
-        /// (current distance below the previous frame's).
+        /// <see cref="HtmlTriggerWidthFactor"/> × the candy's bounding-box width AND still closing in (current distance below the previous frame's).
         /// </summary>
-        public static bool ShouldHtmlNudge(float distance, float previousDistance, float candyRadius)
+        public static bool ShouldHtmlNudge(float distance, float previousDistance, float candyBodyWidth)
         {
-            return distance <= HtmlTriggerRadiusFactor * candyRadius && distance < previousDistance;
+            return distance <= HtmlTriggerWidthFactor * candyBodyWidth && distance < previousDistance;
         }
 
         /// <summary>
