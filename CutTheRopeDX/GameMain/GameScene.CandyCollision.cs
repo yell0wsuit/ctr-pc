@@ -42,9 +42,9 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    if (ActivePhysicsConstants.UseMobilePhysicsModel)
+                    if (!CandyCollision.ShouldUseHtmlModel(ca, cb, ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
-                        // Mobile: radius-sum trigger + de-penetration.
+                        // Mobile-style: radius-sum trigger + de-penetration.
                         float collisionDist = CandyCollision.PairDistance(ca, cb);
                         float dx = ca.point.pos.X - cb.point.pos.X;
                         float dy = ca.point.pos.Y - cb.point.pos.Y;

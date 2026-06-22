@@ -35,6 +35,17 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Selects the HTML candy↔candy nudge model. Candy-like non-candy bodies keep the
+        /// mobile overlap solver even when the level uses desktop physics tuning.
+        /// </summary>
+        public static bool ShouldUseHtmlModel(CandyContext a, CandyContext b, bool useMobilePhysicsModel)
+        {
+            return !useMobilePhysicsModel
+                && a.Capabilities == CandyCapabilities.Candy
+                && b.Capabilities == CandyCapabilities.Candy;
+        }
+
+        /// <summary>
         /// HTML-build candy↔candy trigger: fire only when the centers are within
         /// <see cref="HtmlTriggerWidthFactor"/> × the candy's bounding-box width AND still closing in (current distance below the previous frame's).
         /// </summary>

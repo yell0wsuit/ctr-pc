@@ -85,6 +85,22 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void ShouldUseHtmlModel_TrueOnlyForDesktopCandyToCandy()
+        {
+            CandyContext candy = new();
+            CandyContext other = new()
+            {
+                Capabilities = CandyCapabilities.LightBulb,
+                collisionDistanceOverride = 94.5f
+            };
+
+            Assert.True(CandyCollision.ShouldUseHtmlModel(candy, new CandyContext(), useMobilePhysicsModel: false));
+            Assert.False(CandyCollision.ShouldUseHtmlModel(candy, new CandyContext(), useMobilePhysicsModel: true));
+            Assert.False(CandyCollision.ShouldUseHtmlModel(candy, other, useMobilePhysicsModel: false));
+            Assert.False(CandyCollision.ShouldUseHtmlModel(other, candy, useMobilePhysicsModel: false));
+        }
+
+        [Fact]
         public void ShouldHtmlNudge_TrueWhenWithinNineTenthsBodyWidthAndClosing()
         {
             // body width 100 -> trigger threshold 90; distance 80 <= 90 and 80 < previous 100 (closing in)
