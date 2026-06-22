@@ -730,8 +730,8 @@ namespace CutTheRopeDX.GameMain
             ExhaustRocketForCandy(candies[0]);
             SpawnCandyBreakParticles(breakX, breakY);
             ReleaseAllRopes(left);
-            DetachActiveHands();
-            DetachActiveSnails();
+            DetachHandsForPoint(candies[0].point);
+            DetachSnailsForPoint(candies[0].point);
             if (restartState != 0 && (!noCandyL || !noCandyR))
             {
                 ScheduleGameLost(0.3f);
