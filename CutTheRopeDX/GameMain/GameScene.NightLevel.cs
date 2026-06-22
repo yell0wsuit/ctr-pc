@@ -71,6 +71,10 @@ namespace CutTheRopeDX.GameMain
                 if (!ctx.noCandy && PointOutOfScreen(ctx.point))
                 {
                     ctx.noCandy = true;
+                    // A light emitter leaving the screen is a non-candy object escaping: release its
+                    // rope and exhaust its bound rocket, matching C's generic-object off-screen loop.
+                    ExhaustRocketForCandy(ctx);
+                    ReleaseRopesForPoint(ctx.point);
                     ctx.lightBulb?.SyncFromContext(ctx);
                 }
                 hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy;
