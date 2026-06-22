@@ -310,6 +310,29 @@ namespace CutTheRopeDX.GameMain
             ctx.activeRocket = null;
         }
 
+        /// <summary>
+        /// Nudges a flying rocket's <see cref="Rocket.additionalAngle"/> to fly perpendicular to
+        /// <paramref name="rope"/>, picking whichever of the two perpendiculars is the smaller turn.
+        /// Shared by the grab ropes and the candy connector (iOS steers off both the same way).
+        /// </summary>
+        private static void AlignRocketAngleToRope(Rocket rocket, Bungee rope, float delta)
+        {
+            ConstraintedPoint anchor = rope.bungeeAnchor;
+            ConstraintedPoint tail = rope.parts[^1];
+            Vector ropeVector = VectSub(anchor.pos, tail.pos);
+            Vector v1 = VectPerp(ropeVector);
+            Vector v2 = VectRperp(ropeVector);
+            float fa = RADIANS_TO_DEGREES(VectAngleNormalized(v1) - DEGREES_TO_RADIANS(rocket.rotation));
+            float fb = RADIANS_TO_DEGREES(VectAngleNormalized(v2) - DEGREES_TO_RADIANS(rocket.rotation));
+            rocket.additionalAngle = AngleTo0_360(rocket.additionalAngle);
+            fa = NearestAngleTofrom(rocket.additionalAngle, fa);
+            fb = NearestAngleTofrom(rocket.additionalAngle, fb);
+            float da = MinAngleBetweenAandB(rocket.additionalAngle, fa);
+            float db = MinAngleBetweenAandB(rocket.additionalAngle, fb);
+            float target = da < db ? fa : fb;
+            _ = Mover.MoveVariableToTarget(ref rocket.additionalAngle, target, 90f, delta);
+        }
+
         /// <summary>Exhausts every candy's bound rocket (win/loss cleanup).</summary>
         private void ExhaustAllActiveRockets()
         {

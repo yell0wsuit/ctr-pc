@@ -1267,22 +1267,27 @@ namespace CutTheRopeDX.GameMain
                                     if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
                                     {
                                         ropeRelaxed = true;
-                                        ConstraintedPoint anchor = rope.bungeeAnchor;
-                                        ConstraintedPoint tail = rope.parts[^1];
-                                        Vector ropeVector = VectSub(anchor.pos, tail.pos);
-                                        Vector v1 = VectPerp(ropeVector);
-                                        Vector v2 = VectRperp(ropeVector);
-                                        float fa = RADIANS_TO_DEGREES(VectAngleNormalized(v1) - DEGREES_TO_RADIANS(rocket.rotation));
-                                        float fb = RADIANS_TO_DEGREES(VectAngleNormalized(v2) - DEGREES_TO_RADIANS(rocket.rotation));
-                                        rocket.additionalAngle = AngleTo0_360(rocket.additionalAngle);
-                                        fa = NearestAngleTofrom(rocket.additionalAngle, fa);
-                                        fb = NearestAngleTofrom(rocket.additionalAngle, fb);
-                                        float da = MinAngleBetweenAandB(rocket.additionalAngle, fa);
-                                        float db = MinAngleBetweenAandB(rocket.additionalAngle, fb);
-                                        float target = da < db ? fa : fb;
-                                        _ = Mover.MoveVariableToTarget(ref rocket.additionalAngle, target, 90f, delta);
+                                        AlignRocketAngleToRope(rocket, rope, delta);
                                     }
                                 }
+                            }
+                        }
+                        // iOS steers the rocket off the candy connector too. It lives outside the grab
+                        // list and joins two candy points, so there is no rocketStar tail check and no
+                        // handHoldingCandy gate. The connector counts as relaxed while it is nearly
+                        // straight: |straight-line span - polyline length| < polyline length / 4.
+                        if (candyConnector != null && candyConnector.cut == -1)
+                        {
+                            int connectorLength = candyConnector.GetLength();
+                            int connectorSlack = (int)(VectDistance(candyConnector.bungeeAnchor.pos, candyConnector.parts[^1].pos) - connectorLength);
+                            if (connectorSlack < 0)
+                            {
+                                connectorSlack = -connectorSlack;
+                            }
+                            if (connectorSlack < (connectorLength >> 2))
+                            {
+                                ropeRelaxed = true;
+                                AlignRocketAngleToRope(rocket, candyConnector, delta);
                             }
                         }
                         rocket.rotation += rocket.additionalAngle;
