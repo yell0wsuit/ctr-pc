@@ -406,13 +406,23 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // Only the idle loop drives the external blink/idle-variant cadence. Other
+            // root-driven timelines (e.g. chewing, ID 7) also emit a keyframe at index 1,
+            // which would otherwise be misread as an idle tick and interrupt playback with
+            // a random idle variant.
+            int idleLoopTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
+
             if (_driverTimelineUsesRootDefinition)
             {
-                _externalTimelineDelegate?.TimelinereachedKeyFramewithIndex(t, k, i);
+                if (TargetIdleCadence.DrivesIdleCadence(_driverTimelineId, idleLoopTimelineId))
+                {
+                    _externalTimelineDelegate?.TimelinereachedKeyFramewithIndex(t, k, i);
+                }
+
                 return;
             }
 
-            if (_driverTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop)
+            if (TargetIdleCadence.DrivesIdleCadence(_driverTimelineId, idleLoopTimelineId)
                 && _externalTimelineDelegate != null)
             {
                 int syntheticTicks = _idleCadenceClock.Advance(t.time, _driverTimelineDurationSeconds, _driverTimelinePlaybackRate);
