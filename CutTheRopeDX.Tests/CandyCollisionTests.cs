@@ -1,4 +1,6 @@
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -80,6 +82,44 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(94.5f, CandyCollision.PairDistance(candy, bulb));
             Assert.Equal(94.5f, CandyCollision.PairDistance(bulb, bulb));
+        }
+
+        [Fact]
+        public void ShouldHtmlNudge_TrueWhenWithinNineTenthsRadiusAndClosing()
+        {
+            // radius 50 -> trigger threshold 45; distance 40 <= 45 and 40 < previous 50 (closing in)
+            Assert.True(CandyCollision.ShouldHtmlNudge(distance: 40f, previousDistance: 50f, candyRadius: 50f));
+        }
+
+        [Fact]
+        public void ShouldHtmlNudge_FalseWhenSeparating()
+        {
+            // within threshold (40 <= 45) but distance grew vs last frame (40 >= 35) -> not closing in
+            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 40f, previousDistance: 35f, candyRadius: 50f));
+        }
+
+        [Fact]
+        public void ShouldHtmlNudge_FalseBeyondTriggerRadius()
+        {
+            // 46 > 0.9 * 50 = 45
+            Assert.False(CandyCollision.ShouldHtmlNudge(distance: 46f, previousDistance: 50f, candyRadius: 50f));
+        }
+
+        [Fact]
+        public void HtmlNudgeImpulse_IsEqualAndOppositeReverseVelocityScaled()
+        {
+            // a moved +2 in x last frame (prev 98 -> pos 100); b moved -2 in x (prev 122 -> pos 120): closing in.
+            ConstraintedPoint a = new();
+            a.pos = new Vector(100f, 100f);
+            a.prevPos = new Vector(98f, 100f);
+            ConstraintedPoint b = new();
+            b.pos = new Vector(120f, 100f);
+            b.prevPos = new Vector(122f, 100f);
+
+            // aRevX = (98-100)*62.5 = -125 ; bRevX = (122-120)*62.5 = +125 ; impulseA.X = -125 - 125 = -250
+            Vector impulse = CandyCollision.HtmlNudgeImpulse(a, b);
+            Assert.Equal(-250f, impulse.X, precision: 3);
+            Assert.Equal(0f, impulse.Y, precision: 3);
         }
     }
 }

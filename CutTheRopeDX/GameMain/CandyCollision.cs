@@ -1,3 +1,6 @@
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Physics;
+
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -5,6 +8,15 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal static class CandyCollision
     {
+        /// <summary>HTML nudge: X-axis reverse-velocity scale (engine constant).</summary>
+        public const float HtmlNudgeScaleX = 62.5f;
+
+        /// <summary>HTML nudge: Y-axis reverse-velocity scale (engine constant).</summary>
+        public const float HtmlNudgeScaleY = 75f;
+
+        /// <summary>HTML candy↔candy trigger: fraction of one candy's radius (centers must nearly overlap).</summary>
+        public const float HtmlTriggerRadiusFactor = 0.9f;
+
         public static bool ShouldParticipate(bool noCandy, bool inLantern)
         {
             return !noCandy && !inLantern;
@@ -15,6 +27,31 @@ namespace CutTheRopeDX.GameMain
             return a.collisionDistanceOverride.HasValue || b.collisionDistanceOverride.HasValue
                 ? System.MathF.Max(a.collisionDistanceOverride ?? 0f, b.collisionDistanceOverride ?? 0f)
                 : a.CollisionRadius + b.CollisionRadius;
+        }
+
+        /// <summary>
+        /// HTML-build candy↔candy trigger: fire only when the centers are within
+        /// <see cref="HtmlTriggerRadiusFactor"/> × one candy's radius AND still closing in
+        /// (current distance below the previous frame's).
+        /// </summary>
+        public static bool ShouldHtmlNudge(float distance, float previousDistance, float candyRadius)
+        {
+            return distance <= HtmlTriggerRadiusFactor * candyRadius && distance < previousDistance;
+        }
+
+        /// <summary>
+        /// HTML-build candy↔candy nudge impulse for point <paramref name="a"/>.
+        /// Each point contributes its reverse last-frame displacement (prevPos − pos) scaled by
+        /// <see cref="HtmlNudgeScaleX"/>/<see cref="HtmlNudgeScaleY"/>; the impulse is their
+        /// difference. Point <paramref name="b"/>'s impulse is the negation of this one.
+        /// </summary>
+        public static Vector HtmlNudgeImpulse(ConstraintedPoint a, ConstraintedPoint b)
+        {
+            float aReverseX = (a.prevPos.X - a.pos.X) * HtmlNudgeScaleX;
+            float aReverseY = (a.prevPos.Y - a.pos.Y) * HtmlNudgeScaleY;
+            float bReverseX = (b.prevPos.X - b.pos.X) * HtmlNudgeScaleX;
+            float bReverseY = (b.prevPos.Y - b.pos.Y) * HtmlNudgeScaleY;
+            return new Vector(aReverseX - bReverseX, aReverseY - bReverseY);
         }
     }
 }
