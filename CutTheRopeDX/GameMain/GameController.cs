@@ -545,12 +545,19 @@ namespace CutTheRopeDX.GameMain
         /// <param name="p"><see langword="true"/> to pause the game; <see langword="false"/> to resume it.</param>
         public void SetPaused(bool p)
         {
+            View view = GetView(0);
             if (!p)
             {
                 DeactivateAllButtons();
             }
+            else
+            {
+                // Cancel any in-progress game-scene gesture
+                // before the scene stops receiving input. Otherwise the matching touch-up is
+                // dropped while paused, stranding the button in its pressed state until restart.
+                ReleaseAllTouches((GameScene)view.GetChild(0));
+            }
             isGamePaused = p;
-            View view = GetView(0);
             view.GetChild(3).SetEnabled(p);
             view.GetChild(1).SetEnabled(!p);
             view.GetChild(2).SetEnabled(!p);
