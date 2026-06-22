@@ -1840,6 +1840,8 @@ namespace CutTheRopeDX.GameMain
                     {
                         noCandy = true;
                     }
+                    // Only the leaver's own rocket dies (C breakCandy stops candy+392, not all rockets).
+                    ExhaustRocketForCandy(ctx);
                     anyLeft = true;
                 }
             }
@@ -1848,17 +1850,18 @@ namespace CutTheRopeDX.GameMain
                 if (!noCandyL && PointOutOfScreen(starL))
                 {
                     noCandyL = true;
+                    ExhaustRocketForCandy(candies[0]);
                     anyLeft = true;
                 }
                 if (!noCandyR && PointOutOfScreen(starR))
                 {
                     noCandyR = true;
+                    ExhaustRocketForCandy(candies[0]);
                     anyLeft = true;
                 }
             }
             if (anyLeft)
             {
-                ExhaustAllActiveRockets();
                 if (restartState != 0)
                 {
                     int candiesLostCount = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;

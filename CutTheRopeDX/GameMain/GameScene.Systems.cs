@@ -542,7 +542,7 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
-            ExhaustAllActiveRockets();
+            ExhaustRocketForCandy(candies[0]);
             DetachSnailsForPoint(capturedStar);
             if (restartState != 0)
             {

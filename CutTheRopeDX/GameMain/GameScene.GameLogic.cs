@@ -449,7 +449,9 @@ namespace CutTheRopeDX.GameMain
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
-            ExhaustAllActiveRockets();
+            // Rockets are exhausted per-candy at each loss site (breakCandy in the C reference only
+            // stops the lost candy's own rocket; gameLoseIm stops none). A surviving candy's rocket
+            // keeps burning through the restart animation, matching the original.
             DetachActiveHands();
 
             // Make the mouse retreat and lock it from advancing to next mouse
@@ -675,7 +677,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ctx.noCandy = true;
             }
-            ExhaustAllActiveRockets();
+            ExhaustRocketForCandy(ctx);
             SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
             if (index == 0)
             {
@@ -725,7 +727,7 @@ namespace CutTheRopeDX.GameMain
                 breakY = candyR.y;
                 noCandyR = true;
             }
-            ExhaustAllActiveRockets();
+            ExhaustRocketForCandy(candies[0]);
             SpawnCandyBreakParticles(breakX, breakY);
             ReleaseAllRopes(left);
             DetachActiveHands();
