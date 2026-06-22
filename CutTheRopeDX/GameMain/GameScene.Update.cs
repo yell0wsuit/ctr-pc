@@ -521,7 +521,7 @@ namespace CutTheRopeDX.GameMain
                 CalculateTopLeft(ctx.candy);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
-            ResolveCandyCollisions();
+            ResolveCandyCollisions(delta);
             if (twoParts != 2)
             {
                 candyL.Update(delta);

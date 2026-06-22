@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 
+using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
@@ -7,11 +10,17 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
+        /// Previous-frame center distance per candy pair (keyed by ordered candy indices),
+        /// used by the PC-model HTML nudge's closing-in guard. Cleared per level in InitializeCandyObjects.
+        /// </summary>
+        private readonly Dictionary<(int, int), float> candyPairPrevDistance = [];
+
+        /// <summary>
         /// Resolves candy-to-candy collisions for all independent candies, matching the engine's
         /// pairwise <c>handleCandyIntersection</c> loop. No-ops for single-candy levels.
         /// Candies that are eaten, carried by a bubble, or captured in a lantern do not collide.
         /// </summary>
-        private void ResolveCandyCollisions()
+        private void ResolveCandyCollisions(float delta)
         {
             int count = candies.Count;
             for (int i = 0; i < count; i++)
@@ -33,15 +42,43 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    float collisionDist = CandyCollision.PairDistance(ca, cb);
-                    float dx = ca.point.pos.X - cb.point.pos.X;
-                    float dy = ca.point.pos.Y - cb.point.pos.Y;
-                    if (((dx * dx) + (dy * dy)) < (collisionDist * collisionDist))
+                    if (ActivePhysicsConstants.UseMobilePhysicsModel)
                     {
-                        HandleCandyIntersection(ca.point, cb.point, collisionDist);
+                        // Mobile: radius-sum trigger + de-penetration.
+                        float collisionDist = CandyCollision.PairDistance(ca, cb);
+                        float dx = ca.point.pos.X - cb.point.pos.X;
+                        float dy = ca.point.pos.Y - cb.point.pos.Y;
+                        if (((dx * dx) + (dy * dy)) < (collisionDist * collisionDist))
+                        {
+                            HandleCandyIntersection(ca.point, cb.point, collisionDist);
+                        }
+                    }
+                    else
+                    {
+                        // PC: 0.9 * radius trigger + closing-in guard + velocity-only nudge.
+                        (int, int) key = (i, j);
+                        float distance = VectDistance(ca.point.pos, cb.point.pos);
+                        float previousDistance = candyPairPrevDistance.GetValueOrDefault(key);
+                        if (CandyCollision.ShouldHtmlNudge(distance, previousDistance, ca.CollisionRadius))
+                        {
+                            ResolveCandyPairHtml(ca.point, cb.point, delta);
+                        }
+                        candyPairPrevDistance[key] = distance;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// PC-model candy↔candy response: the HTML build's velocity-only nudge. Shifts each
+        /// candy's position by the equal-and-opposite impulse via <see cref="MaterialPoint.ApplyImpulseDelta"/>
+        /// (leaving prevPos, so it reads as injected velocity in the Verlet step). No de-penetration.
+        /// </summary>
+        private static void ResolveCandyPairHtml(ConstraintedPoint a, ConstraintedPoint b, float delta)
+        {
+            Vector impulseA = CandyCollision.HtmlNudgeImpulse(a, b);
+            a.ApplyImpulseDelta(impulseA, delta);
+            b.ApplyImpulseDelta(VectMult(impulseA, -1f), delta);
         }
 
         /// <summary>

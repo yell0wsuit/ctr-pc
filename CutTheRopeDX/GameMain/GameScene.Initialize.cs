@@ -94,6 +94,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void InitializeCandyObjects()
         {
+            candyPairPrevDistance.Clear();
+
             // Initialize constraint points for ropes
             ConstraintedPoint starPoint = new();
             starPoint.SetWeight(1f);
