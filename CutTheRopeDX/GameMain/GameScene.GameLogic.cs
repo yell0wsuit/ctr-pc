@@ -687,7 +687,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ReleaseRopesForPoint(ctx.point);
             }
-            DetachActiveHands();
+            DetachHandsForPoint(ctx.point);
             DetachSnailsForPoint(ctx.point);
             if (restartState != 0)
             {
@@ -828,6 +828,34 @@ namespace CutTheRopeDX.GameMain
                 {
                     CandyContext held = HandHeldCandy(hand);
                     ConstraintedPoint heldPoint = held?.point ?? star;
+                    hand.cPoint.RemoveConstraint(heldPoint);
+                    hand.state = MechanicalHand.STATE_HAND_RELEASE;
+                    hand.doRotateCandy = false;
+                    hand.releaseSoundPlayed = false;
+                    hand.AnimateReleaseWithAnimationsPool(aniPool);
+                    _ = (held?.capturingHand = null);
+                }
+            }
+        }
+
+        /// <summary>Releases only the mechanical hand holding the candy at <paramref name="point"/> (no-op if null).</summary>
+        public void DetachHandsForPoint(ConstraintedPoint point)
+        {
+            if (hands == null || hands.Count <= 0 || point == null)
+            {
+                return;
+            }
+
+            foreach (MechanicalHand hand in hands)
+            {
+                if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                {
+                    CandyContext held = HandHeldCandy(hand);
+                    ConstraintedPoint heldPoint = held?.point ?? star;
+                    if (heldPoint != point)
+                    {
+                        continue;
+                    }
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
