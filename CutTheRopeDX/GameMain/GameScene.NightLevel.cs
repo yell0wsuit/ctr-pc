@@ -7,6 +7,14 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
+        /// Whether the primary candy (whole, or either split half) is still in play. During a split
+        /// the singleton <see cref="noCandy"/> is always <see langword="true"/>, so this consults the
+        /// per-half flags instead.
+        /// </summary>
+        private bool AnyPrimaryCandyPresent =>
+            PrimaryCandyPresence.AnyPresent(twoParts != 2, noCandy, noCandyL, noCandyR);
+
+        /// <summary>
         /// Calculates the Y offset for the sleep pulse animation pivot point.
         /// </summary>
         /// <param name="height">The height of the target object.</param>
@@ -80,7 +88,9 @@ namespace CutTheRopeDX.GameMain
                 hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy;
             }
 
-            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && !noCandy)
+            // Split-aware presence: during a split the singleton noCandy is always true, so guarding
+            // on !noCandy would suppress the lights-out loss while the candy halves are still in play.
+            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyPrimaryCandyPresent)
             {
                 GameLost();
             }
@@ -108,7 +118,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = twoParts == 2 ? !noCandy : (!noCandyL || !noCandyR);
+            bool hasCandyPresent = AnyPrimaryCandyPresent;
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -248,7 +258,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = twoParts == 2 ? !noCandy : (!noCandyL || !noCandyR);
+            bool hasCandyPresent = AnyPrimaryCandyPresent;
             if (!hasCandyPresent)
             {
                 return;

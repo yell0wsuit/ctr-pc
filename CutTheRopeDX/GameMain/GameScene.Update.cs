@@ -314,43 +314,26 @@ namespace CutTheRopeDX.GameMain
                                         CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
                                     }
                                 }
+
+                                // The split candy occupies candies[0] via starL/starR above; whole
+                                // candies (e.g. light emitters) live at index 1+ and still need
+                                // radius-hook attachment while the halves are active.
+                                for (int ci = 1; ci < candies.Count; ci++)
+                                {
+                                    if (grab.rope != null || TryAutoAttachGrabToCandy(grab, candies[ci]))
+                                    {
+                                        break;
+                                    }
+                                }
                             }
                             else
                             {
                                 for (int ci = 0; ci < candies.Count; ci++)
                                 {
-                                    CandyContext ctx = candies[ci];
-                                    bool inRange = !ctx.noCandy
-                                        && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
-                                    if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, !ctx.noCandy, inRange))
+                                    if (TryAutoAttachGrabToCandy(grab, candies[ci]))
                                     {
-                                        continue;
+                                        break;
                                     }
-
-                                    Bungee bungee3 = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, ctx.point, ctx.point.pos.X, ctx.point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
-                                    bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
-                                    grab.hideRadius = true;
-                                    grab.SetRope(bungee3);
-                                    if (ctx.activeRocket != null)
-                                    {
-                                        ctx.activeRocket.anglePercent = 0f;
-                                        ctx.activeRocket.perpSetted = false;
-                                        ctx.activeRocket.startRotation += ctx.activeRocket.additionalAngle;
-                                        ctx.activeRocket.additionalAngle = 0f;
-                                    }
-
-                                    // If mouse already has this candy, immediately cut the rope
-                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
-                                    {
-                                        bungee3.SetCut(bungee3.parts.Count - 2);
-                                    }
-
-                                    CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
-                                    if (grab.mover != null)
-                                    {
-                                        CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
-                                    }
-                                    break;
                                 }
                             }
                         }
@@ -2007,6 +1990,49 @@ namespace CutTheRopeDX.GameMain
                 restartState = -1;
                 outcomeTransitionActive = false;
             }
+        }
+
+        /// <summary>
+        /// Attaches an auto-attaching radius grab to a candy when it is present, in range, and the
+        /// grab has not already created a rope. Returns <see langword="true"/> when a rope was created.
+        /// </summary>
+        /// <remarks>
+        /// Shared by the whole-candy path and the split-candy path (for the whole candies, e.g. light
+        /// emitters, that sit alongside the split halves at <c>candies[1+]</c>).
+        /// </remarks>
+        private bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
+        {
+            bool inRange = !ctx.noCandy
+                && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
+            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, !ctx.noCandy, inRange))
+            {
+                return false;
+            }
+
+            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, ctx.point, ctx.point.pos.X, ctx.point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
+            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+            grab.hideRadius = true;
+            grab.SetRope(bungee);
+            if (ctx.activeRocket != null)
+            {
+                ctx.activeRocket.anglePercent = 0f;
+                ctx.activeRocket.perpSetted = false;
+                ctx.activeRocket.startRotation += ctx.activeRocket.additionalAngle;
+                ctx.activeRocket.additionalAngle = 0f;
+            }
+
+            // If mouse already has this candy, immediately cut the rope
+            if (miceManager?.ActiveMouseHasCandy() ?? false)
+            {
+                bungee.SetCut(bungee.parts.Count - 2);
+            }
+
+            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+            if (grab.mover != null)
+            {
+                CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+            }
+            return true;
         }
 
         /// <summary>
