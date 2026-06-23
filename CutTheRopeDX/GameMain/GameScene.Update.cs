@@ -1789,6 +1789,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 noCandy = true;
                             }
+                            ExhaustRocketForCandy(ctx);
                             ReleaseRopesForPoint(ctx.point);
                             ctx.candy.visible = false;
                             t.asleep = true;
