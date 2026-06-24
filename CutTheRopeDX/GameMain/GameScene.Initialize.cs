@@ -89,21 +89,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Initializes candy and constraint point objects
-        /// Sets up the main candy, candy variants (left/right), and related animations
+        /// Builds the shared candy visual stack — root sprite, main/top layers, the collect-glow
+        /// blink animation, and the reappear timeline (id 2) played by <see cref="Teleport"/> after a
+        /// bamboo-tube exit. Shared by the primary candy and every additional candy so they stay
+        /// identical; callers position the root and attach the candy/ghost bubbles themselves.
         /// </summary>
-        private void InitializeCandyObjects()
+        private (GameObject candy, GameObject candyMain, GameObject candyTop, Animation candyBlink) CreateCandyVisual()
         {
-            candyPairPrevDistance.Clear();
-
-            // Initialize constraint points for ropes
-            ConstraintedPoint starPoint = new();
-            starPoint.SetWeight(1f);
-            starL = new ConstraintedPoint();
-            starL.SetWeight(1f);
-            starR = new ConstraintedPoint();
-            starR.SetWeight(1f);
-
             // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
             int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -144,13 +136,34 @@ namespace CutTheRopeDX.GameMain
             Animation candyBlinkAnim = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
             candyBlinkAnim.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
             candyBlinkAnim.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
-            Timeline timeline7 = candyBlinkAnim.GetTimeline(1);
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
+            Timeline blinkColorTimeline = candyBlinkAnim.GetTimeline(1);
+            blinkColorTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            blinkColorTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
             candyBlinkAnim.visible = false;
             candyBlinkAnim.anchor = candyBlinkAnim.parentAnchor = 18;
             candyBlinkAnim.scaleX = candyBlinkAnim.scaleY = 0.71f;
             _ = candyObj.AddChild(candyBlinkAnim);
+
+            return (candyObj, candyMainObj, candyTopObj, candyBlinkAnim);
+        }
+
+        /// <summary>
+        /// Initializes candy and constraint point objects
+        /// Sets up the main candy, candy variants (left/right), and related animations
+        /// </summary>
+        private void InitializeCandyObjects()
+        {
+            candyPairPrevDistance.Clear();
+
+            // Initialize constraint points for ropes
+            ConstraintedPoint starPoint = new();
+            starPoint.SetWeight(1f);
+            starL = new ConstraintedPoint();
+            starL.SetWeight(1f);
+            starR = new ConstraintedPoint();
+            starR.SetWeight(1f);
+
+            (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim) = CreateCandyVisual();
 
             // Setup candy bubble animation
             candyBubbleAnimation = BubbleAnimationFactory.CreateBubble();
@@ -189,42 +202,9 @@ namespace CutTheRopeDX.GameMain
             p.pos.Y = py;
             p.prevPos = p.pos;
 
-            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-
-            GameObject c = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
-            c.DoRestoreCutTransparency();
-            c.anchor = 18;
-            c.bb = GetCandyBoundingBox();
-            c.passTransformationsToChilds = false;
-            c.scaleX = c.scaleY = 0.71f;
+            (GameObject c, GameObject cMain, GameObject cTop, Animation blink) = CreateCandyVisual();
             c.x = px;
             c.y = py;
-
-            GameObject cMain = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
-            cMain.DoRestoreCutTransparency();
-            cMain.anchor = cMain.parentAnchor = 18;
-            _ = c.AddChild(cMain);
-            cMain.scaleX = cMain.scaleY = 0.71f;
-
-            GameObject cTop = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
-            cTop.DoRestoreCutTransparency();
-            cTop.anchor = cTop.parentAnchor = 18;
-            _ = c.AddChild(cTop);
-            cTop.scaleX = cTop.scaleY = 0.71f;
-
-            // Per-candy collect glow (mirrors the primary candy's candyBlink) so each candy
-            // glows independently when it collects a star.
-            Animation blink = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
-            blink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
-            blink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
-            Timeline blinkTimeline = blink.GetTimeline(1);
-            blinkTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            blinkTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
-            blink.visible = false;
-            blink.anchor = blink.parentAnchor = 18;
-            blink.scaleX = blink.scaleY = 0.71f;
-            _ = c.AddChild(blink);
 
             // Per-candy bubble animation (child of the candy so it draws with candy.Draw()).
             Animation bubbleAnim = BubbleAnimationFactory.CreateBubble();
