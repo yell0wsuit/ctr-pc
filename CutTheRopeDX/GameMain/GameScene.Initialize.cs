@@ -90,11 +90,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Builds the shared candy visual stack — root sprite, main/top layers, the collect-glow
-        /// blink animation, and the reappear timeline (id 2) played by <see cref="Teleport"/> after a
-        /// bamboo-tube exit. Shared by the primary candy and every additional candy so they stay
-        /// identical; callers position the root and attach the candy/ghost bubbles themselves.
+        /// blink animation, the reappear timeline (id 2) played by <see cref="Teleport"/> after a
+        /// bamboo-tube exit, and the (hidden) normal + ghost bubble overlays. Shared by the primary
+        /// candy and every additional candy so they stay identical; callers position the root and
+        /// decide where to store the returned bubbles.
         /// </summary>
-        private (GameObject candy, GameObject candyMain, GameObject candyTop, Animation candyBlink) CreateCandyVisual()
+        private (GameObject candy, GameObject candyMain, GameObject candyTop, Animation candyBlink, Animation candyBubble, CandyInGhostBubbleAnimation candyGhostBubble) CreateCandyVisual()
         {
             // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
             int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
@@ -144,7 +145,15 @@ namespace CutTheRopeDX.GameMain
             candyBlinkAnim.scaleX = candyBlinkAnim.scaleY = 0.71f;
             _ = candyObj.AddChild(candyBlinkAnim);
 
-            return (candyObj, candyMainObj, candyTopObj, candyBlinkAnim);
+            // Bubble overlays (both start hidden): normal bubble first, then the ghost-form bubble,
+            // so draw order matches the legacy primary candy where the ghost bubble was attached last.
+            Animation candyBubbleAnim = BubbleAnimationFactory.CreateBubble();
+            _ = candyObj.AddChild(candyBubbleAnim);
+
+            CandyInGhostBubbleAnimation candyGhostBubbleAnim = BubbleAnimationFactory.CreateGhostBubble();
+            _ = candyObj.AddChild(candyGhostBubbleAnim);
+
+            return (candyObj, candyMainObj, candyTopObj, candyBlinkAnim, candyBubbleAnim, candyGhostBubbleAnim);
         }
 
         /// <summary>
@@ -163,13 +172,14 @@ namespace CutTheRopeDX.GameMain
             starR = new ConstraintedPoint();
             starR.SetWeight(1f);
 
-            (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim) = CreateCandyVisual();
+            (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim, Animation primaryBubble, CandyInGhostBubbleAnimation primaryGhostBubble) = CreateCandyVisual();
 
-            // Setup candy bubble animation
-            candyBubbleAnimation = BubbleAnimationFactory.CreateBubble();
-            candyBubbleAnimation.x = candyObj.x;
-            candyBubbleAnimation.y = candyObj.y;
-            _ = candyObj.AddChild(candyBubbleAnimation);
+            // The primary candy routes its bubble/ghost-bubble through the scene singletons (the
+            // ci==0 path in Update/GameLogic). The ghost bubble is now created eagerly here instead of
+            // lazily in EnsureCandyGhostBubbleAnimations, matching how additional candies are built.
+            candyBubbleAnimation = primaryBubble;
+            candyGhostBubbleAnimation = primaryGhostBubble;
+            isCandyInGhostBubbleAnimationLoaded = true;
 
             // Register the primary candy as candies[0] so multi-candy logic and legacy
             // single-candy code share the same objects. Its candyNumber is unassigned here;
@@ -202,16 +212,9 @@ namespace CutTheRopeDX.GameMain
             p.pos.Y = py;
             p.prevPos = p.pos;
 
-            (GameObject c, GameObject cMain, GameObject cTop, Animation blink) = CreateCandyVisual();
+            (GameObject c, GameObject cMain, GameObject cTop, Animation blink, Animation bubbleAnim, CandyInGhostBubbleAnimation ghostBubbleAnim) = CreateCandyVisual();
             c.x = px;
             c.y = py;
-
-            // Per-candy bubble animation (child of the candy so it draws with candy.Draw()).
-            Animation bubbleAnim = BubbleAnimationFactory.CreateBubble();
-            _ = c.AddChild(bubbleAnim);
-
-            CandyInGhostBubbleAnimation ghostBubbleAnim = BubbleAnimationFactory.CreateGhostBubble();
-            _ = c.AddChild(ghostBubbleAnim);
 
             CandyContext ctx = new()
             {
@@ -246,16 +249,12 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Ensures candy ghost-bubble overlay animations exist for each active candy sprite.
+        /// Ensures the split-half ghost-bubble overlays exist once <c>candyL</c>/<c>candyR</c> are
+        /// loaded. The whole candy's ghost bubble is built eagerly in <see cref="CreateCandyVisual"/>;
+        /// the halves stay lazy because they are created later, during metadata parsing.
         /// </summary>
         private void EnsureCandyGhostBubbleAnimations()
         {
-            if (!isCandyInGhostBubbleAnimationLoaded && candy != null)
-            {
-                candyGhostBubbleAnimation = BubbleAnimationFactory.CreateGhostBubble();
-                _ = candy.AddChild(candyGhostBubbleAnimation);
-                isCandyInGhostBubbleAnimationLoaded = true;
-            }
             if (!isCandyInGhostBubbleAnimationLeftLoaded && candyL != null)
             {
                 candyGhostBubbleAnimationL = BubbleAnimationFactory.CreateGhostBubble();
