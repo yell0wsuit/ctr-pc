@@ -260,14 +260,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Starts bamboo tube teleport sequence for the primary candy (singleton entry point).
-        /// </summary>
-        public void OperateBambooTube(BambooTube bambooTube)
-        {
-            OperateBambooTube(bambooTube, candies[0]);
-        }
-
-        /// <summary>
         /// Starts bamboo tube teleport sequence for a specific candy.
         /// </summary>
         public void OperateBambooTube(BambooTube bambooTube, CandyContext ctx)
