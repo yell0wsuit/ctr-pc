@@ -92,7 +92,7 @@ namespace CutTheRopeDX.GameMain
                 ctx.targetBambooTube.ThrowCandy(ctx.point);
                 ctx.targetBambooTube.ThrowParticlesOut(particlesAniPool);
                 ctx.candy.PlayTimeline(2);
-                if (ctx.activeRocket != null)
+                if (ctx.HasActiveRocket)
                 {
                     Vector holeOut = ctx.targetBambooTube.HoleOut;
                     Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.GameMain
                 ctx.point.posDelta = VectDiv(ctx.point.v, 60f);
                 ctx.point.prevPos = VectSub(ctx.point.pos, ctx.point.posDelta);
 
-                if (ctx.activeRocket != null)
+                if (ctx.HasActiveRocket)
                 {
                     ctx.activeRocket.point.pos = ctx.point.pos;
                     ctx.activeRocket.point.prevPos = ctx.point.prevPos;
@@ -284,7 +284,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (!CandyInteraction.CanBeGrabbedByHand(ctx) || ctx.inLantern || ctx.targetSock != null)
+                if (!ctx.IsHandGrabbable || ctx.inLantern || ctx.targetSock != null)
                 {
                     continue;
                 }

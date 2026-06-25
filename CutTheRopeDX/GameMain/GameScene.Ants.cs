@@ -92,7 +92,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 bool shouldSlowStop = AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally);
-                ctx.point.disableGravity = ctx.activeRocket != null;
+                ctx.point.disableGravity = ctx.HasActiveRocket;
                 ctx.antSegment = null;
 
                 if (shouldSlowStop)
@@ -193,7 +193,7 @@ namespace CutTheRopeDX.GameMain
             ApplyConveyorBrake(ctx);
             ctx.antSegment = null;
             PlayAntConveyorDetachSound();
-            point.disableGravity = ctx.activeRocket != null;
+            point.disableGravity = ctx.HasActiveRocket;
             return true;
         }
 
@@ -228,7 +228,7 @@ namespace CutTheRopeDX.GameMain
             PlayAntConveyorDetachSound();
 
             // A candy can only hold a segment if it had a point when it attached.
-            ctx.point.disableGravity = ctx.activeRocket != null;
+            ctx.point.disableGravity = ctx.HasActiveRocket;
 
             ctx.antWaitForFly = false;
             ctx.antSegment = null;
@@ -247,7 +247,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> if the candy was attached to the segment; otherwise, <see langword="false"/>.</returns>
         private bool TryStartAntInteraction(AntsPathSegment segment, CandyContext ctx, bool useExternalBounds)
         {
-            if (segment == null || !CandyInteraction.CanAttachAnts(ctx))
+            if (segment == null || !ctx.IsAntAttachable)
             {
                 return false;
             }

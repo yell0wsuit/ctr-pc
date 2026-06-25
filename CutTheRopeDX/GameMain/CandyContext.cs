@@ -79,6 +79,19 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
 
+        /// <summary>True while a rocket is bound to and flying this candy.</summary>
+        public bool HasActiveRocket => activeRocket != null;
+
+        /// <summary>
+        /// True when this candy can be grabbed by a mechanical hand right now: it is present and its
+        /// capabilities permit it. The <c>Is*</c> form folds in presence; <see cref="CandyCapabilities"/>
+        /// flags (e.g. <c>Capabilities.CanBeGrabbedByHand</c>) are the static capability alone.
+        /// </summary>
+        public bool IsHandGrabbable => !noCandy && Capabilities.CanBeGrabbedByHand;
+
+        /// <summary>True when this candy can attach to an ant conveyor right now: present and capable.</summary>
+        public bool IsAntAttachable => !noCandy && Capabilities.CanAttachAnts;
+
         /// <summary>Ant-conveyor segment currently carrying this candy (null if not carried).</summary>
         public AntsPathSegment antSegment;
 

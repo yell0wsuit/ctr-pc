@@ -1339,7 +1339,7 @@ namespace CutTheRopeDX.GameMain
                             ctx.point.disableGravity = true;
 
                             // Exhaust any rocket already bound to this candy before re-binding (one-time-use safety).
-                            if (ctx.activeRocket != null && ctx.activeRocket != rocket)
+                            if (ctx.HasActiveRocket && ctx.activeRocket != rocket)
                             {
                                 ExhaustRocketForCandy(ctx);
                             }
@@ -1548,7 +1548,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     float damping = ActivePhysicsConstants.WaterDamping;
                     float verticalWaterImpulse = ActivePhysicsConstants.WaterVerticalImpulseBase / ctx.point.weight;
-                    if (ctx.activeRocket != null)
+                    if (ctx.HasActiveRocket)
                     {
                         verticalWaterImpulse /= ActivePhysicsConstants.WaterRocketImpulseDivisor;
                         damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
@@ -2014,7 +2014,7 @@ namespace CutTheRopeDX.GameMain
             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
             grab.hideRadius = true;
             grab.SetRope(bungee);
-            if (ctx.activeRocket != null)
+            if (ctx.HasActiveRocket)
             {
                 ctx.activeRocket.anglePercent = 0f;
                 ctx.activeRocket.perpSetted = false;
@@ -2073,7 +2073,7 @@ namespace CutTheRopeDX.GameMain
                             rotatingCandyVisual.rotation += hand.rotatingSegment.RotationDelta();
                         }
                     }
-                    else if (heldCandy.activeRocket != null)
+                    else if (heldCandy.HasActiveRocket)
                     {
                         _ = hand.IsRotating();
                         hand.doRotateCandy = true;
@@ -2169,7 +2169,7 @@ namespace CutTheRopeDX.GameMain
                         PopCandyBubble(ctx);
                     }
 
-                    if (ctx.activeRocket != null)
+                    if (ctx.HasActiveRocket)
                     {
                         int count = Preferences.GetIntForKey("PREFS_GRAB_ROCKET") + 1;
                         Preferences.SetIntForKey(count, "PREFS_GRAB_ROCKET", false);
