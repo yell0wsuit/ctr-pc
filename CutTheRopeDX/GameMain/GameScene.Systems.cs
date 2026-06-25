@@ -202,7 +202,7 @@ namespace CutTheRopeDX.GameMain
                         _ = ApplyImpulse(starR);
                     }
                 }
-                else if (!(ci == 0 ? noCandy : ctx.noCandy))
+                else if (!CandyGone(ci, ctx))
                 {
                     _ = ApplyImpulse(ctx.point);
                 }
@@ -244,7 +244,7 @@ namespace CutTheRopeDX.GameMain
                         HandlePumpFlowPtSkin(p, starR, candyR);
                     }
                 }
-                else if (!(ci == 0 ? noCandy : ctx.noCandy))
+                else if (!CandyGone(ci, ctx))
                 {
                     HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
                 }

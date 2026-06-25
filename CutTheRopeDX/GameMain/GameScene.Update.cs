@@ -362,7 +362,7 @@ namespace CutTheRopeDX.GameMain
                                 for (int ci = 0; ci < candies.Count; ci++)
                                 {
                                     CandyContext ctx = candies[ci];
-                                    bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                                    bool gone = CandyGone(ci, ctx);
                                     bool chosen = ci == 0 ? flag : candyRotated[ci];
                                     if (!gone && !chosen && constraintedPoint2 == ctx.point)
                                     {
@@ -492,7 +492,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                bool gone = CandyGone(ci, ctx);
                 if (gone)
                 {
                     continue;
@@ -1442,7 +1442,7 @@ namespace CutTheRopeDX.GameMain
                             return;
                         }
 
-                        bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                        bool gone = CandyGone(ci, ctx);
                         if (gone || ctx.inLantern)
                         {
                             continue;
@@ -1500,7 +1500,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        if (ci == 0 ? noCandy : ctx.noCandy)
+                        if (CandyGone(ci, ctx))
                         {
                             continue;
                         }
@@ -1596,7 +1596,7 @@ namespace CutTheRopeDX.GameMain
                         for (int ci = 0; ci < candies.Count; ci++)
                         {
                             CandyContext ctx = candies[ci];
-                            bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                            bool gone = CandyGone(ci, ctx);
                             if (gone || !ctx.Capabilities.CanBeDraggedBySnail || !GameObject.ObjectsIntersect(ctx.candy, snail))
                             {
                                 continue;

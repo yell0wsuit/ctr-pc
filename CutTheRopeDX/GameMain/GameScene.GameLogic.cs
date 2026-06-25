@@ -11,6 +11,17 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>
+        /// Whether candy <paramref name="ci"/> is gone. The primary candy (index 0) tracks its presence
+        /// through the scene singleton <see cref="noCandy"/> (which a split also forces true); every
+        /// other candy uses its own <see cref="CandyContext.noCandy"/>. Centralised so the primary-vs-extra
+        /// rule lives in one place.
+        /// </summary>
+        private bool CandyGone(int ci, CandyContext ctx)
+        {
+            return ci == 0 ? noCandy : ctx.noCandy;
+        }
+
         private CandyContext CandyForPointOrNull(ConstraintedPoint point)
         {
             for (int i = 0; i < candies.Count; i++)

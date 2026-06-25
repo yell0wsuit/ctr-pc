@@ -272,7 +272,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                bool gone = ci == 0 ? noCandy : ctx.noCandy;
+                bool gone = CandyGone(ci, ctx);
                 Sock sock = ctx.targetSock;
                 if (!gone && sock == null)
                 {
