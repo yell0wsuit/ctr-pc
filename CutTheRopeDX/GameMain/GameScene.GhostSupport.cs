@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (twoParts == 2)
             {
-                return !noCandy && star != null ? star : star ?? starL ?? starR;
+                return FallbackStarPoint();
             }
 
             ConstraintedPoint best = null;
@@ -39,7 +39,16 @@ namespace CutTheRopeDX.GameMain
             Consider(starL, noCandyL);
             Consider(starR, noCandyR);
 
-            return best ?? (!noCandy && star != null ? star : star ?? starL ?? starR);
+            return best ?? FallbackStarPoint();
+        }
+
+        /// <summary>
+        /// The primary candy point when present, otherwise the first available point
+        /// (whole candy, then either split half) as a last resort.
+        /// </summary>
+        private ConstraintedPoint FallbackStarPoint()
+        {
+            return !noCandy && star != null ? star : star ?? starL ?? starR;
         }
     }
 }
