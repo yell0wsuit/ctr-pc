@@ -69,6 +69,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The bamboo tube currently teleporting this candy, if any (was the singleton <c>targetBambooTube</c>).</summary>
         public BambooTube targetBambooTube;
 
+        /// <summary>
+        /// True while this candy is mid-teleport through a transporter (bamboo tube or hat/sock).
+        /// Bamboo transit also flips <see cref="noCandy"/>, but hat transit does not, so any
+        /// "is it teleporting" decision must consult both targets — this is the single source of truth.
+        /// </summary>
+        public bool InTransport => targetBambooTube != null || targetSock != null;
+
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
 
@@ -183,7 +190,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Snapshot for the pure decision helpers.</summary>
         public CandyView ToView()
         {
-            return new CandyView(point.pos, noCandy, targetSock != null || targetBambooTube != null, Capabilities);
+            return new CandyView(point.pos, noCandy, InTransport, Capabilities);
         }
     }
 }

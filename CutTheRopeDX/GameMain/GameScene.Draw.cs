@@ -251,7 +251,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (rocket == ctx.activeRocket && (ctx.targetSock != null || ctx.targetBambooTube != null))
+                        if (rocket == ctx.activeRocket && ctx.InTransport)
                         {
                             hiddenForTransit = true;
                             break;

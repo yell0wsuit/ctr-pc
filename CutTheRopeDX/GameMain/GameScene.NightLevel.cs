@@ -88,8 +88,7 @@ namespace CutTheRopeDX.GameMain
                 // A bulb mid-teleport has noCandy == true for the brief transport window but is not
                 // lost: count it as active so a lone emitter in a bamboo tube or hat does not trip the
                 // lights-out loss the instant its light blinks out.
-                bool inTransport = ctx.targetBambooTube != null || ctx.targetSock != null;
-                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || inTransport;
+                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
             }
 
             // Split-aware presence: during a split the singleton noCandy is always true, so guarding

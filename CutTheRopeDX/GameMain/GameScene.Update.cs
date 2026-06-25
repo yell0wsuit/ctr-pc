@@ -1108,7 +1108,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (ctx.noCandy || ctx.inLantern || ctx.targetSock != null || ctx.targetBambooTube != null || !ctx.Capabilities.CanBeGrabbedByMouse)
+                        if (ctx.noCandy || ctx.inLantern || ctx.InTransport || !ctx.Capabilities.CanBeGrabbedByMouse)
                         {
                             continue;
                         }
