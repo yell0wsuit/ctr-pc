@@ -103,7 +103,7 @@ namespace CutTheRopeDX.GameMain
             // Using the global ReleaseAllRopes here would cut the first candy's ropes when
             // a later candy is grabbed, since that path matches the singleton star points.
             scene.ReleaseRopesForPoint(star);
-            scene.DetachActiveHands();
+            scene.DetachHandsForPoint(star);
             carriedStar = star;
             carriedCandy = candy;
             activeMouse.GrabCandy(star, candy);

@@ -1035,7 +1035,7 @@ namespace CutTheRopeDX.GameMain
                     ctx.candy.AddTimelinewithID(timeline, 0);
                     ctx.candy.PlayTimeline(0);
                     ReleaseRopesForPoint(ctx.point);
-                    DetachActiveHands();
+                    DetachHandsForPoint(ctx.point);
                     if (ci == 0)
                     {
                         if (candyBubble != null)
@@ -1180,7 +1180,7 @@ namespace CutTheRopeDX.GameMain
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(ctx.point);
-                            DetachActiveHands();
+                            DetachHandsForPoint(ctx.point);
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
@@ -1494,7 +1494,7 @@ namespace CutTheRopeDX.GameMain
                         if (flag8)
                         {
                             anyCandyHit = true;
-                            DetachActiveHands();
+                            DetachHandsForPoint(flag7 ? starL : starR);
                             HandleBouncePtDelta(bouncer, flag7 ? starL : starR, delta);
                         }
                     }
@@ -1511,7 +1511,7 @@ namespace CutTheRopeDX.GameMain
                             bouncerCollisionRadius))
                         {
                             anyCandyHit = true;
-                            DetachActiveHands();
+                            DetachHandsForPoint(ctx.point);
                             HandleBouncePtDelta(bouncer, ctx.point, delta);
                         }
                     }

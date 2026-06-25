@@ -271,7 +271,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             ReleaseRopesForPoint(ctx.point);
-            DetachActiveHands();
+            DetachHandsForPoint(ctx.point);
             ctx.targetBambooTube = bambooTube;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
             ctx.noCandy = true;
