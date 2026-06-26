@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
                 Candy(1, 1, false)
             ];
 
-            Assert.True(CandyDecisions.AnyConsumablePresent(candies, []));
+            Assert.True(CandyDecisions.AnyConsumablePresent(candies));
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Tests
                 new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
             ];
 
-            Assert.False(CandyDecisions.AnyConsumablePresent(candies, []));
+            Assert.False(CandyDecisions.AnyConsumablePresent(candies));
         }
 
         [Fact]

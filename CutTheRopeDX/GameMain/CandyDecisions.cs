@@ -32,12 +32,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>True when any edible candy body is still active or hidden in transport.</summary>
-        public static bool AnyConsumablePresent(IReadOnlyList<CandyView> candies, IReadOnlyList<CandyView> splitCandies)
-        {
-            return AnyConsumablePresent(candies) || AnyConsumablePresent(splitCandies);
-        }
-
-        private static bool AnyConsumablePresent(IReadOnlyList<CandyView> candies)
+        public static bool AnyConsumablePresent(IReadOnlyList<CandyView> candies)
         {
             if (candies == null)
             {

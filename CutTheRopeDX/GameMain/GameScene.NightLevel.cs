@@ -16,17 +16,14 @@ namespace CutTheRopeDX.GameMain
             List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
             {
+                if (ci == 0 && twoParts != 2)
+                {
+                    continue;
+                }
                 candyViews.Add(candies[ci].ToView());
             }
 
-            List<CandyView> splitCandyViews = [];
-            if (twoParts != 2)
-            {
-                splitCandyViews.Add(new CandyView(starL.pos, noCandyL));
-                splitCandyViews.Add(new CandyView(starR.pos, noCandyR));
-            }
-
-            return CandyDecisions.AnyConsumablePresent(candyViews, splitCandyViews);
+            return CandyDecisions.AnyConsumablePresent(candyViews);
         }
 
         /// <summary>
@@ -106,8 +103,8 @@ namespace CutTheRopeDX.GameMain
                 hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
             }
 
-            // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
-            // edible candy, or a split half, is still in play.
+            // Multi-candy presence: the primary noCandy flag can be true while another edible
+            // candy is still in play. Split halves are not consumable until they rejoin.
             if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyConsumableCandyPresent())
             {
                 GameLost();
