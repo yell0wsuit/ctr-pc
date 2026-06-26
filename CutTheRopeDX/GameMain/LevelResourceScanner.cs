@@ -33,6 +33,8 @@ namespace CutTheRopeDX.GameMain
 
             bool nightLevel = false;
             bool waterLevel = false;
+            bool sawTarget = false;
+            bool hasClassicTarget = false;
 
             foreach (XElement node in map.Descendants())
             {
@@ -123,7 +125,12 @@ namespace CutTheRopeDX.GameMain
                         _ = resources.Add(Resources.Img.ObjRoboHand);
                         break;
                     case "target":
-                        AddTargetResources(resources);
+                        sawTarget = true;
+                        if (AddTargetResources(resources, node))
+                        {
+                            hasClassicTarget = true;
+                        }
+
                         break;
                     case "steamTube":
                         _ = resources.Add(Resources.Img.ObjPipe);
@@ -140,8 +147,13 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = resources.Add(Resources.Img.ObjStarNight);
 
-                int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
-                if (OmNomSkinRegistry.IsClassicSkin(skinIndex))
+                // The classic sleeping spritesheet is only needed when a classic Om Nom is
+                // present. Use per-target resolution; if a night level has no target node,
+                // fall back to the player's selected skin to preserve prior behavior.
+                bool needsClassicSleeping = sawTarget
+                    ? hasClassicTarget
+                    : OmNomSkinRegistry.IsClassicSkin(OmNomSkinRegistry.GetSelectedSkinIndex());
+                if (needsClassicSleeping)
                 {
                     _ = resources.Add(Resources.Img.CharAnimationsSleeping);
                 }
@@ -230,14 +242,21 @@ namespace CutTheRopeDX.GameMain
 
 
         /// <summary>
-        /// Adds Om Nom animation resources, including the pack-specific support sprite.
+        /// Adds Om Nom animation resources for a single target, using its resolved skin.
         /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
-        private static void AddTargetResources(HashSet<string> resources)
+        /// <param name="node">The target XML node, whose <c>targetType</c> selects the skin.</param>
+        /// <returns><see langword="true"/> when the target resolved to the classic skin; otherwise, <see langword="false"/>.</returns>
+        private static bool AddTargetResources(HashSet<string> resources, XElement node)
         {
-            int skinIndex = OmNomSkinRegistry.GetSelectedSkinIndex();
+            int targetType = ParseIntOrZero(node.Attribute("targetType")?.Value ?? string.Empty);
+            int skinIndex = OmNomSkinRegistry.ResolveTargetSkinIndex(
+                targetType,
+                OmNomSkinRegistry.GetSelectedSkinIndex(),
+                OmNomSkinRegistry.TotalSkinCount);
 
-            if (OmNomSkinRegistry.IsClassicSkin(skinIndex))
+            bool isClassic = OmNomSkinRegistry.IsClassicSkin(skinIndex);
+            if (isClassic)
             {
                 _ = resources.Add(Resources.Img.CharAnimations);
                 _ = resources.Add(Resources.Img.CharAnimations2);
@@ -253,6 +272,7 @@ namespace CutTheRopeDX.GameMain
 
             _ = resources.Add(Resources.Img.FxBubbles);
             _ = resources.Add(Resources.Img.CharSupports);
+            return isClassic;
         }
 
         /// <summary>
