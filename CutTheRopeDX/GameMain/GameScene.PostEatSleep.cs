@@ -80,6 +80,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     target.sleepSoundTimer = 0f;
                     CTRSoundMgr.PlayRandomOmNomSound(
+                        target.controller?.SkinDefinition,
                         Resources.Snd.MonsterSleep1,
                         Resources.Snd.MonsterSleep2,
                         Resources.Snd.MonsterSleep3);

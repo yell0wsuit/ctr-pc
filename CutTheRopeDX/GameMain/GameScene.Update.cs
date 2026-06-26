@@ -1728,7 +1728,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         t.mouthOpen = true;
                         t.controller?.PlayMouthOpening();
-                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen);
+                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
                         t.mouthCloseTimer = 1f;
                     }
                 }
@@ -1743,7 +1743,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             t.mouthOpen = false;
                             t.controller?.PlayMouthClosing();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose);
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
@@ -1796,7 +1796,7 @@ namespace CutTheRopeDX.GameMain
                             t.asleep = true;
                             t.mouthOpen = false;
                             t.controller?.PlayChewing();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.controller?.SkinDefinition);
                             SchedulePostEatSleep(t);
                             break;
                         }
