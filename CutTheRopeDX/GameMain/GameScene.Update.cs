@@ -1714,7 +1714,7 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
                 // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || t.asleep || !GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive))
+                if (t.targetObject == null || t.asleep || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive))
                 {
                     continue;
                 }
@@ -1759,7 +1759,7 @@ namespace CutTheRopeDX.GameMain
             // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
             // Once a win/loss transition is active, no further candy may be eaten so a sad Om Nom
             // does not consume a remaining candy during the loss transition.
-            if (restartState != 0 && GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive))
+            if (restartState != 0 && GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive))
             {
                 for (int ti = 0; ti < targets.Count; ti++)
                 {

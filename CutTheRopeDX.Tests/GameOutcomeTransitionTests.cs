@@ -25,15 +25,15 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanConsumeCandy_TrueWhileNoOutcomeTransition()
+        public void CanReactToCandyOrLight_TrueWhileNoOutcomeTransition()
         {
-            Assert.True(GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive: false));
+            Assert.True(GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive: false));
         }
 
         [Fact]
-        public void CanConsumeCandy_FalseOnceOutcomeTransitionActive()
+        public void CanReactToCandyOrLight_FalseOnceOutcomeTransitionActive()
         {
-            Assert.False(GameOutcomeTransition.CanConsumeCandy(outcomeTransitionActive: true));
+            Assert.False(GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive: true));
         }
     }
 }

@@ -140,7 +140,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = AnyNightCandyBodyPresent();
+            bool canUpdateSleepState = GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive);
+            bool hasCandyPresent = canUpdateSleepState && AnyNightCandyBodyPresent();
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -165,7 +166,7 @@ namespace CutTheRopeDX.GameMain
                     UpdateNightTargetAwake(t, isAwake);
                 }
 
-                bool isSleeping = t.isNightTargetAwake == false && hasCandyPresent && !gameLostTriggered;
+                bool isSleeping = t.isNightTargetAwake == false && hasCandyPresent;
                 bool shouldShowSleepOverlay = isSleeping
                     && t.controller?.IsSleepingAnimationPlaying() == true;
                 SetNightSleepVisibility(t, shouldShowSleepOverlay);
