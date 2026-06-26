@@ -58,6 +58,21 @@ namespace CutTheRopeDX.GameMain
             return skinIndex == 0;
         }
 
+        /// <summary>
+        /// Resolves a level <c>targetType</c> value to a skin slot index.
+        /// </summary>
+        /// <param name="targetType">The level-supplied target type; <c>0</c>, out-of-range,
+        /// or negative defers to the player's selected skin.</param>
+        /// <param name="selectedSkinIndex">The player's currently selected skin slot index.</param>
+        /// <param name="totalSkinCount">The total number of skin slots, including classic.</param>
+        /// <returns>The resolved skin slot index (0 = classic, 1+ = XML skin slot).</returns>
+        public static int ResolveTargetSkinIndex(int targetType, int selectedSkinIndex, int totalSkinCount)
+        {
+            return targetType >= 1 && targetType <= totalSkinCount
+                ? targetType - 1
+                : selectedSkinIndex;
+        }
+
         /// <summary>Gets the XML skin definition for a non-classic skin index.</summary>
         /// <param name="skinIndex">Non-classic skin slot index.</param>
         /// <returns>The XML skin definition for <paramref name="skinIndex"/>.</returns>
