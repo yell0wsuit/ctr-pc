@@ -41,6 +41,22 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Plays an Om Nom sound resolved against a specific skin.
+        /// </summary>
+        /// <param name="soundResourceName">The base sound resource name to resolve and play.</param>
+        /// <param name="skin">The skin to resolve against, or <see langword="null"/> for the classic skin.</param>
+        public static void PlayOmNomSound(string soundResourceName, OmNomSkinDefinition skin)
+        {
+            if (soundResourceName is Resources.Snd.MonsterExcited or Resources.Snd.MonsterGreeting
+                && RND_RANGE(0, 1) == 0)
+            {
+                return;
+            }
+
+            PlaySound(OmNomSoundResolver.ResolveSoundResource(skin, soundResourceName));
+        }
+
+        /// <summary>
         /// Enables or disables looped sound playback globally.
         /// </summary>
         /// <param name="bEnable">If <see langword="true" />, looped sounds are enabled; otherwise, they are stopped and disabled.</param>
@@ -119,6 +135,27 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < soundNames.Length; i++)
             {
                 resolvedSounds[i] = OmNomSoundResolver.ResolveSelectedSkinSoundResource(soundNames[i]);
+            }
+
+            PlayRandomSound(resolvedSounds);
+        }
+
+        /// <summary>
+        /// Plays a random Om Nom sound, resolving candidates against a specific skin.
+        /// </summary>
+        /// <param name="skin">The skin to resolve against, or <see langword="null"/> for the classic skin.</param>
+        /// <param name="soundNames">One or more base sound resource names to resolve and choose from.</param>
+        public static void PlayRandomOmNomSound(OmNomSkinDefinition skin, params string[] soundNames)
+        {
+            if (soundNames == null || soundNames.Length == 0)
+            {
+                return;
+            }
+
+            string[] resolvedSounds = new string[soundNames.Length];
+            for (int i = 0; i < soundNames.Length; i++)
+            {
+                resolvedSounds[i] = OmNomSoundResolver.ResolveSoundResource(skin, soundNames[i]);
             }
 
             PlayRandomSound(resolvedSounds);
