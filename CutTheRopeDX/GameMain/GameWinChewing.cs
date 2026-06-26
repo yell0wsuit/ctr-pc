@@ -9,5 +9,10 @@ namespace CutTheRopeDX.GameMain
         {
             return targetCount <= 1;
         }
+
+        public static bool ShouldSchedulePostEatSleep(int targetCount, bool isNightLevel, bool usesFlashXmlAnimations)
+        {
+            return targetCount > 1 && !isNightLevel && usesFlashXmlAnimations;
+        }
     }
 }

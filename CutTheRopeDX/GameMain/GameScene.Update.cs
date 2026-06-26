@@ -666,6 +666,7 @@ namespace CutTheRopeDX.GameMain
             }
             UpdateLightEmitterPhysics();
             UpdateNightLevel(delta);
+            UpdatePostEatSleep(delta);
             conveyors.Update(delta);
 
             UpdateAntConveyor(delta);
@@ -1796,6 +1797,7 @@ namespace CutTheRopeDX.GameMain
                             t.mouthOpen = false;
                             t.controller?.PlayChewing();
                             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+                            SchedulePostEatSleep(t);
                             break;
                         }
                     }

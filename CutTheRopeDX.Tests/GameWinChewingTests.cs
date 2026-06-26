@@ -15,5 +15,23 @@ namespace CutTheRopeDX.Tests
         {
             Assert.Equal(expected, GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targetCount));
         }
+
+        [Theory]
+        [InlineData(2, false, true, true)]
+        [InlineData(3, false, true, true)]
+        [InlineData(1, false, true, false)]
+        [InlineData(2, true, true, false)]
+        [InlineData(2, false, false, false)]
+        public void ShouldSchedulePostEatSleep_OnlyForFlashMultiTargetNonNightLevels(
+            int targetCount,
+            bool isNightLevel,
+            bool usesFlashXmlAnimations,
+            bool expected)
+        {
+            Assert.Equal(expected, GameWinChewing.ShouldSchedulePostEatSleep(
+                targetCount,
+                isNightLevel,
+                usesFlashXmlAnimations));
+        }
     }
 }

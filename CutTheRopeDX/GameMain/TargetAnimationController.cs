@@ -42,6 +42,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public bool HandlesOwnSleepPulse => backend.HandlesOwnSleepPulse;
 
+        /// <summary>Whether the backend is driven by Flash XML animation exports.</summary>
+        public bool UsesFlashXmlAnimations => backend.UsesFlashXmlAnimations;
+
         /// <summary>Gets the backend-defined base horizontal scale for Om Nom.</summary>
         /// <returns>Default X scale for Om Nom.</returns>
         public float GetTargetBaseScaleX()
@@ -130,7 +133,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void PlaySleeping()
         {
-            backend.Play(TargetAnimationState.Sleeping);
+            backend.PlaySleeping(trimIdleToSleepTransition: true);
+        }
+
+        /// <summary>
+        /// Plays the sleeping animation without trimming the idle-to-sleep transition.
+        /// </summary>
+        public void PlaySleepingWithoutIdleToSleepTrim()
+        {
+            backend.PlaySleeping(trimIdleToSleepTransition: false);
         }
 
         /// <summary>

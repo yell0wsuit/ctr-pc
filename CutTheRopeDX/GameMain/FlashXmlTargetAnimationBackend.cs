@@ -171,6 +171,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this skin should start by playing its greeting animation.</summary>
         public bool StartsWithGreeting => _skinDefinition.StartWithGreeting;
 
+        /// <summary>Whether this backend is driven by Flash XML animation exports.</summary>
+        public bool UsesFlashXmlAnimations => true;
+
         /// <summary>
         /// Initializes playback and binds the external timeline delegate.
         /// </summary>
@@ -195,7 +198,23 @@ namespace CutTheRopeDX.GameMain
         /// <param name="state">Target animation state to play.</param>
         public void Play(TargetAnimationState state)
         {
-            if (state == TargetAnimationState.Sleeping && TryPlayIdleToSleepTransition())
+            Play(state, trimIdleToSleepTransition: true);
+        }
+
+        /// <inheritdoc />
+        public void PlaySleeping(bool trimIdleToSleepTransition)
+        {
+            Play(TargetAnimationState.Sleeping, trimIdleToSleepTransition);
+        }
+
+        /// <summary>
+        /// Plays the timeline mapped to a target animation state.
+        /// </summary>
+        /// <param name="state">Target animation state to play.</param>
+        /// <param name="trimIdleToSleepTransition">Whether to apply configured idle-to-sleep trim when entering sleep.</param>
+        private void Play(TargetAnimationState state, bool trimIdleToSleepTransition)
+        {
+            if (state == TargetAnimationState.Sleeping && TryPlayIdleToSleepTransition(trimIdleToSleepTransition))
             {
                 UpdatePirateBubbleScheduleForState(state);
                 return;
@@ -625,7 +644,7 @@ namespace CutTheRopeDX.GameMain
         /// Attempts to play the idle-to-sleep transition timeline.
         /// </summary>
         /// <returns><see langword="true"/> when the transition started; otherwise, <see langword="false"/>.</returns>
-        private bool TryPlayIdleToSleepTransition()
+        private bool TryPlayIdleToSleepTransition(bool trimIdleToSleepTransition)
         {
             if (!ShouldUseIdleToSleepTransition()
                 || _activeTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping)
@@ -636,10 +655,13 @@ namespace CutTheRopeDX.GameMain
 
             PlayTimelineById(idleToSleepTimelineId);
 
-            float trimSeconds = GetIdleToSleepSkipSeconds(GetTimelineDurationSeconds(idleToSleepTimelineId));
-            if (trimSeconds > 0f)
+            if (trimIdleToSleepTransition)
             {
-                SeekTimeline(parts, idleToSleepTimelineId, trimSeconds);
+                float trimSeconds = GetIdleToSleepSkipSeconds(GetTimelineDurationSeconds(idleToSleepTimelineId));
+                if (trimSeconds > 0f)
+                {
+                    SeekTimeline(parts, idleToSleepTimelineId, trimSeconds);
+                }
             }
 
             return true;

@@ -253,6 +253,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
+        public void PlaySleeping(bool trimIdleToSleepTransition)
+        {
+            _ = trimIdleToSleepTransition;
+            Play(TargetAnimationState.Sleeping);
+        }
+
+        /// <inheritdoc />
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
             if (rng(0, 1) == 1)
@@ -267,6 +274,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <inheritdoc />
         public bool StartsWithGreeting => false;
+
+        /// <inheritdoc />
+        public bool UsesFlashXmlAnimations => false;
 
         /// <inheritdoc />
         public bool IsPlaying(TargetAnimationState state)

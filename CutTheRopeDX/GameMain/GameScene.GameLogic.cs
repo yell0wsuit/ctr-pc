@@ -387,6 +387,8 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 t.sleepPulseActive = false;
                 t.sleepSoundTimer = 0f;
+                t.postEatSleepActive = false;
+                t.postEatSleepScheduled = false;
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -466,6 +468,8 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 t.sleepPulseActive = false;
                 t.sleepSoundTimer = 0f;
+                t.postEatSleepActive = false;
+                t.postEatSleepScheduled = false;
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;

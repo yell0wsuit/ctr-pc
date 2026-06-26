@@ -42,6 +42,10 @@ namespace CutTheRopeDX.GameMain
 
         public bool nightSleepOverlayVisible;
 
+        public bool postEatSleepActive;
+
+        public bool postEatSleepScheduled;
+
         public int blinkTimer;
 
         public int idlesTimer;
