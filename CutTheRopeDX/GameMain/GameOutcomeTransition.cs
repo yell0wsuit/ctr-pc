@@ -17,15 +17,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Returns whether Om Nom may react to candy or light-driven gameplay. Once a win or loss
-        /// transition is active, terminal outcome animations own Om Nom and gameplay reactions must
-        /// not replace them.
+        /// Returns whether Om Nom may react to candy or light-driven gameplay. Once a win/loss
+        /// transition is active, or this Om Nom has already eaten, gameplay reactions must not
+        /// replace the current target animation.
         /// </summary>
         /// <param name="outcomeTransitionActive">Whether a game win/loss transition is currently active.</param>
+        /// <param name="targetAlreadyFed">Whether this Om Nom has already eaten a candy.</param>
         /// <returns><see langword="true"/> while no terminal outcome transition is active; otherwise, <see langword="false"/>.</returns>
-        public static bool CanReactToCandyOrLight(bool outcomeTransitionActive)
+        public static bool CanReactToCandyOrLight(bool outcomeTransitionActive, bool targetAlreadyFed = false)
         {
-            return !outcomeTransitionActive;
+            return !outcomeTransitionActive && !targetAlreadyFed;
         }
     }
 }

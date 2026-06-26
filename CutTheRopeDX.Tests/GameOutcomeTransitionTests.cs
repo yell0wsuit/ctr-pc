@@ -35,5 +35,11 @@ namespace CutTheRopeDX.Tests
         {
             Assert.False(GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive: true));
         }
+
+        [Fact]
+        public void CanReactToCandyOrLight_FalseWhenTargetAlreadyAte()
+        {
+            Assert.False(GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive: false, targetAlreadyFed: true));
+        }
     }
 }

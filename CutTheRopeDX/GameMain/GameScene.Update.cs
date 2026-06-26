@@ -1714,7 +1714,7 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
                 // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || t.asleep || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive))
+                if (t.targetObject == null || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep))
                 {
                     continue;
                 }
@@ -1765,7 +1765,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     TargetContext t = targets[ti];
                     bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
-                    if (!canInteractWithTarget || t.asleep || !t.mouthOpen || t.targetObject == null)
+                    if (!canInteractWithTarget || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep) || !t.mouthOpen || t.targetObject == null)
                     {
                         continue;
                     }
