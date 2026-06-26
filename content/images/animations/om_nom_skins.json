@@ -56,7 +56,13 @@
             "Chewing": 7,
             "Sleeping": 9,
             "Greeting": 18,
-            "IdleToSleep": 8
+            "IdleToSleep": 8,
+            "GreetLeft": 13,
+            "GreetRight": 14,
+            "GreetUp": 15,
+            "GreetDown": 16,
+            "LevelIntro": 10,
+            "LevelOutro": 11
         },
         "followups": {
             "1": 0,
@@ -67,7 +73,11 @@
             "12": 0,
             "7": 7,
             "18": 0,
-            "8": 9
+            "8": 9,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0
         },
         "idleVariants": [1, 17, 12],
         "idleToSleepTrimFrames": 27,
@@ -88,7 +98,13 @@
             "Chewing": 7,
             "Sleeping": 9,
             "Greeting": 18,
-            "IdleToSleep": 8
+            "IdleToSleep": 8,
+            "GreetLeft": 13,
+            "GreetRight": 14,
+            "GreetUp": 15,
+            "GreetDown": 16,
+            "LevelIntro": 10,
+            "LevelOutro": 11
         },
         "followups": {
             "1": 0,
@@ -99,7 +115,11 @@
             "12": 0,
             "7": 7,
             "18": 0,
-            "8": 9
+            "8": 9,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0
         },
         "idleVariants": [1, 17, 12],
         "idleToSleepTrimFrames": 27,
@@ -143,6 +163,7 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
+            "GreetLeft": 8,
             "IdleToSleep": 9
         },
         "followups": {
@@ -150,7 +171,8 @@
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -177,14 +199,16 @@
             "Sad": 7,
             "Chewing": 8,
             "Sleeping": 3,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetRight": 4
         },
         "followups": {
             "1": 0,
             "6": 2,
             "2": 0,
             "8": 8,
-            "9": 3
+            "9": 3,
+            "4": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -211,14 +235,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetLeft": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -245,14 +271,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetUp": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -279,14 +307,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 8,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetRight": 7
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 8
+            "9": 8,
+            "7": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -357,14 +387,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 8,
-            "IdleToSleep": 7
+            "IdleToSleep": 7,
+            "GreetUp": 9
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "7": 8
+            "7": 8,
+            "9": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -391,14 +423,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetLeft": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -425,14 +459,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetLeft": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -459,14 +495,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetUp": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
@@ -493,14 +531,16 @@
             "Sad": 5,
             "Chewing": 6,
             "Sleeping": 7,
-            "IdleToSleep": 9
+            "IdleToSleep": 9,
+            "GreetLeft": 8
         },
         "followups": {
             "1": 0,
             "3": 4,
             "4": 0,
             "6": 6,
-            "9": 7
+            "9": 7,
+            "8": 0
         },
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
