@@ -83,6 +83,26 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AnyCandyBodyPresent_TrueWhenSplitHalfRemains()
+        {
+            List<CandyView> candies = [];
+            List<CandyView> splitCandies = [Candy(10, 10, false), Candy(20, 20, true)];
+
+            Assert.True(CandyDecisions.AnyCandyBodyPresent(candies, splitCandies));
+        }
+
+        [Fact]
+        public void AnyCandyBodyPresent_FalseWhenOnlyLightBulbRemains()
+        {
+            List<CandyView> candies =
+            [
+                new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
+            ];
+
+            Assert.False(CandyDecisions.AnyCandyBodyPresent(candies, []));
+        }
+
+        [Fact]
         public void AnyUneatenOutOfScreen_TrueOnlyForUneatenOutside()
         {
             List<CandyView> candies = [Candy(0, 0, false), Candy(999, 999, true)];

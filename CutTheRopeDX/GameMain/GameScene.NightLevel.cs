@@ -8,10 +8,10 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Whether any edible candy body is still in play. Night-level sleep and lights-out loss
-        /// must continue after the legacy primary candy is eaten if another Om Nom still has candy.
+        /// Whether any candy body is still in play. Night-level sleep and lights-out loss must
+        /// continue for split halves, while ignoring the inactive whole-candy slot during a split.
         /// </summary>
-        private bool AnyConsumableCandyPresent()
+        private bool AnyNightCandyBodyPresent()
         {
             List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
@@ -23,7 +23,14 @@ namespace CutTheRopeDX.GameMain
                 candyViews.Add(candies[ci].ToView());
             }
 
-            return CandyDecisions.AnyConsumablePresent(candyViews);
+            List<CandyView> splitCandyViews = [];
+            if (twoParts != 2)
+            {
+                splitCandyViews.Add(new CandyView(starL.pos, noCandyL));
+                splitCandyViews.Add(new CandyView(starR.pos, noCandyR));
+            }
+
+            return CandyDecisions.AnyCandyBodyPresent(candyViews, splitCandyViews);
         }
 
         /// <summary>
@@ -103,9 +110,9 @@ namespace CutTheRopeDX.GameMain
                 hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
             }
 
-            // Multi-candy presence: the primary noCandy flag can be true while another edible
-            // candy is still in play. Split halves are not consumable until they rejoin.
-            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyConsumableCandyPresent())
+            // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
+            // candy body is still in play.
+            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyNightCandyBodyPresent())
             {
                 GameLost();
             }
@@ -133,7 +140,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = AnyConsumableCandyPresent();
+            bool hasCandyPresent = AnyNightCandyBodyPresent();
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -273,7 +280,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = AnyConsumableCandyPresent();
+            bool hasCandyPresent = AnyNightCandyBodyPresent();
             if (!hasCandyPresent)
             {
                 return;

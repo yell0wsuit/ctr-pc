@@ -48,6 +48,28 @@ namespace CutTheRopeDX.GameMain
             return false;
         }
 
+        /// <summary>True when any candy body that participates in candy gameplay is still active.</summary>
+        public static bool AnyCandyBodyPresent(IReadOnlyList<CandyView> candies, IReadOnlyList<CandyView> splitCandies)
+        {
+            return AnyCandyBodyPresent(candies) || AnyCandyBodyPresent(splitCandies);
+        }
+
+        private static bool AnyCandyBodyPresent(IReadOnlyList<CandyView> candies)
+        {
+            if (candies == null)
+            {
+                return false;
+            }
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (candies[i].CanBeEaten && (!candies[i].Consumed || candies[i].InTransport))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>Loss condition: any not-yet-consumed candy is outside the play area.</summary>
         public static bool AnyUneatenOutOfScreen(IReadOnlyList<CandyView> candies, Func<Vector, bool> isOutOfScreen)
         {
