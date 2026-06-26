@@ -106,7 +106,7 @@ namespace CutTheRopeDX.GameMain
         public void ShowGreeting()
         {
             targetAnimationController?.PlayGreeting();
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting);
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
             if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);

@@ -401,7 +401,7 @@ namespace CutTheRopeDX.GameMain
             if (GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targets.Count))
             {
                 targetAnimationController?.PlayChewing();
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing);
+                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, targetAnimationController?.SkinDefinition);
             }
             if (candyBubble != null)
             {
@@ -483,8 +483,8 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 targets[ti].controller?.PlaySad();
+                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, targets[ti].controller?.SkinDefinition);
             }
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
             // Rockets are exhausted per-candy at each loss site (breakCandy in the C reference only
