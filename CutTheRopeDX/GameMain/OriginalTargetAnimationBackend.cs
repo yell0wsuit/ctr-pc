@@ -164,6 +164,9 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public GameObject TargetObject => target;
 
+        /// <summary>The classic skin has no XML skin definition.</summary>
+        public OmNomSkinDefinition SkinDefinition => null;
+
         /// <inheritdoc />
         public float GetTargetBaseScaleX()
         {

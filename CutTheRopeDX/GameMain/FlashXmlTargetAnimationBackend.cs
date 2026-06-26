@@ -171,6 +171,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this skin should start by playing its greeting animation.</summary>
         public bool StartsWithGreeting => _skinDefinition.StartWithGreeting;
 
+        /// <summary>Skin definition that backs this target's animations.</summary>
+        public OmNomSkinDefinition SkinDefinition => _skinDefinition;
+
         /// <summary>Whether this backend is driven by Flash XML animation exports.</summary>
         public bool UsesFlashXmlAnimations => true;
 

@@ -37,6 +37,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the primary Om Nom gameplay object owned by the backend.</summary>
         public GameObject TargetObject => backend.TargetObject;
 
+        /// <summary>Gets the skin definition for this target's skin, or <see langword="null"/> for the classic skin.</summary>
+        public OmNomSkinDefinition SkinDefinition => backend.SkinDefinition;
+
         /// <summary>
         /// Whether the backend handles the sleep breathing pulse internally.
         /// </summary>

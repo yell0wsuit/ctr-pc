@@ -13,6 +13,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the primary Om Nom gameplay object.</summary>
         GameObject TargetObject { get; }
 
+        /// <summary>Gets the skin definition for this target's skin, or <see langword="null"/> for the classic skin.</summary>
+        OmNomSkinDefinition SkinDefinition { get; }
+
         /// <summary>Gets the default horizontal scale that should be applied to the target object.</summary>
         /// <returns>Default X scale for the target object.</returns>
         float GetTargetBaseScaleX();
