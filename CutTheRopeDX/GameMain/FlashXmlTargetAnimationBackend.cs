@@ -54,9 +54,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Root object used for the sleep overlay animation.</summary>
         private readonly FlashXmlStageRoot _sleepOverlayObject;
 
-        /// <summary>Skin definition that maps target states to Flash XML timeline IDs.</summary>
-        private readonly OmNomSkinDefinition _skinDefinition;
-
         /// <summary>External delegate that receives target timeline callbacks.</summary>
         private ITimelineDelegate _externalTimelineDelegate;
 
@@ -96,13 +93,13 @@ namespace CutTheRopeDX.GameMain
         /// <param name="skinDefinition">Skin definition that provides animation paths and timeline IDs.</param>
         public FlashXmlTargetAnimationBackend(OmNomSkinDefinition skinDefinition)
         {
-            _skinDefinition = skinDefinition;
+            SkinDefinition = skinDefinition;
 
             _definition = FlashXmlImporter.ParseFile(skinDefinition.AnimationXmlPath);
 
             TargetObject = CreateStageRoot(_definition);
-            int idleLoopId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
-            int sleepingId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
+            int idleLoopId = SkinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
+            int sleepingId = SkinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
             BuildParts(_definition, TargetObject, parts, idleLoopId, sleepingId);
             BuildRootTimelines(_definition, TargetObject, idleLoopId, sleepingId);
 
@@ -113,7 +110,7 @@ namespace CutTheRopeDX.GameMain
             BuildParts(sleepOverlayDefinition, _sleepOverlayObject, _sleepOverlayParts, SleepOverlayTimeline, -1);
             BuildRootTimelines(sleepOverlayDefinition, _sleepOverlayObject, SleepOverlayTimeline, -1);
 
-            _bubbleOverlayDefinition = string.Equals(_skinDefinition.Id, PirateSkinName, StringComparison.Ordinal)
+            _bubbleOverlayDefinition = string.Equals(SkinDefinition.Id, PirateSkinName, StringComparison.Ordinal)
                 ? FlashXmlImporter.ParseFile(
                     ContentPaths.GetAnimationXmlAbsolutePath("fx_bubbles.xml"))
                 : null;
@@ -169,10 +166,10 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Whether this skin should start by playing its greeting animation.</summary>
-        public bool StartsWithGreeting => _skinDefinition.StartWithGreeting;
+        public bool StartsWithGreeting => SkinDefinition.StartWithGreeting;
 
         /// <summary>Skin definition that backs this target's animations.</summary>
-        public OmNomSkinDefinition SkinDefinition => _skinDefinition;
+        public OmNomSkinDefinition SkinDefinition { get; }
 
         /// <summary>Whether this backend is driven by Flash XML animation exports.</summary>
         public bool UsesFlashXmlAnimations => true;
@@ -185,7 +182,7 @@ namespace CutTheRopeDX.GameMain
         {
             _externalTimelineDelegate = timelineDelegate;
 
-            if (_skinDefinition.StartWithGreeting && TryMapState(TargetAnimationState.Greeting, out _))
+            if (SkinDefinition.StartWithGreeting && TryMapState(TargetAnimationState.Greeting, out _))
             {
                 Play(TargetAnimationState.Greeting);
             }
@@ -239,13 +236,13 @@ namespace CutTheRopeDX.GameMain
         /// <param name="rng">Random integer provider called with inclusive minimum and maximum indexes.</param>
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
-            if (_skinDefinition.IdleVariants.Length == 0)
+            if (SkinDefinition.IdleVariants.Length == 0)
             {
                 return;
             }
 
-            int index = rng(0, _skinDefinition.IdleVariants.Length - 1);
-            PlayTimelineById(_skinDefinition.IdleVariants[index]);
+            int index = rng(0, SkinDefinition.IdleVariants.Length - 1);
+            PlayTimelineById(SkinDefinition.IdleVariants[index]);
         }
 
         /// <summary>
@@ -272,7 +269,7 @@ namespace CutTheRopeDX.GameMain
             _activeTimelineId = timelineId;
             if (TargetObject is FlashXmlStageRoot stageRoot)
             {
-                stageRoot.PlaybackRate = GetTimelinePlaybackRate(_skinDefinition, timelineId);
+                stageRoot.PlaybackRate = GetTimelinePlaybackRate(SkinDefinition, timelineId);
             }
 
             PlayTimeline(parts, timelineId);
@@ -310,7 +307,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Delay in seconds before the sleep pulse overlay should play.</returns>
         public float GetSleepPulseDelaySeconds()
         {
-            int sleepingTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
+            int sleepingTimelineId = SkinDefinition.GetTimelineId(TargetAnimationState.Sleeping);
             float sleepingDuration = sleepingTimelineId >= 0 && _definition.RootTimelines.TryGetValue(sleepingTimelineId, out float duration)
                 ? duration
                 : 0f;
@@ -432,7 +429,7 @@ namespace CutTheRopeDX.GameMain
             // root-driven timelines (e.g. chewing, ID 7) also emit a keyframe at index 1,
             // which would otherwise be misread as an idle tick and interrupt playback with
             // a random idle variant.
-            int idleLoopTimelineId = _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
+            int idleLoopTimelineId = SkinDefinition.GetTimelineId(TargetAnimationState.IdleLoop);
 
             if (_driverTimelineUsesRootDefinition)
             {
@@ -469,7 +466,7 @@ namespace CutTheRopeDX.GameMain
             _driverTimeline = null;
             _driverTimelineId = -1;
 
-            if (TryGetCompletionTargetTimelineId(_skinDefinition, finishedTimelineId, out int followupTimelineId)
+            if (TryGetCompletionTargetTimelineId(SkinDefinition, finishedTimelineId, out int followupTimelineId)
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
                 PlayTimelineById(followupTimelineId);
@@ -650,7 +647,7 @@ namespace CutTheRopeDX.GameMain
         private bool TryPlayIdleToSleepTransition(bool trimIdleToSleepTransition)
         {
             if (!ShouldUseIdleToSleepTransition()
-                || _activeTimelineId == _skinDefinition.GetTimelineId(TargetAnimationState.Sleeping)
+                || _activeTimelineId == SkinDefinition.GetTimelineId(TargetAnimationState.Sleeping)
                 || !TryMapState(TargetAnimationState.IdleToSleep, out int idleToSleepTimelineId))
             {
                 return false;
@@ -686,7 +683,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The clamped skip duration in seconds.</returns>
         private float GetIdleToSleepSkipSeconds(float idleToSleepDurationSeconds)
         {
-            float skippedDurationSeconds = _skinDefinition.IdleToSleepTrimFrames * FlashXmlFrameDurationSeconds;
+            float skippedDurationSeconds = SkinDefinition.IdleToSleepTrimFrames * FlashXmlFrameDurationSeconds;
             return MathF.Min(skippedDurationSeconds, idleToSleepDurationSeconds);
         }
 
@@ -897,17 +894,17 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (timelineId == _skinDefinition.GetTimelineId(TargetAnimationState.IdleLoop))
+            if (timelineId == SkinDefinition.GetTimelineId(TargetAnimationState.IdleLoop))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
                 _driverTimelineDurationSeconds = GetTimelineDurationSeconds(delegateDriver, timelineId);
-                _driverTimelinePlaybackRate = GetTimelinePlaybackRate(_skinDefinition, timelineId);
+                _driverTimelinePlaybackRate = GetTimelinePlaybackRate(SkinDefinition, timelineId);
                 return;
             }
 
-            if (_skinDefinition.ShouldBindFollowupDelegate(timelineId))
+            if (SkinDefinition.ShouldBindFollowupDelegate(timelineId))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;
@@ -1338,7 +1335,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the state maps to a configured timeline; otherwise, <see langword="false"/>.</returns>
         private bool TryMapState(TargetAnimationState state, out int timelineId)
         {
-            timelineId = _skinDefinition.GetTimelineId(state);
+            timelineId = SkinDefinition.GetTimelineId(state);
             return timelineId >= 0;
         }
 
