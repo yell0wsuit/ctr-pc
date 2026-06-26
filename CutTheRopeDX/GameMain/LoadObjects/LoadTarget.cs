@@ -33,7 +33,9 @@ namespace CutTheRopeDX.GameMain
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateOriginal(nightLevel, SpecialEvents.IsXmas);
+            int targetType = ParseIntOrZero(xmlNode.Attribute("targetType")?.Value ?? string.Empty);
+            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateForTarget(
+                targetType, nightLevel, SpecialEvents.IsXmas);
             TargetAnimationController controller = TargetAnimationController.Create(targetAnimationBackend);
             GameObject targetObj = controller.TargetObject;
             targetBaseScaleX = controller.GetTargetBaseScaleX();
@@ -58,7 +60,6 @@ namespace CutTheRopeDX.GameMain
             controller.Initialize(this);
 
             // Register this Om Nom as an independent target. targets[0] stays the primary.
-            _ = xmlNode.Attribute("targetType")?.Value ?? "basic";
             targets.Add(new TargetContext
             {
                 controller = controller,
