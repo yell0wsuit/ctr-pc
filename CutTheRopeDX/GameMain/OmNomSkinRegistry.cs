@@ -196,19 +196,6 @@ namespace CutTheRopeDX.GameMain
                 idleToSleepTrimFrames = Math.Max(0, parsedTrimFrames);
             }
 
-            List<int> slowTimelineIds = [];
-            if (entry.TryGetProperty("slowTimelines", out JsonElement slowTimelinesElement)
-                && slowTimelinesElement.ValueKind == JsonValueKind.Array)
-            {
-                foreach (JsonElement item in slowTimelinesElement.EnumerateArray())
-                {
-                    if (item.TryGetInt32(out int timelineId))
-                    {
-                        slowTimelineIds.Add(timelineId);
-                    }
-                }
-            }
-
             bool startWithGreeting = false;
             if (entry.TryGetProperty("startWithGreeting", out JsonElement greetingElement)
                 && greetingElement.ValueKind == JsonValueKind.True)
@@ -243,7 +230,6 @@ namespace CutTheRopeDX.GameMain
                 followups,
                 [.. idleVariants],
                 idleToSleepTrimFrames,
-                [.. slowTimelineIds],
                 startWithGreeting,
                 [.. uniqueSounds]);
         }

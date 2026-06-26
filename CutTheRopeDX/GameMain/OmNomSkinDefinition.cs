@@ -14,7 +14,6 @@ namespace CutTheRopeDX.GameMain
         IReadOnlyDictionary<int, int> followups,
         int[] idleVariants,
         int idleToSleepTrimFrames,
-        int[] slowTimelineIds,
         bool startWithGreeting,
         string[] uniqueSounds)
     {
@@ -41,9 +40,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Frames to skip from the start of the idle-to-sleep transition.</summary>
         public int IdleToSleepTrimFrames { get; } = idleToSleepTrimFrames;
-
-        /// <summary>Timeline IDs that should run at the slowed iOS Flash playback rate.</summary>
-        public int[] SlowTimelineIds { get; } = slowTimelineIds;
 
         /// <summary>Classic Om Nom sounds that this skin overrides or explicitly uses.</summary>
         public string[] UniqueSounds { get; } = uniqueSounds;
