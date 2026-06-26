@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -7,12 +8,26 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Whether the primary candy (whole, or either split half) is still in play. During a split
-        /// the singleton <see cref="noCandy"/> is always <see langword="true"/>, so this consults the
-        /// per-half flags instead.
+        /// Whether any edible candy body is still in play. Night-level sleep and lights-out loss
+        /// must continue after the legacy primary candy is eaten if another Om Nom still has candy.
         /// </summary>
-        private bool AnyPrimaryCandyPresent =>
-            PrimaryCandyPresence.AnyPresent(twoParts != 2, noCandy, noCandyL, noCandyR);
+        private bool AnyConsumableCandyPresent()
+        {
+            List<CandyView> candyViews = [];
+            for (int ci = 0; ci < candies.Count; ci++)
+            {
+                candyViews.Add(candies[ci].ToView());
+            }
+
+            List<CandyView> splitCandyViews = [];
+            if (twoParts != 2)
+            {
+                splitCandyViews.Add(new CandyView(starL.pos, noCandyL));
+                splitCandyViews.Add(new CandyView(starR.pos, noCandyR));
+            }
+
+            return CandyDecisions.AnyConsumablePresent(candyViews, splitCandyViews);
+        }
 
         /// <summary>
         /// Calculates the Y offset for the sleep pulse animation pivot point.
@@ -91,9 +106,9 @@ namespace CutTheRopeDX.GameMain
                 hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
             }
 
-            // Split-aware presence: during a split the singleton noCandy is always true, so guarding
-            // on !noCandy would suppress the lights-out loss while the candy halves are still in play.
-            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyPrimaryCandyPresent)
+            // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
+            // edible candy, or a split half, is still in play.
+            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyConsumableCandyPresent())
             {
                 GameLost();
             }
@@ -121,7 +136,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = AnyPrimaryCandyPresent;
+            bool hasCandyPresent = AnyConsumableCandyPresent();
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -261,7 +276,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            bool hasCandyPresent = AnyPrimaryCandyPresent;
+            bool hasCandyPresent = AnyConsumableCandyPresent();
             if (!hasCandyPresent)
             {
                 return;
