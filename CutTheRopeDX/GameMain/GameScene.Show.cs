@@ -209,8 +209,13 @@ namespace CutTheRopeDX.GameMain
                 owner.idlesTimer--;
                 if (owner.idlesTimer == 0)
                 {
-                    owner.controller?.PlayRandomIdleVariant(RND_RANGE);
-                    owner.idlesTimer = RND_RANGE(5, 20);
+                    // On two-Om-Nom levels the idle reaction may instead become a mutual chat
+                    // greeting (Time Travel). When it does, both timers are reset by the chat.
+                    if (!TryStartChatReaction())
+                    {
+                        owner.controller?.PlayRandomIdleVariant(RND_RANGE);
+                        owner.idlesTimer = RND_RANGE(5, 20);
+                    }
                 }
                 return;
             }

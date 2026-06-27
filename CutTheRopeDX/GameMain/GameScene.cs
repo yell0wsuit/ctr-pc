@@ -105,28 +105,61 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ShowGreeting()
         {
-            // General greeting always fires for the primary Om Nom.
+            // On a two-Om-Nom level, randomly greet with the mutual chat instead of the wave.
+            // TryShowChatGreeting returns false for diagonal/coincident pairs, falling back here.
+            if (targets.Count == 2 && RND_RANGE(0, 1) == 0 && TryShowChatGreeting())
+            {
+                return;
+            }
+
+            // General greeting: the primary Om Nom waves.
             targetAnimationController?.PlayGreeting();
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
             if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
             }
-
-            TryShowChatGreeting();
         }
 
         /// <summary>
-        /// When the level has exactly two Om Noms laid out in a line, makes them turn their
-        /// heads toward each other. A randomly chosen Om Nom turns first; the other follows a
-        /// fixed 1.0s later, matching Time Travel's chat hand-off. Each Om Nom's direction is
-        /// auto-detected from position; diagonal or coincident pairs are skipped.
+        /// Rolls for the two-Om-Nom chat greeting as a random idle reaction. Called when an
+        /// Om Nom's idle timer fires on an eligible level. When it starts a chat, both Om Noms'
+        /// idle timers are reset so the reaction is not re-triggered mid-hand-off.
         /// </summary>
-        private void TryShowChatGreeting()
+        /// <returns><see langword="true"/> when a chat greeting was started; otherwise, <see langword="false"/>.</returns>
+        private bool TryStartChatReaction()
+        {
+            if (chatReactionActive
+                || targets.Count != 2
+                || targets[0].asleep
+                || targets[1].asleep
+                || RND_RANGE(0, ChatReactionOdds - 1) != 0)
+            {
+                return false;
+            }
+
+            if (!TryShowChatGreeting())
+            {
+                return false;
+            }
+
+            targets[0].idlesTimer = RND_RANGE(5, 20);
+            targets[1].idlesTimer = RND_RANGE(5, 20);
+            return true;
+        }
+
+        /// <summary>
+        /// Makes the two Om Noms turn their heads toward each other. A randomly chosen Om Nom
+        /// turns first; the other follows a fixed 1.0s later, matching Time Travel's chat
+        /// hand-off. Each Om Nom's direction is auto-detected from position; diagonal or
+        /// coincident pairs are skipped.
+        /// </summary>
+        /// <returns><see langword="true"/> when a chat greeting was started; otherwise, <see langword="false"/>.</returns>
+        private bool TryShowChatGreeting()
         {
             if (targets.Count != 2 || targets[0].targetObject == null || targets[1].targetObject == null)
             {
-                return;
+                return false;
             }
 
             (TargetAnimationState first, TargetAnimationState second)? states = ChatGreeting.ResolveStates(
@@ -134,7 +167,7 @@ namespace CutTheRopeDX.GameMain
                 targets[1].targetObject.x, targets[1].targetObject.y);
             if (!states.HasValue)
             {
-                return;
+                return false;
             }
 
             // Each Om Nom's direction is fixed by position; only the order is randomized.
@@ -143,6 +176,7 @@ namespace CutTheRopeDX.GameMain
             TargetAnimationState firstState = firstIndex == 0 ? states.Value.first : states.Value.second;
             pendingChatGreetState = secondIndex == 0 ? states.Value.first : states.Value.second;
             pendingChatGreetIndex = secondIndex;
+            chatReactionActive = true;
 
             // Initiator turns now; the other follows a fixed beat later.
             targets[firstIndex].controller?.PlayGreetingTurn(firstState);
@@ -150,6 +184,7 @@ namespace CutTheRopeDX.GameMain
 
             dd.CallObjectSelectorParamafterDelay(
                 new DelayedDispatcher.DispatchFunc(Selector_showSecondChatGreeting), null, ChatGreetingGapSeconds);
+            return true;
         }
 
         /// <summary>
@@ -159,6 +194,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="param">Unused timeline payload.</param>
         private void Selector_showSecondChatGreeting(FrameworkTypes param)
         {
+            chatReactionActive = false;
+
             if (targets.Count != 2 || pendingChatGreetIndex >= targets.Count)
             {
                 return;
@@ -755,11 +792,19 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Fixed delay between the first and second Om Nom in a two-Om-Nom chat greeting (Time Travel hand-off).</summary>
         private const float ChatGreetingGapSeconds = 1.0f;
 
+        /// <summary>
+        /// One-in-N odds that an idle reaction on a two-Om-Nom level becomes a chat greeting.
+        /// </summary>
+        private const int ChatReactionOdds = 3;
+
         /// <summary>Greet state queued for the second Om Nom in a staggered two-Om-Nom chat greeting.</summary>
         private TargetAnimationState pendingChatGreetState;
 
         /// <summary>Target index queued to greet second in a staggered two-Om-Nom chat greeting.</summary>
         private int pendingChatGreetIndex;
+
+        /// <summary>Whether a two-Om-Nom chat greeting hand-off is currently in progress.</summary>
+        private bool chatReactionActive;
 
         /// <summary>
         /// All active razor objects in the loaded level.
