@@ -319,16 +319,5 @@ namespace CutTheRopeDX.GameMain
             t.controller?.SetSleepOverlayVisible(visible);
         }
 
-        /// <summary>
-        /// Controls the visibility and playback of zzz animations for every Om Nom.
-        /// </summary>
-        /// <param name="visible">Whether the zzz animations should be visible.</param>
-        private void SetAllNightSleepVisibility(bool visible)
-        {
-            for (int ti = 0; ti < targets.Count; ti++)
-            {
-                SetNightSleepVisibility(targets[ti], visible);
-            }
-        }
     }
 }

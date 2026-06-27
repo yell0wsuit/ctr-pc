@@ -380,14 +380,19 @@ namespace CutTheRopeDX.GameMain
             EndActiveFingerTraces();
             dd.CancelAllDispatches();
 
-            // Hide sleep animations and reset sleep state for night levels
-            SetAllNightSleepVisibility(false);
+            // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
+            // one keeps sleeping (and its zzz keeps looping) through the win transition, so it
+            // is left untouched to avoid hiding/replaying its overlay.
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
+                if (t.postEatSleepActive)
+                {
+                    continue;
+                }
+                SetNightSleepVisibility(t, false);
                 t.sleepPulseActive = false;
                 t.sleepSoundTimer = 0f;
-                t.postEatSleepActive = false;
                 t.postEatSleepScheduled = false;
                 if (t.targetObject != null)
                 {
@@ -461,14 +466,19 @@ namespace CutTheRopeDX.GameMain
             EndActiveFingerTraces();
             dd.CancelAllDispatches();
 
-            // Hide sleep animations and reset sleep state for night levels
-            SetAllNightSleepVisibility(false);
+            // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
+            // one keeps sleeping (and its zzz keeps looping) through the loss transition, so it
+            // is left untouched to avoid hiding/replaying its overlay.
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
+                if (t.postEatSleepActive)
+                {
+                    continue;
+                }
+                SetNightSleepVisibility(t, false);
                 t.sleepPulseActive = false;
                 t.sleepSoundTimer = 0f;
-                t.postEatSleepActive = false;
                 t.postEatSleepScheduled = false;
                 if (t.targetObject != null)
                 {
@@ -479,11 +489,18 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            // Every Om Nom reacts sad on loss (was: only the primary targetAnimationController).
+            // Every Om Nom reacts sad on loss, except one that is already asleep after eating:
+            // it stays asleep rather than waking to react. A still-chewing (pre-sleep) Om Nom
+            // is not yet asleep, so it reacts sad normally.
             for (int ti = 0; ti < targets.Count; ti++)
             {
-                targets[ti].controller?.PlaySad();
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, targets[ti].controller?.SkinDefinition);
+                TargetContext t = targets[ti];
+                if (t.postEatSleepActive)
+                {
+                    continue;
+                }
+                t.controller?.PlaySad();
+                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, t.controller?.SkinDefinition);
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
