@@ -250,6 +250,12 @@ namespace CutTheRopeDX.GameMain
                         target.PlayAnimationtimeline(Resources.Img.CharAnimations2, GreetingTimeline);
                     }
                     break;
+                case TargetAnimationState.GreetLeft:
+                case TargetAnimationState.GreetRight:
+                case TargetAnimationState.GreetUp:
+                case TargetAnimationState.GreetDown:
+                    // The classic (non-Flash) Om Nom has no directional chat animations.
+                    break;
                 default:
                     break;
             }
@@ -296,7 +302,11 @@ namespace CutTheRopeDX.GameMain
                 or TargetAnimationState.Chewing
                 or TargetAnimationState.Sad
                 or TargetAnimationState.IdleToSleep
-                or TargetAnimationState.Greeting => false,
+                or TargetAnimationState.Greeting
+                or TargetAnimationState.GreetLeft
+                or TargetAnimationState.GreetRight
+                or TargetAnimationState.GreetUp
+                or TargetAnimationState.GreetDown => false,
                 TargetAnimationState.Sleeping => isNightLevel
                     && target.GetAnimation(Resources.Img.CharAnimationsSleeping)?.GetCurrentTimelineIndex() == SleepingTimeline,
                 _ => false

@@ -105,12 +105,73 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ShowGreeting()
         {
+            // General greeting always fires for the primary Om Nom.
             targetAnimationController?.PlayGreeting();
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
             if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
             }
+
+            TryShowChatGreeting();
+        }
+
+        /// <summary>
+        /// When the level has exactly two Om Noms laid out in a line, makes them turn their
+        /// heads toward each other. A randomly chosen Om Nom turns first; the other follows a
+        /// fixed 1.0s later, matching Time Travel's chat hand-off. Each Om Nom's direction is
+        /// auto-detected from position; diagonal or coincident pairs are skipped.
+        /// </summary>
+        private void TryShowChatGreeting()
+        {
+            if (targets.Count != 2 || targets[0].targetObject == null || targets[1].targetObject == null)
+            {
+                return;
+            }
+
+            (TargetAnimationState first, TargetAnimationState second)? states = ChatGreeting.ResolveStates(
+                targets[0].targetObject.x, targets[0].targetObject.y,
+                targets[1].targetObject.x, targets[1].targetObject.y);
+            if (!states.HasValue)
+            {
+                return;
+            }
+
+            // Each Om Nom's direction is fixed by position; only the order is randomized.
+            int firstIndex = RND_RANGE(0, 1);
+            int secondIndex = 1 - firstIndex;
+            TargetAnimationState firstState = firstIndex == 0 ? states.Value.first : states.Value.second;
+            pendingChatGreetState = secondIndex == 0 ? states.Value.first : states.Value.second;
+            pendingChatGreetIndex = secondIndex;
+
+            // Initiator turns now; the other follows a fixed beat later.
+            targets[firstIndex].controller?.PlayGreetingTurn(firstState);
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targets[firstIndex].controller?.SkinDefinition);
+
+            dd.CallObjectSelectorParamafterDelay(
+                new DelayedDispatcher.DispatchFunc(Selector_showSecondChatGreeting), null, ChatGreetingGapSeconds);
+        }
+
+        /// <summary>
+        /// Timeline selector callback that plays the second Om Nom's chat greeting one
+        /// fixed beat after the first.
+        /// </summary>
+        /// <param name="param">Unused timeline payload.</param>
+        private void Selector_showSecondChatGreeting(FrameworkTypes param)
+        {
+            if (targets.Count != 2 || pendingChatGreetIndex >= targets.Count)
+            {
+                return;
+            }
+
+            TargetContext second = targets[pendingChatGreetIndex];
+            if (second?.targetObject == null)
+            {
+                return;
+            }
+
+            second.controller?.PlayGreetingTurn(pendingChatGreetState);
+            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.controller?.SkinDefinition);
         }
 
         /// <inheritdoc />
@@ -690,6 +751,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Rest/limit length of the connecting elastic, already scaled.</summary>
         private float candiesConnectedLength;
+
+        /// <summary>Fixed delay between the first and second Om Nom in a two-Om-Nom chat greeting (Time Travel hand-off).</summary>
+        private const float ChatGreetingGapSeconds = 1.0f;
+
+        /// <summary>Greet state queued for the second Om Nom in a staggered two-Om-Nom chat greeting.</summary>
+        private TargetAnimationState pendingChatGreetState;
+
+        /// <summary>Target index queued to greet second in a staggered two-Om-Nom chat greeting.</summary>
+        private int pendingChatGreetIndex;
 
         /// <summary>
         /// All active razor objects in the loaded level.

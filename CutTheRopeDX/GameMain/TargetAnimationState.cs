@@ -40,5 +40,17 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Greeting animation.</summary>
         Greeting,
+
+        /// <summary>Directional greeting where Om Nom turns its head toward the left.</summary>
+        GreetLeft,
+
+        /// <summary>Directional greeting where Om Nom turns its head toward the right.</summary>
+        GreetRight,
+
+        /// <summary>Directional greeting where Om Nom turns its head upward.</summary>
+        GreetUp,
+
+        /// <summary>Directional greeting where Om Nom turns its head downward.</summary>
+        GreetDown,
     }
 }

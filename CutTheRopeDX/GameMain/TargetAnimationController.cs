@@ -80,6 +80,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Plays a directional chat greeting where Om Nom turns its head toward another Om Nom.
+        /// </summary>
+        /// <param name="direction">Directional greet state (<see cref="TargetAnimationState.GreetLeft"/> or <see cref="TargetAnimationState.GreetRight"/>).</param>
+        public void PlayGreetingTurn(TargetAnimationState direction)
+        {
+            backend.Play(direction);
+        }
+
+        /// <summary>
         /// Plays one of the idle variation animations based on the provided random function.
         /// </summary>
         /// <param name="rng">Inclusive random function with signature <c>(min, max) => value</c>.</param>
