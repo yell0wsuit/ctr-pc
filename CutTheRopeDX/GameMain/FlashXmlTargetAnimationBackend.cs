@@ -269,7 +269,7 @@ namespace CutTheRopeDX.GameMain
             _activeTimelineId = timelineId;
             if (TargetObject is FlashXmlStageRoot stageRoot)
             {
-                stageRoot.PlaybackRate = GetTimelinePlaybackRate(timelineId);
+                stageRoot.PlaybackRate = GetTimelinePlaybackRate(SkinDefinition, timelineId);
             }
 
             PlayTimeline(parts, timelineId);
@@ -489,11 +489,16 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Gets the playback-rate multiplier for a timeline.
         /// </summary>
+        /// <param name="skinDefinition">Skin definition containing slow timeline IDs.</param>
         /// <param name="activeTimelineId">Timeline ID to inspect.</param>
         /// <returns>The playback-rate multiplier for the timeline.</returns>
-        private static float GetTimelinePlaybackRate(int activeTimelineId)
+        private static float GetTimelinePlaybackRate(OmNomSkinDefinition skinDefinition, int activeTimelineId)
         {
-            return activeTimelineId < 0 ? 1f : IosSlowPlaybackRate;
+            return activeTimelineId < 0
+                ? 1f
+                : Array.IndexOf(skinDefinition.SlowTimelineIds, activeTimelineId) >= 0
+                ? IosSlowPlaybackRate
+                : 1f;
         }
 
         /// <summary>
@@ -895,7 +900,7 @@ namespace CutTheRopeDX.GameMain
                 _driverTimeline = timeline;
                 _driverTimelineId = timelineId;
                 _driverTimelineDurationSeconds = GetTimelineDurationSeconds(delegateDriver, timelineId);
-                _driverTimelinePlaybackRate = GetTimelinePlaybackRate(timelineId);
+                _driverTimelinePlaybackRate = GetTimelinePlaybackRate(SkinDefinition, timelineId);
                 return;
             }
 

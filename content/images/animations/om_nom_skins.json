@@ -37,6 +37,10 @@
             "15": 0,
             "16": 0
         },
+        "slowTimelines": [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23
+        ],
         "idleVariants": [1, 17, 12],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
@@ -79,6 +83,10 @@
             "15": 0,
             "16": 0
         },
+        "slowTimelines": [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23
+        ],
         "idleVariants": [1, 17, 12],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
@@ -121,6 +129,10 @@
             "15": 0,
             "16": 0
         },
+        "slowTimelines": [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23
+        ],
         "idleVariants": [1, 17, 12],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": ["MonsterGreeting", "MonsterExcited"]
@@ -147,6 +159,7 @@
             "25": 19,
             "24": 26
         },
+        "slowTimelines": [19, 20, 21, 22, 23, 24, 25, 26],
         "idleVariants": [],
         "startWithGreeting": true,
         "idleToSleepTrimFrames": 27
@@ -174,6 +187,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -210,6 +224,7 @@
             "9": 3,
             "4": 0
         },
+        "slowTimelines": [0, 1, 5, 6, 2, 7, 8],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -246,6 +261,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -282,6 +298,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -318,6 +335,7 @@
             "9": 8,
             "7": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -361,6 +379,7 @@
             "4": 0,
             "3": 1
         },
+        "slowTimelines": [0, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         "idleVariants": [2, 5, 9],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -398,6 +417,7 @@
             "7": 8,
             "9": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -434,6 +454,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -470,6 +491,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -506,6 +528,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
@@ -542,6 +565,7 @@
             "9": 7,
             "8": 0
         },
+        "slowTimelines": [0, 1, 2, 3, 4, 5, 6],
         "idleVariants": [],
         "idleToSleepTrimFrames": 27,
         "uniqueSounds": [
