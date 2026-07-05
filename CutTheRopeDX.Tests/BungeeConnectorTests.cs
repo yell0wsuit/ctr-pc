@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
-using CutTheRopeDX.Desktop;
 
 using Xunit;
 
