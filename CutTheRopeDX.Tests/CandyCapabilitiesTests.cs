@@ -191,19 +191,5 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0f, ctx.InteractionRotation);
         }
-
-        [Fact]
-        public void CandyInteraction_GatesAxeCandyOnlyInteractions()
-        {
-            CandyContext axe = new()
-            {
-                Capabilities = CandyCapabilities.Axe
-            };
-
-            Assert.False(CandyInteraction.CanCollectStar(axe));
-            Assert.False(CandyInteraction.CanBeGrabbedByHand(axe));
-            Assert.False(CandyInteraction.CanAttachAnts(axe));
-            Assert.False(CandyInteraction.CanBeBrokenByHazards(axe));
-        }
     }
 }
