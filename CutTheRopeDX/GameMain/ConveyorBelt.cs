@@ -8,6 +8,64 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
+    /// Describes an item's position after movement through the repeating interior span of a transporter.
+    /// </summary>
+    /// <param name="Position">Final position along the transporter, measured from its first edge.</param>
+    /// <param name="DistanceFromEdge">Distance from <paramref name="Position"/> to the nearest transporter edge.</param>
+    /// <param name="Side">Nearest edge: <c>0</c> for the first edge or <c>1</c> for the second edge.</param>
+    /// <param name="Crossings">Signed number of edge crossings. Positive values indicate movement through the first edge; negative values indicate movement through the second edge.</param>
+    internal readonly record struct TransporterMovementResult(
+        float Position,
+        float DistanceFromEdge,
+        int Side,
+        int Crossings);
+
+    /// <summary>Pure movement calculations shared by transporter updates and regression tests.</summary>
+    internal static class TransporterMovement
+    {
+        /// <summary>
+        /// Applies a movement delta and repeats the iOS edge-wrap mapping as many times as needed.
+        /// </summary>
+        /// <param name="position">Current position along the transporter, measured from its first edge.</param>
+        /// <param name="delta">
+        /// Signed distance to move. Positive values move toward the first edge; negative values move
+        /// toward the second edge.
+        /// </param>
+        /// <param name="beltLength">Total distance between the two transporter edges.</param>
+        /// <param name="transitionDistance">Inset from each edge at which an item wraps to the opposite side.</param>
+        /// <returns>
+        /// The normalized position, its distance and side relative to the nearest edge, and the signed
+        /// number of edge crossings performed.
+        /// </returns>
+        public static TransporterMovementResult Move(
+            float position,
+            float delta,
+            float beltLength,
+            float transitionDistance)
+        {
+            float movedPosition = position - delta;
+            float maximumPosition = beltLength - transitionDistance;
+            float wrapSpan = beltLength - (2f * transitionDistance);
+            int crossings = 0;
+
+            if (wrapSpan > 0f && movedPosition < transitionDistance)
+            {
+                crossings = (int)MathF.Ceiling((transitionDistance - movedPosition) / wrapSpan);
+                movedPosition += crossings * wrapSpan;
+            }
+            else if (wrapSpan > 0f && movedPosition > maximumPosition)
+            {
+                crossings = -(int)MathF.Ceiling((movedPosition - maximumPosition) / wrapSpan);
+                movedPosition += crossings * wrapSpan;
+            }
+
+            int side = movedPosition < beltLength * 0.5f ? 0 : 1;
+            float distanceFromEdge = side == 0 ? movedPosition : beltLength - movedPosition;
+            return new TransporterMovementResult(movedPosition, distanceFromEdge, side, crossings);
+        }
+    }
+
+    /// <summary>
     /// Represents a conveyor belt game element that transports items along a linear path.
     /// Items placed on the belt are automatically moved in the belt's direction, with support
     /// for both automatic (constant velocity) and manual (user-draggable) operation modes.
@@ -466,45 +524,20 @@ namespace CutTheRopeDX.GameMain
             foreach (ITransporterItem item in boundObjects)
             {
                 Vector local = ToLocalSpace(item.BindPoint);
-                float previousPos = item.PositionOnTransporter;
-                int previousSide = previousPos < beltWidth * 0.5f ? 0 : 1;
-                float previousDistFromEdge = previousSide == 0 ? previousPos : beltWidth - previousPos;
+                TransporterMovementResult movement = TransporterMovement.Move(
+                    item.PositionOnTransporter,
+                    delta,
+                    beltWidth,
+                    transitionDist);
+                item.PositionOnTransporter = movement.Position;
+                int side = movement.Side;
+                float distFromEdge = movement.DistanceFromEdge;
+                bool wrapped = movement.Crossings != 0;
 
-                // Move along belt
-                item.PositionOnTransporter -= delta;
-
-                float pos = item.PositionOnTransporter;
-
-                // Determine which end is closer
-                int side;
-                float distFromEdge;
-                if (pos < beltWidth * 0.5f)
+                if (wrapped)
                 {
-                    side = 0;
-                    distFromEdge = pos;
-                }
-                else
-                {
-                    side = 1;
-                    distFromEdge = beltWidth - pos;
-                }
-
-                // Check if within transition zone
-                bool wrapped = false;
-                bool movingTowardEdge = previousSide == 0 ? delta > 0f : delta < 0f;
-                bool enteredTransitionZone = previousDistFromEdge >= transitionDist && distFromEdge < transitionDist;
-                if (distFromEdge < transitionDist && (movingTowardEdge || enteredTransitionZone))
-                {
-                    float newDist = (2f * transitionDist) - distFromEdge;
-                    item.PositionOnTransporter = side == 0 ? beltWidth - newDist : newDist;
-
                     CTRSoundMgr.PlaySound(Resources.Snd.TransporterDrop);
                     objectsDistributed = false;
-                    wrapped = true;
-                    side ^= 1;
-
-                    pos = item.PositionOnTransporter;
-                    distFromEdge = pos < beltWidth * 0.5f ? pos : beltWidth - pos;
                 }
 
                 // Compute scale
