@@ -1551,7 +1551,8 @@ namespace CutTheRopeDX.GameMain
                         if (ctx.activeRocket.state == Rocket.STATE_ROCKET_FLY)
                         {
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
-                            ExhaustRocketForCandy(ctx);
+                            ctx.activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
+                            ctx.activeRocket.StopAnimation();
                         }
                     }
                     ctx.point.ApplyImpulseDelta(Vect(-ctx.point.v.X / damping, (-ctx.point.v.Y / damping) + verticalWaterImpulse), delta);
