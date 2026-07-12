@@ -195,6 +195,10 @@ namespace CutTheRopeDX.GameMain
                 Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                if (grab.gun)
+                {
+                    grab.SetGunDisabled(GunAvailability.IsDisabled(candies[0].inLantern));
+                }
                 grab.DrawBack();
                 grab.Draw();
             }

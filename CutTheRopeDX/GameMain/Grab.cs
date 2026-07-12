@@ -388,6 +388,15 @@ namespace CutTheRopeDX.GameMain
             gunCup?.Draw();
         }
 
+        /// <summary>Updates the gun body to show whether the gun can currently fire.</summary>
+        /// <param name="disabled">
+        /// <see langword="true"/> to show the fired body; otherwise, <see langword="false"/>.
+        /// </param>
+        public void SetGunDisabled(bool disabled)
+        {
+            gunFront?.SetDrawQuad(gunFired || disabled ? GunDisabledFrontQuad : GunFrontQuad);
+        }
+
         /// <summary>
         /// Attaches a rope to this grab and activates spider startup when needed.
         /// </summary>
@@ -1027,6 +1036,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gun hook front quad.</summary>
         private const int GunFrontQuad = 2;
+
+        /// <summary>Gun hook front quad used after firing and while disabled.</summary>
+        private const int GunDisabledFrontQuad = 3;
 
         /// <summary>
         /// Selects one of the fixed hook back quad variants.

@@ -194,7 +194,11 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj in bungees)
                 {
                     Grab grab = (Grab)obj;
-                    if (grab.gun && !grab.gunFired && grab.rope == null)
+                    if (grab.gun && GunAvailability.CanFire(
+                        candyPresent: !noCandy,
+                        candyInLantern: candies[0].inLantern,
+                        gunFired: grab.gunFired,
+                        ropeAbsent: grab.rope == null))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
