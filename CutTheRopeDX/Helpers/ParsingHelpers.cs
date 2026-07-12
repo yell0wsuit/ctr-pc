@@ -18,6 +18,21 @@ namespace CutTheRopeDX.Helpers
         }
 
         /// <summary>
+        /// Parses a map coordinate using invariant culture and truncates its fractional part toward zero.
+        /// Returns 0 when the value is missing, invalid, or outside the range of an integer.
+        /// </summary>
+        /// <param name="value">The coordinate string to parse.</param>
+        /// <returns>The truncated integer coordinate, or 0 if parsing fails.</returns>
+        public static int ParseCoordinateIntOrZero(string value)
+        {
+            return !decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal parsed)
+                || parsed < int.MinValue
+                || parsed > int.MaxValue
+                ? 0
+                : decimal.ToInt32(decimal.Truncate(parsed));
+        }
+
+        /// <summary>
         /// Parses a floating-point number from a string using invariant culture, returning 0 if the value
         /// is <see langword="null"/>, empty, or not a valid number.
         /// </summary>

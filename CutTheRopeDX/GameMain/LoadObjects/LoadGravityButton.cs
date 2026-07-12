@@ -26,8 +26,8 @@ namespace CutTheRopeDX.GameMain
             gravityButton.visible = false;
             gravityButton.touchable = false;
             _ = AddChild(gravityButton);
-            gravityButton.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            gravityButton.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            gravityButton.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            gravityButton.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             gravityButton.anchor = 18;
         }
     }

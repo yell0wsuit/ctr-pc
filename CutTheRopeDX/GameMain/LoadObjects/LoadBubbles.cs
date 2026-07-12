@@ -23,8 +23,8 @@ namespace CutTheRopeDX.GameMain
             Bubble bubble = Bubble.Bubble_createWithResIDQuad(Resources.Img.ObjBubble, q2);
             bubble.DoRestoreCutTransparency();
             bubble.bb = GetBubbleBoundingBox();
-            bubble.initial_x = bubble.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            bubble.initial_y = bubble.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            bubble.initial_x = bubble.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            bubble.initial_y = bubble.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             bubble.initial_rotation = 0f;
             bubble.initial_rotatedCircle = null;
             bubble.anchor = 18;

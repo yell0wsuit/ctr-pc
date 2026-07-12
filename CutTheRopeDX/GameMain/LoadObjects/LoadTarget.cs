@@ -44,12 +44,12 @@ namespace CutTheRopeDX.GameMain
             targetObj.scaleY = targetBaseScaleY;
 
             string xAttribute = xmlNode.Attribute("x")?.Value ?? string.Empty;
-            int sourceX = ParseIntOrZero(xAttribute);
+            int sourceX = ParseCoordinateIntOrZero(xAttribute);
             float transformedX = (sourceX * scale) + offsetX + mapOffsetX;
             targetObj.x = support.x = transformedX;
 
             string yAttribute = xmlNode.Attribute("y")?.Value ?? string.Empty;
-            int sourceY = ParseIntOrZero(yAttribute);
+            int sourceY = ParseCoordinateIntOrZero(yAttribute);
             float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
             targetObj.y = support.y = transformedY;
 

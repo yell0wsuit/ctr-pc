@@ -23,8 +23,8 @@ namespace CutTheRopeDX.GameMain
             pump.DoRestoreCutTransparency();
             _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
             pump.bb = GetPumpBoundingBox();
-            pump.initial_x = pump.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            pump.initial_y = pump.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            pump.initial_x = pump.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            pump.initial_y = pump.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             pump.initial_rotation = 0f;
             pump.initial_rotatedCircle = null;
             pump.rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value) + DEG_90;

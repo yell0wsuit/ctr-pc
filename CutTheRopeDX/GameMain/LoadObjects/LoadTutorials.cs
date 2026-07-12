@@ -27,8 +27,8 @@ namespace CutTheRopeDX.GameMain
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 tutorialText.color = RGBAColor.MakeRGBA(1, 1, 1, 0.9f);
-                tutorialText.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                tutorialText.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                tutorialText.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                tutorialText.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                 tutorialText.special = ParseIntOrZero(xmlNode.Attribute("special")?.Value);
                 tutorialText.SetAlignment(2);
                 string textKey = xmlNode.Attribute("text")?.Value ?? string.Empty;
@@ -75,8 +75,8 @@ namespace CutTheRopeDX.GameMain
                 int q = ParseIntOrZero(new string(xmlNode.Name.LocalName.AsSpan()[8..])) - 1;
                 GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(Resources.Img.TutorialSigns, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
-                gameObjectSpecial.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                gameObjectSpecial.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                gameObjectSpecial.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                gameObjectSpecial.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                 gameObjectSpecial.rotation = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
                 gameObjectSpecial.special = ParseIntOrZero(xmlNode.Attribute("special")?.Value);
                 gameObjectSpecial.ParseMover(xmlNode);

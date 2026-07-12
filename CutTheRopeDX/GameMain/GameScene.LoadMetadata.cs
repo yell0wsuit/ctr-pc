@@ -60,8 +60,8 @@ namespace CutTheRopeDX.GameMain
                             }
                             break;
                         case "gameDesign":
-                            mapOffsetX = ParseIntOrZero(item2.Attribute("mapOffsetX")?.Value);
-                            mapOffsetY = ParseIntOrZero(item2.Attribute("mapOffsetY")?.Value);
+                            mapOffsetX = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetX")?.Value);
+                            mapOffsetY = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetY")?.Value);
                             special = ParseIntOrZero(item2.Attribute("special")?.Value);
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
                             _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
@@ -106,8 +106,8 @@ namespace CutTheRopeDX.GameMain
                             candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
                             break;
                         case "candyL":
-                            starL.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starL.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                            starL.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starL.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -122,8 +122,8 @@ namespace CutTheRopeDX.GameMain
                             candyL.bb = GetSplitCandyBoundingBox();
                             break;
                         case "candyR":
-                            starR.pos.X = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starR.pos.Y = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                            starR.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                            starR.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                             {
                                 int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
                                 string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
@@ -139,8 +139,8 @@ namespace CutTheRopeDX.GameMain
                             break;
                         case "candy":
                             {
-                                float cx = (ParseIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                                float cy = (ParseIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                                float cx = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                                float cy = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                                 // Key comes straight from XML; null for legacy single-candy packs (never matched).
                                 string number = item2.Attribute("candyNumber")?.Value;
 

@@ -31,8 +31,8 @@ namespace CutTheRopeDX.GameMain
             quadSize.Y *= 0.05f;
             rocket.bb = MakeRectangle(quadCenter.X - (quadSize.X / 2f), quadCenter.Y - (quadSize.Y / 2f), quadSize.X, quadSize.Y);
 
-            rocket.x = (ParseIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            rocket.y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            rocket.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            rocket.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             rocket.rotation = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value) - DEG_180;
             rocket.impulse = ParseFloatOrZero(xmlNode.Attribute("impulse")?.Value);
             rocket.impulseFactor = ParseFloatOrZero(xmlNode.Attribute("impulseFactor")?.Value);

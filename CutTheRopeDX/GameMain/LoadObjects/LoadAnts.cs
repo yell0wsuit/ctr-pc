@@ -22,8 +22,8 @@ namespace CutTheRopeDX.GameMain
         {
             float moveSpeed = ParseFloatOrZero(xmlNode.Attribute("moveSpeed")?.Value);
             string path = xmlNode.Attribute("path")?.Value ?? string.Empty;
-            float x = ParseFloatOrZero(xmlNode.Attribute("x")?.Value);
-            float y = ParseFloatOrZero(xmlNode.Attribute("y")?.Value);
+            float x = ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value);
+            float y = ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value);
 
             float scaledSpeed = moveSpeed * scale;
             Vector position = new(x, y);

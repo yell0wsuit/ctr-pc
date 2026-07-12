@@ -17,8 +17,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadMouse(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px = (ParseFloatOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            float py = (ParseFloatOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            float px = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float py = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             float angle = ParseFloatOrZero(xmlNode.Attribute("angle")?.Value);
             float radius = ParseFloatOrZero(xmlNode.Attribute("radius")?.Value);
             radius = radius != 0f ? radius * scale : 80f * scale;
