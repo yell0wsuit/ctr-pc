@@ -107,13 +107,17 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
-                bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                grab.SetRope(bungee);
-                if (grab.kicked)
+                CandyContext ropeTarget = CandyForPoint(constraintedPoint);
+                if (NormalRopeLoad.ShouldCreate(ropeTarget.inLantern))
                 {
-                    bungee.bungeeAnchor.pin = Vect(-1f, -1f);
-                    bungee.bungeeAnchor.SetWeight(0.1f);
+                    Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
+                    bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                    grab.SetRope(bungee);
+                    if (grab.kicked)
+                    {
+                        bungee.bungeeAnchor.pin = Vect(-1f, -1f);
+                        bungee.bungeeAnchor.SetWeight(0.1f);
+                    }
                 }
             }
             grab.SetRadius(grabRadius);

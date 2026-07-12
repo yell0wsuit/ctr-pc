@@ -18,6 +18,10 @@ namespace CutTheRopeDX.GameMain
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             List<XElement> list = [.. map.Elements()];
+            // Establish captured state before grabs are loaded so XML object order cannot attach a
+            // fixed rope to candy that starts inside a lantern.
+            candies[0].inLantern = NormalRopeLoad.CandyStartsInLantern(map);
+
             // Preload light bulbs so bindBulb grabs can resolve regardless of XML order.
             foreach (XElement xmlnode2 in list)
             {
