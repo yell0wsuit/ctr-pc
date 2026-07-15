@@ -350,51 +350,46 @@ namespace CutTheRopeDX.Framework
         public static float ElectroSpikesWidthReduction => SelectScaled(PhysicsConstants.ElectroSpikesWidthReduction, MobilePhysicsConstants.ElectroSpikesWidthReduction);
 
         /// <summary>
-        /// Full collision line width for a non-electro spike. Desktop reads the live texture
-        /// quad; mobile substitutes the WP7 base-asset quad width because the desktop art is
-        /// trimmed differently.
+        /// Full collision line width for a non-electro spike, table-driven from the original
+        /// XML quad. Never read from
+        /// the live texture: the JSON atlas trim differs from both originals, so atlas-derived
+        /// widths silently change collision whenever art is re-packed.
         /// </summary>
         /// <param name="rotatable">Whether the spike belongs to a rotate-toggle group.</param>
         /// <param name="widthIndex">Spike width/type index (1-4).</param>
-        /// <param name="textureQuadWidth">Live texture quad width (desktop value).</param>
-        public static float SpikesCollisionLineWidth(bool rotatable, int widthIndex, float textureQuadWidth)
+        public static float SpikesCollisionLineWidth(bool rotatable, int widthIndex)
         {
-            if (!UseMobilePhysicsModel)
-            {
-                return textureQuadWidth;
-            }
-            float[] table = rotatable ? MobilePhysicsConstants.RotatableSpikesQuadWidths : MobilePhysicsConstants.SpikesQuadWidths;
+            float[] table = UseMobilePhysicsModel
+                ? rotatable ? MobilePhysicsConstants.RotatableSpikesQuadWidths : MobilePhysicsConstants.SpikesQuadWidths
+                : rotatable ? PhysicsConstants.RotatableSpikesQuadWidths : PhysicsConstants.SpikesQuadWidths;
             int index = System.Math.Clamp(widthIndex - 1, 0, table.Length - 1);
-            return ToWorld(table[index]);
+            return UseMobilePhysicsModel ? ToWorld(table[index]) : table[index];
         }
 
         /// <summary>
         /// Effective electro spike object width the zap length is derived from
         /// (zap = this minus <see cref="ElectroSpikesWidthReduction"/>).
         /// </summary>
-        /// <param name="objectWidth">Live object width (desktop value; the electrodes pre-cut sheet width).</param>
-        public static float ElectroSpikesCollisionObjectWidth(float objectWidth)
+        public static float ElectroSpikesCollisionObjectWidth()
         {
-            return UseMobilePhysicsModel ? ToWorld(MobilePhysicsConstants.ElectroSpikesObjectWidth) : objectWidth;
+            return SelectScaled(PhysicsConstants.ElectroSpikesObjectWidth, MobilePhysicsConstants.ElectroSpikesObjectWidth);
         }
 
         /// <summary>
-        /// Full collision width of a bouncer for the current animation frame. Desktop reads the
-        /// live object width (which follows the draw quad); mobile substitutes the WP7 quad
-        /// width of the same frame so the per-frame wobble stays 1:1.
+        /// Full collision width of a bouncer for the current animation frame, table-driven from
+        /// the original XML quad (see <see cref="SpikesCollisionLineWidth"/>). Both originals let
+        /// the width follow the current draw quad, so the tables are frame-indexed to keep the
+        /// per-frame wobble faithful.
         /// </summary>
         /// <param name="large">Whether this is the large (type 2) bouncer.</param>
         /// <param name="frameIndex">Current animation frame relative to the bouncer's first quad.</param>
-        /// <param name="objectWidth">Live object width (desktop value).</param>
-        public static float BouncerCollisionWidth(bool large, int frameIndex, float objectWidth)
+        public static float BouncerCollisionWidth(bool large, int frameIndex)
         {
-            if (!UseMobilePhysicsModel)
-            {
-                return objectWidth;
-            }
-            float[] table = large ? MobilePhysicsConstants.BouncerLargeQuadWidths : MobilePhysicsConstants.BouncerSmallQuadWidths;
+            float[] table = UseMobilePhysicsModel
+                ? large ? MobilePhysicsConstants.BouncerLargeQuadWidths : MobilePhysicsConstants.BouncerSmallQuadWidths
+                : large ? PhysicsConstants.BouncerLargeQuadWidths : PhysicsConstants.BouncerSmallQuadWidths;
             int index = System.Math.Clamp(frameIndex, 0, table.Length - 1);
-            return ToWorld(table[index]);
+            return UseMobilePhysicsModel ? ToWorld(table[index]) : table[index];
         }
 
         /// <summary>

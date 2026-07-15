@@ -171,6 +171,30 @@ namespace CutTheRopeDX.Framework
         public const float ElectroSpikesWidthReduction = 400f;
 
         /// <summary>
+        /// Original XML quad widths for static spikes 1-4 (obj_spikes_01..04). The JSON atlas is
+        /// re-trimmed (+2 px per frame), so collision reads these instead of the live texture.
+        /// </summary>
+        public static readonly float[] SpikesQuadWidths = [212f, 333f, 453f, 566f];
+
+        /// <inheritdoc cref="ActivePhysicsConstants.SpikesCollisionLineWidth" />
+        public static readonly float[] RotatableSpikesQuadWidths = [202f, 319f, 444f, 559f];
+
+        /// <summary>
+        /// Original XML pre-cut width of obj_electrodes; the electro zap length is this minus
+        /// <see cref="ElectroSpikesWidthReduction"/>.
+        /// </summary>
+        public const float ElectroSpikesObjectWidth = 833f;
+
+        /// <summary>
+        /// Original XML quad widths of the small bouncer's animation frames (obj_bouncer_01, quads 0-4).
+        /// The collision width follows the current frame while the bounce animation plays.
+        /// </summary>
+        public static readonly float[] BouncerSmallQuadWidths = [194f, 201f, 204f, 193f, 194f];
+
+        /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
+        public static readonly float[] BouncerLargeQuadWidths = [302f, 319f, 322f, 292f, 302f];
+
+        /// <summary>
         /// Maximum rope length used to size rope drawing buffers.
         /// </summary>
         public const float MaxRopeLength = 2000f;

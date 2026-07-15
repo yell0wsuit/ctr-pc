@@ -67,7 +67,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void UpdateRotation()
         {
-            float collisionWidth = ActivePhysicsConstants.BouncerCollisionWidth(isLarge, quadToDraw - firstQuadIndex, width);
+            float collisionWidth = ActivePhysicsConstants.BouncerCollisionWidth(isLarge, quadToDraw - firstQuadIndex);
             t1.X = x - (collisionWidth / 2f);
             t2.X = x + (collisionWidth / 2f);
             t1.Y = t2.Y = y - ActivePhysicsConstants.BouncerHeight;

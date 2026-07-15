@@ -76,8 +76,8 @@ namespace CutTheRopeDX.GameMain
         public void UpdateRotation()
         {
             float halfWidth = !electro
-                ? ActivePhysicsConstants.SpikesCollisionLineWidth(toggled != -1, widthIndex, texture.quadRects[quadToDraw].w)
-                : ActivePhysicsConstants.ElectroSpikesCollisionObjectWidth(width) - ActivePhysicsConstants.ElectroSpikesWidthReduction;
+                ? ActivePhysicsConstants.SpikesCollisionLineWidth(toggled != -1, widthIndex)
+                : ActivePhysicsConstants.ElectroSpikesCollisionObjectWidth() - ActivePhysicsConstants.ElectroSpikesWidthReduction;
             halfWidth /= 2f;
             float bandHalfHeight = ActivePhysicsConstants.SpikesCollisionBandHalfHeight;
             t1.X = x - halfWidth;
