@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
@@ -73,14 +74,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void UpdateRotation()
         {
-            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400);
+            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - ActivePhysicsConstants.ElectroSpikesWidthReduction;
             halfWidth /= 2f;
+            float bandHalfHeight = ActivePhysicsConstants.SpikesCollisionBandHalfHeight;
             t1.X = x - halfWidth;
             t2.X = x + halfWidth;
-            t1.Y = t2.Y = y - 5f;
+            t1.Y = t2.Y = y - bandHalfHeight;
             b1.X = t1.X;
             b2.X = t2.X;
-            b1.Y = b2.Y = y + 5f;
+            b1.Y = b2.Y = y + bandHalfHeight;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);

@@ -143,6 +143,12 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.SpiderTraversalSpeed" />
         public const float SpiderTraversalSpeed = 117f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.SpikesCollisionBandHalfHeight" />
+        public const float SpikesCollisionBandHalfHeight = 5f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.ElectroSpikesWidthReduction" />
+        public const float ElectroSpikesWidthReduction = 400f;
+
         /// <summary>
         /// Maximum rope length used to size rope drawing buffers.
         /// </summary>

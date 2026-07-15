@@ -143,6 +143,12 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.SpiderTraversalSpeed" />
         public const float SpiderTraversalSpeed = 135f; // 45 * 3
 
+        /// <inheritdoc cref="ActivePhysicsConstants.SpikesCollisionBandHalfHeight" />
+        public const float SpikesCollisionBandHalfHeight = 5f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.ElectroSpikesWidthReduction" />
+        public const float ElectroSpikesWidthReduction = 130f;
+
         /// <summary>
         /// Maximum rope length used by the mobile bungee renderer.
         /// </summary>

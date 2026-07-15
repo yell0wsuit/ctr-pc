@@ -305,6 +305,16 @@ namespace CutTheRopeDX.Framework
         public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);
 
         /// <summary>
+        /// Half-height of the spikes collision band around the spike line.
+        /// </summary>
+        public static float SpikesCollisionBandHalfHeight => SelectScaled(PhysicsConstants.SpikesCollisionBandHalfHeight, MobilePhysicsConstants.SpikesCollisionBandHalfHeight);
+
+        /// <summary>
+        /// Amount subtracted from an electro spike's width to get the active zap segment length.
+        /// </summary>
+        public static float ElectroSpikesWidthReduction => SelectScaled(PhysicsConstants.ElectroSpikesWidthReduction, MobilePhysicsConstants.ElectroSpikesWidthReduction);
+
+        /// <summary>
         /// Number of sample points drawn for each bungee segment.
         /// </summary>
         public static int BungeeDrawSamplePoints => SelectRaw(PhysicsConstants.BungeeDrawSamplePoints, MobilePhysicsConstants.BungeeDrawSamplePoints);
