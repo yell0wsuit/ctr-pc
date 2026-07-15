@@ -82,9 +82,10 @@ namespace CutTheRopeDX.Tests
 
         // Both originals set the bouncer's collision width from the initial sprite (quad 0) and
         // never advance it with the bounce animation, so only the first quad width is used.
+        // Mobile applies the Experiments-style end-cap of 20 (1x) to the quad-0 width.
         [Theory]
-        [InlineData(false, 198f)] // small quad 0: 66 * 3
-        [InlineData(true, 333f)]  // large quad 0: 111 * 3
+        [InlineData(false, 138f)] // small quad 0: (66 - 20) * 3
+        [InlineData(true, 273f)]  // large quad 0: (111 - 20) * 3
         public void BouncerWidth_MobileUsesWp7FirstQuadWidth(bool large, float expected)
         {
             float result = WithMobilePhysics(true, () =>
