@@ -171,6 +171,30 @@ namespace CutTheRopeDX.Framework
         public const float ElectroSpikesWidthReduction = 130f;
 
         /// <summary>
+        /// WP7 base-asset quad widths for static spikes 1-4 (obj_spikes_01..04). The desktop
+        /// atlas is trimmed differently (214/335/455/568 at 3x), so mobile physics reads these.
+        /// </summary>
+        public static readonly float[] SpikesQuadWidths = [68f, 106f, 146f, 181f];
+
+        /// <inheritdoc cref="ActivePhysicsConstants.SpikesCollisionLineWidth" />
+        public static readonly float[] RotatableSpikesQuadWidths = [68f, 118f, 142f, 178f];
+
+        /// <summary>
+        /// WP7 pre-cut width of obj_electrodes; the electro zap length is this minus
+        /// <see cref="ElectroSpikesWidthReduction"/>. The dx electrodes sheet is 833 wide, not 267x3.
+        /// </summary>
+        public const float ElectroSpikesObjectWidth = 267f;
+
+        /// <summary>
+        /// WP7 quad widths of the small bouncer's animation frames (obj_bouncer_01, quads 0-4).
+        /// The collision width follows the current frame while the bounce animation plays.
+        /// </summary>
+        public static readonly float[] BouncerSmallQuadWidths = [66f, 68f, 70f, 66f, 66f];
+
+        /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
+        public static readonly float[] BouncerLargeQuadWidths = [111f, 116f, 118f, 108f, 106f];
+
+        /// <summary>
         /// Maximum rope length used by the mobile bungee renderer.
         /// </summary>
         public const float MaxRopeLength = 600f; // 20 segments * 30 rest length

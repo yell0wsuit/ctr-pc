@@ -57,6 +57,7 @@ namespace CutTheRopeDX.GameMain
             origRotation = rotation = an;
             x = px;
             y = py;
+            widthIndex = w;
             SetToggled(t);
             UpdateRotation();
             if (w == ElectrodesWidthIndex)
@@ -74,7 +75,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void UpdateRotation()
         {
-            float halfWidth = !electro ? texture.quadRects[quadToDraw].w : width - ActivePhysicsConstants.ElectroSpikesWidthReduction;
+            float halfWidth = !electro
+                ? ActivePhysicsConstants.SpikesCollisionLineWidth(toggled != -1, widthIndex, texture.quadRects[quadToDraw].w)
+                : ActivePhysicsConstants.ElectroSpikesCollisionObjectWidth(width) - ActivePhysicsConstants.ElectroSpikesWidthReduction;
             halfWidth /= 2f;
             float bandHalfHeight = ActivePhysicsConstants.SpikesCollisionBandHalfHeight;
             t1.X = x - halfWidth;
@@ -222,6 +225,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Toggle group id for rotating linked spike sets.</summary>
         private int toggled;
+
+        /// <summary>Spike width/type index (1-4, 5 = electrodes) used to resolve the WP7 collision width.</summary>
+        private int widthIndex;
 
         /// <summary>Current spike angle in radians.</summary>
         public float angle;

@@ -350,6 +350,54 @@ namespace CutTheRopeDX.Framework
         public static float ElectroSpikesWidthReduction => SelectScaled(PhysicsConstants.ElectroSpikesWidthReduction, MobilePhysicsConstants.ElectroSpikesWidthReduction);
 
         /// <summary>
+        /// Full collision line width for a non-electro spike. Desktop reads the live texture
+        /// quad; mobile substitutes the WP7 base-asset quad width because the desktop art is
+        /// trimmed differently.
+        /// </summary>
+        /// <param name="rotatable">Whether the spike belongs to a rotate-toggle group.</param>
+        /// <param name="widthIndex">Spike width/type index (1-4).</param>
+        /// <param name="textureQuadWidth">Live texture quad width (desktop value).</param>
+        public static float SpikesCollisionLineWidth(bool rotatable, int widthIndex, float textureQuadWidth)
+        {
+            if (!UseMobilePhysicsModel)
+            {
+                return textureQuadWidth;
+            }
+            float[] table = rotatable ? MobilePhysicsConstants.RotatableSpikesQuadWidths : MobilePhysicsConstants.SpikesQuadWidths;
+            int index = System.Math.Clamp(widthIndex - 1, 0, table.Length - 1);
+            return ToWorld(table[index]);
+        }
+
+        /// <summary>
+        /// Effective electro spike object width the zap length is derived from
+        /// (zap = this minus <see cref="ElectroSpikesWidthReduction"/>).
+        /// </summary>
+        /// <param name="objectWidth">Live object width (desktop value; the electrodes pre-cut sheet width).</param>
+        public static float ElectroSpikesCollisionObjectWidth(float objectWidth)
+        {
+            return UseMobilePhysicsModel ? ToWorld(MobilePhysicsConstants.ElectroSpikesObjectWidth) : objectWidth;
+        }
+
+        /// <summary>
+        /// Full collision width of a bouncer for the current animation frame. Desktop reads the
+        /// live object width (which follows the draw quad); mobile substitutes the WP7 quad
+        /// width of the same frame so the per-frame wobble stays 1:1.
+        /// </summary>
+        /// <param name="large">Whether this is the large (type 2) bouncer.</param>
+        /// <param name="frameIndex">Current animation frame relative to the bouncer's first quad.</param>
+        /// <param name="objectWidth">Live object width (desktop value).</param>
+        public static float BouncerCollisionWidth(bool large, int frameIndex, float objectWidth)
+        {
+            if (!UseMobilePhysicsModel)
+            {
+                return objectWidth;
+            }
+            float[] table = large ? MobilePhysicsConstants.BouncerLargeQuadWidths : MobilePhysicsConstants.BouncerSmallQuadWidths;
+            int index = System.Math.Clamp(frameIndex, 0, table.Length - 1);
+            return ToWorld(table[index]);
+        }
+
+        /// <summary>
         /// Number of sample points drawn for each bungee segment.
         /// </summary>
         public static int BungeeDrawSamplePoints => SelectRaw(PhysicsConstants.BungeeDrawSamplePoints, MobilePhysicsConstants.BungeeDrawSamplePoints);

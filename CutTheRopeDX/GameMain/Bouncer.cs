@@ -33,6 +33,8 @@ namespace CutTheRopeDX.GameMain
             {
                 return null;
             }
+            isLarge = w == LargeBouncerWidth;
+            firstQuadIndex = firstQuad;
             SetDrawQuad(firstQuad);
             rotation = an;
             x = px;
@@ -65,8 +67,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void UpdateRotation()
         {
-            t1.X = x - (width / 2);
-            t2.X = x + (width / 2);
+            float collisionWidth = ActivePhysicsConstants.BouncerCollisionWidth(isLarge, quadToDraw - firstQuadIndex, width);
+            t1.X = x - (collisionWidth / 2f);
+            t2.X = x + (collisionWidth / 2f);
             t1.Y = t2.Y = y - ActivePhysicsConstants.BouncerHeight;
             b1.X = t1.X;
             b2.X = t2.X;
@@ -172,6 +175,12 @@ namespace CutTheRopeDX.GameMain
         public bool IsDrawnByTransporter { get; set; }
 
         /// <summary>Width class value for the small bouncer variant.</summary>
+        /// <summary>Whether this is the large (type 2) bouncer; selects the WP7 collision width table.</summary>
+        private bool isLarge;
+
+        /// <summary>First atlas quad of this bouncer's animation, for frame-relative width lookup.</summary>
+        private int firstQuadIndex;
+
         private const int SmallBouncerWidth = 1;
 
         /// <summary>Width class value for the large bouncer variant.</summary>
