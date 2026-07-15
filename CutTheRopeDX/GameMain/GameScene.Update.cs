@@ -1720,7 +1720,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (!t.mouthOpen && canInteractWithTarget)
                 {
-                    if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
+                    if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
                     {
                         t.mouthOpen = true;
                         t.controller?.PlayMouthOpening();
@@ -1735,7 +1735,7 @@ namespace CutTheRopeDX.GameMain
                     t.mouthCloseTimer = timer;
                     if (t.mouthCloseTimer <= 0)
                     {
-                        if (!CandyDecisions.ShouldOpenMouth(targetPos, candyViews, 200f))
+                        if (!CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
                         {
                             t.mouthOpen = false;
                             t.controller?.PlayMouthClosing();

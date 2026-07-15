@@ -305,6 +305,11 @@ namespace CutTheRopeDX.Framework
         public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);
 
         /// <summary>
+        /// Distance from Om Nom at which the candy makes him open his mouth.
+        /// </summary>
+        public static float MouthOpenDistance => SelectScaled(PhysicsConstants.MouthOpenDistance, MobilePhysicsConstants.MouthOpenDistance);
+
+        /// <summary>
         /// Half-height of the spikes collision band around the spike line.
         /// </summary>
         public static float SpikesCollisionBandHalfHeight => SelectScaled(PhysicsConstants.SpikesCollisionBandHalfHeight, MobilePhysicsConstants.SpikesCollisionBandHalfHeight);

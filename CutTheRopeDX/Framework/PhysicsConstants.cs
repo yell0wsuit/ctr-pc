@@ -143,6 +143,9 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.SpiderTraversalSpeed" />
         public const float SpiderTraversalSpeed = 117f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.MouthOpenDistance" />
+        public const float MouthOpenDistance = 200f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.SpikesCollisionBandHalfHeight" />
         public const float SpikesCollisionBandHalfHeight = 5f;
 

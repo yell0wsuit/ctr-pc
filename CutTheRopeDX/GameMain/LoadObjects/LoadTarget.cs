@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
@@ -53,9 +54,12 @@ namespace CutTheRopeDX.GameMain
             float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
             targetObj.y = support.y = transformedY;
 
-            // Mouth hitbox: 56 px left of center, 30 px below center.
-            // Derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
-            targetObj.bb = MakeRectangle((targetObj.width >> 1) - 56f, (targetObj.height >> 1) + 30f, 108f, 2f);
+            // Mouth hitbox, center-relative so skins of any size keep the same mouth line.
+            // Desktop: derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
+            // Mobile: WP7 bb (90, 110, 25, 1) scaled x3 onto the same 640x640 sheet = (270, 330, 75, 3).
+            targetObj.bb = ActivePhysicsConstants.UseMobilePhysicsModel
+                ? MakeRectangle((targetObj.width >> 1) - 50f, (targetObj.height >> 1) + 10f, 75f, 3f)
+                : MakeRectangle((targetObj.width >> 1) - 56f, (targetObj.height >> 1) + 30f, 108f, 2f);
 
             controller.Initialize(this);
 
