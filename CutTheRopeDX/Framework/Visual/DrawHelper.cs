@@ -509,15 +509,17 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="color">Outline color.</param>
         public static void DrawRect(float x, float y, float w, float h, RGBAColor color)
         {
+            // Perimeter winding (TL, TR, BR, BL) so the closed line strip traces the rectangle
+            // edges. Triangle-strip order (TL, TR, BL, BR) would cross the diagonals into a bowtie.
             DrawPolygon(
             [
                 x,
                 y,
                 x + w,
                 y,
-                x,
-                y + h,
                 x + w,
+                y + h,
+                x,
                 y + h
             ], 4, color);
         }
