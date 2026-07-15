@@ -80,32 +80,25 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(833f, objectWidth, precision: 3);
         }
 
-        // Both originals let the bouncer's collision width follow the current animation quad,
-        // so the tables are frame-indexed to keep the per-frame wobble faithful.
+        // Both originals set the bouncer's collision width from the initial sprite (quad 0) and
+        // never advance it with the bounce animation, so only the first quad width is used.
         [Theory]
-        [InlineData(false, 0, 198f)] // 66 * 3
-        [InlineData(false, 2, 210f)] // 70 * 3
-        [InlineData(true, 0, 333f)]  // 111 * 3
-        [InlineData(true, 2, 354f)]  // 118 * 3
-        [InlineData(true, 4, 318f)]  // 106 * 3
-        public void BouncerWidth_MobileUsesWp7QuadWidthsPerFrame(bool large, int frameIndex, float expected)
+        [InlineData(false, 198f)] // small quad 0: 66 * 3
+        [InlineData(true, 333f)]  // large quad 0: 111 * 3
+        public void BouncerWidth_MobileUsesWp7FirstQuadWidth(bool large, float expected)
         {
             float result = WithMobilePhysics(true, () =>
-                ActivePhysicsConstants.BouncerCollisionWidth(large, frameIndex));
+                ActivePhysicsConstants.BouncerCollisionWidth(large));
             Assert.Equal(expected, result, precision: 3);
         }
 
         [Theory]
-        [InlineData(false, 0, 194f)]
-        [InlineData(false, 2, 204f)]
-        [InlineData(false, 4, 194f)]
-        [InlineData(true, 0, 302f)]
-        [InlineData(true, 2, 322f)]
-        [InlineData(true, 4, 302f)]
-        public void BouncerWidth_DesktopUsesXmlQuadWidthsPerFrame(bool large, int frameIndex, float expected)
+        [InlineData(false, 194f)] // small quad 0
+        [InlineData(true, 302f)]  // large quad 0
+        public void BouncerWidth_DesktopUsesXmlFirstQuadWidth(bool large, float expected)
         {
             float result = WithMobilePhysics(false, () =>
-                ActivePhysicsConstants.BouncerCollisionWidth(large, frameIndex));
+                ActivePhysicsConstants.BouncerCollisionWidth(large));
             Assert.Equal(expected, result, precision: 3);
         }
 
@@ -140,19 +133,6 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(8.95f, h, precision: 3);   // 179 * 0.05
             Assert.Equal(-21.5f, ox, precision: 3); // 288 - 309.5
             Assert.Equal(-0.5f, oy, precision: 3);  // 208.5 - 209
-        }
-
-        // Defensive: an out-of-range animation frame must clamp into the table, not throw.
-        [Fact]
-        public void BouncerWidth_ClampsFrameIndexIntoTable()
-        {
-            float mobile = WithMobilePhysics(true, () =>
-                ActivePhysicsConstants.BouncerCollisionWidth(large: false, frameIndex: 9));
-            Assert.Equal(198f, mobile, precision: 3); // clamped to last small frame (66 * 3)
-
-            float desktop = WithMobilePhysics(false, () =>
-                ActivePhysicsConstants.BouncerCollisionWidth(large: true, frameIndex: -1));
-            Assert.Equal(302f, desktop, precision: 3); // clamped to first large frame
         }
     }
 }

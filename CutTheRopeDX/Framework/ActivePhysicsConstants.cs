@@ -376,20 +376,15 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Full collision width of a bouncer for the current animation frame, table-driven from
-        /// the original XML quad (see <see cref="SpikesCollisionLineWidth"/>). Both originals let
-        /// the width follow the current draw quad, so the tables are frame-indexed to keep the
-        /// per-frame wobble faithful.
+        /// Full collision width of a bouncer, pinned from the original XML first quad (see
+        /// <see cref="SpikesCollisionLineWidth"/>).
         /// </summary>
         /// <param name="large">Whether this is the large (type 2) bouncer.</param>
-        /// <param name="frameIndex">Current animation frame relative to the bouncer's first quad.</param>
-        public static float BouncerCollisionWidth(bool large, int frameIndex)
+        public static float BouncerCollisionWidth(bool large)
         {
-            float[] table = UseMobilePhysicsModel
-                ? large ? MobilePhysicsConstants.BouncerLargeQuadWidths : MobilePhysicsConstants.BouncerSmallQuadWidths
-                : large ? PhysicsConstants.BouncerLargeQuadWidths : PhysicsConstants.BouncerSmallQuadWidths;
-            int index = System.Math.Clamp(frameIndex, 0, table.Length - 1);
-            return UseMobilePhysicsModel ? ToWorld(table[index]) : table[index];
+            return large
+                ? SelectScaled(PhysicsConstants.BouncerLargeCollisionWidth, MobilePhysicsConstants.BouncerLargeCollisionWidth)
+                : SelectScaled(PhysicsConstants.BouncerSmallCollisionWidth, MobilePhysicsConstants.BouncerSmallCollisionWidth);
         }
 
         /// <summary>

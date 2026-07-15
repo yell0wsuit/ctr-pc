@@ -186,13 +186,13 @@ namespace CutTheRopeDX.Framework
         public const float ElectroSpikesObjectWidth = 833f;
 
         /// <summary>
-        /// Original XML quad widths of the small bouncer's animation frames (obj_bouncer_01, quads 0-4).
-        /// The collision width follows the current frame while the bounce animation plays.
+        /// Original XML first-quad width of the small bouncer (obj_bouncer_01, quad 0).
         /// </summary>
-        public static readonly float[] BouncerSmallQuadWidths = [194f, 201f, 204f, 193f, 194f];
+        public const float BouncerSmallCollisionWidth = 194f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
-        public static readonly float[] BouncerLargeQuadWidths = [302f, 319f, 322f, 292f, 302f];
+        /// <remarks>obj_bouncer_02 quad 0.</remarks>
+        public const float BouncerLargeCollisionWidth = 302f;
 
         /// <summary>
         /// Rocket catch-slat box frozen from the JSON atlas: quad 10 is 358x179 centered at
