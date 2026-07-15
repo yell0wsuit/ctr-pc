@@ -155,9 +155,24 @@ namespace CutTheRopeDX.Framework
         public static float GrabRopeRollMaxLength => SelectScaled(PhysicsConstants.GrabRopeRollMaxLength, MobilePhysicsConstants.GrabRopeRollMaxLength);
 
         /// <summary>
-        /// Maximum wheel rotation delta used by grab mechanics.
+        /// Maximum rope length rolled per wheel rotate event.
         /// </summary>
-        public static float GrabWheelRotateDeltaMax => SelectRaw(PhysicsConstants.GrabWheelRotateDeltaMax, MobilePhysicsConstants.GrabWheelRotateDeltaMax);
+        public static float GrabWheelRotateDeltaMax => SelectScaled(PhysicsConstants.GrabWheelRotateDeltaMax, MobilePhysicsConstants.GrabWheelRotateDeltaMax);
+
+        /// <summary>
+        /// Minimum rope length rolled per wheel rotate event.
+        /// </summary>
+        public static float GrabWheelRotateDeltaMin => SelectScaled(PhysicsConstants.GrabWheelRotateDeltaMin, MobilePhysicsConstants.GrabWheelRotateDeltaMin);
+
+        /// <summary>
+        /// Speed at which a rocket reels the candy in before flying.
+        /// </summary>
+        public static float RocketReelSpeed => SelectScaled(PhysicsConstants.RocketReelSpeed, MobilePhysicsConstants.RocketReelSpeed);
+
+        /// <summary>
+        /// Speed at which two candy halves converge while merging.
+        /// </summary>
+        public static float CandyPartsMergeSpeed => SelectScaled(PhysicsConstants.CandyPartsMergeSpeed, MobilePhysicsConstants.CandyPartsMergeSpeed);
 
         /// <summary>
         /// Height band used for detecting the water surface.

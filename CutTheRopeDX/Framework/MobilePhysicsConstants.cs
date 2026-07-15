@@ -65,6 +65,15 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.GrabWheelRotateDeltaMax" />
         public const float GrabWheelRotateDeltaMax = 2f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.GrabWheelRotateDeltaMin" />
+        public const float GrabWheelRotateDeltaMin = 1f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketReelSpeed" />
+        public const float RocketReelSpeed = 200f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.CandyPartsMergeSpeed" />
+        public const float CandyPartsMergeSpeed = 200f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.WaterSurfaceDetectionHeight" />
         public const float WaterSurfaceDetectionHeight = 2f;
 

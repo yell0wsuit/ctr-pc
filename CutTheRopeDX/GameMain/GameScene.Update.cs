@@ -528,7 +528,7 @@ namespace CutTheRopeDX.GameMain
                         partsDist = 0f;
                         twoParts = 0;
                     }
-                    else if (Mover.MoveVariableToTarget(ref partsDist, 0, 200, delta))
+                    else if (Mover.MoveVariableToTarget(ref partsDist, 0, ActivePhysicsConstants.CandyPartsMergeSpeed, delta))
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
                         twoParts = 2;
@@ -1291,7 +1291,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
-                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, 200f, delta))
+                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
                         }

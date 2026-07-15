@@ -108,7 +108,8 @@ namespace CutTheRopeDX.GameMain
             wheelImage3.rotation += rotateDelta;
             wheelHighlight.rotation += rotateDelta;
             float maxWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMax;
-            rotateDelta = rotateDelta > 0f ? MIN(MAX(1, rotateDelta), maxWheelDelta) : MAX(MIN(-1, rotateDelta), 0f - maxWheelDelta);
+            float minWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMin;
+            rotateDelta = rotateDelta > 0f ? MIN(MAX(minWheelDelta, rotateDelta), maxWheelDelta) : MAX(MIN(0f - minWheelDelta, rotateDelta), 0f - maxWheelDelta);
             float ropeLength = 0f;
             if (rope != null)
             {
