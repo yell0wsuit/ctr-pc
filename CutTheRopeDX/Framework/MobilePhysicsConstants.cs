@@ -186,13 +186,13 @@ namespace CutTheRopeDX.Framework
         public const float ElectroSpikesObjectWidth = 267f;
 
         /// <summary>
-        /// WP7 first-quad width of the small bouncer (obj_bouncer_01, quad 0).
+        /// WP7 first-quad width of the small bouncer (obj_bouncer_01, quad 0), subtract 20.
         /// </summary>
-        public const float BouncerSmallCollisionWidth = 66f;
+        public const float BouncerSmallCollisionWidth = 46f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
-        /// <remarks>obj_bouncer_02 quad 0</remarks>
-        public const float BouncerLargeCollisionWidth = 111f;
+        /// <remarks>obj_bouncer_02 quad 0, subtract 20</remarks>
+        public const float BouncerLargeCollisionWidth = 91f;
 
         /// <summary>
         /// Rocket catch-slat box from the Experiments base assets: quad 10 is 116x58 centered
