@@ -181,7 +181,7 @@ namespace CutTheRopeDX.Framework
 
         /// <summary>
         /// WP7 pre-cut width of obj_electrodes; the electro zap length is this minus
-        /// <see cref="ElectroSpikesWidthReduction"/>. The dx electrodes sheet is 833 wide, not 267x3.
+        /// <see cref="ElectroSpikesWidthReduction"/>. The JSON electrodes sheet is 833 wide, not 267x3.
         /// </summary>
         public const float ElectroSpikesObjectWidth = 267f;
 
@@ -193,6 +193,22 @@ namespace CutTheRopeDX.Framework
 
         /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
         public static readonly float[] BouncerLargeQuadWidths = [111f, 116f, 118f, 108f, 106f];
+
+        /// <summary>
+        /// Rocket catch-slat box from the Experiments base assets: quad 10 is 116x58 centered
+        /// at (91,67) on the 199x134 obj_rocket sheet; the engine takes 0.6 x width and
+        /// 0.05 x height of that quad.
+        /// </summary>
+        public const float RocketCatchBoxWidth = 69.6f; // 116 * 0.6
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxHeight" />
+        public const float RocketCatchBoxHeight = 2.9f; // 58 * 0.05
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetX" />
+        public const float RocketCatchBoxCenterOffsetX = -8.5f; // 91 - 199/2
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
+        public const float RocketCatchBoxCenterOffsetY = 0f; // 67 - 134/2
 
         /// <summary>
         /// Maximum rope length used by the mobile bungee renderer.

@@ -393,6 +393,27 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
+        /// Width of the rocket's catch-slat bounding box (0.6 x the rocket body quad width),
+        /// pinned from the original XML quads rather than the live atlas.
+        /// </summary>
+        public static float RocketCatchBoxWidth => SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);
+
+        /// <summary>
+        /// Height of the rocket's catch-slat bounding box (0.05 x the rocket body quad height).
+        /// </summary>
+        public static float RocketCatchBoxHeight => SelectScaled(PhysicsConstants.RocketCatchBoxHeight, MobilePhysicsConstants.RocketCatchBoxHeight);
+
+        /// <summary>
+        /// X offset of the catch-slat box center from the rocket object's center.
+        /// </summary>
+        public static float RocketCatchBoxCenterOffsetX => SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetX, MobilePhysicsConstants.RocketCatchBoxCenterOffsetX);
+
+        /// <summary>
+        /// Y offset of the catch-slat box center from the rocket object's center.
+        /// </summary>
+        public static float RocketCatchBoxCenterOffsetY => SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetY, MobilePhysicsConstants.RocketCatchBoxCenterOffsetY);
+
+        /// <summary>
         /// Number of sample points drawn for each bungee segment.
         /// </summary>
         public static int BungeeDrawSamplePoints => SelectRaw(PhysicsConstants.BungeeDrawSamplePoints, MobilePhysicsConstants.BungeeDrawSamplePoints);

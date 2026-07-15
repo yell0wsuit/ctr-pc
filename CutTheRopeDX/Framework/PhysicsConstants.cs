@@ -195,6 +195,22 @@ namespace CutTheRopeDX.Framework
         public static readonly float[] BouncerLargeQuadWidths = [302f, 319f, 322f, 292f, 302f];
 
         /// <summary>
+        /// Rocket catch-slat box frozen from the JSON atlas: quad 10 is 358x179 centered at
+        /// (288, 208.5) on the 619x418 obj_rocket sheet; the engine takes 0.6 x width and
+        /// 0.05 x height of that quad.
+        /// </summary>
+        public const float RocketCatchBoxWidth = 214.8f; // 358 * 0.6
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxHeight" />
+        public const float RocketCatchBoxHeight = 8.95f; // 179 * 0.05
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetX" />
+        public const float RocketCatchBoxCenterOffsetX = -21.5f; // 288 - 619/2
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
+        public const float RocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
+
+        /// <summary>
         /// Maximum rope length used to size rope drawing buffers.
         /// </summary>
         public const float MaxRopeLength = 2000f;
