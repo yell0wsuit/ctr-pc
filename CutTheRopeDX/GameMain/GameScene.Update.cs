@@ -1009,7 +1009,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    bool inRange = VectDistance(ctx.point.pos, Vect(lantern.x, lantern.y)) < 82f;
+                    bool inRange = VectDistance(ctx.point.pos, Vect(lantern.x, lantern.y)) < ActivePhysicsConstants.LanternCaptureRadius;
                     if (!LanternCapture.ShouldCapture(lanternInactive, groupOccupied, !ctx.noCandy, ctx.inLantern, inRange))
                     {
                         continue;

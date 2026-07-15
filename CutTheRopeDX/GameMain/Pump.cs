@@ -10,11 +10,6 @@ namespace CutTheRopeDX.GameMain
     internal sealed class Pump : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>
-        /// Length of the pump flow influence area in world units.
-        /// </summary>
-        public const float FlowLength = 624f;
-
-        /// <summary>
         /// Offset from the pump center to the mouth in local X before rotation.
         /// </summary>
         public const float MouthOffset = 80f;

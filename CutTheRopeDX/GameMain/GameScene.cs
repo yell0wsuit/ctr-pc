@@ -53,7 +53,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the point is beyond the allowed bounds; otherwise, <see langword="false"/>.</returns>
         public bool PointOutOfScreen(ConstraintedPoint p)
         {
-            return p.pos.Y > mapHeight + 400f || p.pos.Y < -400f
+            // Mobile matches the WP7 kill bounds (+100/-50, scaled x3); the horizontal
+            // margin stays as a safety net in both modes (the reference kills on Y only).
+            float bottomMargin = ActivePhysicsConstants.UseMobilePhysicsModel ? 300f : 400f;
+            float topMargin = ActivePhysicsConstants.UseMobilePhysicsModel ? 150f : 400f;
+            return p.pos.Y > mapHeight + bottomMargin || p.pos.Y < -topMargin
                 || p.pos.X < -SCREEN_WIDTH || p.pos.X > mapWidth + SCREEN_WIDTH;
         }
 

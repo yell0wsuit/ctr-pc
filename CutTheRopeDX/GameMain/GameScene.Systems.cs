@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="c">Game object tested against the pump flow area.</param>
         public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
-            float flowLength = Pump.FlowLength;
+            float flowLength = ActivePhysicsConstants.PumpFlowLength;
             if (GameObject.RectInObject(p.x - flowLength, p.y - flowLength, p.x + flowLength, p.y + flowLength, c))
             {
                 Vector v = Vect(c.x, c.y);
@@ -31,8 +31,11 @@ namespace CutTheRopeDX.GameMain
                 {
                     v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
                 }
-                // Use pump's bbox dimensions for all objects (not the object's bbox)
-                if (v.Y < vector.Y && RectInRect(v.X - (p.bb.w / 2), v.Y - (p.bb.h / 2), v.X + (p.bb.w / 2), v.Y + (p.bb.h / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
+                // Desktop keeps the pump's bbox dimensions for all objects; mobile matches the
+                // reference, which tests the target object's own bbox against the flow column.
+                float flowBoxW = ActivePhysicsConstants.UseMobilePhysicsModel ? c.bb.w : p.bb.w;
+                float flowBoxH = ActivePhysicsConstants.UseMobilePhysicsModel ? c.bb.h : p.bb.h;
+                if (v.Y < vector.Y && RectInRect(v.X - (flowBoxW / 2), v.Y - (flowBoxH / 2), v.X + (flowBoxW / 2), v.Y + (flowBoxH / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
                 {
                     float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
                     Vector v2 = Vect(0f, 0f - verticalImpulse);
@@ -125,7 +128,7 @@ namespace CutTheRopeDX.GameMain
                         float deltaX = tube.x - position.X;
                         horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
                             ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
-                            : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
+                            : ABS(velocity.X) < ActivePhysicsConstants.SteamTubeVelocityDeadzone ? 0f - velocity.X : (0f - velocity.X) / damping;
                     }
 
                     // Windows Phone force, mapped to world scale (tubeScale is world/Windows Phone transform).
@@ -178,7 +181,7 @@ namespace CutTheRopeDX.GameMain
                 float distanceBelowValve = tube.y - position.Y;
                 if (distanceBelowValve > currentHeight + collisionRadius)
                 {
-                    float attenuation = MathF.Exp(-2f * (distanceBelowValve - (currentHeight + collisionRadius)));
+                    float attenuation = MathF.Exp(ActivePhysicsConstants.SteamTubeFalloffExponent * (distanceBelowValve - (currentHeight + collisionRadius)));
                     impulse = VectMult(impulse, attenuation);
                 }
                 impulse = VectRotate(impulse, angle);
@@ -219,7 +222,7 @@ namespace CutTheRopeDX.GameMain
             p.PlayTimeline(0);
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
-            float flowLength = MathF.Max(0f, Pump.FlowLength - Pump.MouthOffset);
+            float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
             PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES(p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);

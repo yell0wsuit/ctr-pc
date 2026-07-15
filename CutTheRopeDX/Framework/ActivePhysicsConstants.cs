@@ -310,6 +310,26 @@ namespace CutTheRopeDX.Framework
         public static float SteamTubeOppositeGravityDivisor => SelectRaw(PhysicsConstants.SteamTubeOppositeGravityDivisor, MobilePhysicsConstants.SteamTubeOppositeGravityDivisor);
 
         /// <summary>
+        /// Exponent (per world unit) of the steam force falloff beyond the column top.
+        /// </summary>
+        public static float SteamTubeFalloffExponent => SelectRaw(PhysicsConstants.SteamTubeFalloffExponent, MobilePhysicsConstants.SteamTubeFalloffExponent);
+
+        /// <summary>
+        /// Horizontal velocity below which the steam column cancels velocity outright.
+        /// </summary>
+        public static float SteamTubeVelocityDeadzone => SelectScaled(PhysicsConstants.SteamTubeVelocityDeadzone, MobilePhysicsConstants.SteamTubeVelocityDeadzone);
+
+        /// <summary>
+        /// Distance from a lantern at which it captures the candy.
+        /// </summary>
+        public static float LanternCaptureRadius => SelectScaled(PhysicsConstants.LanternCaptureRadius, MobilePhysicsConstants.LanternCaptureRadius);
+
+        /// <summary>
+        /// Length of the pump's air flow column.
+        /// </summary>
+        public static float PumpFlowLength => SelectScaled(PhysicsConstants.PumpFlowLength, MobilePhysicsConstants.PumpFlowLength);
+
+        /// <summary>
         /// Spider's traversal speed.
         /// </summary>
         public static float SpiderTraversalSpeed => SelectRaw(PhysicsConstants.SpiderTraversalSpeed, MobilePhysicsConstants.SpiderTraversalSpeed);

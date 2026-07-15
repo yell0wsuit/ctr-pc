@@ -146,6 +146,18 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeOppositeGravityDivisor" />
         public const float SteamTubeOppositeGravityDivisor = 2f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeFalloffExponent" />
+        public const float SteamTubeFalloffExponent = -2f / 3f; // WP7 -2 per mobile unit
+
+        /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeVelocityDeadzone" />
+        public const float SteamTubeVelocityDeadzone = 1f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.LanternCaptureRadius" />
+        public const float LanternCaptureRadius = 32f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.PumpFlowLength" />
+        public const float PumpFlowLength = 200f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.SpiderTraversalSpeed" />
         public const float SpiderTraversalSpeed = 135f; // 45 * 3
 
