@@ -150,6 +150,16 @@ namespace CutTheRopeDX.Framework
         public static float SockSpeedKoeff => SelectRaw(PhysicsConstants.SockSpeedKoeff, MobilePhysicsConstants.SockSpeedKoeff);
 
         /// <summary>
+        /// Half-size of the candy collision box used when a sock catches the candy.
+        /// </summary>
+        public static float SockCatchHalfSize => SelectScaled(PhysicsConstants.SockCatchHalfSize, MobilePhysicsConstants.SockCatchHalfSize);
+
+        /// <summary>
+        /// Vertical offset applied to the candy when it exits a sock.
+        /// </summary>
+        public static float SockExitOffsetY => SelectScaled(PhysicsConstants.SockExitOffsetY, MobilePhysicsConstants.SockExitOffsetY);
+
+        /// <summary>
         /// Maximum rope roll length used by grab mechanics.
         /// </summary>
         public static float GrabRopeRollMaxLength => SelectScaled(PhysicsConstants.GrabRopeRollMaxLength, MobilePhysicsConstants.GrabRopeRollMaxLength);

@@ -132,7 +132,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ctx.targetSock.light.PlayTimeline(0);
                 ctx.targetSock.light.visible = true;
-                Vector v = Vect(0f, -16f);
+                Vector v = Vect(0f, ActivePhysicsConstants.SockExitOffsetY);
                 v = VectRotate(v, DEGREES_TO_RADIANS(ctx.targetSock.rotation));
                 ctx.point.pos.X = ctx.targetSock.x;
                 ctx.point.pos.Y = ctx.targetSock.y;

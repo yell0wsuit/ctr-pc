@@ -1125,7 +1125,7 @@ namespace CutTheRopeDX.GameMain
                     candies[ci].carriedByMouse = carried != null && candies[ci].point == carried;
                 }
             }
-            float collisionHalfSize = RTPD(20);
+            float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;

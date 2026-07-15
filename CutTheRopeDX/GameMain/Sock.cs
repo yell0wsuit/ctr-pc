@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 
@@ -72,13 +73,28 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void UpdateRotation()
         {
-            float sockWidth = 140f;
-            t1.X = x - (sockWidth / 2f) - 20f;
-            t2.X = x + (sockWidth / 2f) - 20f;
+            float mouthHalfWidth;
+            float mouthOffsetX;
+            float mouthDepth;
+            if (ActivePhysicsConstants.UseMobilePhysicsModel)
+            {
+                // WP7 mouth: x +/- 15, y .. y + 1, scaled x3 into world units.
+                mouthHalfWidth = 45f;
+                mouthOffsetX = 0f;
+                mouthDepth = 3f;
+            }
+            else
+            {
+                mouthHalfWidth = 70f;
+                mouthOffsetX = -20f;
+                mouthDepth = 15f;
+            }
+            t1.X = x - mouthHalfWidth + mouthOffsetX;
+            t2.X = x + mouthHalfWidth + mouthOffsetX;
             t1.Y = t2.Y = y;
             b1.X = t1.X;
             b2.X = t2.X;
-            b1.Y = b2.Y = y + 15f;
+            b1.Y = b2.Y = y + mouthDepth;
             angle = DEGREES_TO_RADIANS(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);

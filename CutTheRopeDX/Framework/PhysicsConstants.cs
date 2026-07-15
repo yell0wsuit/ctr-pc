@@ -59,6 +59,12 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.SockSpeedKoeff" />
         public const float SockSpeedKoeff = 0.9f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.SockCatchHalfSize" />
+        public const float SockCatchHalfSize = 20f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.SockExitOffsetY" />
+        public const float SockExitOffsetY = -16f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.GrabRopeRollMaxLength" />
         public const float GrabRopeRollMaxLength = 1650f;
 
