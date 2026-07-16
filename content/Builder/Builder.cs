@@ -51,6 +51,7 @@ namespace CutTheRopeDX.Content
             content.Exclude<WildcardRule>("bin/**/*");
             content.Exclude<WildcardRule>("obj/**/*");
             content.Exclude<WildcardRule>("Builder/**/*");
+            content.Exclude<WildcardRule>("Builder.Tests/**/*");
             content.Exclude<WildcardRule>("sounds/*.xnb");
 
             return content;

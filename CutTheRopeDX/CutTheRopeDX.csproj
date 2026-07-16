@@ -151,11 +151,6 @@
     </None>
   </ItemGroup>
 
-  <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
-    <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />
-    <Exec Command="dotnet tool restore" />
-  </Target>
-
   <!--
     macOS: codesign dylibs and the app bundle after build.
     This must be done to avoid app crashes when opening (thanks macOS).
@@ -197,20 +192,6 @@
     <Message Text="Relocating macOS .app to publish directory" Importance="High" />
 
     <Exec Condition="Exists('$(AppSourcePath)')" Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;" />
-  </Target>
-
-  <!--
-    Local-dev only: fetch missing binary content assets.
-    CI sets CI=true and disables MGCB (RunMGCB=false), so it never needs them.
-    Detection + download live in tools/FetchContentAssets/ (a small console
-    project) — see FetchContentAssets.cs for how missing assets are determined.
-
-    Runs in the RESTORE phase (like RestoreDotnetTools), before the build's
-    item evaluation — so restored files are picked up by the content/** copy
-    globs in the same build instead of lagging one build behind.
-  -->
-  <Target Name="RestoreContentAssets" BeforeTargets="CollectPackageReferences" Condition="'$(CI)' != 'true' AND '$(RunMGCB)' == 'true'">
-    <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/FetchContentAssets/FetchContentAssets.csproj&quot; -- &quot;$(MSBuildProjectDirectory)/../content&quot;" WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
 
   <Import Project="../content/Builder/BuildContent.targets" />

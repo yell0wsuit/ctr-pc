@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Content.Tests
             ContentCommandLine commandLine = ContentCommandLine.Parse(["build", .. arguments]);
 
             Assert.Equal(ContentCommand.Build, commandLine.Command);
-            Assert.Equal(arguments, commandLine.BuilderArguments);
+            Assert.Equal(["build", .. arguments], commandLine.BuilderArguments);
         }
 
         [Fact]

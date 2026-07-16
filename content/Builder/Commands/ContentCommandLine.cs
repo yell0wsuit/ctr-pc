@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Content.Commands
                 return new ContentCommandLine(
                     ContentCommand.Build,
                     null,
-                    [.. arguments.Skip(1)]);
+                    [.. arguments]);
             }
 
             string? sourceDirectory = null;
