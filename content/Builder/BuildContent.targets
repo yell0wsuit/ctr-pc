@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
+    <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
+    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(MonoGamePlatform)/content</ContentBuildOutput>
+    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(MonoGamePlatform)</ContentBuildTemp>
+  </PropertyGroup>
+
+  <Target Name="BuildGameContent"
+          BeforeTargets="BeforeBuild"
+          Condition="'$(RunMGCB)' == 'true'">
+    <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
+    <Exec Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot;"
+          CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
+  </Target>
+
+  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent" Condition="'$(RunMGCB)' == 'true'">
+    <ItemGroup>
+      <_BuiltContent Include="$(ContentBuildOutput)/**/*" />
+      <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      </None>
+    </ItemGroup>
+  </Target>
+</Project>

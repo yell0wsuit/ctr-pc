@@ -87,7 +87,6 @@
 
   <ItemGroup>
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.6" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5" />
   </ItemGroup>
 
@@ -118,22 +117,6 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <DefineConstants>$(DefineConstants);DESKTOPGL_FFMPEG</DefineConstants>
   </PropertyGroup>
-
-  <!-- Copy content files for non-macOS builds, exclude sounds (handled separately). -->
-  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
-    <None Include="..\content\**" Exclude="..\content\sounds\**;..\content\**\.DS_Store">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
-    <None Remove="..\content\content.mgcb" />
-    <None Remove="..\content\bin\**\*.*" />
-    <None Remove="..\content\obj\**\*.*" />
-    <None Remove="..\content\**\*.png" />
-    <None Remove="..\content\sounds\sfx\*.wav" />
-  </ItemGroup>
 
   <!-- macOS app bundle: use BundleResource for content files -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
@@ -176,10 +159,6 @@
     <BundleResource Include="..\alsoft.ini">
       <Link>alsoft.ini</Link>
     </BundleResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(RunMGCB)' == 'true'">
-    <MonoGameContentReference Include="..\content\content.mgcb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -256,4 +235,6 @@
   <Target Name="RestoreContentAssets" BeforeTargets="CollectPackageReferences" Condition="'$(CI)' != 'true' AND '$(RunMGCB)' == 'true'">
     <Exec Command="dotnet run --project &quot;$(MSBuildProjectDirectory)/../tools/FetchContentAssets/FetchContentAssets.csproj&quot; -- &quot;$(MSBuildProjectDirectory)/../content&quot;" WorkingDirectory="$(MSBuildProjectDirectory)/.." />
   </Target>
+
+  <Import Project="../content/Builder/BuildContent.targets" />
 </Project>
