@@ -318,6 +318,29 @@ namespace CutTheRopeDX.Framework.Media
         /// <returns><see langword="true" /> if initialization succeeded; otherwise, <see langword="false" />.</returns>
         private bool InitializeFfmpeg(string filePath)
         {
+            try
+            {
+                return InitializeFfmpegCore(filePath);
+            }
+            catch (Exception ex)
+            {
+                // A native FFmpeg load or decode failure here (e.g. a missing
+                // bundled dependency) must not crash the game — skip the video.
+                Console.WriteLine($"[FFmpeg] Video initialization failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets up FFmpeg format/codec contexts and opens the video for decoding.
+        /// Native interop here can throw (e.g. the FFmpeg libraries fail to load on
+        /// first use); it is always invoked through <see cref="InitializeFfmpeg"/>,
+        /// which converts any such failure into a graceful skip.
+        /// </summary>
+        /// <param name="filePath">Full path to the video file.</param>
+        /// <returns><see langword="true" /> if initialization succeeded; otherwise, <see langword="false" />.</returns>
+        private bool InitializeFfmpegCore(string filePath)
+        {
             AVFormatContext* openedContext = null;
             if (ffmpeg.avformat_open_input(&openedContext, filePath, null, null) != 0)
             {
