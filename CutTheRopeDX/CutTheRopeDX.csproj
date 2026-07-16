@@ -5,7 +5,7 @@
     <RootNamespace>CutTheRopeDX</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
 
-    <!-- Default: cross-platform DesktopGL -->
+    <!-- Default: cross-platform -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <!-- macOS: add net10.0-macos for AVFoundation -->
     <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX'))">
@@ -87,7 +87,10 @@
 
   <ItemGroup>
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.6" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5" />
+    <PackageReference Include="MonoGame.Framework.Native" Version="3.8.5" />
+    <PackageReference Include="MonoGame.Runtime.Windows.Vulkan" Version="3.8.5" />
+    <PackageReference Include="MonoGame.Runtime.Mac.Vulkan" Version="3.8.5" />
+    <PackageReference Include="MonoGame.Runtime.Linux.Vulkan" Version="3.8.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,9 +106,9 @@
     <PackageReference Include="FFmpeg.LGPL" Version="20260210.1.0" />
   </ItemGroup>
 
-  <!-- Compiler constants for DesktopGL builds. -->
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+    <MonoGamePlatform>DesktopVK</MonoGamePlatform>
+    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPVK</DefineConstants>
   </PropertyGroup>
 
   <!-- AVFoundation for macOS Tahoe (26) -->
@@ -132,20 +135,6 @@
     </BundleResource>
     <BundleResource Include="..\content\sounds\*.ogg">
       <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </BundleResource>
-  </ItemGroup>
-
-  <!-- OpenGL build, include alsoft.ini to disable HTRF. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <None Include="..\alsoft.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <!-- macOS app bundle: alsoft.ini as BundleResource -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="..\alsoft.ini">
-      <Link>alsoft.ini</Link>
     </BundleResource>
   </ItemGroup>
 
