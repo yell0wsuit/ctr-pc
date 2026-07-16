@@ -694,10 +694,10 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private float backgroundScale = 1f;
 
+#pragma warning disable IDE1006
         /// <summary>
         /// The active Om Nom gameplay object.
         /// </summary>
-#pragma warning disable IDE1006
         private GameObject targetObject => targets.Count > 0 ? targets[0].targetObject : null;
 
         /// <summary>
@@ -711,10 +711,10 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private Image support;
 
+#pragma warning disable IDE1006
         /// <summary>
         /// The main candy gameplay object.
         /// </summary>
-#pragma warning disable IDE1006
         private GameObject candy => candies[0].candy;
 
         /// <summary>
@@ -771,8 +771,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
         private readonly List<CandyContext> candies = [];
 
-        /// <summary>All Om Noms in the level. Single-target packs hold one element.</summary>
 #pragma warning disable IDE0052
+        /// <summary>All Om Noms in the level. Single-target packs hold one element.</summary>
         private readonly List<TargetContext> targets = [];
 #pragma warning restore IDE0052
 
@@ -980,12 +980,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private WaterElement waterLayer;
 
+#pragma warning disable IDE1006
         /// <summary>
         /// The primary candy's bubble gameplay object. Sealed onto <c>candies[0]</c> so the primary
         /// candy's bubble is stored like every other candy's (the split-half bubbles
         /// <see cref="candyBubbleL"/>/<see cref="candyBubbleR"/> stay separate).
         /// </summary>
-#pragma warning disable IDE1006
         private GameObject candyBubble
         {
             get => candies[0].bubble;
