@@ -6,6 +6,8 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
+using Microsoft.Xna.Framework.Audio;
+
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
 namespace CutTheRopeDX.GameMain
@@ -282,7 +284,8 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Stops the rocket animation by playing the scale-down timeline, stopping the spark
-        /// animation, stopping and releasing both particle systems, and stopping all sounds.
+        /// animation, stopping and releasing both particle systems, and silencing this rocket's
+        /// own fly loop.
         /// </summary>
         public void StopAnimation()
         {
@@ -297,7 +300,8 @@ namespace CutTheRopeDX.GameMain
             cloudParticles?.StopSystem();
             particles = null;
             cloudParticles = null;
-            CTRSoundMgr.StopSounds();
+            CTRSoundMgr.StopLoopedSound(flyLoopSound);
+            flyLoopSound = null;
         }
 
         /// <summary>The rocket is idle and not in use.</summary>
@@ -407,6 +411,14 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Particle system for the rocket's cloud exhaust trail.</summary>
         public RocketClouds cloudParticles;
+
+        /// <summary>
+        /// This rocket's own looping fly sound instance. Held so it can be stopped individually
+        /// via <see cref="CTRSoundMgr.StopLoopedSound"/> without silencing other rockets' loops or
+        /// unrelated one-shot effects. <see langword="null"/> when looped sounds are disabled or
+        /// the sound failed to start.
+        /// </summary>
+        public SoundEffectInstance flyLoopSound;
 
         /// <summary>Delegate that receives rocket lifecycle callbacks (e.g., exhaustion).</summary>
         public IRocketDelegate delegateRocketDelegate;

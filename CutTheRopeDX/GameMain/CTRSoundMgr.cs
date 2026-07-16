@@ -203,6 +203,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Stops a single looped sound instance previously returned by
+        /// <see cref="PlaySoundLooped(string)"/>, leaving other looped and one-shot sounds playing.
+        /// </summary>
+        /// <param name="instance">The looped instance to stop; ignored when <see langword="null"/>.</param>
+        public static void StopLoopedSound(SoundEffectInstance instance)
+        {
+            Application.SharedSoundMgr().StopLoopedSound(instance);
+        }
+
+        /// <summary>
         /// Stops all currently playing sound effects.
         /// </summary>
         public static void StopSounds()

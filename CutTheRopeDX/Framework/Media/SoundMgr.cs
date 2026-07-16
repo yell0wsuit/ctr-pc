@@ -170,6 +170,34 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
+        /// Stops a single active looped sound <paramref name="instance"/> and drops its tracking
+        /// entry, leaving every other looped sound and all one-shot effects untouched. Used by
+        /// callers that own an individual loop (e.g. a rocket's fly loop) so stopping one source
+        /// does not silence unrelated audio.
+        /// </summary>
+        /// <param name="instance">The looped instance to stop; ignored when <see langword="null"/>.</param>
+        public void StopLoopedSound(SoundEffectInstance instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (instance.State != SoundState.Stopped)
+                {
+                    instance.Stop();
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            _ = activeLoopedSounds.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
+        }
+
+        /// <summary>
         /// Stops all currently playing sound effects, including looped sounds.
         /// Resets the pause and SFX-suspension state so subsequent audio starts from a clean slate.
         /// </summary>

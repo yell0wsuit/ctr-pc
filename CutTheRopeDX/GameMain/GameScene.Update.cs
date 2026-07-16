@@ -1341,7 +1341,7 @@ namespace CutTheRopeDX.GameMain
                             }
 
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
-                            _ = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                            rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             ctx.activeRocket = rocket;
                             rocket.isOperating = -1;
                             rocket.startCandyRotation = ctx.candyMain.rotation;

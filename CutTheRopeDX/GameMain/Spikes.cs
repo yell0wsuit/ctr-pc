@@ -101,7 +101,7 @@ namespace CutTheRopeDX.GameMain
             electroOn = false;
             PlayTimeline(0);
             electroTimer = offTime;
-            sndElectric?.Stop();
+            CTRSoundMgr.StopLoopedSound(sndElectric);
             sndElectric = null;
         }
 
