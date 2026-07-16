@@ -1,24 +1,12 @@
-using CutTheRopeDX.Content;
+using CutTheRopeDX.Content.Commands;
 
-using Microsoft.Xna.Framework.Content.Pipeline;
-
-using MonoGame.Framework.Content.Pipeline.Builder;
-
-GameContentBuilder builder = new();
-
-if (args is { Length: > 0 })
+try
 {
-    builder.Run(args);
+    ContentCommandLine commandLine = ContentCommandLine.Parse(args);
+    return await AssetCommands.RunAsync(commandLine);
 }
-else
+catch (ArgumentException exception)
 {
-    _ = builder.Run(new ContentBuilderParams
-    {
-        Mode = ContentBuilderMode.Builder,
-        WorkingDirectory = $"{AppContext.BaseDirectory}../../",
-        SourceDirectory = "content",
-        Platform = TargetPlatform.DesktopVK,
-    });
+    Console.Error.WriteLine(exception.Message);
+    return 1;
 }
-
-return builder.FailedToBuild > 0 ? -1 : 0;
