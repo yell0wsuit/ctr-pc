@@ -4,13 +4,7 @@
     <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
     <RootNamespace>CutTheRopeDX</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
-
-    <!-- Default: cross-platform DesktopGL -->
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <!-- macOS: add net10.0-macos for AVFoundation -->
-    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-      net10.0;net10.0-macos
-    </TargetFrameworks>
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
