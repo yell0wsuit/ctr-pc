@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Downloads prebuilt FFmpeg 8.0 LGPL shared libraries for Linux x64 from BtbN/FFmpeg-Builds.
+# Downloads prebuilt FFmpeg 8.1 LGPL shared libraries for Linux x64 from BtbN/FFmpeg-Builds.
 # Usage: ./download_ffmpeg_linux.sh <output_dir>
 #
 # The shared libraries (.so files) and LICENSE are copied into <output_dir>/ffmpeg/.
@@ -16,8 +16,17 @@ if [ -z "$OUTPUT_DIR" ]; then
     exit 1
 fi
 
-FFMPEG_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.0-latest-linux64-lgpl-shared-8.0.tar.xz"
+FFMPEG_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1.tar.xz"
 ARCHIVE_NAME="ffmpeg-linux64-lgpl-shared.tar.xz"
+FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
+
+# Check if FFmpeg libraries already exist
+if [ -d "$FFMPEG_SUBDIR" ] && [ -n "$(ls -A "$FFMPEG_SUBDIR"/lib*.so* 2>/dev/null)" ]; then
+    echo "FFmpeg shared libraries already present in $FFMPEG_SUBDIR"
+    echo "Skipping download..."
+    exit 0
+fi
+
 TEMP_DIR=$(mktemp -d)
 
 cleanup() {
@@ -26,19 +35,23 @@ cleanup() {
 trap cleanup EXIT
 
 echo "Downloading FFmpeg shared libraries..."
-wget -q --show-progress -O "$TEMP_DIR/$ARCHIVE_NAME" "$FFMPEG_URL"
+# Add timeout and retry options for reliability
+if ! wget --timeout=30 --tries=3 -q --show-progress -O "$TEMP_DIR/$ARCHIVE_NAME" "$FFMPEG_URL"; then
+    echo "Error: Failed to download FFmpeg from $FFMPEG_URL"
+    echo "Please check your internet connection and try again."
+    exit 1
+fi
 
 echo "Extracting shared libraries..."
 tar -xf "$TEMP_DIR/$ARCHIVE_NAME" -C "$TEMP_DIR"
 
-# The archive extracts to a directory like ffmpeg-n8.0-latest-linux64-lgpl-shared-8.0/
+# The archive extracts to a directory like ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1/
 EXTRACTED_DIR=$(find "$TEMP_DIR" -maxdepth 1 -type d -name 'ffmpeg-*' | head -1)
 if [ -z "$EXTRACTED_DIR" ]; then
     echo "Error: could not find extracted FFmpeg directory"
     exit 1
 fi
 
-FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
 mkdir -p "$FFMPEG_SUBDIR"
 
 # Copy all shared libraries (follow symlinks to get the actual files)
