@@ -48,7 +48,6 @@ namespace CutTheRopeDX.Content
             content.IncludeCopy<WildcardRule>("*.cur");
 
             // Exclude legacy pipeline artifacts and prebuilt outputs.
-            content.Exclude<WildcardRule>("content.mgcb");
             content.Exclude<WildcardRule>("bin/**/*");
             content.Exclude<WildcardRule>("obj/**/*");
             content.Exclude<WildcardRule>("Builder/**/*");

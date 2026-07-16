@@ -123,7 +123,7 @@
 
   <!-- macOS app bundle: use BundleResource for content files -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="..\content\**" Exclude="..\content\sounds\**;..\content\content.mgcb;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav">
+    <BundleResource Include="..\content\**" Exclude="..\content\sounds\**;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\sounds\sfx\*.wav">
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </BundleResource>
   </ItemGroup>
