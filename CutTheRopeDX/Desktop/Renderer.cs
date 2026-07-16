@@ -850,14 +850,14 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices to upload.</param>
         /// <param name="indices">The source index data.</param>
         /// <returns>An index buffer containing the requested index data.</returns>
-        private static IndexBuffer GetIndexBuffer(int indexCount, short[] indices)
+        private static DynamicIndexBuffer GetIndexBuffer(int indexCount, short[] indices)
         {
             if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
             {
                 s_indexBuffer?.Dispose();
-                s_indexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+                s_indexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
             }
-            s_indexBuffer.SetData(indices, 0, indexCount);
+            s_indexBuffer.SetData(indices, 0, indexCount, SetDataOptions.Discard);
             return s_indexBuffer;
         }
 
@@ -948,7 +948,7 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Reusable index buffer for indexed draw calls.
         /// </summary>
-        private static IndexBuffer s_indexBuffer;
+        private static DynamicIndexBuffer s_indexBuffer;
 
         /// <summary>
         /// Captures the last submitted colored vertices for debugging.
