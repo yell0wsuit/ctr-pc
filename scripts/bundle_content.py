@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bundle content assets into ctrdx-assets.zip and write file_manifest.json.
+"""Bundle content assets into ctrdx-assets-vk.zip and write file_manifest.json.
 
 Maintainer-side release tooling. Packs the content folders the build fetches —
 fonts/, images/, sounds/, video_hd/ plus the two desktop cursors — into a single
@@ -60,8 +60,8 @@ def main() -> int:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("content_dir", type=Path, help="path to the content/ tree")
     parser.add_argument(
-        "-o", "--output", type=Path, default=Path("ctrdx-assets.zip"),
-        help="output zip path (default: ./ctrdx-assets.zip)")
+        "-o", "--output", type=Path, default=Path("ctrdx-assets-vk.zip"),
+        help="output zip path (default: ./ctrdx-assets-vk.zip)")
     parser.add_argument(
         "-m", "--manifest", type=Path, default=None,
         help=f"manifest path (default: <content_dir>/{MANIFEST_NAME})")

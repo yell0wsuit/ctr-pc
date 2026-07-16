@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Content.Commands
     public static class AssetCommands
     {
         private const string AssetsUrl =
-            "https://github.com/yell0wsuit/ctrdx-assets/releases/latest/download/ctrdx-assets.zip";
+            "https://github.com/yell0wsuit/ctrdx-assets/releases/latest/download/ctrdx-assets-vk.zip";
         private const string ManifestName = "file_manifest.json";
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace CutTheRopeDX.Content.Commands
 
             try
             {
-                string archivePath = Path.Combine(temporaryDirectory, "ctrdx-assets.zip");
+                string archivePath = Path.Combine(temporaryDirectory, "ctrdx-assets-vk.zip");
                 using AssetDownloader downloader = new();
                 Console.WriteLine($"Downloading content assets from {AssetsUrl}...");
                 await downloader.DownloadAsync(AssetsUrl, archivePath, retries: 3);
