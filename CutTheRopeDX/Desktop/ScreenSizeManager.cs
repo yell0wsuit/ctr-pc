@@ -159,6 +159,25 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             ApplyWindowSize(WindowWidth);
+            CenterWindow();
+        }
+
+        /// <summary>
+        /// Centers the game window on the primary display. A programmatic back-buffer resize keeps the
+        /// window's top-left corner pinned, so this must be called after sizing to avoid the window
+        /// hugging a screen corner. Repositioning also forces the window frame to re-layout, which
+        /// restores the title bar after returning from borderless fullscreen.
+        /// </summary>
+        public void CenterWindow()
+        {
+            if (IsFullScreen)
+            {
+                return;
+            }
+            DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+            int x = Math.Max(0, (displayMode.Width - _windowRect.Width) / 2);
+            int y = Math.Max(0, (displayMode.Height - _windowRect.Height) / 2);
+            Global.XnaGame.Window.Position = new Point(x, y);
         }
 
         /// <summary>
@@ -244,6 +263,13 @@ namespace CutTheRopeDX.Desktop
             FullScreenCropWidth = fullScreenCropWidth;
             SkipSizeChanges = false;
             EnableFullScreen(!isFullScreen);
+            // Returning to windowed mode: re-center so the restored window is not stuck in a corner
+            // and to force the frame to re-layout, which repaints the title bar the borderless
+            // fullscreen transition would otherwise leave missing until the next manual resize.
+            if (isFullScreen)
+            {
+                CenterWindow();
+            }
             Save();
             Application.SharedCanvas().Reshape();
             Application.SharedRootController().FullscreenToggled(!isFullScreen);
