@@ -807,9 +807,14 @@ namespace CutTheRopeDX.GameMain
         public override void FullscreenToggled(bool isFullscreen)
         {
             View view = GetView(0);
-            view.GetChild(2).x = -Canvas.xOffsetScaled;
-            view.GetChild(1).x = -Canvas.xOffsetScaled;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + 256f;
+            // Reposition the HUD buttons using the same edge offsets applied at construction,
+            // otherwise the restart button collapses onto the pause button and they overlap.
+            Button pauseButton = (Button)view.GetChild(1);
+            Button restartButton = (Button)view.GetChild(2);
+            pauseButton.x = -Canvas.xOffsetScaled - 8f;
+            restartButton.x = -Canvas.xOffsetScaled - pauseButton.width - 16f;
+            float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
+            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
         }
