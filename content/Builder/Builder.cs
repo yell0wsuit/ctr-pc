@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Content
                 "sounds/sfx/*.wav",
                 contentProcessor: new SoundEffectProcessor { Quality = ConversionQuality.Best });
             content.Include<WildcardRule>(
-                "sounds/*.ogg",
+                "sounds/*.wav",
                 contentProcessor: new SongProcessor { Quality = ConversionQuality.Best });
 
             // Copy (do not build) content the game reads as raw files.
