@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+
 using MonoGame.Framework.Content.Pipeline.Builder;
 
 namespace CutTheRopeDX.Content
@@ -17,6 +19,28 @@ namespace CutTheRopeDX.Content
             // (textures, sounds, songs). Non-buildable file types are handled
             // in later tasks via IncludeCopy / Exclude.
             content.Include<WildcardRule>("**/*.png");
+
+            // Non-premultiplied cursors (the first assets the game loads).
+            content.Exclude<WildcardRule>("images/cursor.png");
+            content.Exclude<WildcardRule>("images/cursor_active.png");
+            content.Include(
+                "images/cursor.png",
+                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
+            content.Include(
+                "images/cursor_active.png",
+                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
+
+            // Color-keyed candy sprite (magenta -> transparent).
+            content.Exclude<WildcardRule>("images/candies/obj_candy_52.png");
+            content.Include(
+                "images/candies/obj_candy_52.png",
+                contentProcessor: new TextureProcessor
+                {
+                    ColorKeyEnabled = true,
+                    ColorKeyColor = new Microsoft.Xna.Framework.Color(255, 0, 255, 255),
+                    PremultiplyAlpha = true,
+                });
+
             content.Include<WildcardRule>("sounds/sfx/*.wav");
             content.Include<WildcardRule>("sounds/*.ogg");
 
