@@ -852,6 +852,30 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>
+        /// Number of active snails currently riding the given candy point.
+        /// </summary>
+        /// <param name="point">Candy physics point to count attached snails for.</param>
+        /// <returns>The count of snails in the active state whose attached point is <paramref name="point"/>; 0 if none or <paramref name="point"/> is null.</returns>
+        public int ActiveSnailCountForPoint(ConstraintedPoint point)
+        {
+            if (snailobjects == null || snailobjects.Count <= 0 || point == null)
+            {
+                return 0;
+            }
+
+            int count = 0;
+            foreach (Snail snail in snailobjects)
+            {
+                if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == point)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
         /// <summary>Detaches active snails riding the given candy point (no-op if null).</summary>
         public void DetachSnailsForPoint(ConstraintedPoint point)
         {

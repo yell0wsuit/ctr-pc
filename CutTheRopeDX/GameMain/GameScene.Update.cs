@@ -2063,6 +2063,12 @@ namespace CutTheRopeDX.GameMain
                     heldCandy.candy.drawY += hand.cPoint.pos.Y - heldCandy.point.pos.Y;
                     heldCandy.point.pos = hand.cPoint.pos;
 
+                    // Pin prevPos to the claw as well. Otherwise prevPos keeps the candy's pre-grab
+                    // physics position while pos is teleported to the claw, so Verlet reads the teleport
+                    // gap (e.g. the rope still pulling the candy up) as a fake velocity. A bouncer sitting
+                    // at the claw amplifies that phantom velocity into a huge impulse and launches the candy.
+                    heldCandy.point.prevPos = heldCandy.point.pos;
+
                     if (hand.doRotateCandy)
                     {
                         if (hand.rotatingSegment != null)
@@ -2177,7 +2183,16 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
+                    // A snail riding this candy added weight to drag it down. Force-detaching the snail
+                    // here must give that weight back, otherwise the released candy keeps falling as if the
+                    // snail were still attached. Gate on real snail presence so a heavier rocket candy grabbed
+                    // without a snail keeps its own weight.
+                    int detachedSnails = ActiveSnailCountForPoint(ctx.point);
                     DetachSnailsForPoint(ctx.point);
+                    if (detachedSnails > 0)
+                    {
+                        ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, detachedSnails));
+                    }
                     miceManager?.ForceDropCandy();
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
