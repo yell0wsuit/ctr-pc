@@ -213,7 +213,7 @@ namespace CutTheRopeDX.Desktop
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             graphicsDeviceManager.PreferredBackBufferWidth = width;
             graphicsDeviceManager.PreferredBackBufferHeight = ScaledGameHeight(width);
-            graphicsDeviceManager.ApplyChanges();
+            ApplyDesktopVkResize(graphicsDeviceManager);
             WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
         }
 
@@ -239,7 +239,7 @@ namespace CutTheRopeDX.Desktop
                 graphicsDeviceManager.PreferredBackBufferHeight = _fullScreenRect.Height;
             }
             graphicsDeviceManager.IsFullScreen = !isFullScreen;
-            graphicsDeviceManager.ApplyChanges();
+            ApplyDesktopVkResize(graphicsDeviceManager);
             ApplyViewportToDevice();
             FullScreenCropWidth = fullScreenCropWidth;
             SkipSizeChanges = false;
@@ -369,6 +369,23 @@ namespace CutTheRopeDX.Desktop
                 IsFullScreen = bFull;
                 UpdateScaledView();
             }
+        }
+
+        private static void ApplyDesktopVkResize(
+            GraphicsDeviceManager graphicsDeviceManager)
+        {
+            bool originalSynchronization =
+                graphicsDeviceManager.SynchronizeWithVerticalRetrace;
+
+            // MonoGame 3.8.5 ignores dimension-only DesktopVK swapchain resizes.
+            // Changing the presentation interval forces the native resize path.
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace =
+                !originalSynchronization;
+            graphicsDeviceManager.ApplyChanges();
+
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace =
+                originalSynchronization;
+            graphicsDeviceManager.ApplyChanges();
         }
 
         /// <summary>
