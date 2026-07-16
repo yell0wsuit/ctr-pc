@@ -139,19 +139,7 @@ namespace CutTheRopeDX.Desktop
         public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
-            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayMode.Width - 100;
-            if (targetWindowWidth < 800)
-            {
-                targetWindowWidth = 800;
-            }
-            if (targetWindowWidth > MAX_WINDOW_WIDTH)
-            {
-                targetWindowWidth = MAX_WINDOW_WIDTH;
-            }
-            if (targetWindowWidth > displayMode.Width)
-            {
-                targetWindowWidth = displayMode.Width;
-            }
+            int targetWindowWidth = ClampWindowWidth(windowWidth, displayMode.Width);
             WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScaledGameHeight(targetWindowWidth)));
             if (isFullScreen)
             {
@@ -178,6 +166,23 @@ namespace CutTheRopeDX.Desktop
             int x = Math.Max(0, (displayMode.Width - _windowRect.Width) / 2);
             int y = Math.Max(0, (displayMode.Height - _windowRect.Height) / 2);
             Global.XnaGame.Window.Position = new Point(x, y);
+        }
+
+        /// <summary>
+        /// Clamps a requested window width to the game's minimum, the graphics profile maximum, and the
+        /// display width, deriving a default from the display when no positive width is supplied.
+        /// Shared by startup swapchain sizing and <see cref="Init"/> so both agree on the target width.
+        /// </summary>
+        /// <param name="windowWidth">Requested window width, or a non-positive value to derive one from the display.</param>
+        /// <param name="displayWidth">Current display width.</param>
+        /// <returns>The clamped window width.</returns>
+        public static int ClampWindowWidth(int windowWidth, int displayWidth)
+        {
+            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayWidth - 100;
+            targetWindowWidth = Math.Max(MIN_WINDOW_WIDTH, targetWindowWidth);
+            targetWindowWidth = Math.Min(targetWindowWidth, MAX_WINDOW_WIDTH);
+            targetWindowWidth = Math.Min(targetWindowWidth, displayWidth);
+            return targetWindowWidth;
         }
 
         /// <summary>
@@ -230,9 +235,20 @@ namespace CutTheRopeDX.Desktop
         public void ApplyWindowSize(int width)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
+            int height = ScaledGameHeight(width);
+            // Skip the swapchain rebuild when the back buffer already matches the requested size.
+            // At startup the swapchain is created at this size (see Game1), so the first sizing here
+            // would otherwise rebuild it needlessly and flash black.
+            GraphicsDevice device = graphicsDeviceManager.GraphicsDevice;
+            bool alreadySized = device != null
+                && device.PresentationParameters.BackBufferWidth == width
+                && device.PresentationParameters.BackBufferHeight == height;
             graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = ScaledGameHeight(width);
-            ApplyDesktopVkResize(graphicsDeviceManager);
+            graphicsDeviceManager.PreferredBackBufferHeight = height;
+            if (!alreadySized)
+            {
+                ApplyDesktopVkResize(graphicsDeviceManager);
+            }
             WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
         }
 

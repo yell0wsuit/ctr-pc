@@ -45,6 +45,7 @@ namespace CutTheRopeDX
             }
             // Use borderless fullscreen instead of hardware mode switch to prevent display resolution changes
             Global.GraphicsDeviceManager.HardwareModeSwitch = false;
+            PresizeSwapchain();
             Global.GraphicsDeviceManager.PreparingDeviceSettings += GraphicsDeviceManager_PreparingDeviceSettings;
             TargetElapsedTime = TimeSpan.FromTicks(166666L);
             IsFixedTimeStep = false;
@@ -53,6 +54,26 @@ namespace CutTheRopeDX
             Activated += Game1_Activated;
             Deactivated += Game1_Deactivated;
             Exiting += Game1_Exiting;
+        }
+
+        /// <summary>
+        /// Sizes the preferred back buffer to the saved windowed dimensions before the graphics device is
+        /// created, so the swapchain is born at its final size. Without this the device starts at MonoGame's
+        /// default size and the first window sizing in <see cref="LoadContent"/> rebuilds the swapchain,
+        /// flashing black during launch. Skipped when the last session was fullscreen, which is sized later.
+        /// </summary>
+        private static void PresizeSwapchain()
+        {
+            Preferences.LoadPreferences();
+            if (Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"))
+            {
+                return;
+            }
+            int savedWidth = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
+            int displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            int width = ScreenSizeManager.ClampWindowWidth(savedWidth, displayWidth);
+            Global.GraphicsDeviceManager.PreferredBackBufferWidth = width;
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = Global.ScreenSizeManager.ScaledGameHeight(width);
         }
 
         /// <summary>
