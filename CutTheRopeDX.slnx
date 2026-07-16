@@ -1,5 +1,4 @@
 <Solution>
   <Project Path="CutTheRopeDX/CutTheRopeDX.csproj" />
   <Project Path="CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj" />
-  <Project Path="content/Builder.Tests/CutTheRopeDX.Content.Tests.csproj" />
 </Solution>
