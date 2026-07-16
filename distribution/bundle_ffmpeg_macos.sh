@@ -57,29 +57,30 @@ for lib in $CORE_LIBS; do
     chmod 755 "$FRAMEWORKS_DIR/$versioned_name"
 done
 
-# --- Pass 2: Discover and copy third-party Homebrew dependencies ---
-# Scan the core dylibs for references to /opt/homebrew/* that aren't already
-# in our Frameworks directory.
+# --- Pass 2: Discover and copy third-party Homebrew dependencies (transitive) ---
+# Scan for references to /opt/homebrew/* and pull them into Frameworks. Copied
+# deps can themselves link further Homebrew libs (e.g. libmp3lame -> libmpg123),
+# so repeat full scans until a pass copies nothing new — otherwise a missing
+# transitive dep makes libavformat fail to load and crashes the app at runtime.
 echo "Copying third-party dependencies..."
-SEEN_FILE=$(mktemp)
-trap "rm -f '$SEEN_FILE'" EXIT
 
-# Mark core libs as already handled
-ls "$FRAMEWORKS_DIR"/*.dylib 2>/dev/null | xargs -I{} basename {} > "$SEEN_FILE"
-
-for dylib in "$FRAMEWORKS_DIR"/*.dylib; do
-    otool -L "$dylib" | tail -n +2 | awk '{print $1}' | grep '^/opt/homebrew/' | while IFS= read -r dep; do
-        dep_name=$(basename "$dep")
-        if ! grep -qxF "$dep_name" "$SEEN_FILE" 2>/dev/null; then
-            echo "$dep_name" >> "$SEEN_FILE"
+while :; do
+    added=0
+    for dylib in "$FRAMEWORKS_DIR"/*.dylib; do
+        while IFS= read -r dep; do
+            dep_name=$(basename "$dep")
+            # Skip anything already present in Frameworks.
+            [ -e "$FRAMEWORKS_DIR/$dep_name" ] && continue
             real=$(python3 -c "import pathlib; print(pathlib.Path('$dep').resolve())" 2>/dev/null)
             if [ -f "$real" ]; then
                 echo "  $dep_name"
                 cp -L "$real" "$FRAMEWORKS_DIR/$dep_name"
                 chmod 755 "$FRAMEWORKS_DIR/$dep_name"
+                added=1
             fi
-        fi
+        done < <(otool -L "$dylib" | tail -n +2 | awk '{print $1}' | grep '^/opt/homebrew/')
     done
+    [ "$added" -eq 0 ] && break
 done
 
 # --- Pass 3: Rewrite install names for relocatability ---
