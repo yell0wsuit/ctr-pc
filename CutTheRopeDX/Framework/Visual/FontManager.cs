@@ -100,18 +100,16 @@ namespace CutTheRopeDX.Framework.Visual
             byte[] fontData;
             try
             {
-                // Try loading from content directory using TitleContainer
-                using Stream stream = TitleContainer.OpenStream(contentFontPath);
+                using Stream stream = ContentPaths.OpenStream(contentFontPath);
                 using MemoryStream ms = new();
                 stream.CopyTo(ms);
                 fontData = ms.ToArray();
             }
             catch
             {
-                // Fallback to direct file access if TitleContainer fails
                 try
                 {
-                    using Stream stream = TitleContainer.OpenStream(fontPath);
+                    using Stream stream = ContentPaths.OpenStream(fontPath);
                     using MemoryStream ms = new();
                     stream.CopyTo(ms);
                     fontData = ms.ToArray();

@@ -20,6 +20,22 @@ namespace CutTheRopeDX.Content
             content.Include<WildcardRule>("sounds/sfx/*.wav");
             content.Include<WildcardRule>("sounds/*.ogg");
 
+            // Copy (do not build) content the game reads as raw files.
+            content.IncludeCopy<WildcardRule>("maps/*.*");
+            content.IncludeCopy<WildcardRule>("locales/*.*");
+            content.IncludeCopy<WildcardRule>("fonts/*.*");
+            content.IncludeCopy<WildcardRule>("video_hd/*.*");
+            content.IncludeCopy<WildcardRule>("*.xml");
+            content.IncludeCopy<WildcardRule>("*.json");
+            content.IncludeCopy<WildcardRule>("*.cur");
+
+            // Exclude legacy pipeline artifacts and prebuilt outputs.
+            content.Exclude<WildcardRule>("content.mgcb");
+            content.Exclude<WildcardRule>("bin/**/*");
+            content.Exclude<WildcardRule>("obj/**/*");
+            content.Exclude<WildcardRule>("Builder/**/*");
+            content.Exclude<WildcardRule>("sounds/*.xnb");
+
             return content;
         }
     }

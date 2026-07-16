@@ -9,8 +9,6 @@ using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework;
-
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
 namespace CutTheRopeDX.Framework.Core
@@ -323,7 +321,7 @@ namespace CutTheRopeDX.Framework.Core
             string json;
             try
             {
-                using Stream stream = TitleContainer.OpenStream(atlasPath);
+                using Stream stream = ContentPaths.OpenStream(atlasPath);
                 using StreamReader reader = new(stream);
                 json = reader.ReadToEnd();
             }

@@ -6,8 +6,6 @@ using System.Threading;
 
 using CutTheRopeDX.Framework;
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>
@@ -202,8 +200,7 @@ namespace CutTheRopeDX.Helpers
         {
             try
             {
-                string contentPath = Path.Combine(ContentPaths.RootDirectory, fileName);
-                return TitleContainer.OpenStream(contentPath);
+                return ContentPaths.OpenStream(fileName);
             }
             catch (Exception)
             {

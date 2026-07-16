@@ -7,8 +7,6 @@ using System.Text.Json;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -98,8 +96,7 @@ namespace CutTheRopeDX.GameMain
 
             try
             {
-                using Stream stream = TitleContainer.OpenStream(
-                    Path.Combine(ContentPaths.RootDirectory, manifestPath));
+                using Stream stream = ContentPaths.OpenStream(manifestPath);
                 using JsonDocument document = JsonDocument.Parse(stream);
                 JsonElement root = document.RootElement;
 

@@ -9,8 +9,6 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -638,7 +636,7 @@ namespace CutTheRopeDX.GameMain
 
             try
             {
-                using Stream stream = TitleContainer.OpenStream(Path.Combine(ContentPaths.RootDirectory, fileName));
+                using Stream stream = ContentPaths.OpenStream(fileName);
                 using JsonDocument document = JsonDocument.Parse(stream);
                 root = document.RootElement.Clone();
                 return true;

@@ -6,8 +6,6 @@ using System.Xml.Linq;
 using Foundation;
 #endif
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>
@@ -112,7 +110,7 @@ namespace CutTheRopeDX.Helpers
 
         /// <summary>
         /// Gets the full path to a texture image resource (JSON or PNG).
-        /// Use for TitleContainer.OpenStream and direct file access.
+        /// Use for raw content stream and direct file access.
         /// </summary>
         /// <param name="resourceName">The resource name (e.g., "obj_ghost" or "candies/obj_candy_02")</param>
         /// <param name="extension">The file extension (e.g., ".json" or ".png")</param>
@@ -184,6 +182,34 @@ namespace CutTheRopeDX.Helpers
         }
 
         /// <summary>
+        /// Opens a raw content file from the deployed content directory.
+        /// </summary>
+        /// <param name="relativePath">
+        /// The path relative to the content root. Paths already prefixed with
+        /// <c>content</c> are also accepted for compatibility with existing callers.
+        /// </param>
+        /// <returns>A readable stream for the requested content file.</returns>
+        public static Stream OpenStream(string relativePath)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
+
+            string normalizedPath = relativePath;
+            string rootPrefix = RootDirectory + Path.DirectorySeparatorChar;
+            string alternateRootPrefix = RootDirectory + Path.AltDirectorySeparatorChar;
+
+            if (normalizedPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                normalizedPath = normalizedPath[rootPrefix.Length..];
+            }
+            else if (normalizedPath.StartsWith(alternateRootPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                normalizedPath = normalizedPath[alternateRootPrefix.Length..];
+            }
+
+            return File.OpenRead(Path.Combine(GetContentRootAbsolute(), normalizedPath));
+        }
+
+        /// <summary>
         /// The video file extension.
         /// </summary>
         public const string VideoExtension = ".mp4";
@@ -245,7 +271,7 @@ namespace CutTheRopeDX.Helpers
 
             try
             {
-                using Stream stream = TitleContainer.OpenStream(Path.Combine(RootDirectory, fileName));
+                using Stream stream = OpenStream(fileName);
                 document = XDocument.Load(stream);
             }
             catch (Exception)
