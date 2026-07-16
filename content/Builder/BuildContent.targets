@@ -9,6 +9,8 @@
   <Target Name="BuildGameContent"
           BeforeTargets="BeforeBuild"
           Condition="'$(RunMGCB)' == 'true'">
+    <MSBuild Projects="$(ContentBuilderProject)" Targets="Restore"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
              RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
     <Exec Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot;"

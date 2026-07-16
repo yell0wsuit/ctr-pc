@@ -125,18 +125,6 @@
     </BundleResource>
   </ItemGroup>
 
-  <!-- OpenGL build, include *.xnb and *.ogg pairs (excluding *_windows.*). -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <None Include="..\content\sounds\*.xnb" Exclude="..\content\sounds\*_windows.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-    <None Include="..\content\sounds\*.ogg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </None>
-  </ItemGroup>
-
   <!-- macOS app bundle: sound files as BundleResource -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
     <BundleResource Include="..\content\sounds\*.xnb" Exclude="..\content\sounds\*_windows.xnb">
