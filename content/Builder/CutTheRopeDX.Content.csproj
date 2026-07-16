@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <RootNamespace>CutTheRopeDX.Content</RootNamespace>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.5" />
+    <PackageReference Include="MonoGame.Framework.Native" Version="3.8.5">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="MonoGame.Tool.Basisu" Version="2.0.2.1" />
+    <PackageReference Include="MonoGame.Tool.Crunch" Version="1.0.4.7" />
+    <PackageReference Include="MonoGame.Tool.Dxc" Version="1.8.2505.11" />
+    <PackageReference Include="MonoGame.Tool.FFmpeg" Version="7.0.0.10" />
+    <PackageReference Include="MonoGame.Tool.FFprobe" Version="7.0.0.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- MonoGame's build-only SharpDX dependency pulls legacy .NET Core runtime packages. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-7mfr-774f-w5r9" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8884-xcr4-r68p" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-xcvr-qv8h-m7xw" />
+  </ItemGroup>
+</Project>
