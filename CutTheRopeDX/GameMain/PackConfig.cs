@@ -643,8 +643,9 @@ namespace CutTheRopeDX.GameMain
                 root = document.RootElement.Clone();
                 return true;
             }
-            catch
+            catch (Exception exception)
             {
+                Console.Error.WriteLine($"Failed to load '{fileName}': {exception}");
                 return false;
             }
         }
