@@ -2,4 +2,5 @@
   <Project Path="CutTheRopeDX/CutTheRopeDX.csproj" />
   <Project Path="tools/FetchContentAssets/FetchContentAssets.csproj" />
   <Project Path="CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj" />
+  <Project Path="content/Builder.Tests/CutTheRopeDX.Content.Tests.csproj" />
 </Solution>
