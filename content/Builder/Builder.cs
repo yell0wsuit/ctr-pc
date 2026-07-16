@@ -30,12 +30,13 @@ namespace CutTheRopeDX.Content
             content.Include(
                 "images/cursor_active.png",
                 contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
-            content.Include<WildcardRule>(
-                "sounds/sfx/*.wav",
-                contentProcessor: new SoundEffectProcessor { Quality = ConversionQuality.Best });
+
             content.Include<WildcardRule>(
                 "sounds/*.wav",
                 contentProcessor: new SongProcessor { Quality = ConversionQuality.Best });
+            content.Include<WildcardRule>(
+                "sounds/sfx/*.wav",
+                contentProcessor: new SoundEffectProcessor { Quality = ConversionQuality.Best });
 
             // Copy (do not build) content the game reads as raw files.
             content.IncludeCopy<WildcardRule>("maps/*.*");
