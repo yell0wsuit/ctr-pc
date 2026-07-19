@@ -284,10 +284,26 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
-        /// Cached render target for compositing text layers (shadow, stroke, fill) at full
-        /// opacity before applying the fade alpha uniformly. Shared across all Text instances.
+        /// Cached render targets for compositing text layers (shadow, stroke, fill) at full
+        /// opacity before applying the fade alpha uniformly. Consecutive text draws alternate
+        /// targets so a target is not rewritten immediately after being sampled.
         /// </summary>
-        private static RenderTarget2D s_textCompositeRT;
+        private static readonly RenderTarget2D[] s_textCompositeTargets = new RenderTarget2D[2];
+
+        /// <summary>
+        /// Index of the render target used by the previous composite text draw.
+        /// </summary>
+        private static int s_textCompositeTargetIndex = -1;
+
+        /// <summary>
+        /// Selects the other composite render target for the next text draw.
+        /// </summary>
+        /// <param name="currentIndex">The target index used by the previous draw.</param>
+        /// <returns>The target index to use for the next draw.</returns>
+        internal static int GetNextCompositeTargetIndex(int currentIndex)
+        {
+            return (currentIndex + 1) % s_textCompositeTargets.Length;
+        }
 
         /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
@@ -378,20 +394,24 @@ namespace CutTheRopeDX.Framework.Visual
             // When fading multi-layer text, composite all layers at full opacity onto a
             // render target, then blit with the fade alpha so every layer fades uniformly.
             RenderTargetBinding[] previousTargets = null;
+            RenderTarget2D textCompositeTarget = null;
             if (needsComposite)
             {
                 int rtW = viewport.Width;
                 int rtH = viewport.Height;
-                if (s_textCompositeRT == null || s_textCompositeRT.IsDisposed ||
-                    s_textCompositeRT.Width != rtW || s_textCompositeRT.Height != rtH)
+                s_textCompositeTargetIndex = GetNextCompositeTargetIndex(s_textCompositeTargetIndex);
+                textCompositeTarget = s_textCompositeTargets[s_textCompositeTargetIndex];
+                if (textCompositeTarget == null || textCompositeTarget.IsDisposed ||
+                    textCompositeTarget.Width != rtW || textCompositeTarget.Height != rtH)
                 {
-                    s_textCompositeRT?.Dispose();
-                    s_textCompositeRT = new RenderTarget2D(graphicsDevice, rtW, rtH, false,
+                    textCompositeTarget?.Dispose();
+                    textCompositeTarget = new RenderTarget2D(graphicsDevice, rtW, rtH, false,
                         SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                    s_textCompositeTargets[s_textCompositeTargetIndex] = textCompositeTarget;
                 }
 
                 previousTargets = graphicsDevice.GetRenderTargets();
-                graphicsDevice.SetRenderTarget(s_textCompositeRT);
+                graphicsDevice.SetRenderTarget(textCompositeTarget);
                 graphicsDevice.Clear(Color.Transparent);
             }
 
@@ -543,8 +563,15 @@ namespace CutTheRopeDX.Framework.Visual
                     null,
                     null
                 );
-                spriteBatch.Draw(s_textCompositeRT, Vector2.Zero, blitColor);
+                spriteBatch.Draw(textCompositeTarget, Vector2.Zero, blitColor);
                 spriteBatch.End();
+
+                // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
+                // composite pass cannot retain a sampled binding for a writable target.
+                if (ReferenceEquals(graphicsDevice.Textures[0], textCompositeTarget))
+                {
+                    graphicsDevice.Textures[0] = null;
+                }
             }
         }
 
