@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
@@ -9,6 +11,44 @@ using static CutTheRopeDX.Helpers.ParsingHelpers;
 
 namespace CutTheRopeDX.GameMain
 {
+    /// <summary>Selects the level layers consumed by <see cref="GameScene"/> metadata loading.</summary>
+    internal static class LevelMetadataLayerSelection
+    {
+        /// <summary>
+        /// Returns only the first case-insensitive <c>settings</c> layer while retaining every
+        /// non-settings layer in document order.
+        /// </summary>
+        /// <param name="mapNode">Root XML node for the current map.</param>
+        /// <returns>Layers to inspect for metadata.</returns>
+        public static IEnumerable<XElement> SelectLayers(XElement mapNode)
+        {
+            bool settingsLayerSelected = false;
+            foreach (XElement layer in mapNode.Elements())
+            {
+                bool isSettingsLayer = layer.Name.LocalName == "layer" && IsSettingsLayer(layer);
+                if (isSettingsLayer)
+                {
+                    if (settingsLayerSelected)
+                    {
+                        continue;
+                    }
+
+                    settingsLayerSelected = true;
+                }
+
+                yield return layer;
+            }
+        }
+
+        private static bool IsSettingsLayer(XElement layer)
+        {
+            return string.Equals(
+                layer.Attribute("name")?.Value,
+                "settings",
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     internal sealed partial class GameScene
     {
         /// <summary>
@@ -31,8 +71,8 @@ namespace CutTheRopeDX.GameMain
 
             CTRRootController rc = (CTRRootController)Application.SharedRootController();
 
-            // Single pass through XML metadata nodes
-            foreach (XElement xmlnode in mapNode.Elements())
+            // Single pass through XML metadata nodes, ignoring duplicate settings layers.
+            foreach (XElement xmlnode in LevelMetadataLayerSelection.SelectLayers(mapNode))
             {
                 foreach (XElement item2 in xmlnode.Elements())
                 {
