@@ -55,7 +55,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     LevelStart();
                 }
-                scene.animateRestartDim = false;
+                // Flash the restart dim, matching what the restart button does, so an
+                // external edit reads as a deliberate restart rather than a glitch.
+                scene.animateRestartDim = true;
                 scene.Reload();
                 SetPaused(false);
                 return;
