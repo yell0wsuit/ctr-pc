@@ -94,11 +94,15 @@ namespace CutTheRopeDX.GameMain
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
             _ = vBox.AddChild(c);
-            Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("SKIP_LEVEL"), GameControllerButtonId.SkipLevel, this);
-            _ = vBox.AddChild(c2);
-            Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_SELECT"), GameControllerButtonId.LevelSelect, this);
-            _ = vBox.AddChild(c3);
-            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("MAIN_MENU"), GameControllerButtonId.MainMenu, this);
+            if (!CustomLevelSession.IsActive)
+            {
+                Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("SKIP_LEVEL"), GameControllerButtonId.SkipLevel, this);
+                _ = vBox.AddChild(c2);
+                Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_SELECT"), GameControllerButtonId.LevelSelect, this);
+                _ = vBox.AddChild(c3);
+            }
+            string exitLabel = CustomLevelSession.IsActive ? "QUIT_BUTTON" : "MAIN_MENU";
+            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(exitLabel), GameControllerButtonId.MainMenu, this);
             _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
             ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic);
@@ -437,6 +441,12 @@ namespace CutTheRopeDX.GameMain
                     CTRRootController.LogEvent("IM_LEVEL_SELECT_PRESSED");
                     return;
                 case var id when id == GameControllerButtonId.MainMenu:
+                    if (CustomLevelSession.IsActive)
+                    {
+                        CTRSoundMgr.StopAll();
+                        Global.XnaGame.Exit();
+                        return;
+                    }
                     exitCode = 0;
                     CTRSoundMgr.StopAll();
                     LevelQuit();

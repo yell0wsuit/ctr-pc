@@ -224,14 +224,17 @@ namespace CutTheRopeDX.GameMain
             button.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, 11);
             _ = result.AddChild(button);
-            Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
-            button2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuResults, 10);
-            _ = result.AddChild(button2);
-            Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
-            button3.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button3, Resources.Img.MenuResults, 9);
-            _ = result.AddChild(button3);
+            if (!CustomLevelSession.IsActive)
+            {
+                Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
+                button2.anchor = 18;
+                Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuResults, 10);
+                _ = result.AddChild(button2);
+                Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
+                button3.anchor = 18;
+                Image.SetElementPositionWithQuadOffset(button3, Resources.Img.MenuResults, 9);
+                _ = result.AddChild(button3);
+            }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetName("dataTitle");
             text2.anchor = 18;
