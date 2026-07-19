@@ -7,10 +7,10 @@
 
     <!-- Default: cross-platform -->
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <!-- macOS: add net10.0-macos for AVFoundation -->
-    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-      net10.0;net10.0-macos
-    </TargetFrameworks>
+    <!-- macOS: add net10.0-macos for AVFoundation.
+         Set ExcludeMacOSTarget=true to drop it (used by the test project, which
+         only needs the portable target and must not require the macos workload). -->
+    <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX')) AND '$(ExcludeMacOSTarget)' != 'true'">net10.0;net10.0-macos</TargetFrameworks>
     <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
