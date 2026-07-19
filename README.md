@@ -118,3 +118,44 @@ To test the game during the development process, follow these steps:
     > A native AOT binary built on Linux is only guaranteed to run on the same or newer Linux distribution version.
 
     If you encounter issues with native AOT, you can try removing the `-p:PublishAot=true` flag.
+
+4. To run the unit tests:
+
+    ```bash
+    dotnet test CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj -p:ExcludeMacOSTarget=true
+    ```
+
+    > Note:  
+    > On macOS the game project also targets `net10.0-macos`, which requires the `macos`
+    > workload. The tests only need the portable target, so `-p:ExcludeMacOSTarget=true`
+    > drops the macOS target and avoids that requirement. On Windows and Linux the flag
+    > has no effect and can be omitted.
+
+## Running a custom level
+
+_Cut the Rope: DX_ can launch straight into a level XML file instead of the normal game, which is intended for level editors and other external tools.
+
+```bash
+CutTheRopeDX --level <path-to-level.xml>
+```
+
+The path may be absolute or relative, and the file does not need to live under the content directory.
+
+**Behaviour**
+
+- The splash screen and menu are skipped; the level loads and plays immediately.
+- The pack is fixed at `0`, used only to resolve the background and music.
+- No scores, stars, or unlocks are written. A custom run never touches saved progress.
+- The pause menu offers **Continue**, **Quit**, and the sound and music toggles.
+- The result screen offers **Replay** only.
+
+**Exit codes**
+
+- `0` on normal exit.
+- Nonzero when the level file is missing, unreadable, or malformed. The reason is printed to stderr and no window is created.
+
+**Hot reloading**
+
+Rewriting the level file while the game is running reloads it automatically. If the edited level needs only resources that are already loaded, it restarts in place; otherwise it reloads through the loading screen.
+
+A malformed file is reported on stderr and leaves the running level untouched, so a partial write will not crash the game. Even so, writers should write atomically — write to a temp file, then move it over the target — so the game never reads a half-written file.
