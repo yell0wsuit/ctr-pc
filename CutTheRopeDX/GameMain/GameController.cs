@@ -299,7 +299,7 @@ namespace CutTheRopeDX.GameMain
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(box, pack, level);
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(box, pack, level);
             boxOpenClose.shouldShowImprovedResult = false;
-            if (gameScene.score > scoreForPackLevel)
+            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, gameScene.score, scoreForPackLevel))
             {
                 CTRPreferences.SetScoreForPackLevel(box, gameScene.score, pack, level);
                 if (scoreForPackLevel > 0)
@@ -307,7 +307,7 @@ namespace CutTheRopeDX.GameMain
                     boxOpenClose.shouldShowImprovedResult = true;
                 }
             }
-            if (gameScene.starsCollected > starsForPackLevel)
+            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, gameScene.starsCollected, starsForPackLevel))
             {
                 CTRPreferences.SetStarsForPackLevel(box, gameScene.starsCollected, pack, level);
                 if (starsForPackLevel > 0)
@@ -337,7 +337,10 @@ namespace CutTheRopeDX.GameMain
             CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
             Game1.RPC.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), gameScene.starsCollected, true, gameScene.levelName, gameScene.score, (int)gameScene.time);
 
-            UnlockNextLevel();
+            if (!CustomLevelSession.IsActive)
+            {
+                UnlockNextLevel();
+            }
         }
 
         /// <summary>
