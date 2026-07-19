@@ -103,6 +103,22 @@ namespace CutTheRopeDX.GameMain
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://reload"), "mappicker://reload", true);
                 return;
             }
+
+            if (CustomLevelSession.IsActive)
+            {
+                string customPath = CustomLevelSession.LevelPath;
+                if (CustomLevelFile.TryLoad(customPath, out System.Xml.Linq.XElement customMap, out string error))
+                {
+                    XmlLoaderFinishedWithfromwithSuccess(customMap, customPath, true);
+                }
+                else
+                {
+                    System.Console.Error.WriteLine(error);
+                }
+
+                return;
+            }
+
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
