@@ -41,15 +41,12 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                if (i + 1 >= args.Length || string.IsNullOrWhiteSpace(args[i + 1]))
-                {
-                    return new CustomLevelCommandLineResult(
+                return i + 1 >= args.Length || string.IsNullOrWhiteSpace(args[i + 1])
+                    ? new CustomLevelCommandLineResult(
                         true,
                         null,
-                        LevelSwitch + " requires a path to a level XML file.");
-                }
-
-                return new CustomLevelCommandLineResult(true, Path.GetFullPath(args[i + 1]), null);
+                        LevelSwitch + " requires a path to a level XML file.")
+                    : new CustomLevelCommandLineResult(true, Path.GetFullPath(args[i + 1]), null);
             }
 
             return new CustomLevelCommandLineResult(false, null, null);
