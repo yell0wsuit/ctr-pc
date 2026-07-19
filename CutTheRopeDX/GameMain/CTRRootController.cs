@@ -161,6 +161,37 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gets the resources loaded for the current gameplay session.
+        /// </summary>
+        /// <returns>The set of resource identifiers tracked for this session.</returns>
+        public ISet<string> GetSessionResources()
+        {
+            return sessionResources;
+        }
+
+        /// <summary>
+        /// Frees the previous level's resources, loads the edited level's resources through the
+        /// loading screen, and re-enters gameplay.
+        /// </summary>
+        /// <param name="resourceMgr">Shared resource manager.</param>
+        private void ReloadCustomLevelThroughLoadingScreen(CTRResourceMgr resourceMgr)
+        {
+            DeleteChild(3);
+
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(loadedMap);
+            resourceMgr.FreePack([.. sessionResources]);
+            sessionResources.Clear();
+            TrackSessionResources(levelResources);
+
+            resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(levelResources);
+            resourceMgr.StartLoading();
+            ((LoadingController)GetChild(2)).nextController = 0;
+            ActivateChild(2);
+        }
+
+        /// <summary>
         /// Loads gameplay resources for the externally supplied level and enters the loading screen.
         /// </summary>
         private void BeginCustomLevelLoad()
@@ -325,6 +356,13 @@ namespace CutTheRopeDX.GameMain
                         GameController gameController = (GameController)GetChild(3);
                         int exitCode = gameController.exitCode;
                         _ = (GameScene)gameController.GetView(0).GetChild(0);
+
+                        if (exitCode == GameController.EXIT_CODE_CUSTOM_RELOAD)
+                        {
+                            ReloadCustomLevelThroughLoadingScreen(resourceMgr);
+                            return;
+                        }
+
                         if (exitCode <= 2)
                         {
                             StopGameplayPrefetch();

@@ -26,6 +26,45 @@ namespace CutTheRopeDX.GameMain
                 OnButtonPressed(GameControllerButtonId.Restart);
             }
             base.Update(t);
+
+            if (levelWatcher != null && levelWatcher.TryConsumeChange(DateTime.UtcNow))
+            {
+                ApplyCustomLevelChange();
+            }
+        }
+
+        /// <summary>
+        /// Applies an external edit to the custom level, reloading in place when possible.
+        /// </summary>
+        private void ApplyCustomLevelChange()
+        {
+            if (!CustomLevelFile.TryLoad(CustomLevelSession.LevelPath, out System.Xml.Linq.XElement map, out string error))
+            {
+                Console.Error.WriteLine(error);
+                return;
+            }
+
+            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            string[] required = LevelResourceScanner.GetRequiredResources(map);
+            CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.GetSessionResources());
+
+            if (kind == CustomLevelReloadKind.Instant)
+            {
+                GameScene scene = (GameScene)GetView(0).GetChild(0);
+                if (!scene.IsEnabled())
+                {
+                    LevelStart();
+                }
+                scene.animateRestartDim = false;
+                scene.Reload();
+                SetPaused(false);
+                return;
+            }
+
+            root.SetMap(map);
+            exitCode = EXIT_CODE_CUSTOM_RELOAD;
+            CTRSoundMgr.StopAll();
+            Deactivate();
         }
 
         /// <summary>
@@ -48,6 +87,24 @@ namespace CutTheRopeDX.GameMain
             PlayMusic();
             InitGameView();
             ShowView(0);
+
+            if (CustomLevelSession.IsActive && levelWatcher == null)
+            {
+                levelWatcher = new CustomLevelWatcher(
+                    CustomLevelSession.LevelPath,
+                    TimeSpan.FromMilliseconds(100));
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                levelWatcher?.Dispose();
+                levelWatcher = null;
+            }
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -885,6 +942,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Exit code for returning to level select and advancing to the next pack.</summary>
         public const int EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT_NEXT_PACK = 2;
+
+        /// <summary>Exit code: reload the custom level through the loading screen.</summary>
+        public const int EXIT_CODE_CUSTOM_RELOAD = 3;
+
+        /// <summary>Watches the custom level file for external edits, or <see langword="null"/> in normal play.</summary>
+        private CustomLevelWatcher levelWatcher;
 
         /// <summary>Whether gameplay is currently paused.</summary>
         private bool isGamePaused;
