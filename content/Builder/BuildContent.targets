@@ -21,11 +21,35 @@
 
   <Target Name="AddBuiltContent" AfterTargets="BuildGameContent" Condition="'$(RunMGCB)' == 'true'">
     <ItemGroup>
-      <_BuiltContent Include="$(ContentBuildOutput)/**/*" />
+      <_BuiltContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
       <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
       </None>
+    </ItemGroup>
+  </Target>
+
+  <!--
+    macOS: the .app bundle takes the same built content, but as BundleResource.
+    _CollectBundleResources runs outside the normal BeforeBuild ordering, so items
+    added by AddBuiltContent never reach it. The Apple SDK's documented extension
+    point is CollectBundleResourcesDependsOn; the SDK prepends its own targets to
+    whatever this property already holds, so setting it here survives.
+  -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <CollectBundleResourcesDependsOn>
+      $(CollectBundleResourcesDependsOn);
+      AddMacOSBundleContent;
+    </CollectBundleResourcesDependsOn>
+  </PropertyGroup>
+
+  <Target Name="AddMacOSBundleContent" DependsOnTargets="BuildGameContent"
+          Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <ItemGroup>
+      <_MacBundleContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
+      <BundleResource Include="@(_MacBundleContent)">
+        <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      </BundleResource>
     </ItemGroup>
   </Target>
 </Project>

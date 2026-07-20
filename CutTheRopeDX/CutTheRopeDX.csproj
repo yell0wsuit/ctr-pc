@@ -121,22 +121,12 @@
     <DefineConstants>$(DefineConstants);DESKTOPGL_FFMPEG</DefineConstants>
   </PropertyGroup>
 
-  <!-- macOS app bundle: use BundleResource for content files -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="..\content\**" Exclude="..\content\sounds\**;..\content\Builder\**;..\content\bin\**\*.*;..\content\obj\**\*.*;..\content\**\*.png;..\content\**\.DS_Store;..\content\sounds\sfx\*.wav">
-      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </BundleResource>
-  </ItemGroup>
-
-  <!-- macOS app bundle: sound files as BundleResource -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="..\content\sounds\*.xnb" Exclude="..\content\sounds\*_windows.xnb">
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </BundleResource>
-    <BundleResource Include="..\content\sounds\*.ogg">
-      <Link>content\sounds\%(Filename)%(Extension)</Link>
-    </BundleResource>
-  </ItemGroup>
+  <!--
+    macOS app bundle content comes from the MGCB build output, added as
+    BundleResource by AddBuiltContent in content/Builder/BuildContent.targets.
+    That output is a superset of the raw content tree, so bundling the sources
+    here as well would only produce duplicate-Link collisions.
+  -->
 
   <ItemGroup>
     <EmbeddedResource Include="../distribution/icons/CutTheRopeDXIcon.bmp">
