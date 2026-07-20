@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         ShowReset,
         Leaderboards,
         BackToOptions,
-        ToggleClickToCut,
+        SelectClickToCut,
         PackSelect,
         ConfirmResetYes,
         ConfirmResetNo,
@@ -45,6 +45,7 @@ namespace CutTheRopeDX.GameMain
         TraceSelect,
         ShowLanguage,
         BackFromLanguage,
+        SelectDragToCut,
     }
 
     /// <summary>
@@ -111,9 +112,14 @@ namespace CutTheRopeDX.GameMain
         public static readonly MenuButtonId BackToOptions = MenuButton.BackToOptions;
 
         /// <summary>
-        /// Toggles click-to-cut controls.
+        /// Selects click-to-cut controls.
         /// </summary>
-        public static readonly MenuButtonId ToggleClickToCut = MenuButton.ToggleClickToCut;
+        public static readonly MenuButtonId SelectClickToCut = MenuButton.SelectClickToCut;
+
+        /// <summary>
+        /// Selects drag-to-cut controls.
+        /// </summary>
+        public static readonly MenuButtonId SelectDragToCut = MenuButton.SelectDragToCut;
 
         /// <summary>
         /// Opens box pack selection.

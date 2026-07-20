@@ -554,7 +554,9 @@ namespace CutTheRopeDX.GameMain
             float checkY = illustrationHeight + 75 + extraTextHeight;
             if (bId != -1)
             {
-                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
+                ToggleButton toggleButton =
+                    CreateToggleButtonWithResquadquad2buttonIDdelegate(
+                        Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
                 toggleButton.x = (image.width - toggleButton.width) / 2f;
@@ -683,8 +685,8 @@ namespace CutTheRopeDX.GameMain
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
-            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), -1, null);
-            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
+            BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), MenuButtonId.SelectDragToCut, this);
+            BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, Application.GetString("CLICK_TO_CUT"), MenuButtonId.SelectClickToCut, this);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
@@ -728,17 +730,44 @@ namespace CutTheRopeDX.GameMain
             {
                 toggleButton.Toggle();
             }
-            ToggleButton toggleButton3 = (ToggleButton)baseElement3.GetChildWithName("button");
-            if (flag3 && toggleButton3 != null)
-            {
-                toggleButton3.Toggle();
-            }
+            dragToCutButton = (ToggleButton)baseElement2.GetChildWithName("button");
+            clickToCutButton = (ToggleButton)baseElement3.GetChildWithName("button");
+            UpdateRopeCuttingMethodButtons(flag3);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromOptions);
             button.SetName("backb");
             button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 1);
+        }
+
+        /// <summary>
+        /// Saves the selected rope-cutting method and keeps both option buttons mutually exclusive.
+        /// </summary>
+        /// <param name="clickToCut">Whether click-to-cut should be selected.</param>
+        private void SelectRopeCuttingMethod(bool clickToCut)
+        {
+            Preferences.SetBooleanForKey(clickToCut, "PREFS_CLICK_TO_CUT", true);
+            UpdateRopeCuttingMethodButtons(clickToCut);
+        }
+
+        /// <summary>
+        /// Updates the rope-cutting method checkmarks to match the saved preference.
+        /// </summary>
+        /// <param name="clickToCut">Whether click-to-cut should be selected.</param>
+        private void UpdateRopeCuttingMethodButtons(bool clickToCut)
+        {
+            bool dragToCut = !clickToCut;
+
+            if (dragToCutButton != null && dragToCutButton.On() != dragToCut)
+            {
+                dragToCutButton.Toggle();
+            }
+
+            if (clickToCutButton != null && clickToCutButton.On() != clickToCut)
+            {
+                clickToCutButton.Toggle();
+            }
         }
 
         /// <summary>
@@ -1815,12 +1844,12 @@ namespace CutTheRopeDX.GameMain
                 case var id when id == MenuButtonId.BackToOptions:
                     ShowView(1);
                     return;
-                case var id when id == MenuButtonId.ToggleClickToCut:
-                    {
-                        bool flag7 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
-                        Preferences.SetBooleanForKey(!flag7, "PREFS_CLICK_TO_CUT", true);
-                        return;
-                    }
+                case var id when id == MenuButtonId.SelectClickToCut:
+                    SelectRopeCuttingMethod(true);
+                    return;
+                case var id when id == MenuButtonId.SelectDragToCut:
+                    SelectRopeCuttingMethod(false);
+                    return;
                 case var id when id == MenuButtonId.PackSelect:
                     if (IsSinglePack)
                     {
@@ -2381,6 +2410,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether the outdated Windows popup has already been shown.</summary>
         private bool outdatedWindowsPopupShown;
+
+        /// <summary>Drag-to-cut option shown in the configuration view.</summary>
+        private ToggleButton dragToCutButton;
+
+        /// <summary>Click-to-cut option shown in the configuration view.</summary>
+        private ToggleButton clickToCutButton;
 
         /// <summary>Localized menu resource pack reloaded when the UI language changes.</summary>
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
