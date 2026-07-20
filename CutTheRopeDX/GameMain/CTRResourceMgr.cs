@@ -73,7 +73,7 @@ namespace CutTheRopeDX.GameMain
                 Language.LANGKO => 25,
                 Language.LANGNL => 26,
                 Language.LANGZH => 27,
-                Language.LANGZHTW => 27, // no zh_tw stamp, use English
+                Language.LANGZHTW => 17, // no zh_tw stamp, use English
                 _ => 17,
             };
         }
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.GameMain
                 Language.LANGJA => 15,
                 Language.LANGKO => 16,
                 Language.LANGZH => 17,
-                Language.LANGZHTW => 17, // use zh
+                Language.LANGZHTW => 12, // no zh_tw button, use English
                 Language.LANGES => 18,
                 Language.LANGFR => 12,
                 Language.LANGIT => 12,

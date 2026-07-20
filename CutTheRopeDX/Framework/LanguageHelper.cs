@@ -227,7 +227,7 @@ namespace CutTheRopeDX.Framework
                 "ko" => "Korean",
                 "ja" => "Japanese",
                 "zh" => "Chinese",
-                "zh_tw" => "Tr. Chinese",
+                "zh_tw" => "Chinese (Trad.)",
                 _ => code,
             };
         }
