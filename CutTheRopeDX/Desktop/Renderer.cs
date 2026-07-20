@@ -79,6 +79,7 @@ namespace CutTheRopeDX.Desktop
                 Texture = null,
                 View = Matrix.Identity
             };
+            s_indexRing = new IndexBufferRing(IndexRingCapacity);
         }
 
         /// <summary>
@@ -187,6 +188,7 @@ namespace CutTheRopeDX.Desktop
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
                 Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
                 Global.SpriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
             }
         }
 
@@ -789,7 +791,8 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Uploads vertex data and issues a non-indexed primitive draw call.
+        /// Uploads vertex data through the shared ring and issues a non-indexed primitive draw call.
+        /// Falls back to the legacy grow-and-discard buffer for writes larger than the ring.
         /// </summary>
         /// <typeparam name="T">The vertex type being uploaded.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
@@ -798,15 +801,26 @@ namespace CutTheRopeDX.Desktop
         /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
         {
-            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertexCount);
-            vertexBuffer.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
-            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-            Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            VertexBufferRing<T> ring = GetVertexRing<T>();
+            int vertexStart = ring.Write(vertices, vertexCount);
+            if (vertexStart < 0)
+            {
+                DynamicVertexBuffer fallback = GetOversizeVertexBuffer<T>(vertexCount);
+                fallback.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallback);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, vertexStart, primitiveCount);
+            }
             Global.GraphicsDevice.SetVertexBuffer(null);
         }
 
         /// <summary>
-        /// Uploads vertex and index data and issues an indexed primitive draw call.
+        /// Uploads vertex and index data through the shared rings and issues an indexed draw call.
+        /// Falls back to the legacy grow-and-discard buffers for writes larger than a ring.
         /// </summary>
         /// <typeparam name="T">The vertex type being uploaded.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
@@ -816,49 +830,75 @@ namespace CutTheRopeDX.Desktop
         /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertices, short[] indices, int indexCount, int primitiveCount) where T : struct, IVertexType
         {
-            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
-            vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
-            IndexBuffer indexBuffer = GetIndexBuffer(indexCount, indices);
-            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-            Global.GraphicsDevice.Indices = indexBuffer;
-            Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            VertexBufferRing<T> ring = GetVertexRing<T>();
+            int baseVertex = ring.Write(vertices, vertices.Length);
+            int startIndex = baseVertex < 0 ? -1 : s_indexRing.Write(indices, indexCount);
+            if (baseVertex < 0 || startIndex < 0)
+            {
+                DynamicVertexBuffer fallbackVertices = GetOversizeVertexBuffer<T>(vertices.Length);
+                fallbackVertices.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+                DynamicIndexBuffer fallbackIndices = GetOversizeIndexBuffer(indexCount);
+                fallbackIndices.SetData(indices, 0, indexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallbackVertices);
+                Global.GraphicsDevice.Indices = fallbackIndices;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.Indices = s_indexRing.Buffer;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+            }
             Global.GraphicsDevice.SetVertexBuffer(null);
             Global.GraphicsDevice.Indices = null;
         }
 
         /// <summary>
-        /// Returns a reusable dynamic vertex buffer sized for the requested vertex type and count.
+        /// Returns the shared vertex ring for the requested vertex type, creating it on first use.
+        /// </summary>
+        /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
+        /// <returns>The shared ring for <typeparamref name="T"/>.</returns>
+        private static VertexBufferRing<T> GetVertexRing<T>() where T : struct, IVertexType
+        {
+            if (!s_vertexRings.TryGetValue(typeof(T), out object ring))
+            {
+                ring = new VertexBufferRing<T>(VertexRingCapacity);
+                s_vertexRings[typeof(T)] = ring;
+            }
+            return (VertexBufferRing<T>)ring;
+        }
+
+        /// <summary>
+        /// Returns a legacy grow-and-discard vertex buffer for writes larger than the ring.
         /// </summary>
         /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
         /// <param name="vertexCount">The minimum vertex capacity required.</param>
         /// <returns>A reusable dynamic vertex buffer for <typeparamref name="T"/>.</returns>
-        private static DynamicVertexBuffer GetVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
+        private static DynamicVertexBuffer GetOversizeVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
         {
             Type vertexType = typeof(T);
-            if (!s_vertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
+            if (!s_oversizeVertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
             {
                 vertexBuffer?.Dispose();
                 vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
-                s_vertexBuffers[vertexType] = vertexBuffer;
+                s_oversizeVertexBuffers[vertexType] = vertexBuffer;
             }
             return vertexBuffer;
         }
 
         /// <summary>
-        /// Returns a reusable index buffer filled with the provided <paramref name="indices"/>.
+        /// Returns a legacy grow-and-discard index buffer for writes larger than the ring.
         /// </summary>
-        /// <param name="indexCount">The number of indices to upload.</param>
-        /// <param name="indices">The source index data.</param>
-        /// <returns>An index buffer containing the requested index data.</returns>
-        private static DynamicIndexBuffer GetIndexBuffer(int indexCount, short[] indices)
+        /// <param name="indexCount">The minimum index capacity required.</param>
+        /// <returns>A reusable dynamic index buffer.</returns>
+        private static DynamicIndexBuffer GetOversizeIndexBuffer(int indexCount)
         {
-            if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
+            if (s_oversizeIndexBuffer == null || s_oversizeIndexBuffer.IndexCount < indexCount)
             {
-                s_indexBuffer?.Dispose();
-                s_indexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+                s_oversizeIndexBuffer?.Dispose();
+                s_oversizeIndexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
             }
-            s_indexBuffer.SetData(indices, 0, indexCount, SetDataOptions.Discard);
-            return s_indexBuffer;
+            return s_oversizeIndexBuffer;
         }
 
         #endregion
@@ -941,14 +981,35 @@ namespace CutTheRopeDX.Desktop
         private static RasterizerState s_rasterizerStateTexture;
 
         /// <summary>
-        /// Reusable dynamic vertex buffers keyed by vertex type.
+        /// Vertex ring capacity per vertex type. 16,384 vertices covers several frames of
+        /// worst-case usage per the pre-implementation baselines; wraps should be rare.
         /// </summary>
-        private static readonly Dictionary<Type, DynamicVertexBuffer> s_vertexBuffers = [];
+        private const int VertexRingCapacity = 16384;
 
         /// <summary>
-        /// Reusable index buffer for indexed draw calls.
+        /// Index ring capacity. 49,152 indices matches three frames of ring capacity in quads.
         /// </summary>
-        private static DynamicIndexBuffer s_indexBuffer;
+        private const int IndexRingCapacity = 49152;
+
+        /// <summary>
+        /// Shared vertex rings keyed by vertex type (values are VertexBufferRing&lt;T&gt;).
+        /// </summary>
+        private static readonly Dictionary<Type, object> s_vertexRings = [];
+
+        /// <summary>
+        /// Shared index ring for all indexed draws.
+        /// </summary>
+        private static IndexBufferRing s_indexRing;
+
+        /// <summary>
+        /// Legacy grow-and-discard vertex buffers, used only for writes larger than a ring.
+        /// </summary>
+        private static readonly Dictionary<Type, DynamicVertexBuffer> s_oversizeVertexBuffers = [];
+
+        /// <summary>
+        /// Legacy grow-and-discard index buffer, used only for writes larger than the ring.
+        /// </summary>
+        private static DynamicIndexBuffer s_oversizeIndexBuffer;
 
         /// <summary>
         /// Captures the last submitted colored vertices for debugging.

@@ -329,6 +329,7 @@ namespace CutTheRopeDX
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
             Global.SpriteBatch.Draw(texture, destinationRectangle, Color.White);
             Global.SpriteBatch.End();
+            BlendParams.InvalidateDeviceCache();
         }
 
         /// <inheritdoc />

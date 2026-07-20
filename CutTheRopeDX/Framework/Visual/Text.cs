@@ -533,6 +533,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             spriteBatch.End();
+            BlendParams.InvalidateDeviceCache();
 
             if (isPingPonging)
             {
@@ -565,6 +566,7 @@ namespace CutTheRopeDX.Framework.Visual
                 );
                 spriteBatch.Draw(textCompositeTarget, Vector2.Zero, blitColor);
                 spriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
 
                 // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
                 // composite pass cannot retain a sampled binding for a writable target.
