@@ -1018,7 +1018,7 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Whether four-vertex textured sprite draws are batched. Set false to use immediate rendering.
         /// </summary>
-        public static bool QuadBatchingEnabled;
+        public static bool QuadBatchingEnabled = true;
 
         /// <summary>
         /// The accumulating sprite quad batch.
