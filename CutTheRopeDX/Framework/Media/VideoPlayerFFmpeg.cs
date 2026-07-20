@@ -1,4 +1,4 @@
-#if DESKTOPGL_FFMPEG
+#if DESKTOPVK_FFMPEG
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

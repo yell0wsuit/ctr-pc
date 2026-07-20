@@ -17,7 +17,7 @@ namespace CutTheRopeDX.Framework.Media
         /// Initializes a new instance of the <see cref="MovieMgr"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a platform-specific video player (FFmpeg for DesktopGL, AVFoundation
+        /// Creates a platform-specific video player (FFmpeg for DesktopVK, AVFoundation
         /// for macOS 26+, MonoGame stub otherwise).
         /// </remarks>
         public MovieMgr()
@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Framework.Media
 #endif
 
             bool hasFfmpeg =
-#if DESKTOPGL_FFMPEG
+#if DESKTOPVK_FFMPEG
                 true;
 #else
                 false;
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Framework.Media
                     videoPlayer = new VideoPlayerAVFoundation();
                     break;
 #endif
-#if DESKTOPGL_FFMPEG
+#if DESKTOPVK_FFMPEG
                 case VideoPlayerBackend.Ffmpeg:
                     videoPlayer = new VideoPlayerFFmpeg();
                     break;

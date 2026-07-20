@@ -54,7 +54,7 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <!-- DesktopGL publish defaults -->
+  <!-- Publish defaults -->
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
@@ -118,15 +118,8 @@
 
   <!-- FFmpeg for cross-platform -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <DefineConstants>$(DefineConstants);DESKTOPGL_FFMPEG</DefineConstants>
+    <DefineConstants>$(DefineConstants);DESKTOPVK_FFMPEG</DefineConstants>
   </PropertyGroup>
-
-  <!--
-    macOS app bundle content comes from the MGCB build output, added as
-    BundleResource by AddBuiltContent in content/Builder/BuildContent.targets.
-    That output is a superset of the raw content tree, so bundling the sources
-    here as well would only produce duplicate-Link collisions.
-  -->
 
   <ItemGroup>
     <EmbeddedResource Include="../distribution/icons/CutTheRopeDXIcon.bmp">
