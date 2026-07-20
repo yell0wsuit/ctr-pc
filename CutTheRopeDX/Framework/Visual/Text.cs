@@ -433,18 +433,16 @@ namespace CutTheRopeDX.Framework.Visual
             if (isPingPonging)
             {
                 float clipW = EffectivePingPongClipWidth;
-                float clipH = maxHeight > 0f ? maxHeight : height;
-                // Clip to the parent element's bounds (e.g., button background image)
                 float clipX = HasParent ? parent.drawX + pingPongPadding : drawX;
                 float clipY = drawY;
-                // Transform clip rect corners through the full transform matrix (model-view + viewport scale)
+                // Transform the horizontal clip bounds through the full transform matrix
                 Vector2 topLeft = Vector2.Transform(new Vector2(clipX, clipY), transformMatrix);
-                Vector2 bottomRight = Vector2.Transform(new Vector2(clipX + clipW, clipY + clipH), transformMatrix);
-                int sx = (int)topLeft.X;
-                int sy = (int)topLeft.Y;
-                int sw = (int)(bottomRight.X - topLeft.X);
-                int sh = (int)(bottomRight.Y - topLeft.Y);
-                graphicsDevice.ScissorRectangle = new Rectangle(sx, sy, sw, sh);
+                Vector2 topRight = Vector2.Transform(new Vector2(clipX + clipW, clipY), transformMatrix);
+                int scissorLeft = System.Math.Clamp((int)System.MathF.Floor(System.MathF.Min(topLeft.X, topRight.X)), previousScissor.Left, previousScissor.Right);
+                int scissorRight = System.Math.Clamp((int)System.MathF.Ceiling(System.MathF.Max(topLeft.X, topRight.X)), scissorLeft, previousScissor.Right);
+                int scissorWidth = scissorRight - scissorLeft;
+                // Preserve the previous vertical range so tall glyphs and effects are not clipped
+                graphicsDevice.ScissorRectangle = new Rectangle(scissorLeft, previousScissor.Y, scissorWidth, previousScissor.Height);
             }
 
             // Render each formatted line
