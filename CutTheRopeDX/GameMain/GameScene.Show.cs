@@ -80,30 +80,40 @@ namespace CutTheRopeDX.GameMain
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
             string packAndLevelNumbers = (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
-            bool useCustomLevelName = levelName != null && Application.GetString(levelName) != string.Empty;
-            Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, useCustomLevelName ? Application.GetString(levelName) : packAndLevelNumbers);
-            Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, useCustomLevelName ? Application.GetString("LEVEL") + " " + packAndLevelNumbers : Application.GetString("LEVEL"));
-            text.anchor = 33;
-            text2.anchor = 33;
-            text2.parentAnchor = 9;
-            text.SetName("levelLabel");
-            text.x = 15f + Canvas.xOffsetScaled;
-            bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-            text.y = isChinese ? SCREEN_HEIGHT : SCREEN_HEIGHT + 15f; // the box and level number or level name in game
-            text2.y = isChinese ? 3f : 30f; // the "Level" label in game
-            text2.rotationCenterX -= text2.width / 2f;
-            text2.scaleX = text2.scaleY = 0.7f;
-            _ = text.AddChild(text2);
-            Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
-            timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-            text.AddTimelinewithID(timeline6, 0);
-            text.PlayTimeline(0);
-            timeline6.delegateTimelineDelegate = staticAniPool;
-            _ = staticAniPool.AddChild(text);
+            LevelLabelText levelLabel = LevelLabel.Resolve(
+                CustomLevelSession.IsActive,
+                ResolveLevelDisplayName(),
+                Application.GetString("LEVEL"),
+                packAndLevelNumbers);
+            if (levelLabel.Primary != null)
+            {
+                Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Primary);
+                text.anchor = 33;
+                text.SetName("levelLabel");
+                text.x = 15f + Canvas.xOffsetScaled;
+                bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
+                text.y = isChinese ? SCREEN_HEIGHT : SCREEN_HEIGHT + 15f; // the box and level number or level name in game
+                if (levelLabel.Secondary != null)
+                {
+                    Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
+                    text2.anchor = 33;
+                    text2.parentAnchor = 9;
+                    text2.y = isChinese ? 3f : 30f; // the "Level" label in game
+                    text2.rotationCenterX -= text2.width / 2f;
+                    text2.scaleX = text2.scaleY = 0.7f;
+                    _ = text.AddChild(text2);
+                }
+                Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
+                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                text.AddTimelinewithID(timeline6, 0);
+                text.PlayTimeline(0);
+                timeline6.delegateTimelineDelegate = staticAniPool;
+                _ = staticAniPool.AddChild(text);
+            }
             for (int m = 0; m < 5; m++)
             {
                 dragging[m] = false;
@@ -116,6 +126,19 @@ namespace CutTheRopeDX.GameMain
             }
             Global.MouseCursor.ReleaseButtons();
             CTRRootController.LogEvent("IG_SHOWN");
+        }
+
+        /// <summary>
+        /// Resolves the level's display name from its <c>levelName</c> attribute.
+        /// </summary>
+        /// <remarks>
+        /// Shipped packs use <c>levelName</c> as a localization key; hand-authored levels have no
+        /// entry in the string tables and fall through <see cref="Application.GetString"/> verbatim.
+        /// </remarks>
+        /// <returns>The name to display, or <see langword="null"/> when the level has none.</returns>
+        private string ResolveLevelDisplayName()
+        {
+            return string.IsNullOrWhiteSpace(levelName) ? null : Application.GetString(levelName);
         }
 
         /// <summary>

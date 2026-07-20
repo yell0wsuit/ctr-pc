@@ -29,7 +29,12 @@ namespace CutTheRopeDX.Helpers
         /// </summary>
         /// <param name="key">The string key (e.g., <c>PLAY</c>, <c>OPTIONS</c>)</param>
         /// <param name="languageCode">The language code (e.g., <c>en</c>, <c>ru</c>, <c>de</c>, <c>fr</c>)</param>
-        /// <returns>The localized string, or empty string if not found.</returns>
+        /// <returns>
+        /// The localized string, or <paramref name="key"/> itself when it is absent from both the
+        /// requested language and English. Level and tutorial text authored in map XML is passed
+        /// through this method, so an unrecognized key is treated as literal text rather than
+        /// silently disappearing. Use <see cref="HasString"/> to test for a key's existence.
+        /// </returns>
         public static string GetString(string key, string languageCode)
         {
             if (string.IsNullOrEmpty(key))
@@ -53,14 +58,14 @@ namespace CutTheRopeDX.Helpers
                 }
             }
 
-            return string.Empty;
+            return key;
         }
 
         /// <summary>
         /// Gets a localized string for the given key using the current language.
         /// </summary>
         /// <param name="key">The string key (e.g., "PLAY", "OPTIONS")</param>
-        /// <returns>The localized string, or empty string if not found.</returns>
+        /// <returns>The localized string, or <paramref name="key"/> itself if not found.</returns>
         public static string GetString(string key)
         {
             string languageCode = LanguageHelper.CurrentCode;

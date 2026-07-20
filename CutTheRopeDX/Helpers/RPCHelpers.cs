@@ -161,7 +161,7 @@ namespace CutTheRopeDX.Helpers
                 }
             }
 
-            bool useCustomLevelName = levelName != null && Application.GetString(levelName) != string.Empty;
+            bool useCustomLevelName = !string.IsNullOrWhiteSpace(levelName);
 
             client.SetActivity(
                 details: useCustomLevelName ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",

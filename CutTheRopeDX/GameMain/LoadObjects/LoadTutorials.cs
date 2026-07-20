@@ -32,9 +32,7 @@ namespace CutTheRopeDX.GameMain
                 tutorialText.special = ParseIntOrZero(xmlNode.Attribute("special")?.Value);
                 tutorialText.SetAlignment(2);
                 string textKey = xmlNode.Attribute("text")?.Value ?? string.Empty;
-                string newString = Helpers.LocalizationManager.HasString(textKey)
-                    ? Helpers.LocalizationManager.GetString(textKey)
-                    : textKey;
+                string newString = Helpers.LocalizationManager.GetString(textKey);
                 tutorialText.SetStringandWidth(newString, (int)(ParseIntOrZero(xmlNode.Attribute("width")?.Value) * scale));
                 tutorialText.color = RGBAColor.transparentRGBA;
                 Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
