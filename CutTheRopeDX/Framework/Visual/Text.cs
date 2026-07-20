@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -306,6 +307,30 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Calculates the screen-space horizontal scissor bounds for ping-pong text.
+        /// </summary>
+        /// <param name="clipX">Local X coordinate of the clip area.</param>
+        /// <param name="clipY">Local Y coordinate of the clip area.</param>
+        /// <param name="clipWidth">Local width of the clip area.</param>
+        /// <param name="transformMatrix">Transform from local coordinates to screen space.</param>
+        /// <param name="previousScissor">Scissor rectangle to intersect horizontally.</param>
+        /// <returns>The horizontally intersected scissor rectangle.</returns>
+        internal static Rectangle CalculatePingPongScissorRectangle(
+            float clipX,
+            float clipY,
+            float clipWidth,
+            Matrix transformMatrix,
+            Rectangle previousScissor)
+        {
+            Vector2 leftEndpoint = Vector2.Transform(new Vector2(clipX, clipY), transformMatrix);
+            Vector2 rightEndpoint = Vector2.Transform(new Vector2(clipX + clipWidth, clipY), transformMatrix);
+            int scissorLeft = Math.Clamp((int)MathF.Floor(MathF.Min(leftEndpoint.X, rightEndpoint.X)), previousScissor.Left, previousScissor.Right);
+            int scissorRight = Math.Clamp((int)MathF.Ceiling(MathF.Max(leftEndpoint.X, rightEndpoint.X)), scissorLeft, previousScissor.Right);
+
+            return new Rectangle(scissorLeft, previousScissor.Y, scissorRight - scissorLeft, previousScissor.Height);
+        }
+
+        /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
         /// When fading, all layers are first composited at full opacity onto a render target,
         /// then drawn to screen with the fade alpha so shadow/stroke/fill fade in sync.
@@ -435,14 +460,8 @@ namespace CutTheRopeDX.Framework.Visual
                 float clipW = EffectivePingPongClipWidth;
                 float clipX = HasParent ? parent.drawX + pingPongPadding : drawX;
                 float clipY = drawY;
-                // Transform the horizontal clip bounds through the full transform matrix
-                Vector2 topLeft = Vector2.Transform(new Vector2(clipX, clipY), transformMatrix);
-                Vector2 topRight = Vector2.Transform(new Vector2(clipX + clipW, clipY), transformMatrix);
-                int scissorLeft = System.Math.Clamp((int)System.MathF.Floor(System.MathF.Min(topLeft.X, topRight.X)), previousScissor.Left, previousScissor.Right);
-                int scissorRight = System.Math.Clamp((int)System.MathF.Ceiling(System.MathF.Max(topLeft.X, topRight.X)), scissorLeft, previousScissor.Right);
-                int scissorWidth = scissorRight - scissorLeft;
-                // Preserve the previous vertical range so tall glyphs and effects are not clipped
-                graphicsDevice.ScissorRectangle = new Rectangle(scissorLeft, previousScissor.Y, scissorWidth, previousScissor.Height);
+                graphicsDevice.ScissorRectangle = CalculatePingPongScissorRectangle(
+                    clipX, clipY, clipW, transformMatrix, previousScissor);
             }
 
             // Render each formatted line
