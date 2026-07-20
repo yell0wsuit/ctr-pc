@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -35,13 +36,25 @@ namespace CutTheRopeDX.GameMain
             sock.group = ParseIntOrZero(xmlNode.Attribute("group")?.Value);
             sock.anchor = 10;
             sock.rotationCenterY -= (sock.height / 2f) - 85f;
-            if (sock.group == 0)
+            switch (sock.group)
             {
-                sock.SetDrawQuad(0);
-            }
-            else
-            {
-                sock.SetDrawQuad(1);
+                case 0:
+                    sock.SetDrawQuad(0);
+                    break;
+                case 1:
+                    sock.SetDrawQuad(1);
+                    break;
+                default:
+                    sock.SetDrawQuad(5);
+                    Image colorOverlay = Image.Image_createWithResIDQuad(Resources.Img.ObjHat, 6);
+                    colorOverlay.x = sock.x;
+                    colorOverlay.y = sock.y + 130f;
+                    colorOverlay.rotationCenterY = sock.rotationCenterY;
+                    colorOverlay.rotationCenterX = sock.rotationCenterX;
+                    colorOverlay.anchor = 18;
+                    colorOverlay.DoRestoreCutTransparency();
+                    _ = sock.AddChild(colorOverlay);
+                    break;
             }
             sock.state = Sock.SOCK_IDLE;
             sock.ParseMover(xmlNode);
