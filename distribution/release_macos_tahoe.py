@@ -1,53 +1,103 @@
 #!/usr/bin/env python3
-"""Build a macOS Tahoe (AVFoundation) release for Cut the Rope DX."""
+"""Build a macOS Tahoe (AVFoundation) DMG release for Cut the Rope DX."""
 
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-try:
-    import py7zr
-    from tqdm import tqdm
-except ImportError:
-    print("Required: pip install py7zr tqdm", file=sys.stderr)
-    sys.exit(1)
-
-SCRIPT_DIR = Path(__file__).parent
-PROJECT_ROOT = SCRIPT_DIR / ".."
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
 CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
 OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "osx-arm64"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 APP_BUNDLE = OUTPUT_DIR / "CutTheRope-DX.app"
 
 
-def package(version: str):
-    """Compress only the .app bundle into a .7z archive."""
-    RELEASE_DIR.mkdir(parents=True, exist_ok=True)
-    archive_name = f"CutTheRopeDX-v{version}-macOS-arm64-avfoundation.7z"
-    archive_path = RELEASE_DIR / archive_name
+def run_command(cmd: list[str]) -> None:
+    """Run a command and exit if it fails."""
+    print(f"> {' '.join(str(arg) for arg in cmd)}\n")
 
-    if not APP_BUNDLE.exists():
+    result = subprocess.run(cmd, check=False)
+    if result.returncode != 0:
+        sys.exit(result.returncode)
+
+
+def create_dmg(version: str) -> None:
+    """Package only the .app bundle into a compressed macOS disk image."""
+    if sys.platform != "darwin":
+        print(
+            "DMG creation requires macOS and the hdiutil command.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    if shutil.which("hdiutil") is None:
+        print("hdiutil was not found.", file=sys.stderr)
+        sys.exit(1)
+
+    if shutil.which("ditto") is None:
+        print("ditto was not found.", file=sys.stderr)
+        sys.exit(1)
+
+    if not APP_BUNDLE.is_dir():
         print(f"App bundle not found: {APP_BUNDLE}", file=sys.stderr)
         sys.exit(1)
 
-    files = sorted(f for f in APP_BUNDLE.rglob("*") if f.is_file())
-    total_size = sum(f.stat().st_size for f in files)
+    RELEASE_DIR.mkdir(parents=True, exist_ok=True)
 
-    print(f"\nPackaging {archive_name}...")
-    with py7zr.SevenZipFile(
-        archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
-    ) as archive:
-        with tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
-            for file in files:
-                arcname = str(Path("CutTheRope-DX.app") / file.relative_to(APP_BUNDLE))
-                archive.write(file, arcname)
-                pbar.update(file.stat().st_size)
+    dmg_name = f"CutTheRopeDX-v{version}-macOS-arm64-avfoundation.dmg"
+    dmg_path = RELEASE_DIR / dmg_name
+    volume_name = f"Cut the Rope DX {version}"
 
-    size_mb = archive_path.stat().st_size / (1024 * 1024)
-    print(f"Created {archive_path} ({size_mb:.1f} MB)")
+    print(f"\nPackaging {dmg_name}...")
+
+    # hdiutil packages the contents of the source directory. Place the app
+    # inside a temporary directory so the DMG root contains the .app bundle.
+    with tempfile.TemporaryDirectory(prefix="cuttherope-dmg-") as temp_dir:
+        staging_dir = Path(temp_dir)
+        staged_app = staging_dir / APP_BUNDLE.name
+
+        print("Staging app bundle...")
+        run_command(
+            [
+                "ditto",
+                str(APP_BUNDLE),
+                str(staged_app),
+            ]
+        )
+
+        # Remove an existing image so a failed rebuild cannot leave stale data.
+        dmg_path.unlink(missing_ok=True)
+
+        print("Creating compressed disk image...")
+        run_command(
+            [
+                "hdiutil",
+                "create",
+                "-volname",
+                volume_name,
+                "-srcfolder",
+                str(staging_dir),
+                "-format",
+                "UDZO",
+                "-imagekey",
+                "zlib-level=9",
+                "-ov",
+                str(dmg_path),
+            ]
+        )
+
+    if not dmg_path.is_file():
+        print(f"DMG was not created: {dmg_path}", file=sys.stderr)
+        sys.exit(1)
+
+    size_mb = dmg_path.stat().st_size / (1024 * 1024)
+    print(f"Created {dmg_path} ({size_mb:.1f} MB)")
 
 
-def main():
+def main() -> None:
     version = input("Version (e.g. 2.12.0.1): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)
@@ -75,15 +125,12 @@ def main():
     ]
 
     print(
-        f"\nBuilding v{version} for macOS Tahoe/AVFoundation (NativeAOT: {use_aot})..."
+        f"\nBuilding v{version} for macOS Tahoe/AVFoundation "
+        f"(NativeAOT: {use_aot})..."
     )
-    print(f"> {' '.join(cmd)}\n")
+    run_command(cmd)
 
-    result = subprocess.run(cmd, check=False)
-    if result.returncode != 0:
-        sys.exit(result.returncode)
-
-    package(version)
+    create_dmg(version)
 
 
 if __name__ == "__main__":

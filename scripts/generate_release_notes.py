@@ -14,7 +14,7 @@ def generate(version: str) -> str:
     files = {
         "win_x64": f"CutTheRopeDX-{tag}-Windows-x64.7z",
         "mac_ffmpeg": f"CutTheRopeDX-{tag}-macOS-arm64-ffmpeg.dmg",
-        "mac_avf": f"CutTheRopeDX-{tag}-macOS-arm64-avfoundation.7z",
+        "mac_avf": f"CutTheRopeDX-{tag}-macOS-arm64-avfoundation.dmg",
         "appimage": f"CutTheRope-DX-{tag}-x86_64.AppImage",
         "deb": f"cuttherope-dx_{tag}_amd64.deb",
     }
