@@ -488,7 +488,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
-            if (QuadBatchingEnabled && TrySubmitQuad(vertices, vertexCount))
+            if (TrySubmitQuad(vertices, vertexCount))
             {
                 return;
             }
@@ -1014,11 +1014,6 @@ namespace CutTheRopeDX.Desktop
         #endregion
 
         #region Static Fields
-
-        /// <summary>
-        /// Whether four-vertex textured sprite draws are batched. Set false to use immediate rendering.
-        /// </summary>
-        public static bool QuadBatchingEnabled = true;
 
         /// <summary>
         /// The accumulating sprite quad batch.
