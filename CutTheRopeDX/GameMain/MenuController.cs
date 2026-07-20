@@ -1017,6 +1017,11 @@ namespace CutTheRopeDX.GameMain
                     _ = image4.AddTimeline(timeline);
                 }
             }
+            bool isCJK = LanguageHelper.IsCurrentAny(
+                Language.LANGKO,
+                Language.LANGJA,
+                Language.LANGZH,
+                Language.LANGZHTW);
             // Add box label if defined in pack config
             string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
             if (!string.IsNullOrEmpty(boxLabelTextKey))
@@ -1033,7 +1038,9 @@ namespace CutTheRopeDX.GameMain
                 labelText.scaleX = labelText.scaleY = 0.35f;
                 labelText.SetAlignment(1); // Center alignment
                 labelText.anchor = labelText.parentAnchor = 18; // center-center like buttons
-                labelText.rotation = -16f;
+                labelText.rotation = -15f;
+                const float CJKBoxLabelYOffset = 2f;
+                labelText.y = 2f + (isCJK ? CJKBoxLabelYOffset : 0f);
                 _ = boxLabel.AddChild(labelText);
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
@@ -1052,7 +1059,8 @@ namespace CutTheRopeDX.GameMain
             {
                 text2.SetStringandWidth(packTitle, 656);
             }
-            text2.y = 140f;
+            const float CJKPackTitleYOffset = 14f;
+            text2.y = 140f + (isCJK ? CJKPackTitleYOffset : 0f);
             _ = image.AddChild(text2);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
