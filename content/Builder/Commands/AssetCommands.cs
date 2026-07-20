@@ -65,6 +65,7 @@ namespace CutTheRopeDX.Content.Commands
                     WorkingDirectory = $"{AppContext.BaseDirectory}../../",
                     SourceDirectory = "content",
                     Platform = TargetPlatform.DesktopVK,
+                    CompressContent = true,
                 });
             }
 

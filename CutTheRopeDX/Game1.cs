@@ -31,7 +31,8 @@ namespace CutTheRopeDX
         public Game1()
         {
             Global.XnaGame = this;
-            Content.RootDirectory = ContentPaths.RootDirectory;
+            Content.Dispose();
+            Content = new DesktopContentManager(Services);
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
             try
             {

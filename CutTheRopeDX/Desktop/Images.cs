@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRopeDX.Helpers;
-
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -23,7 +21,7 @@ namespace CutTheRopeDX.Desktop
             _ = _contentManagers.TryGetValue(imgName, out ContentManager value);
             if (value == null)
             {
-                value = new ContentManager(Global.XnaGame.Services, ContentPaths.RootDirectory);
+                value = new DesktopContentManager(Global.XnaGame.Services);
                 _contentManagers.Add(imgName, value);
             }
             return value;

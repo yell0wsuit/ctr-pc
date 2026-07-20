@@ -4,6 +4,8 @@
     <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
     <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(MonoGamePlatform)/content</ContentBuildOutput>
     <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(MonoGamePlatform)</ContentBuildTemp>
+    <CompressContent Condition="'$(CompressContent)' == ''">true</CompressContent>
+    <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
   </PropertyGroup>
 
   <Target Name="BuildGameContent"
@@ -15,7 +17,7 @@
              RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
     <Exec Condition="'$(CI)' != 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
-    <Exec Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot;"
+    <Exec Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
           CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
   </Target>
 
