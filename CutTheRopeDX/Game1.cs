@@ -298,6 +298,7 @@ namespace CutTheRopeDX
         /// </summary>
         public void DrawMovie()
         {
+            Renderer.FlushQuads();
             _DrawMovie = true;
             GraphicsDevice.Clear(Color.Black);
             if (!Application.SharedMovieMgr().IsTextureReady())
@@ -340,7 +341,15 @@ namespace CutTheRopeDX
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
-            CtrRenderer.OnDrawFrame();
+            Renderer.BeginFrame();
+            try
+            {
+                CtrRenderer.OnDrawFrame();
+            }
+            finally
+            {
+                Renderer.EndFrame();
+            }
             Global.MouseCursor.Draw();
             Global.GraphicsDevice.SetRenderTarget(null);
             if (bFirstFrame)

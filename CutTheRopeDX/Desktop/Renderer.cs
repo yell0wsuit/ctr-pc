@@ -80,6 +80,17 @@ namespace CutTheRopeDX.Desktop
                 View = Matrix.Identity
             };
             s_indexRing = new IndexBufferRing(IndexRingCapacity);
+            s_quadIndexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, QuadIndexPattern.MaxQuads * 6, BufferUsage.WriteOnly);
+            s_quadIndexBuffer.SetData(QuadIndexPattern.Build(QuadIndexPattern.MaxQuads));
+            s_quadBatchEffect = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true,
+                View = Matrix.Identity,
+                World = Matrix.Identity,
+                Alpha = 1f,
+                DiffuseColor = Vector3.One
+            };
         }
 
         /// <summary>
@@ -149,6 +160,7 @@ namespace CutTheRopeDX.Desktop
             {
                 return;
             }
+            FlushQuads();
 
             s_Viewport.X = x;
             s_Viewport.Y = y;
@@ -171,6 +183,7 @@ namespace CutTheRopeDX.Desktop
         /// <returns>The detached render target, or <see langword="null"/> when no render target is active.</returns>
         public static RenderTarget2D DetachRenderTarget()
         {
+            FlushQuads();
             RenderTarget2D renderTarget2D = s_RenderTarget;
             s_RenderTarget = null;
             return renderTarget2D;
@@ -182,6 +195,7 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         public static void CopyFromRenderTargetToScreen()
         {
+            FlushQuads();
             if (s_RenderTarget != null)
             {
                 Global.GraphicsDevice.Clear(Color.Black);
@@ -365,6 +379,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="_">OpenGL clear mask (ignored, always clears color buffer).</param>
         public static void Clear(int _)
         {
+            FlushQuads();
             BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);
         }
@@ -405,6 +420,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="height">The scissor rectangle height.</param>
         public static void SetScissor(float x, float y, float width, float height)
         {
+            FlushQuads();
             try
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
@@ -438,6 +454,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -471,6 +488,11 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
+            if (QuadBatchingEnabled && TrySubmitQuad(vertices, vertexCount))
+            {
+                return;
+            }
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -504,6 +526,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -527,6 +550,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indices">The index buffer describing triangle order.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
+            FlushQuads();
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
@@ -548,6 +572,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
+            FlushQuads();
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
@@ -569,6 +594,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
+            FlushQuads();
             if (indexCount == 0)
             {
                 return;
@@ -601,6 +627,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 2)
             {
                 return;
@@ -757,6 +784,89 @@ namespace CutTheRopeDX.Desktop
 
         #endregion
 
+        #region Quad Batching
+
+        /// <summary>
+        /// Establishes a frame boundary and discards stray queued quads from a faulted previous frame.
+        /// </summary>
+        public static void BeginFrame()
+        {
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Flushes remaining queued quads at the end of the frame.
+        /// </summary>
+        public static void EndFrame()
+        {
+            FlushQuads();
+        }
+
+        /// <summary>
+        /// Draws all queued quads as one indexed draw call, reapplying captured state unconditionally.
+        /// </summary>
+        public static void FlushQuads()
+        {
+            if (s_quadBatch.IsEmpty)
+            {
+                return;
+            }
+            QuadBatchKey key = s_quadBatch.Key;
+            BlendParams.ApplySnapshot(key.Blend);
+            Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
+            Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+            Global.GraphicsDevice.ScissorRectangle = key.Scissor;
+            s_quadBatchEffect.Texture = (Texture2D)key.Texture;
+            s_quadBatchEffect.Projection = key.Projection;
+            int vertexCount = s_quadBatch.QuadCount * 4;
+            VertexBufferRing<VertexPositionColorTexture> ring = GetVertexRing<VertexPositionColorTexture>();
+            int baseVertex = ring.Write(s_quadBatch.StagingArray, vertexCount);
+            Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+            Global.GraphicsDevice.Indices = s_quadIndexBuffer;
+            foreach (EffectPass pass in s_quadBatchEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                Global.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, baseVertex, 0, s_quadBatch.QuadCount * 2);
+            }
+            Global.GraphicsDevice.SetVertexBuffer(null);
+            Global.GraphicsDevice.Indices = null;
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Attempts to queue a four-vertex textured sprite.
+        /// </summary>
+        private static bool TrySubmitQuad(VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount != 4)
+            {
+                return false;
+            }
+            if (s_Texture == null || s_Texture.xnaTexture_ == null || s_Texture.xnaTexture_.IsDisposed)
+            {
+                return false;
+            }
+            if (QuadBaking.IsInvisible(s_Color))
+            {
+                return true;
+            }
+            BlendParams.BlendType blend = s_Blend.Snapshot();
+            if (blend == BlendParams.BlendType.Unknown)
+            {
+                return false;
+            }
+            QuadBatchKey key = new(s_Texture.xnaTexture_, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
+            if (s_quadBatch.IsFull || !s_quadBatch.CanAccept(key))
+            {
+                FlushQuads();
+            }
+            s_quadBatch.Append(vertices, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
+            s_LastVertices_PositionNormalTexture = vertices;
+            return true;
+        }
+
+        #endregion
+
         #region Private Rendering Implementation
 
         /// <summary>
@@ -904,6 +1014,26 @@ namespace CutTheRopeDX.Desktop
         #endregion
 
         #region Static Fields
+
+        /// <summary>
+        /// Whether four-vertex textured sprite draws are batched. Set false to use immediate rendering.
+        /// </summary>
+        public static bool QuadBatchingEnabled;
+
+        /// <summary>
+        /// The accumulating sprite quad batch.
+        /// </summary>
+        private static readonly QuadBatch s_quadBatch = new();
+
+        /// <summary>
+        /// Immutable index buffer holding the full quad index pattern.
+        /// </summary>
+        private static IndexBuffer s_quadIndexBuffer;
+
+        /// <summary>
+        /// Dedicated effect for batch flushes.
+        /// </summary>
+        private static BasicEffect s_quadBatchEffect;
 
         /// <summary>
         /// Holds the off-screen render target used before the final screen blit.

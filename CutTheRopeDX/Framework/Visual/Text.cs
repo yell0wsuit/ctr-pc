@@ -382,6 +382,8 @@ namespace CutTheRopeDX.Framework.Visual
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
+            // Queued sprite quads must render before text draws above them or changes render targets.
+            Renderer.FlushQuads();
             Viewport viewport = graphicsDevice.Viewport;
 
             float viewportScaleX = viewport.Width / SCREEN_WIDTH;
