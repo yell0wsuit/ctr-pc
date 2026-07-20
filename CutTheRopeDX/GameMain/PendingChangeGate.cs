@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -45,7 +46,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Guards <see cref="pending"/> and <see cref="lastChangeUtc"/> across threads.</summary>
-        private readonly object sync = new();
+        private readonly Lock sync = new();
 
         /// <summary>Whether a change is waiting to be released.</summary>
         private bool pending;
