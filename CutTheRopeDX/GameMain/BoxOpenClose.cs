@@ -222,7 +222,8 @@ namespace CutTheRopeDX.GameMain
             _ = result.AddChild(stamp);
             Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("REPLAY"), 8, b);
             button.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, 11);
+            // Custom levels hide the NEXT/MENU buttons, so replay takes the centered menu slot instead.
+            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, CustomLevelSession.IsActive ? 9 : 11);
             _ = result.AddChild(button);
             if (!CustomLevelSession.IsActive)
             {
