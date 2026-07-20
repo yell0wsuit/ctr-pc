@@ -135,6 +135,8 @@ CutTheRopeDX --level <path-to-level.xml>
 
 The path may be absolute or relative, and the file does not need to live under the content directory.
 
+You can also drag an `.xml` level file onto the executable — a bare `.xml` argument is treated the same as `--level <path>`. If both are given, `--level` wins.
+
 ### Behavior
 
 - The splash screen and menu are skipped; the level loads and plays immediately.

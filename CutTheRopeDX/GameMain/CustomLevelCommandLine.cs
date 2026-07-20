@@ -17,6 +17,10 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Parses the custom-level command line switches. Performs no file access.
     /// </summary>
+    /// <remarks>
+    /// A bare <c>.xml</c> path is also accepted so a level file can be dropped onto the executable,
+    /// which is how Windows Explorer hands the path over.
+    /// </remarks>
     internal static class CustomLevelCommandLine
     {
         /// <summary>Command line switch that selects a custom level file.</summary>
@@ -47,6 +51,20 @@ namespace CutTheRopeDX.GameMain
                         null,
                         LevelSwitch + " requires a path to a level XML file.")
                     : new CustomLevelCommandLineResult(true, Path.GetFullPath(args[i + 1]), null);
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                string arg = args[i];
+
+                if (string.IsNullOrWhiteSpace(arg)
+                    || arg.StartsWith('-')
+                    || !arg.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                return new CustomLevelCommandLineResult(true, Path.GetFullPath(arg), null);
             }
 
             return new CustomLevelCommandLineResult(false, null, null);
