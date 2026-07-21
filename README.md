@@ -17,7 +17,7 @@ The logo is designed by Bingies24 and darealmrcatz.
 > [!NOTE]
 > This project is not, and will never be affiliated with or endorsed by ZeptoLab. All rights to the original game and its assets belong to ZeptoLab.
 
-### Related project
+### Related projects
 
 - [Cut the Rope DX: Level Editor](https://github.com/yell0wsuit/ctrdx-editor/): a standalone app for creating and editing levels for Cut the Rope: DX.
 - [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version, currently being developed to improve the game's experience further.
