@@ -63,6 +63,9 @@ To test the game during the development process, follow these steps:
 
 1. Ensure you have [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
 
+> [!note]
+> The minimum is pinned in `global.json` with `rollForward: latestFeature`, so newer 10.0.x SDKs work automatically. However, if your SDK is older than that, `dotnet` commands will fail with a version-mismatch error until you update.
+
 2. Clone the repository to your PC:
 
     ```bash
