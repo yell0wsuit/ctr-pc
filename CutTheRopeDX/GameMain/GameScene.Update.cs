@@ -1273,13 +1273,24 @@ namespace CutTheRopeDX.GameMain
                     {
                         rocketStar.disableGravity = true;
                     }
+                    // Park the rocket while the mouse carries its candy. The kinematic pin plus the
+                    // per-frame rocket-point snap keep the rest-0 pair exactly coincident, and the
+                    // solver's coincident fallback (DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION, 30
+                    // iterations/frame) makes the pair random-walk around the mouth — a visible
+                    // wobble, frozen in as a position drift if the candy is dropped mid-jitter.
+                    // Parked: no satisfaction, no thrust; position snap, rotation sync, fuse tick
+                    // and gravity heal keep running, and full flight resumes on drop.
+                    bool parkedOnMouse = rocketCandy?.carriedByMouse == true;
                     float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
                     if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
                     {
-                        for (int i = 0; i < 30; i++)
+                        if (!parkedOnMouse)
                         {
-                            ConstraintedPoint.SatisfyConstraints(rocketStar);
-                            ConstraintedPoint.SatisfyConstraints(rocket.point);
+                            for (int i = 0; i < 30; i++)
+                            {
+                                ConstraintedPoint.SatisfyConstraints(rocketStar);
+                                ConstraintedPoint.SatisfyConstraints(rocket.point);
+                            }
                         }
                         rocket.rotation = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
                     }
@@ -1341,7 +1352,10 @@ namespace CutTheRopeDX.GameMain
                         {
                             impulse = VectMult(impulse, rocket.impulseFactor);
                         }
-                        rocketStar.ApplyImpulseDelta(impulse, delta);
+                        if (!parkedOnMouse)
+                        {
+                            rocketStar.ApplyImpulseDelta(impulse, delta);
+                        }
                         rocketStar.gravity = vectZero;
                         rocket.point.pos.X = rocketStar.pos.X;
                         rocket.point.pos.Y = rocketStar.pos.Y;
