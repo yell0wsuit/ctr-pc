@@ -1596,7 +1596,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             CandyContext ctx = candies[ci];
                             bool gone = CandyGone(ci, ctx);
-                            if (gone || !ctx.Capabilities.CanBeDraggedBySnail || !GameObject.ObjectsIntersect(ctx.candy, snail))
+                            if (!SnailAttach.ShouldAttach(gone, ctx.Capabilities.CanBeDraggedBySnail, GameObject.ObjectsIntersect(ctx.candy, snail)))
                             {
                                 continue;
                             }
