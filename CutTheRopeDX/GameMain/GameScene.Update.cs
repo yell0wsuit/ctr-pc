@@ -1033,6 +1033,15 @@ namespace CutTheRopeDX.GameMain
                     ReleaseRopesForPoint(ctx.point);
                     DetachHandsForPoint(ctx.point);
                     DropMouseCandyForPoint(ctx.point);
+                    // Lantern capture is terminal for this candy's riders: snails hop off (giving
+                    // their weight back) and ants stop carrying it, mirroring hand-grab.
+                    int lanternDetachedSnails = ActiveSnailCountForPoint(ctx.point);
+                    DetachSnailsForPoint(ctx.point);
+                    if (lanternDetachedSnails > 0)
+                    {
+                        ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, lanternDetachedSnails));
+                    }
+                    DetachCandyFromConveyor(ctx);
                     if (ci == 0)
                     {
                         if (candyBubble != null)
