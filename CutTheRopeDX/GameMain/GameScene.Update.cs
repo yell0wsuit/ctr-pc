@@ -1122,7 +1122,7 @@ namespace CutTheRopeDX.GameMain
                 ConstraintedPoint carried = miceManager.ActiveMouseCarriedStar();
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    candies[ci].carriedByMouse = carried != null && candies[ci].point == carried;
+                    candies[ci].carriedByMouse = MouseOwnership.CarriesCandy(carried, candies[ci].point);
                 }
             }
             float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
@@ -1310,7 +1310,9 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
-                            bool mouseHasCandy = miceManager?.ActiveMouseHasCandy() ?? false;
+                            // Per-candy: only the candy the mouse actually holds is blocked from binding,
+                            // not every candy while the mouse holds any one of them.
+                            bool mouseHasCandy = ctx.carriedByMouse;
                             if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
                             {
                                 continue;
@@ -2026,8 +2028,9 @@ namespace CutTheRopeDX.GameMain
                 ctx.activeRocket.additionalAngle = 0f;
             }
 
-            // If mouse already has this candy, immediately cut the rope
-            if (miceManager?.ActiveMouseHasCandy() ?? false)
+            // If the mouse already has THIS candy, immediately cut the rope. Per-candy: a mouse
+            // holding another candy must not cut a rope just auto-attached to this one.
+            if (ctx.carriedByMouse)
             {
                 bungee.SetCut(bungee.parts.Count - 2);
             }
