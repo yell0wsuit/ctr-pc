@@ -1088,7 +1088,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab bungee4 = (Grab)obj9;
                     // Self-moving grabs and player rails never ride the disc.
-                    bool discBindable = GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0);
+                    bool discBindable = GrabPlatformBind.FollowsPlatform(
+                        GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0),
+                        bungee4.kickable && bungee4.kicked);
                     if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.IndexOf(bungee4) == -1)
