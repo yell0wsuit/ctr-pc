@@ -1285,7 +1285,18 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_FLY)
                     {
-                        lastCandyRotateDelta = 0f;
+                        // Silence THIS candy's rope-spin coast: the rocket's heading tracks
+                        // candyMain.rotation, so a leftover coast (e.g. after the rope is cut)
+                        // curves the flight as if it were still steering along the rope.
+                        // candies[0] uses the singleton field, extras their own (see ~410).
+                        if (rocketCandy == null || rocketCandy == candies[0])
+                        {
+                            lastCandyRotateDelta = 0f;
+                        }
+                        else
+                        {
+                            rocketCandy.lastCandyRotateDelta = 0f;
+                        }
                         bool ropeRelaxed = false;
                         if (bungees != null)
                         {
@@ -1397,7 +1408,15 @@ namespace CutTheRopeDX.GameMain
                                 rocket.point.AddConstraintwithRestLengthofType(ctx.point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_DIST;
                             }
-                            lastCandyRotateDelta = 0f;
+                            // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
+                            if (ctx == candies[0])
+                            {
+                                lastCandyRotateDelta = 0f;
+                            }
+                            else
+                            {
+                                ctx.lastCandyRotateDelta = 0f;
+                            }
                             Vector deltaPos = VectSub(ctx.point.pos, ctx.point.prevPos);
                             ctx.point.prevPos = VectAdd(ctx.point.prevPos, VectDiv(deltaPos, ctx.point.disableGravity ? 2f : 1.25f));
                             ctx.point.disableGravity = true;
