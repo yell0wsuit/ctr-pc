@@ -2007,7 +2007,7 @@ namespace CutTheRopeDX.GameMain
         /// Shared by the whole-candy path and the split-candy path (for the whole candies, e.g. light
         /// emitters, that sit alongside the split halves at <c>candies[1+]</c>).
         /// </remarks>
-        private bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
+        private static bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
         {
             bool inRange = !ctx.noCandy
                 && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
