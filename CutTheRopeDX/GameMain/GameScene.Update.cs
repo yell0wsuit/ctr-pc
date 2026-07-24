@@ -1259,20 +1259,14 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    rocket.Update(delta);
-                    rocket.UpdateRotation();
                     // The rocket flies exactly one candy; resolve it (null while idle/unbound).
+                    // Resolved BEFORE rocket.Update so a parked rocket can pre-snap: the mice
+                    // update (which teleports the candy across the level on a mouse handoff) runs
+                    // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
+                    // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
                     ConstraintedPoint rocketStar = rocketCandy?.point ?? star;
                     GameObject rocketCandyMain = rocketCandy?.candyMain ?? candyMain;
-                    // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
-                    // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
-                    // candy) is healed here every frame while the rocket is bound — mirrors the
-                    // reference's recurring `star->disableGravity = activeRocket != 0`.
-                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
-                    {
-                        rocketStar.disableGravity = true;
-                    }
                     // Park the rocket while the mouse carries its candy. The kinematic pin plus the
                     // per-frame rocket-point snap keep the rest-0 pair exactly coincident, and the
                     // solver's coincident fallback (DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION, 30
@@ -1281,6 +1275,23 @@ namespace CutTheRopeDX.GameMain
                     // Parked: no satisfaction, no thrust; position snap, rotation sync, fuse tick
                     // and gravity heal keep running, and full flight resumes on drop.
                     bool parkedOnMouse = rocketCandy?.carriedByMouse == true;
+                    if (parkedOnMouse && rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        // prevPos too: rocket.Update integrates the point next, and a bare pos
+                        // teleport would replay the whole jump as one frame of velocity.
+                        rocket.point.pos = rocketStar.pos;
+                        rocket.point.prevPos = rocketStar.pos;
+                    }
+                    rocket.Update(delta);
+                    rocket.UpdateRotation();
+                    // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
+                    // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
+                    // candy) is healed here every frame while the rocket is bound — mirrors the
+                    // reference's recurring `star->disableGravity = activeRocket != 0`.
+                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        rocketStar.disableGravity = true;
+                    }
                     float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
                     if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
                     {
