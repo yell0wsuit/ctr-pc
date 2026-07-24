@@ -2145,9 +2145,10 @@ namespace CutTheRopeDX.GameMain
                     {
                         foreach (MechanicalHand otherHand in hands)
                         {
-                            if (otherHand != null && otherHand != hand
-                                && otherHand.state == MechanicalHand.STATE_HAND_CANDY
-                                && ctx.capturingHand == otherHand)
+                            if (otherHand != null && HandSteal.ShouldReleaseOtherHand(
+                                    otherHand != hand,
+                                    otherHand.state == MechanicalHand.STATE_HAND_CANDY,
+                                    ctx.capturingHand == otherHand))
                             {
                                 otherHand.cPoint.RemoveConstraint(ctx.point);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
