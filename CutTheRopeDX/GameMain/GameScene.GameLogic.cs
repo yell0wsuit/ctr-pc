@@ -823,7 +823,8 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees[i];
-                if (grab != except && grab.rope != null && grab.rope.tail == candyPoint && grab.rope.cut == -1)
+                bool ropeUncut = grab.rope != null && grab.rope.cut == -1;
+                if (ConveyorRopeCut.ShouldCut(grab.rope?.tail, candyPoint, grab == except, ropeUncut))
                 {
                     grab.rope.SetCut(grab.rope.parts.Count - 2);
                 }
