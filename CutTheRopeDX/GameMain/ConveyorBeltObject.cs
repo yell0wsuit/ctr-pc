@@ -264,6 +264,18 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Force-releases any in-progress manual drag on every belt. Called when gameplay input is
+        /// cut off mid-drag (win/loss transition), where no pointer-up ever reaches the belts.
+        /// </summary>
+        public void CancelAllDrags()
+        {
+            foreach (ConveyorBelt belt in list)
+            {
+                belt?.CancelDrag();
+            }
+        }
+
+        /// <summary>
         /// Handles pointer move events.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer.</param>

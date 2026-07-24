@@ -383,6 +383,7 @@ namespace CutTheRopeDX.GameMain
             outcomeTransitionActive = true;
 
             EndActiveFingerTraces();
+            conveyors?.CancelAllDrags();
             dd.CancelAllDispatches();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
@@ -469,6 +470,7 @@ namespace CutTheRopeDX.GameMain
             outcomeTransitionActive = true;
 
             EndActiveFingerTraces();
+            conveyors?.CancelAllDrags();
             dd.CancelAllDispatches();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that

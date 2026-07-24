@@ -655,6 +655,26 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Force-releases an in-progress manual drag without a matching pointer-up, and clears the
+        /// leftover drag delta. Needed because a belt still holding a pointer never reaches the
+        /// inertia/stop branch in <see cref="Update"/>, so its last <c>offsetDelta</c> keeps the belt
+        /// flagged active and re-triggers the manual move sound every frame.
+        /// </summary>
+        public void CancelDrag()
+        {
+            if (!IsManual)
+            {
+                return;
+            }
+
+            activePointerId = -1;
+            offsetDelta = 0f;
+            manualTravelDistance = 0f;
+            active = false;
+            needsAlignment = false;
+        }
+
+        /// <summary>
         /// Handles pointer move events to drag the manual belt.
         /// </summary>
         /// <param name="pointerX">The x-coordinate of the pointer in world space.</param>
