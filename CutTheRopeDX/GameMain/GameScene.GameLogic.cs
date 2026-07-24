@@ -901,7 +901,8 @@ namespace CutTheRopeDX.GameMain
             for (int i = snailobjects.Count - 1; i >= 0; i--)
             {
                 Snail snail = snailobjects[i];
-                if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == point)
+                if (snail != null && SnailDetachSelection.ShouldDetach(
+                        snail.state == Snail.SNAIL_STATE_ACTIVE, snail.AttachedPoint(), point))
                 {
                     snail.Detach();
                 }
