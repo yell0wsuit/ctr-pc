@@ -1141,7 +1141,13 @@ namespace CutTheRopeDX.GameMain
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.noCandy, miceManager.IsActiveMouseInRange(ctx.point)))
                         {
                             miceManager.GrabWithActiveMouse(ctx.point, ctx.candy);
-                            ExhaustRocketForCandy(ctx);
+                            // The rocket steals from nobody and nobody kills it (PD 2026-07-24):
+                            // a stolen rocket-bound candy keeps its rocket, which strains at the
+                            // mouse's mouth and launches when the mouse drops the candy. The
+                            // per-frame gravity enforcement in the rocket update keeps flight
+                            // physics intact across the mouse's drop path. The mouse likewise
+                            // keeps a bubble (official levels carry bubbled candy) and any
+                            // riding snail.
                             TriggerSpecialTutorial(4);
                             break;
                         }
