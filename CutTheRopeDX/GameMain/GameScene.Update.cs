@@ -1253,6 +1253,14 @@ namespace CutTheRopeDX.GameMain
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
                     ConstraintedPoint rocketStar = rocketCandy?.point ?? star;
                     GameObject rocketCandyMain = rocketCandy?.candyMain ?? candyMain;
+                    // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
+                    // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
+                    // candy) is healed here every frame while the rocket is bound — mirrors the
+                    // reference's recurring `star->disableGravity = activeRocket != 0`.
+                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        rocketStar.disableGravity = true;
+                    }
                     float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
                     if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
                     {
