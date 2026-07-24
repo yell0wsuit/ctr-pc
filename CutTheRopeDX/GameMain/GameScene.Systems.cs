@@ -277,6 +277,11 @@ namespace CutTheRopeDX.GameMain
             DetachHandsForPoint(ctx.point);
             DropMouseCandyForPoint(ctx.point);
             ctx.targetBambooTube = bambooTube;
+            // The Experiments reference's operateTube: sets the rocket invisible for the transit.
+            if (ctx.HasActiveRocket)
+            {
+                ctx.activeRocket.visible = false;
+            }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
             ctx.noCandy = true;
             ctx.point.disableGravity = true;

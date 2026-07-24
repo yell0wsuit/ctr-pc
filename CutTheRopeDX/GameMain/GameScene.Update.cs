@@ -1217,6 +1217,12 @@ namespace CutTheRopeDX.GameMain
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
+                            // The rocket teleports with the candy; hide it for the transit like the
+                            // reference (Gift catch sets visible = 0; Teleport re-shows it).
+                            if (ctx.HasActiveRocket)
+                            {
+                                ctx.activeRocket.visible = false;
+                            }
                             ctx.lightBulb?.SyncFromContext(ctx);
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;

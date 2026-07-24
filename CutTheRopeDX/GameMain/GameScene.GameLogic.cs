@@ -105,6 +105,7 @@ namespace CutTheRopeDX.GameMain
                 ctx.candy.PlayTimeline(2);
                 if (ctx.HasActiveRocket)
                 {
+                    ctx.activeRocket.visible = true;
                     Vector holeOut = ctx.targetBambooTube.HoleOut;
                     Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
                     ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
@@ -145,6 +146,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (ctx.HasActiveRocket)
                 {
+                    ctx.activeRocket.visible = true;
                     ctx.activeRocket.point.pos = ctx.point.pos;
                     ctx.activeRocket.point.prevPos = ctx.point.prevPos;
                     ctx.activeRocket.point.v = ctx.point.v;
