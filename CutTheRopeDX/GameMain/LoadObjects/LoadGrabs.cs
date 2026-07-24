@@ -44,7 +44,9 @@ namespace CutTheRopeDX.GameMain
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
             grab.wheel = wheel;
-            grab.gun = gun;
+            // A grab is either a wheel or a gun, never both; malformed XML with both set
+            // resolves to the wheel (PD 2026-07-24).
+            grab.gun = gun && !wheel;
             grab.kickable = kickable;
             grab.kicked = kicked;
             grab.invisible = invisible;
@@ -121,7 +123,9 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             grab.SetRadius(grabRadius);
-            grab.SetMoveLengthVerticalOffset(k, v, o);
+            // A path mover (bee/launcher) and a drag rail are mutually exclusive movement
+            // mechanisms; the authored path wins and rail attributes are ignored (PD 2026-07-24).
+            grab.SetMoveLengthVerticalOffset(grab.mover != null ? 0f : k, v, o);
             if (grab.gun && grab.gunArrow != null)
             {
                 ConstraintedPoint constraintedPoint = star;
