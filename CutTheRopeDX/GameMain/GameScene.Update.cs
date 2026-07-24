@@ -1788,6 +1788,12 @@ namespace CutTheRopeDX.GameMain
                             }
                             ExhaustRocketForCandy(ctx);
                             ReleaseRopesForPoint(ctx.point);
+                            // Drop this candy's riders here, not at GameWon(). With one candy the
+                            // reference engine went straight from "eaten" to gameWon(), which tore
+                            // them down; now the other candies keep the level running, so a snail
+                            // would stay riding an eaten candy's invisible point until the last one
+                            // is eaten.
+                            DetachSnailsForPoint(ctx.point);
                             ctx.candy.visible = false;
                             t.asleep = true;
                             t.mouthOpen = false;
