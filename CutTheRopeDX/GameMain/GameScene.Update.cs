@@ -1341,10 +1341,7 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
-                            // Per-candy: only the candy the mouse actually holds is blocked from binding,
-                            // not every candy while the mouse holds any one of them.
-                            bool mouseHasCandy = ctx.carriedByMouse;
-                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
+                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, intersects))
                             {
                                 continue;
                             }
@@ -1365,7 +1362,10 @@ namespace CutTheRopeDX.GameMain
 
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
-                            if (handHoldingCandy)
+                            // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
+                            // The rocket steals from nobody — it coexists with hand or mouse and
+                            // launches when the holder releases.
+                            if (RocketBindPath.UsesDirectFlyPath(ctx.capturingHand != null, ctx.carriedByMouse))
                             {
                                 rocket.point.pos = ctx.point.pos;
                                 rocket.point.AddConstraintwithRestLengthofType(ctx.point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
