@@ -842,6 +842,17 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
+                            if (ctx.HasActiveRocket)
+                            {
+                                // Rocket-bound candy pops bubbles it touches instead of entering
+                                // them (Experiments reference): the bubble is consumed, never captured.
+                                PopBubbleAtXY(bubble3.x, bubble3.y);
+                                bubble3.popped = true;
+                                bubble3.RemoveChildWithID(0);
+                                conveyors.Remove(bubble3);
+                                captured = true;
+                                break;
+                            }
                             if (candyBubble != null)
                             {
                                 PopBubbleAtXY(bubble3.x, bubble3.y);
@@ -883,6 +894,15 @@ namespace CutTheRopeDX.GameMain
                             || !BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                         {
                             continue;
+                        }
+                        if (ctx.HasActiveRocket)
+                        {
+                            PopBubbleAtXY(bubble3.x, bubble3.y);
+                            bubble3.popped = true;
+                            bubble3.RemoveChildWithID(0);
+                            conveyors.Remove(bubble3);
+                            captured = true;
+                            break;
                         }
                         // Already carried by a different bubble: release the old one and swap to the
                         // new bubble, mirroring the candies[0] path. Without this, a bubbled body
