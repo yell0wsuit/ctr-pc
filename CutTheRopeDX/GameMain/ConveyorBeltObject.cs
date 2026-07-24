@@ -19,9 +19,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Set by <see cref="GameScene"/>. Called when a Grab wraps and other ropes for the same candy should be cut.
-        /// Parameters: candyNumber, the Grab that wrapped.
+        /// Parameter: the Grab that wrapped.
         /// </summary>
-        public Action<int, Grab> OnDestroyRopesForCandy;
+        public Action<Grab> OnDestroyRopesForCandy;
 
         /// <summary>
         /// Gets the number of conveyor belts in this collection.

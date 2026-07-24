@@ -800,17 +800,28 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Cuts all ropes for the specified candy number, except the one belonging to the given Grab.
-        /// Matches iOS destroyRopesForCandy:except:.
+        /// Cuts all ropes attached to the same candy as <paramref name="except"/>, sparing that grab's
+        /// own rope. Matches iOS destroyRopesForCandy:except:.
         /// </summary>
-        /// <param name="candyNumber">Candy number whose ropes should be destroyed.</param>
-        /// <param name="except">Grab whose rope should be preserved.</param>
-        private void DestroyRopesForCandy(int candyNumber, Grab except)
+        /// <remarks>
+        /// Candies are identified by the rope's tail point rather than by <see cref="Grab.candyNumber"/>.
+        /// The legacy numbering only distinguished whole candy (0) from the split halves (1/2), so the
+        /// multi-candy loader hands every candy-bound grab the same number 0 — matching on it would cut
+        /// ropes belonging to *other* candies. Tail identity is exact for all three cases.
+        /// </remarks>
+        /// <param name="except">Grab whose candy is targeted and whose own rope is preserved.</param>
+        private void DestroyRopesForCandy(Grab except)
         {
+            ConstraintedPoint candyPoint = except?.rope?.tail;
+            if (candyPoint == null)
+            {
+                return;
+            }
+
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees[i];
-                if (grab != except && grab.candyNumber == candyNumber && grab.rope != null && grab.rope.cut == -1)
+                if (grab != except && grab.rope != null && grab.rope.tail == candyPoint && grab.rope.cut == -1)
                 {
                     grab.rope.SetCut(grab.rope.parts.Count - 2);
                 }
