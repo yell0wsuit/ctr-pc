@@ -864,6 +864,19 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Forces the active mouse to drop its candy only when that candy is <paramref name="point"/>.
+        /// Capture devices (hand grab, sock, bamboo, lantern) strip the mouse per-candy; a mouse
+        /// carrying a different candy keeps it.
+        /// </summary>
+        public void DropMouseCandyForPoint(ConstraintedPoint point)
+        {
+            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), point))
+            {
+                miceManager.ForceDropCandy();
+            }
+        }
+
+        /// <summary>
         /// Number of active snails currently riding the given candy point.
         /// </summary>
         /// <param name="point">Candy physics point to count attached snails for.</param>

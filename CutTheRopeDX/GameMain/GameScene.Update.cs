@@ -1032,6 +1032,7 @@ namespace CutTheRopeDX.GameMain
                     ctx.candy.PlayTimeline(0);
                     ReleaseRopesForPoint(ctx.point);
                     DetachHandsForPoint(ctx.point);
+                    DropMouseCandyForPoint(ctx.point);
                     if (ci == 0)
                     {
                         if (candyBubble != null)
@@ -1177,6 +1178,7 @@ namespace CutTheRopeDX.GameMain
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(ctx.point);
                             DetachHandsForPoint(ctx.point);
+                            DropMouseCandyForPoint(ctx.point);
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
@@ -2202,7 +2204,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, detachedSnails));
                     }
-                    miceManager?.ForceDropCandy();
+                    DropMouseCandyForPoint(ctx.point);
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
