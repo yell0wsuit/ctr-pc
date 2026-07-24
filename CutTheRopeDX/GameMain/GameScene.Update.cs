@@ -1218,6 +1218,10 @@ namespace CutTheRopeDX.GameMain
                             ReleaseRopesForPoint(ctx.point);
                             DetachHandsForPoint(ctx.point);
                             DropMouseCandyForPoint(ctx.point);
+                            // Take the candy off the ants too: a lingering antSegment hard-overwrites
+                            // the point position all through transit and then yanks/brakes the candy
+                            // at the exit sock, killing the teleport throw.
+                            DetachCandyFromConveyor(ctx);
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;

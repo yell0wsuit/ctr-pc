@@ -276,6 +276,10 @@ namespace CutTheRopeDX.GameMain
             ReleaseRopesForPoint(ctx.point);
             DetachHandsForPoint(ctx.point);
             DropMouseCandyForPoint(ctx.point);
+            // Take the candy off the ants too: a lingering antSegment hard-overwrites the point
+            // position all through transit and then yanks/brakes the candy at the exit tube,
+            // killing the teleport throw.
+            DetachCandyFromConveyor(ctx);
             ctx.targetBambooTube = bambooTube;
             // The Experiments reference's operateTube: sets the rocket invisible for the transit.
             if (ctx.HasActiveRocket)
