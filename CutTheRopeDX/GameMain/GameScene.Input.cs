@@ -441,6 +441,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
+                    // A touch that lands on the wheel belongs to the wheel: without this, a wheel
+                    // hook riding a manual belt let the same touch also start a belt drag.
+                    return true;
                 }
                 if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
