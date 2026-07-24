@@ -1633,6 +1633,21 @@ namespace CutTheRopeDX.GameMain
                     if (snail.state == Snail.SNAIL_STATE_ACTIVE)
                     {
                         snail.rotation = CandyForPoint(snail.AttachedPoint()).InteractionRotation - snail.startRotation;
+                        // The snail wins over a bubble: pop the ridden candy's bubble
+                        // (Experiments reference) so the pair never floats up together.
+                        CandyContext ridden = CandyForPoint(snail.AttachedPoint());
+                        bool riddenHasBubble = ridden == candies[0] ? candyBubble != null : ridden.bubble != null;
+                        if (SnailBubblePop.ShouldPop(true, snail.AttachedPoint() != null, riddenHasBubble))
+                        {
+                            if (ridden == candies[0])
+                            {
+                                PopCandyBubble(false);
+                            }
+                            else
+                            {
+                                PopCandyBubble(ridden);
+                            }
+                        }
                     }
 
                     if (snail.state == Snail.SNAIL_STATE_INACTIVE)
