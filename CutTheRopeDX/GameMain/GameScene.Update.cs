@@ -1329,6 +1329,20 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
 
+                            // A rocket and a bubble are contradictory drivers on the same point;
+                            // the Experiments reference pops the bubble at bind.
+                            if (ctx == candies[0])
+                            {
+                                if (candyBubble != null)
+                                {
+                                    PopCandyBubble(false);
+                                }
+                            }
+                            else if (ctx.bubble != null)
+                            {
+                                PopCandyBubble(ctx);
+                            }
+
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
                             if (handHoldingCandy)
