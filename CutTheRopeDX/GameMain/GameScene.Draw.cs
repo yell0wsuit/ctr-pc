@@ -190,6 +190,9 @@ namespace CutTheRopeDX.GameMain
             }
 
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            // Two passes, as in the reference engine: every grab's backing layer (the rail a
+            // moveable grab slides along, the hook back plate) is drawn before any rope. A single
+            // interleaved pass lets a later grab's rail paint over an earlier grab's rope.
             foreach (object bungeeObj in bungees)
             {
                 Grab grab = (Grab)bungeeObj;
@@ -200,6 +203,11 @@ namespace CutTheRopeDX.GameMain
                     grab.SetGunDisabled(GunAvailability.IsDisabled(candies[0].inLantern));
                 }
                 grab.DrawBack();
+            }
+            foreach (object bungeeObj in bungees)
+            {
+                Grab grab = (Grab)bungeeObj;
+                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 grab.Draw();
             }
 
