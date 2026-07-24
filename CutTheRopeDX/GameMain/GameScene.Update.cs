@@ -161,18 +161,6 @@ namespace CutTheRopeDX.GameMain
             {
                 time += delta;
             }
-            bool handHoldingCandy = false;
-            if (hands != null)
-            {
-                foreach (MechanicalHand hand in hands)
-                {
-                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
-                    {
-                        handHoldingCandy = true;
-                        break;
-                    }
-                }
-            }
             if (bungees.Count > 0)
             {
                 bool flag = false;
@@ -283,8 +271,9 @@ namespace CutTheRopeDX.GameMain
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee);
 
-                                    // If mouse already has this candy, immediately cut the rope
-                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    // If the mouse already has THIS half, immediately cut the rope.
+                                    // Per-candy: a mouse carrying another candy must not cut it.
+                                    if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), starL))
                                     {
                                         bungee.SetCut(bungee.parts.Count - 2);
                                     }
@@ -302,8 +291,9 @@ namespace CutTheRopeDX.GameMain
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee2);
 
-                                    // If mouse already has this candy, immediately cut the rope
-                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    // If the mouse already has THIS half, immediately cut the rope.
+                                    // Per-candy: a mouse carrying another candy must not cut it.
+                                    if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), starR))
                                     {
                                         bungee2.SetCut(bungee2.parts.Count - 2);
                                     }
@@ -459,7 +449,9 @@ namespace CutTheRopeDX.GameMain
                         CandyContext ctx = candies[ci];
                         if (ci == 0)
                         {
-                            if (!flag && !noCandy && !handHoldingCandy)
+                            // Per-candy, matching the extras branch below: only a hand holding
+                            // THIS candy freezes its rotation coast.
+                            if (!flag && !noCandy && ctx.capturingHand == null)
                             {
                                 candyMain.rotation += MIN(5, lastCandyRotateDelta);
                                 lastCandyRotateDelta *= 0.98f;
@@ -1302,7 +1294,7 @@ namespace CutTheRopeDX.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.rope;
-                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
+                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.capturingHand == null)
                                     {
                                         ropeRelaxed = true;
                                         AlignRocketAngleToRope(rocket, rope, delta);
@@ -1312,7 +1304,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         // iOS steers the rocket off the candy connector too. It lives outside the grab
                         // list and joins two candy points, so there is no rocketStar tail check and no
-                        // handHoldingCandy gate. The connector counts as relaxed while it is nearly
+                        // hand gate. The connector counts as relaxed while it is nearly
                         // straight: |straight-line span - polyline length| < polyline length / 4.
                         if (candyConnector != null && candyConnector.cut == -1)
                         {
@@ -1350,7 +1342,8 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
-                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
+                        // Per-candy: only a hand holding THIS rocket's candy skips the reel-in.
+                        if (rocketCandy?.capturingHand != null || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
                         }
