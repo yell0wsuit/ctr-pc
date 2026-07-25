@@ -388,7 +388,6 @@ namespace CutTheRopeDX.GameMain
             public const string FingerTraceSkinOptions = "fingertrace_skin";
             public const string FingerTraces = "traces_ctr2";
             public const string FingerTraceGlow = "traces_ctr2_glow";
-            
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
             public const string ObjCandy01New = "candies/obj_candy_01_new";
