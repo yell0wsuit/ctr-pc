@@ -778,7 +778,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void DidMoveToOtherSide()
         {
-            if (candyNumber != -1 && rope != null && rope.cut == -1)
+            if (rope != null && rope.cut == -1)
             {
                 rope.MoveAnchor(Vect(x, y));
             }
