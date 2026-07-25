@@ -343,6 +343,7 @@ namespace CutTheRopeDX.GameMain
             public const string CharSupports = "char_supports";
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";
+            public const string CharIdleMagic = "char_idle_magic";
             public const string ObjVinil = "obj_vinil";
             public const string Bgr01Cover = "bgr_01_cover";
             public const string Bgr02Cover = "bgr_02_cover";
@@ -387,7 +388,7 @@ namespace CutTheRopeDX.GameMain
             public const string FingerTraceSkinOptions = "fingertrace_skin";
             public const string FingerTraces = "traces_ctr2";
             public const string FingerTraceGlow = "traces_ctr2_glow";
-
+            
             // Candies
             public const string ObjCandyFx = "candies/obj_candy_fx";
             public const string ObjCandy01New = "candies/obj_candy_01_new";
