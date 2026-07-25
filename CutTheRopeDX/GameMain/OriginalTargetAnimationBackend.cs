@@ -216,6 +216,9 @@ namespace CutTheRopeDX.GameMain
                     }
                     break;
                 case TargetAnimationState.IdleVariationThree:
+                    {
+                        target.PlayAnimationtimeline(Resources.Img.CharIdleMagic, MagicIdleTimeline);
+                    }
                     break;
                 case TargetAnimationState.Excited:
                     target.PlayAnimationtimeline(Resources.Img.CharAnimations2, ExcitedTimeline);
@@ -457,6 +460,8 @@ namespace CutTheRopeDX.GameMain
         {
             target.AddImage(Resources.Img.CharAnimations2);
             target.AddImage(Resources.Img.CharAnimations3);
+            target.AddImage(Resources.Img.CharIdleMagic);
+
             if (isNightLevel)
             {
                 target.AddImage(Resources.Img.CharAnimationsSleeping);
@@ -498,6 +503,7 @@ namespace CutTheRopeDX.GameMain
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, ExcitedTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 19);
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, CheerfulTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations3, SadTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
+            target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharIdleMagic, MagicIdleTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 31, 61);
 
             if (isNightLevel)
             {
@@ -515,6 +521,7 @@ namespace CutTheRopeDX.GameMain
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimations2, GreetingTimeline, DefaultFrameDelay);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimations, IdleVariationOneTimeline, DefaultFrameDelay);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimations, IdleVariationTwoTimeline, DefaultFrameDelay);
+            target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharIdleMagic, MagicIdleTimeline, DefaultFrameDelay);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimations2, ExcitedTimeline, DefaultFrameDelay);
             target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimations2, CheerfulTimeline, DefaultFrameDelay);
 
