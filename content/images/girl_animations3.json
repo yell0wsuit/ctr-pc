@@ -1,0 +1,107 @@
+﻿{"frames": [
+
+{
+	"filename": "frame_0000",
+	"frame": {"x":216,"y":0,"w":213,"h":225},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":15,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0001",
+	"frame": {"x":429,"y":0,"w":210,"h":226},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":14,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0002",
+	"frame": {"x":0,"y":226,"w":204,"h":228},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":12,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0003",
+	"frame": {"x":622,"y":241,"w":198,"h":230},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":10,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0004",
+	"frame": {"x":428,"y":226,"w":194,"h":238},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":3,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0005",
+	"frame": {"x":639,"y":0,"w":195,"h":241},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":0,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0006",
+	"frame": {"x":820,"y":241,"w":198,"h":230},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":11,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0007",
+	"frame": {"x":0,"y":454,"w":202,"h":221},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":20,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0008",
+	"frame": {"x":413,"y":464,"w":205,"h":214},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":27,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0009",
+	"frame": {"x":204,"y":446,"w":209,"h":216},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":25,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0010",
+	"frame": {"x":216,"y":225,"w":212,"h":221},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":20,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}
+,{
+	"filename": "frame_0011",
+	"frame": {"x":0,"y":0,"w":216,"h":226},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":216,"h":241},
+	"sourceSize": {"w":216,"h":241}
+}],
+"meta": {
+	"app": "Adobe Animate",
+	"version": "24.0.13.5",
+	"image": "girl_animations3.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1"
+}
+}
