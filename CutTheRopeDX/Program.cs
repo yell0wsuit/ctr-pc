@@ -21,6 +21,10 @@ if (cli.IsCustomLevel)
     }
 
     CustomLevelSession.Activate(cli.LevelPath);
+
+    // Tell the launcher, before the run loop blocks, that this build understood --level and loaded the
+    // level. A build too old for the switch never reaches here, so the line's absence is the signal.
+    PlaytestHandshake.Announce(Console.Out);
 }
 
 using Game1 game = new();
