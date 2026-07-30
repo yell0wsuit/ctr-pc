@@ -1122,7 +1122,7 @@ namespace CutTheRopeDX.GameMain
                 ConstraintedPoint carried = miceManager.ActiveMouseCarriedStar();
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    candies[ci].carriedByMouse = carried != null && candies[ci].point == carried;
+                    candies[ci].carriedByMouse = MouseOwnership.CarriesCandy(carried, candies[ci].point);
                 }
             }
             float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
@@ -1310,7 +1310,9 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
-                            bool mouseHasCandy = miceManager?.ActiveMouseHasCandy() ?? false;
+                            // Per-candy: only the candy the mouse actually holds is blocked from binding,
+                            // not every candy while the mouse holds any one of them.
+                            bool mouseHasCandy = ctx.carriedByMouse;
                             if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
                             {
                                 continue;
@@ -1594,7 +1596,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             CandyContext ctx = candies[ci];
                             bool gone = CandyGone(ci, ctx);
-                            if (gone || !ctx.Capabilities.CanBeDraggedBySnail || !GameObject.ObjectsIntersect(ctx.candy, snail))
+                            if (!SnailAttach.ShouldAttach(gone, ctx.Capabilities.CanBeDraggedBySnail, GameObject.ObjectsIntersect(ctx.candy, snail)))
                             {
                                 continue;
                             }
@@ -1788,6 +1790,12 @@ namespace CutTheRopeDX.GameMain
                             }
                             ExhaustRocketForCandy(ctx);
                             ReleaseRopesForPoint(ctx.point);
+                            // Drop this candy's riders here, not at GameWon(). With one candy the
+                            // reference engine went straight from "eaten" to gameWon(), which tore
+                            // them down; now the other candies keep the level running, so a snail
+                            // would stay riding an eaten candy's invisible point until the last one
+                            // is eaten.
+                            DetachSnailsForPoint(ctx.point);
                             ctx.candy.visible = false;
                             t.asleep = true;
                             t.mouthOpen = false;
@@ -1999,7 +2007,7 @@ namespace CutTheRopeDX.GameMain
         /// Shared by the whole-candy path and the split-candy path (for the whole candies, e.g. light
         /// emitters, that sit alongside the split halves at <c>candies[1+]</c>).
         /// </remarks>
-        private bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
+        private static bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
         {
             bool inRange = !ctx.noCandy
                 && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
@@ -2020,8 +2028,9 @@ namespace CutTheRopeDX.GameMain
                 ctx.activeRocket.additionalAngle = 0f;
             }
 
-            // If mouse already has this candy, immediately cut the rope
-            if (miceManager?.ActiveMouseHasCandy() ?? false)
+            // If the mouse already has THIS candy, immediately cut the rope. Per-candy: a mouse
+            // holding another candy must not cut a rope just auto-attached to this one.
+            if (ctx.carriedByMouse)
             {
                 bungee.SetCut(bungee.parts.Count - 2);
             }
@@ -2136,9 +2145,10 @@ namespace CutTheRopeDX.GameMain
                     {
                         foreach (MechanicalHand otherHand in hands)
                         {
-                            if (otherHand != null && otherHand != hand
-                                && otherHand.state == MechanicalHand.STATE_HAND_CANDY
-                                && ctx.capturingHand == otherHand)
+                            if (otherHand != null && HandSteal.ShouldReleaseOtherHand(
+                                    otherHand != hand,
+                                    otherHand.state == MechanicalHand.STATE_HAND_CANDY,
+                                    ctx.capturingHand == otherHand))
                             {
                                 otherHand.cPoint.RemoveConstraint(ctx.point);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;

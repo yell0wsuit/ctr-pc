@@ -569,7 +569,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (item is Grab grab && grab.rope != null && grab.candyNumber != -1)
                     {
-                        OnDestroyRopesForCandy?.Invoke(grab.candyNumber, grab);
+                        OnDestroyRopesForCandy?.Invoke(grab);
                     }
                     if (item is ITransporterSideSwitchAware sideSwitchAware)
                     {
@@ -652,6 +652,26 @@ namespace CutTheRopeDX.GameMain
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Force-releases an in-progress manual drag without a matching pointer-up, and clears the
+        /// leftover drag delta. Needed because a belt still holding a pointer never reaches the
+        /// inertia/stop branch in <see cref="Update"/>, so its last <c>offsetDelta</c> keeps the belt
+        /// flagged active and re-triggers the manual move sound every frame.
+        /// </summary>
+        public void CancelDrag()
+        {
+            if (!IsManual)
+            {
+                return;
+            }
+
+            activePointerId = -1;
+            offsetDelta = 0f;
+            manualTravelDistance = 0f;
+            active = false;
+            needsAlignment = false;
         }
 
         /// <summary>
@@ -972,9 +992,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Callback invoked when a Grab wraps around the belt edge, requesting all other
         /// ropes for the same candy to be cut.
-        /// Parameters: candyNumber, the Grab that wrapped (excluded from cutting).
+        /// Parameter: the Grab that wrapped (identifies the candy, and is excluded from cutting).
         /// </summary>
-        public Action<int, Grab> OnDestroyRopesForCandy;
+        public Action<Grab> OnDestroyRopesForCandy;
 
         /// <summary>
         /// The list of items currently bound to this belt.
