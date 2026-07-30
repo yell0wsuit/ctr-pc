@@ -15,9 +15,7 @@ namespace CutTheRopeDX.Tests
         public void Scheduler_WaitsForDecodedTailToFinishPlaying()
         {
             SongLoopScheduler scheduler = new();
-            scheduler.Schedule(
-                duration: TimeSpan.FromSeconds(64),
-                position: TimeSpan.FromSeconds(63.5));
+            scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
 
             Assert.False(scheduler.Advance(TimeSpan.FromMilliseconds(499), isPlaying: true));
             Assert.True(scheduler.Advance(TimeSpan.FromMilliseconds(1), isPlaying: true));
@@ -27,9 +25,7 @@ namespace CutTheRopeDX.Tests
         public void Scheduler_DoesNotAdvanceWhileMusicIsPaused()
         {
             SongLoopScheduler scheduler = new();
-            scheduler.Schedule(
-                duration: TimeSpan.FromSeconds(64),
-                position: TimeSpan.FromSeconds(63.5));
+            scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
 
             Assert.False(scheduler.Advance(TimeSpan.FromSeconds(1), isPlaying: false));
             Assert.False(scheduler.Advance(TimeSpan.FromMilliseconds(499), isPlaying: true));
@@ -37,17 +33,24 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Scheduler_ReusesFirstTailEstimateAcrossLoops()
+        public void Scheduler_UsesSameDecoderTailAcrossLoops()
         {
             SongLoopScheduler scheduler = new();
-            scheduler.Schedule(
-                duration: TimeSpan.FromSeconds(64),
-                position: TimeSpan.FromSeconds(63.5));
+            scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
             Assert.True(scheduler.Advance(TimeSpan.FromMilliseconds(500), isPlaying: true));
 
-            scheduler.Schedule(
-                duration: TimeSpan.FromSeconds(64),
-                position: TimeSpan.FromSeconds(63.4));
+            scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
+
+            Assert.False(scheduler.Advance(TimeSpan.FromMilliseconds(499), isPlaying: true));
+            Assert.True(scheduler.Advance(TimeSpan.FromMilliseconds(1), isPlaying: true));
+        }
+
+        [Fact]
+        public void Scheduler_UsesDecoderTailForCachedMenuSong()
+        {
+            SongLoopScheduler scheduler = new();
+
+            scheduler.Schedule(duration: TimeSpan.FromSeconds(60));
 
             Assert.False(scheduler.Advance(TimeSpan.FromMilliseconds(499), isPlaying: true));
             Assert.True(scheduler.Advance(TimeSpan.FromMilliseconds(1), isPlaying: true));

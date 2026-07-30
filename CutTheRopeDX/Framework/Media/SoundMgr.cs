@@ -206,7 +206,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            songLoopScheduler.Schedule(activeSong.Duration, XnaMediaPlayer.PlayPosition);
+            songLoopScheduler.Schedule(activeSong.Duration);
         }
 
         /// <summary>

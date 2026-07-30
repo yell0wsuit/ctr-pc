@@ -10,18 +10,18 @@ namespace CutTheRopeDX.Framework.Media
     /// </summary>
     internal sealed class SongLoopScheduler
     {
-        /// <summary>
-        /// Starts waiting for the unplayed portion of a decoded song.
-        /// </summary>
-        public void Schedule(TimeSpan duration, TimeSpan position)
-        {
-            if (!hasTailEstimate)
-            {
-                tailEstimate = duration > position ? duration - position : TimeSpan.Zero;
-                hasTailEstimate = true;
-            }
+        private static readonly TimeSpan DecoderBufferDuration = TimeSpan.FromMilliseconds(250);
 
-            remaining = tailEstimate;
+        /// <summary>
+        /// Starts waiting for the two decoded buffers MonoGame leaves queued at EOF.
+        /// </summary>
+        public void Schedule(TimeSpan duration)
+        {
+            long partialBufferTicks = duration.Ticks % DecoderBufferDuration.Ticks;
+            remaining = DecoderBufferDuration +
+                (partialBufferTicks == 0
+                    ? DecoderBufferDuration
+                    : TimeSpan.FromTicks(partialBufferTicks));
             scheduled = true;
         }
 
@@ -53,14 +53,10 @@ namespace CutTheRopeDX.Framework.Media
         {
             scheduled = false;
             remaining = TimeSpan.Zero;
-            tailEstimate = TimeSpan.Zero;
-            hasTailEstimate = false;
         }
 
         private TimeSpan remaining;
-        private TimeSpan tailEstimate;
         private bool scheduled;
-        private bool hasTailEstimate;
     }
 
     /// <summary>
