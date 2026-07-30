@@ -235,6 +235,7 @@ namespace CutTheRopeDX
         /// <inheritdoc />
         protected override void Update(GameTime gameTime)
         {
+            SoundMgr.Update(gameTime.ElapsedGameTime);
             KeyboardState keyboardState = Keyboard.GetState();
             HandleFullscreenToggle(keyboardState);
             elapsedTime += gameTime.ElapsedGameTime;
