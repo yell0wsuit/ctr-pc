@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Desktop
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Combine(Texture, Blend, Scissor);
+            return HashCode.Combine(Texture, Blend, Scissor, Projection);
         }
     }
 }

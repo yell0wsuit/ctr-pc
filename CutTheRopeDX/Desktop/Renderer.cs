@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
@@ -821,6 +822,15 @@ namespace CutTheRopeDX.Desktop
             int vertexCount = s_quadBatch.QuadCount * 4;
             VertexBufferRing<VertexPositionColorTexture> ring = GetVertexRing<VertexPositionColorTexture>();
             int baseVertex = ring.Write(s_quadBatch.StagingArray, vertexCount);
+            // A full batch is MaxQuads * 4 vertices, well under the ring capacity, so the ring
+            // never rejects a batch write. Guard the invariant instead of feeding a negative
+            // base vertex to the GPU should MaxQuads ever be raised past the ring's capacity.
+            if (baseVertex < 0)
+            {
+                Debug.Assert(false, "Quad batch exceeded vertex ring capacity; raise VertexRingCapacity or lower MaxQuads.");
+                s_quadBatch.Clear();
+                return;
+            }
             Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
             Global.GraphicsDevice.Indices = s_quadIndexBuffer;
             foreach (EffectPass pass in s_quadBatchEffect.CurrentTechnique.Passes)
