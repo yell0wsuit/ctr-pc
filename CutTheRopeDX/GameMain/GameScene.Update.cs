@@ -941,6 +941,22 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
                 }
+
+                // A bubble lying on a belt drops its ground shadow the same way, or the shadow is
+                // stamped across the plates. An ordinary bubble gets that from being bound to the
+                // belt; a ghost's bubble never binds (it stays with the ghost that conjured it) and
+                // is conjured long after the one-off bind pass, so it needs the test here.
+                if (!bubble3.withoutShadow && bubble3 is IGhostApparition && conveyors != null)
+                {
+                    foreach (ConveyorBelt belt in conveyors.Iterator())
+                    {
+                        if (belt.CollidesWithCircle(Vect(bubble3.x, bubble3.y), bubble3.CollisionRadius * 0.6f))
+                        {
+                            bubble3.withoutShadow = true;
+                            break;
+                        }
+                    }
+                }
             }
             if (ghosts != null)
             {
@@ -1079,10 +1095,11 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj9 in bungees)
                 {
                     Grab bungee4 = (Grab)obj9;
-                    // Self-moving grabs and player rails never ride the disc.
+                    // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
                     bool discBindable = GrabPlatformBind.FollowsPlatform(
                         GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0),
-                        bungee4.kickable && bungee4.kicked);
+                        bungee4.kickable && bungee4.kicked)
+                        && bungee4 is not IGhostApparition;
                     if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.IndexOf(bungee4) == -1)
@@ -1098,7 +1115,8 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj10 in bubbles)
                 {
                     Bubble bubble4 = (Bubble)obj10;
-                    if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
+                    if (bubble4 is not IGhostApparition
+                        && VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.IndexOf(bubble4) == -1)
                         {

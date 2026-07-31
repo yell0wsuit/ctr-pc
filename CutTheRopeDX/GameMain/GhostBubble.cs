@@ -6,7 +6,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Ghost-transformed bubble variant with supporting cloud visuals and custom draw behavior.
     /// </summary>
-    internal sealed class GhostBubble : Bubble
+    internal sealed class GhostBubble : Bubble, IGhostApparition
     {
         /// <summary>
         /// Creates a ghost bubble from a texture.

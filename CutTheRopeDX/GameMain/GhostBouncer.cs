@@ -8,7 +8,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Ghost-transformed bouncer variant with ambient supporting cloud visuals.
     /// </summary>
-    internal sealed class GhostBouncer : Bouncer
+    internal sealed class GhostBouncer : Bouncer, IGhostApparition
     {
         /// <inheritdoc />
         public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)

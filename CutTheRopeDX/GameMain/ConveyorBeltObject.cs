@@ -129,6 +129,12 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
+                // Nor does a ghost's apparition, which stays with the ghost that conjured it.
+                if (item is IGhostApparition)
+                {
+                    continue;
+                }
+
                 // Check collision against each belt with 0.6x radius
                 float radius = item.CollisionRadius * 0.6f;
                 Vector bindPoint = item.BindPoint;

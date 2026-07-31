@@ -740,7 +740,8 @@ namespace CutTheRopeDX.GameMain
                             // loop applies, so both agree on what this disc owns.
                             if (!GrabPlatformBind.FollowsPlatform(
                                     GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
-                                    grab.kickable && grab.kicked))
+                                    grab.kickable && grab.kicked)
+                                || grab is IGhostApparition)
                             {
                                 continue;
                             }
@@ -793,6 +794,12 @@ namespace CutTheRopeDX.GameMain
                         for (int l = 0; l < bubbles.Count; l++)
                         {
                             Bubble bubble = bubbles[l];
+                            // A ghost's bubble belongs to the ghost, not the disc: its morph clouds
+                            // stay at the ghost's spot, so rotating the bubble alone would strand them.
+                            if (bubble is IGhostApparition)
+                            {
+                                continue;
+                            }
                             if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
