@@ -74,11 +74,6 @@ namespace CutTheRopeDX.Content.Commands
 
         private static async Task<int> RunFetchAsync(string contentDirectory)
         {
-            if (Environment.GetEnvironmentVariable("CI") == "true")
-            {
-                return 0;
-            }
-
             AssetManifest manifest = ReadRequiredManifest(contentDirectory);
             AssetStore store = new(contentDirectory, manifest);
             IReadOnlyList<string> missing = store.FindMissing();
