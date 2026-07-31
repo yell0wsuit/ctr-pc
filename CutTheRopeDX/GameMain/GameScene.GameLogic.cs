@@ -962,7 +962,17 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
-        /// <summary>Releases only the mechanical hand holding the candy at <paramref name="point"/> (no-op if null).</summary>
+        /// <summary>
+        /// Releases only the mechanical hand holding the candy at <paramref name="point"/> (no-op if null).
+        /// </summary>
+        /// <remarks>
+        /// The drop sound plays here rather than being left to the release-to-idle transition, which is
+        /// what a hand that lets go on its own uses. That transition needs the candy to travel past
+        /// <see cref="MechanicalHand.MH_RELEASE_DISTANCE"/> from the claw, and a candy taken by a mouse
+        /// stops at the hole it was stolen through - often inside that radius - so the hand would sit
+        /// silently in the release state until the mouse eventually carried it away. Marking the sound
+        /// as played keeps the transition from repeating it. This mirrors the player tapping the claw.
+        /// </remarks>
         public void DetachHandsForPoint(ConstraintedPoint point)
         {
             if (hands == null || hands.Count <= 0 || point == null)
@@ -983,9 +993,10 @@ namespace CutTheRopeDX.GameMain
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
-                    hand.releaseSoundPlayed = false;
+                    hand.releaseSoundPlayed = true;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = (held?.capturingHand = null);
+                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }
         }
