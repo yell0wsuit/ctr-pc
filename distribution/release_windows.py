@@ -39,14 +39,28 @@ def package(version: str):
     print(f"Created {archive_path} ({size_mb:.1f} MB)")
 
 
-def main():
+def resolve_options() -> tuple[str, bool]:
+    """Take the version and AOT choice from argv, or prompt when interactive."""
+    args = [a for a in sys.argv[1:] if a != "--no-aot"]
+    use_aot = "--no-aot" not in sys.argv[1:]
+
+    if args:
+        return args[0], use_aot
+
+    if not sys.stdin.isatty():
+        print("Usage: release_windows.py <version> [--no-aot]", file=sys.stderr)
+        sys.exit(1)
+
     version = input("Version (e.g. 2.12.0.1): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)
         sys.exit(1)
 
-    aot_input = input("Use NativeAOT? [Y/n]: ").strip().lower()
-    use_aot = aot_input != "n"
+    return version, input("Use NativeAOT? [Y/n]: ").strip().lower() != "n"
+
+
+def main():
+    version, use_aot = resolve_options()
 
     cmd = [
         "dotnet",
