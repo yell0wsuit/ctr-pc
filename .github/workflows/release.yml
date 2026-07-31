@@ -121,6 +121,9 @@ jobs:
                   key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'global.json') }}
                   restore-keys: nuget-${{ runner.os }}-
 
+            - name: Install macOS workload
+              run: dotnet workload install macos
+
             - uses: actions/download-artifact@v8
               with:
                   name: built-content
