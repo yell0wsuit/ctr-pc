@@ -442,19 +442,7 @@ namespace CutTheRopeDX.GameMain
             DetachActiveSnails();
             DetachActiveHands();
 
-            // Make the mouse retreat and lock it from advancing to next mouse
-            if (miceManager != null && mice != null)
-            {
-                foreach (object obj in mice)
-                {
-                    if (obj is Mouse mouse && mouse.IsActive)
-                    {
-                        mouse.BeginRetreat();
-                        break;
-                    }
-                }
-            }
-            miceManager?.LockActiveMouse();
+            ShutDownMice();
         }
 
         /// <summary>
@@ -515,8 +503,32 @@ namespace CutTheRopeDX.GameMain
             // keeps burning through the restart animation, matching the original.
             DetachActiveHands();
 
-            // Make the mouse retreat and lock it from advancing to next mouse
-            if (miceManager != null && mice != null)
+            ShutDownMice();
+        }
+
+        /// <summary>
+        /// Ends mouse participation for a finished level: any candy still in a mouth goes back to
+        /// the physics solver with gravity on, the mouse on screen retreats empty-handed, and the
+        /// handoff is locked so no replacement pops out of the next hole.
+        /// </summary>
+        /// <remarks>
+        /// The release has to come first and the lock has to follow. Releasing while the mouse is
+        /// still active would only hand the candy back for a frame - it lands within grab radius of
+        /// the very hole it came from, so the per-frame grab check would steal it straight back.
+        /// Locking without releasing is what stranded it: the mouse leaves with the candy, the
+        /// locked handoff refuses to pass it to the next hole, and the point stays pinned mid-air
+        /// with gravity disabled and no mouse left to carry it.
+        /// </remarks>
+        private void ShutDownMice()
+        {
+            if (miceManager == null)
+            {
+                return;
+            }
+
+            miceManager.ReleaseAllCandy();
+
+            if (mice != null)
             {
                 foreach (object obj in mice)
                 {
@@ -527,7 +539,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            miceManager?.LockActiveMouse();
+
+            miceManager.LockActiveMouse();
         }
 
         /// <summary>
