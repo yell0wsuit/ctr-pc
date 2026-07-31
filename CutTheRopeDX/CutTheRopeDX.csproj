@@ -171,7 +171,9 @@
 
     <Message Text="Relocating macOS .app to publish directory" Importance="High" />
 
-    <Exec Condition="Exists('$(AppSourcePath)')" Command="/bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;" />
+    <!-- mv onto an existing .app directory nests the bundle inside it rather
+         than replacing it, so clear the destination first. -->
+    <Exec Condition="Exists('$(AppSourcePath)')" Command="/bin/rm -rf &quot;$(AppPublishPath)&quot; &amp;&amp; /bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;" />
   </Target>
 
   <Import Project="../content/Builder/BuildContent.targets" />
