@@ -733,6 +733,17 @@ namespace CutTheRopeDX.GameMain
                         for (int j = 0; j < bungees.Count; j++)
                         {
                             Grab grab = bungees[j];
+                            // A grab that carries its own movement is not the disc's to move: a path
+                            // mover drives itself, and a drag rail belongs to the player. Scratching
+                            // the disc would otherwise sweep such a hook off its rail, leaving the
+                            // rail drawn where it was. Same rule the disc-capture test in the update
+                            // loop applies, so both agree on what this disc owns.
+                            if (!GrabPlatformBind.FollowsPlatform(
+                                    GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
+                                    grab.kickable && grab.kicked))
+                            {
+                                continue;
+                            }
                             if (VectDistance(Vect(grab.x, grab.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
