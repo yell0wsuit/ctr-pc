@@ -28,12 +28,19 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-printf "Use NativeAOT? [Y/n]: "
-read -r AOT_INPUT
-case "$AOT_INPUT" in
-    [nN]) USE_AOT="false" ;;
-    *)    USE_AOT="true" ;;
-esac
+# NativeAOT: honour USE_AOT when preset (CI), otherwise ask if there's a terminal.
+if [ -z "$USE_AOT" ]; then
+    if [ -t 0 ]; then
+        printf "Use NativeAOT? [Y/n]: "
+        read -r AOT_INPUT
+    else
+        AOT_INPUT=""
+    fi
+    case "$AOT_INPUT" in
+        [nN]) USE_AOT="false" ;;
+        *)    USE_AOT="true" ;;
+    esac
+fi
 
 echo "=== Building Cut The Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
 
