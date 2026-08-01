@@ -24,10 +24,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Gets whether the smoothed loading animation has reached completion.
         /// </summary>
+        /// <remarks>
+        /// The progress animation is advanced in <see cref="Draw"/>, which headless runs never
+        /// call. Without the device check the loading screen would never hand off to gameplay,
+        /// because <c>animationComplete</c> could never become <see langword="true"/>.
+        /// </remarks>
         /// <returns><see langword="true"/> when the progress animation is complete; otherwise, <see langword="false"/>.</returns>
         public bool IsAnimationComplete()
         {
-            return animationComplete;
+            return animationComplete || !Renderer.IsAvailable;
         }
 
         /// <inheritdoc />

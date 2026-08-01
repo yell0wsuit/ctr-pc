@@ -38,8 +38,10 @@ if (cli.IsHeadless)
         HeadlessHost.Tick(0.016f);
     }
 
-    Console.WriteLine("[headless] ran 600 frames");
-    return 0;
+    // Report where the run landed. Without this an "exit 0" would also be printed by a run
+    // wedged on the loading screen, which is exactly the failure this smoke test must catch.
+    Console.WriteLine($"[headless] ran 600 frames, active controller = {HeadlessHost.ActiveControllerName()}");
+    return CustomLevelSession.IsActive && !HeadlessHost.IsInGameplay() ? 1 : 0;
 }
 
 using Game1 game = new();

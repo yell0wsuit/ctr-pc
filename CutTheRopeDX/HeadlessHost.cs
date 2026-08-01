@@ -1,7 +1,9 @@
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.GameMain;
 
 namespace CutTheRopeDX
 {
@@ -35,6 +37,27 @@ namespace CutTheRopeDX
         public static void Tick(float deltaSeconds)
         {
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTick(deltaSeconds * 1000f);
+        }
+
+        /// <summary>Returns whether the root controller has reached the gameplay child.</summary>
+        /// <returns><see langword="true"/> when gameplay is the active child.</returns>
+        public static bool IsInGameplay()
+        {
+            return Application.SharedRootController().activeChildID == CTRRootController.CHILD_GAME;
+        }
+
+        /// <summary>Names the active root child, for smoke-run reporting.</summary>
+        /// <returns>A human-readable name for the active child controller.</returns>
+        public static string ActiveControllerName()
+        {
+            return Application.SharedRootController().activeChildID switch
+            {
+                CTRRootController.CHILD_START => "startup",
+                CTRRootController.CHILD_MENU => "menu",
+                CTRRootController.CHILD_LOADING => "loading",
+                CTRRootController.CHILD_GAME => "game",
+                _ => "none",
+            };
         }
     }
 }
