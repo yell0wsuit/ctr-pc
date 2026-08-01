@@ -107,6 +107,27 @@ namespace CutTheRopeDX.Tests
             gameplayFlow.MarkLost();
 
             Assert.True(gameplayFlow.LostTriggered);
+            Assert.True(gameplayFlow.TransitionActive);
+            Assert.False(gameplayFlow.CanTriggerTerminalOutcome);
+            Assert.False(gameplayFlow.CanReactToCandy());
+        }
+
+        [Fact]
+        public void ScheduledLoss_BlocksCandyReactionsBeforeLossFires()
+        {
+            // Spider and hazard losses wait for their visual animation before MarkLost. The
+            // transition gate must close immediately so candy cannot produce a win meanwhile.
+            LevelFlowState gameplayFlow = new();
+
+            gameplayFlow.MarkTransitionActive();
+
+            Assert.True(gameplayFlow.TransitionActive);
+            Assert.False(gameplayFlow.LostTriggered);
+            Assert.False(gameplayFlow.CanReactToCandy());
+
+            gameplayFlow.MarkLost();
+
+            Assert.True(gameplayFlow.LostTriggered);
             Assert.False(gameplayFlow.CanTriggerTerminalOutcome);
         }
 
