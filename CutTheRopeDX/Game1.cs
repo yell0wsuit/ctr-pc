@@ -177,7 +177,6 @@ namespace CutTheRopeDX
         {
             Global.GraphicsDevice = GraphicsDevice;
             Global.SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SoundMgr.SetContentManager(Content);
 
             // Initialize FontManager for FontStashSharp fonts
             Framework.Visual.FontManager.Initialize(GraphicsDevice);
@@ -185,14 +184,21 @@ namespace CutTheRopeDX
             Renderer.Init();
             Global.MouseCursor.Load(Content);
             Window.AllowUserResizing = true;
+
+            // Preferences are loaded again inside CtrBootstrap; LoadPreferences is idempotent and
+            // the window-size read has to happen before ScreenSizeManager.Init.
             Preferences.LoadPreferences();
             int windowWidthPref = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
             bool isFullScreen = Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, windowWidthPref, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
-            CtrRenderer.OnSurfaceCreated();
-            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
+
+            CtrBootstrap.Initialize(
+                new Framework.Platform.DesktopAssetPlatform(),
+                Content,
+                Global.ScreenSizeManager.WindowWidth,
+                Global.ScreenSizeManager.WindowHeight,
+                GetSystemLanguage());
         }
 
         /// <inheritdoc />
