@@ -22,6 +22,9 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <summary>Frames run after an interaction fires, so its consequences land.</summary>
         private const int SettleFrames = 3;
 
+        /// <summary>World Y well past the kill line of any scenario-sized map.</summary>
+        private const float OffScreenY = 4000f;
+
         /// <summary>Binds the scene's rocket to the candy.</summary>
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to bind.</param>
@@ -178,6 +181,24 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(
                 Interaction.StepUntil(scene, () => scene.Outcomes().LostCount > 0),
                 "the broken candy never lose the level");
+        }
+
+        /// <summary>
+        /// Loses the candy off the bottom of the screen - the matrix's other "Lost" trigger, which
+        /// the engine handles on its own path rather than through the hazard break.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="candy">Candy to lose.</param>
+        public static void LoseOffScreen(GameScene scene, CandyContext candy)
+        {
+            Interaction.Drop(candy);
+            Vector belowTheMap = new(candy.point.pos.X, OffScreenY);
+            Interaction.PlaceCandyAt(candy, belowTheMap);
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => scene.Outcomes().LostCount > 0),
+                "the candy that left the screen never lost the level");
+            HeadlessGame.StepFrames(scene, SettleFrames);
         }
 
         /// <summary>Captures the candy in the scene's lantern.</summary>

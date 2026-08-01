@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -7,11 +8,16 @@ using Xunit;
 namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
-    /// Interaction matrix, "Lost" row: a candy destroyed on spikes must take its attachments down
-    /// with it, both through the break itself and through the GameLost that follows it.
+    /// Interaction matrix, "Lost" row: a candy destroyed on spikes takes its attachments down with
+    /// it, partly through the break itself and partly through the GameLost that follows. The row
+    /// names a second trigger - leaving the screen - which the engine handles on its own, much
+    /// thinner path; the LostOffScreen tests below pin where the two diverge.
     /// </summary>
     public sealed class LostRowTests
     {
+        /// <summary>World Y far past the kill line, for the tests that push a candy out of play.</summary>
+        private const float BelowTheWorld = 4000f;
+
         [Fact]
         public void Lost_ReleasesItsRopes()
         {
@@ -96,6 +102,74 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.False(scene.MouseCarries(candy));
             Assert.False(candy.carriedByMouse);
+        }
+
+        [Fact]
+        public void LostOffScreen_ExhaustsItsRocket()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
+            Rocket rocket = Act.BindRocket(scene, candy);
+
+            Act.LoseOffScreen(scene, candy);
+
+            Assert.False(candy.HasActiveRocket);
+            Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
+        }
+
+        [Fact]
+        public void LostOffScreen_LeavesTheRopeOnTheLostCandy()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
+
+            Act.LoseOffScreen(scene, candy);
+
+            // The matrix folds "spikes/off-screen" into one row, but the two paths differ: leaving
+            // the screen only exhausts the rocket, and the GameLost that follows releases no ropes.
+            // A candy broken on spikes has its ropes cut; one that falls out of the world does not.
+            Assert.Equal(1, scene.AttachedRopeCount(candy));
+        }
+
+        [Fact]
+        public void LostOffScreen_LeavesItsSnailAttached()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
+            _ = Act.RideSnail(scene, candy);
+
+            Act.LoseOffScreen(scene, candy);
+
+            // Same split as the rope: the off-screen path never calls DetachSnailsForPoint, and
+            // GameLost only tears down hands and mice.
+            Assert.Equal(1, scene.SnailCount(candy));
+        }
+
+        [Fact]
+        public void AHandHeldCandyCannotBeLostOffScreen()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
+            MechanicalHand hand = Act.GrabWithHand(scene, candy);
+
+            Interaction.Drop(candy);
+            Interaction.PlaceCandyAt(candy, new Vector(candy.point.pos.X, BelowTheWorld));
+            HeadlessGame.StepFrames(scene, 60);
+
+            // The claw pins the candy back every frame, ahead of the off-screen check, so a held
+            // candy never reaches the kill line - the hand has to let go first.
+            Assert.Equal(0, scene.Outcomes().LostCount);
+            Assert.Same(hand, candy.capturingHand);
+        }
+
+        [Fact]
+        public void AMouseCarriedCandyCannotBeLostOffScreen()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
+            _ = Act.CarryByMouse(scene, candy);
+
+            Interaction.Drop(candy);
+            Interaction.PlaceCandyAt(candy, new Vector(candy.point.pos.X, BelowTheWorld));
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.Equal(0, scene.Outcomes().LostCount);
+            Assert.True(candy.carriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)
