@@ -155,7 +155,8 @@ namespace CutTheRopeDX.GameMain
             animParts = null;
             ShowView(1);
             UpdateChecker.StartIfNeeded();
-            Game1.RPC.Setup();
+            // RPC belongs to the desktop host and is absent in headless runs.
+            Game1.RPC?.Setup();
             MoviePlaybackFinished(null);
         }
 

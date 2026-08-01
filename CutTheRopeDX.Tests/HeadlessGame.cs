@@ -1,0 +1,64 @@
+using System.IO;
+
+using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Helpers;
+
+namespace CutTheRopeDX.Tests
+{
+    /// <summary>
+    /// Boots the real game headless and drives it frame by frame. One instance per test;
+    /// the engine's statics are process-wide, so the suite must stay serial.
+    /// </summary>
+    internal sealed class HeadlessGame
+    {
+        private static bool booted;
+
+        private HeadlessGame()
+        {
+        }
+
+        /// <summary>Boots the engine headless, once per process.</summary>
+        /// <returns>A harness handle.</returns>
+        public static HeadlessGame Boot()
+        {
+            if (!booted)
+            {
+                HeadlessHost.Boot(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight, Language.LANGEN);
+                booted = true;
+            }
+
+            return new HeadlessGame();
+        }
+
+        /// <summary>Loads a level into a fresh scene and returns it.</summary>
+        /// <param name="pack">Zero-based pack index.</param>
+        /// <param name="level">Zero-based level index.</param>
+        /// <returns>The loaded scene.</returns>
+        public GameScene LoadLevel(int pack, int level)
+        {
+            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            root.SetPack(pack);
+            root.SetLevel(level);
+            string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
+            root.SetMap(ContentPaths.LoadXml(mapPath));
+            root.SetMapName(mapPath);
+
+            GameScene scene = new();
+            scene.Show();
+            return scene;
+        }
+
+        /// <summary>Advances a scene by whole frames at the engine's fixed delta.</summary>
+        /// <param name="scene">Scene to advance.</param>
+        /// <param name="frames">Number of frames.</param>
+        public static void StepFrames(GameScene scene, int frames)
+        {
+            for (int i = 0; i < frames; i++)
+            {
+                scene.Update(0.016f);
+            }
+        }
+    }
+}

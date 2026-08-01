@@ -151,6 +151,21 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
+        /// Initializes logical screen metrics with no display device, for headless runs.
+        /// Deliberately skips ApplyWindowSize and CenterWindow: both touch Global.XnaGame.Window,
+        /// which does not exist headless. Only the rectangles the engine reads are set, via the
+        /// same private setters <see cref="Init"/> uses so the scaled view rect stays consistent.
+        /// </summary>
+        /// <param name="width">Logical window width.</param>
+        /// <param name="height">Logical window height.</param>
+        public void InitHeadless(int width, int height)
+        {
+            IsFullScreen = false;
+            FullScreenRectChanged(new Rectangle(0, 0, width, height));
+            WindowRectChanged(new Rectangle(0, 0, width, height));
+        }
+
+        /// <summary>
         /// Centers the game window on the primary display. A programmatic back-buffer resize keeps the
         /// window's top-left corner pinned, so this must be called after sizing to avoid the window
         /// hugging a screen corner. Repositioning also forces the window frame to re-layout, which
