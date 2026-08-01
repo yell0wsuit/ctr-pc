@@ -253,13 +253,14 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Returns the child controller registered under the specified identifier.
+        /// Returns the child controller registered under the specified identifier,
+        /// or <see langword="null"/> when no child is registered under it.
         /// </summary>
         /// <param name="n">Child identifier.</param>
-        /// <returns>Registered child controller.</returns>
+        /// <returns>Registered child controller, or <see langword="null"/>.</returns>
         public virtual ViewController GetChild(int n)
         {
-            return childs[n];
+            return childs.TryGetValue(n, out ViewController child) ? child : null;
         }
 
         /// <summary>
