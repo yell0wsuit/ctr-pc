@@ -1,4 +1,5 @@
 using System.IO;
+using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -69,6 +70,27 @@ namespace CutTheRopeDX.Tests
             GameController controller = new(root);
             controller.Activate();
             return controller;
+        }
+
+        /// <summary>
+        /// Loads a scenario built in code (see <c>Interactions/Scenario</c>) instead of a shipping
+        /// level. The map element goes through the same resource-ensure and <see cref="GameScene.Show"/>
+        /// path a real level takes, so loaded objects are wired exactly as in the game.
+        /// </summary>
+        /// <param name="map">The scenario's level element.</param>
+        /// <param name="pack">Zero-based pack index, for pack-dependent visuals.</param>
+        /// <param name="level">Zero-based level index.</param>
+        /// <returns>The loaded scene.</returns>
+        public GameScene LoadScenarioMap(XElement map, int pack = 0, int level = 0)
+        {
+            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            root.SetPack(pack);
+            root.SetLevel(level);
+            root.PrepareMapAndEnsureResources(map, "scenario.xml");
+
+            GameScene scene = new();
+            scene.Show();
+            return scene;
         }
 
         /// <summary>Advances a scene by whole frames at the engine's fixed delta.</summary>
