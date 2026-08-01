@@ -50,6 +50,27 @@ namespace CutTheRopeDX.Tests
             return scene;
         }
 
+        /// <summary>
+        /// Boots a full GameController for a level - view hierarchy, HUD buttons, pause menu -
+        /// so button-driven flows can be exercised headlessly.
+        /// </summary>
+        /// <param name="pack">Zero-based pack index.</param>
+        /// <param name="level">Zero-based level index.</param>
+        /// <returns>An activated controller. Its scene is <c>GetView(0).GetChild(0)</c>.</returns>
+        public GameController LoadLevelWithController(int pack, int level)
+        {
+            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            root.SetPack(pack);
+            root.SetLevel(level);
+            string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
+            root.SetMap(ContentPaths.LoadXml(mapPath));
+            root.SetMapName(mapPath);
+
+            GameController controller = new(root);
+            controller.Activate();
+            return controller;
+        }
+
         /// <summary>Advances a scene by whole frames at the engine's fixed delta.</summary>
         /// <param name="scene">Scene to advance.</param>
         /// <param name="frames">Number of frames.</param>

@@ -75,7 +75,6 @@ namespace CutTheRopeDX.GameMain
             gravityNormal = true;
             MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
             MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);
-            dimTime = 0f;
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);

@@ -6,14 +6,20 @@ namespace CutTheRopeDX.GameMain
     internal static class GameControllerInput
     {
         /// <summary>
-        /// Returns whether gameplay input may open the pause menu.
+        /// Returns whether the pause menu may be opened from gameplay.
         /// </summary>
-        /// <param name="gameplayHudTouchable">Whether the in-game HUD button layer is accepting input.</param>
+        /// <param name="gameplayHudTouchable">Whether the gameplay HUD is accepting input.</param>
         /// <param name="outcomeTransitionActive">Whether a game win/loss transition is currently active.</param>
-        /// <returns><see langword="true"/> when gameplay input is active and no outcome transition is running.</returns>
-        public static bool CanPauseFromGameplay(bool gameplayHudTouchable, bool outcomeTransitionActive)
+        /// <param name="restartDimActive">Whether a restart dim is playing.</param>
+        /// <returns><see langword="true"/> when the pause menu may open.</returns>
+        /// <remarks>
+        /// Pausing mid-dim would have to suspend and resume a partly-finished restart. Refusing
+        /// for the ~0.15s the dim lasts avoids that state entirely, and matches the loss-triggered
+        /// restart, which is already unpausable via <paramref name="outcomeTransitionActive"/>.
+        /// </remarks>
+        public static bool CanPauseFromGameplay(bool gameplayHudTouchable, bool outcomeTransitionActive, bool restartDimActive)
         {
-            return gameplayHudTouchable && !outcomeTransitionActive;
+            return gameplayHudTouchable && !outcomeTransitionActive && !restartDimActive;
         }
 
         /// <summary>

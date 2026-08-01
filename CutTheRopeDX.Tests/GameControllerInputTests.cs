@@ -11,7 +11,8 @@ namespace CutTheRopeDX.Tests
         {
             Assert.False(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
-                outcomeTransitionActive: true));
+                outcomeTransitionActive: true,
+                restartDimActive: false));
         }
 
         [Fact]
@@ -19,7 +20,26 @@ namespace CutTheRopeDX.Tests
         {
             Assert.True(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
-                outcomeTransitionActive: false));
+                outcomeTransitionActive: false,
+                restartDimActive: false));
+        }
+
+        [Fact]
+        public void CannotPause_WhileRestartDimIsPlaying()
+        {
+            Assert.False(GameControllerInput.CanPauseFromGameplay(
+                gameplayHudTouchable: true,
+                outcomeTransitionActive: false,
+                restartDimActive: true));
+        }
+
+        [Fact]
+        public void CanPause_OnceRestartDimHasFinished()
+        {
+            Assert.True(GameControllerInput.CanPauseFromGameplay(
+                gameplayHudTouchable: true,
+                outcomeTransitionActive: false,
+                restartDimActive: false));
         }
 
         [Fact]

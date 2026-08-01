@@ -313,7 +313,7 @@ namespace CutTheRopeDX.GameMain
         private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
-            outcomeTransitionActive = false;
+            gameplayFlow.EndTransition();
             gameSceneDelegate?.GameWon();
         }
 
@@ -1130,15 +1130,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public float initialCameraToStarDistance;
 
-        /// <summary>
-        /// The current dim animation timer.
-        /// </summary>
-        public float dimTime;
-
-        /// <summary>
-        /// The current restart animation state.
-        /// </summary>
-        public int restartState;
+        /// <summary>Single owner of the restart-dim machine and the win/lose flags.</summary>
+        public readonly LevelFlowState gameplayFlow = new();
 
         /// <summary>
         /// Whether restart should animate through the dim overlay.
@@ -1164,22 +1157,6 @@ namespace CutTheRopeDX.GameMain
         /// Whether the loaded level uses night-specific behavior.
         /// </summary>
         public bool nightLevel;
-
-        /// <summary>
-        /// Whether the game-lost state has already been triggered.
-        /// </summary>
-        public bool gameLostTriggered;
-
-        /// <summary>
-        /// Whether the game-won state has already been triggered (prevents the multi-candy win
-        /// check from re-invoking GameWon every frame, which would cancel the pending win dispatch).
-        /// </summary>
-        public bool gameWonTriggered;
-
-        /// <summary>
-        /// Whether a game win/loss scene transition is currently active.
-        /// </summary>
-        public bool outcomeTransitionActive;
 
         /// <summary>
         /// Whether gravity is currently in the normal orientation.

@@ -475,12 +475,17 @@ namespace CutTheRopeDX.GameMain
             switch (n)
             {
                 case var id when id == GameControllerButtonId.Continue:
-                    ((GameScene)view.GetChild(0)).dimTime = tmpDimTime;
-                    tmpDimTime = 0f;
                     SetPaused(false);
                     CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case var id when id == GameControllerButtonId.Restart:
+                    GameScene restartScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+                    if (isGamePaused
+                        || !view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).touchable
+                        || restartScene.gameplayFlow.Phase != RestartPhase.Playing)
+                    {
+                        return;
+                    }
                     break;
                 case var id when id == GameControllerButtonId.SkipLevel:
                     PostFlurryLevelEvent("LEVEL_SKIPPED");
@@ -527,12 +532,11 @@ namespace CutTheRopeDX.GameMain
                         GameScene gameScene4 = (GameScene)view.GetChild(0);
                         if (!GameControllerInput.CanPauseFromGameplay(
                             view.GetChild(1).touchable,
-                            gameScene4.outcomeTransitionActive))
+                            gameScene4.gameplayFlow.TransitionActive,
+                            gameScene4.gameplayFlow.IsFadingOut))
                         {
                             return;
                         }
-                        tmpDimTime = gameScene4.dimTime;
-                        gameScene4.dimTime = 0f;
                         SetPaused(true);
                         CTRRootController.LogEvent("IG_MENU_PRESSED");
                         CTRRootController.LogEvent("IM_SHOWN");
@@ -783,9 +787,14 @@ namespace CutTheRopeDX.GameMain
         {
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
+            if (gameScene.gameplayFlow.Phase != RestartPhase.Playing)
+            {
+                return true;
+            }
             if (GameControllerInput.CanPauseFromGameplay(
                 view.GetChild(1).touchable,
-                gameScene.outcomeTransitionActive))
+                gameScene.gameplayFlow.TransitionActive,
+                gameScene.gameplayFlow.IsFadingOut))
             {
                 OnButtonPressed(GameControllerButtonId.Pause);
             }
@@ -795,7 +804,7 @@ namespace CutTheRopeDX.GameMain
             }
             else if (GameControllerInput.CanExitResultWithBack(
                 view.GetChild(4).touchable,
-                gameScene.outcomeTransitionActive))
+                gameScene.gameplayFlow.TransitionActive))
             {
                 OnButtonPressed(GameControllerButtonId.ExitFromWin);
             }
@@ -809,7 +818,8 @@ namespace CutTheRopeDX.GameMain
             GameScene gameScene = (GameScene)view.GetChild(0);
             if (GameControllerInput.CanPauseFromGameplay(
                 view.GetChild(1).touchable,
-                gameScene.outcomeTransitionActive))
+                gameScene.gameplayFlow.TransitionActive,
+                gameScene.gameplayFlow.IsFadingOut))
             {
                 OnButtonPressed(GameControllerButtonId.Pause);
             }
@@ -963,14 +973,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];
-
-        /// <summary>
-        /// Temporary dim-time value saved while the pause menu is open. Must stay floating point:
-        /// <c>dimTime</c> only ever holds 0..0.15, so truncating it to an integer would always
-        /// restore 0 and strand the restart state machine at <c>restartState == 0</c>, which
-        /// silently disables every win/loss path.
-        /// </summary>
-        private float tmpDimTime;
 
         /// <summary>Whether the result box close flow has already persisted score and achievement state.</summary>
         private bool boxCloseHandled;

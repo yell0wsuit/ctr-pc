@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -481,7 +481,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -647,7 +647,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -946,7 +946,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }

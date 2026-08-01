@@ -47,10 +47,10 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             GameScene gameScene = (GameScene)GetChild(0);
-            if (gameScene.dimTime > 0)
+            if (gameScene.gameplayFlow.DimTime > 0)
             {
-                float dimAlpha = gameScene.dimTime / 0.15f;
-                if (gameScene.restartState == 0)
+                float dimAlpha = gameScene.gameplayFlow.DimTime / LevelFlowState.DimDuration;
+                if (gameScene.gameplayFlow.IsFadingOut)
                 {
                     dimAlpha = 1f - dimAlpha;
                 }
