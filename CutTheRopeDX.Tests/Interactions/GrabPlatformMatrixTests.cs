@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             scene.Conveyors().Remove(launcher);
             launcher.SetLauncher();
-            scene.Conveyors().ProcessItems(new[] { launcher });
+            scene.Conveyors().ProcessItems([launcher]);
 
             Assert.False(scene.BeltHolds(launcher));
         }

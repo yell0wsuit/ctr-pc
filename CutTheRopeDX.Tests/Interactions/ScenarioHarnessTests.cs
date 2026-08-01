@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Build();
 
             CandyContext candy = scene.Candy();
-            Assert.Single(scene.Grabs());
+            _ = Assert.Single(scene.Grabs());
             Assert.Equal(1, scene.AttachedRopeCount(candy));
             Assert.False(candy.noCandy);
         }
@@ -54,10 +54,10 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Hand(60, 60, segmentLength: 20, segmentAngle: 90f)
                 .Build();
 
-            Assert.Single(scene.Rockets());
-            Assert.Single(scene.Bubbles());
-            Assert.Single(scene.Snails());
-            Assert.Single(scene.Hands());
+            _ = Assert.Single(scene.Rockets());
+            _ = Assert.Single(scene.Bubbles());
+            _ = Assert.Single(scene.Snails());
+            _ = Assert.Single(scene.Hands());
             Assert.Empty(scene.Grabs());
         }
     }
