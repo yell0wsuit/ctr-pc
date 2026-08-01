@@ -26,20 +26,19 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to bind.</param>
         /// <returns>The bound rocket.</returns>
-        public static Rocket BindRocket(GameScene scene, CandyContext candy)
+        public static Rocket BindRocket(GameScene scene, CandyContext candy, int rocketIndex = 0)
         {
-            Rocket rocket = scene.Rockets()[0];
+            Rocket rocket = scene.Rockets()[rocketIndex];
             Chase(
                 scene,
                 candy,
                 position =>
                 {
-                    rocket.x = position.X;
-                    rocket.y = position.Y;
+                    MoveTo(rocket, position);
                     rocket.point.pos = position;
                     rocket.point.prevPos = position;
                 },
-                () => candy.HasActiveRocket,
+                () => candy.activeRocket == rocket,
                 "the rocket never bound to the candy");
             return rocket;
         }
@@ -48,10 +47,25 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to capture.</param>
         /// <returns>The capturing bubble.</returns>
-        public static Bubble CaptureInBubble(GameScene scene, CandyContext candy)
+        public static Bubble CaptureInBubble(GameScene scene, CandyContext candy, int bubbleIndex = 0)
         {
-            Bubble bubble = scene.Bubbles()[0];
-            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.bubble != null, "the bubble never captured the candy");
+            Bubble bubble = scene.Bubbles()[bubbleIndex];
+            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.bubble == bubble, "the bubble never captured the candy");
+            return bubble;
+        }
+
+        /// <summary>
+        /// Pushes a bubble onto the candy without requiring it to capture. Used where the matrix
+        /// says the bubble loses the exchange - a rocket-bound or snail-ridden candy pops it.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="candy">Candy to touch.</param>
+        /// <param name="bubbleIndex">Index of the bubble in the scene.</param>
+        /// <returns>The bubble that was pushed.</returns>
+        public static Bubble PushBubbleAgainst(GameScene scene, CandyContext candy, int bubbleIndex = 0)
+        {
+            Bubble bubble = scene.Bubbles()[bubbleIndex];
+            Chase(scene, candy, position => MoveTo(bubble, position), () => bubble.popped, "the bubble never reached the candy");
             return bubble;
         }
 
@@ -59,10 +73,15 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to ride.</param>
         /// <returns>The riding snail.</returns>
-        public static Snail RideSnail(GameScene scene, CandyContext candy)
+        public static Snail RideSnail(GameScene scene, CandyContext candy, int snailIndex = 0)
         {
-            Snail snail = scene.Snails()[0];
-            Chase(scene, candy, position => MoveTo(snail, position), () => scene.SnailCount(candy) == 1, "the snail never attached to the candy");
+            Snail snail = scene.Snails()[snailIndex];
+            Chase(
+                scene,
+                candy,
+                position => MoveTo(snail, position),
+                () => snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == candy.point,
+                "the snail never attached to the candy");
             return snail;
         }
 
@@ -87,6 +106,23 @@ namespace CutTheRopeDX.Tests.Interactions
             Mouse mouse = scene.Mice()[0];
             Chase(scene, candy, position => MoveTo(mouse, position), () => candy.carriedByMouse, "the mouse never took the candy");
             return mouse;
+        }
+
+        /// <summary>
+        /// Has the active mouse take the candy from where its hole already is, instead of moving the
+        /// hole onto the candy. Use this when the point of the test is that the mouse drags the
+        /// candy somewhere else - off an ant lane, for instance.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="candy">Candy to steal.</param>
+        /// <returns>The carrying mouse.</returns>
+        public static Mouse CarryByMouseWithoutMovingIt(GameScene scene, CandyContext candy)
+        {
+            Assert.True(
+                Interaction.StepUntil(scene, () => candy.carriedByMouse),
+                "the mouse never took the candy");
+            HeadlessGame.StepFrames(scene, SettleFrames);
+            return scene.Mice()[0];
         }
 
         /// <summary>
@@ -200,13 +236,18 @@ namespace CutTheRopeDX.Tests.Interactions
                 "the bamboo tube never took the candy");
         }
 
-        /// <summary>Moves a scene element so it sits on a world position.</summary>
+        /// <summary>
+        /// Moves a scene element so it sits on a world position, hitbox included. Collision runs off
+        /// the cached draw position, which the update loop recomputes for the candy but not for
+        /// scenery, so a moved object would otherwise keep colliding where it was loaded.
+        /// </summary>
         /// <param name="element">Element to move.</param>
         /// <param name="position">Target world position.</param>
         public static void MoveTo(BaseElement element, Vector position)
         {
             element.x = position.X;
             element.y = position.Y;
+            BaseElement.CalculateTopLeft(element);
         }
 
         /// <summary>
