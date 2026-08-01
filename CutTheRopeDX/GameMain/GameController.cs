@@ -787,6 +787,10 @@ namespace CutTheRopeDX.GameMain
         {
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
+            if (gameScene.gameplayFlow.Phase != RestartPhase.Playing)
+            {
+                return true;
+            }
             if (GameControllerInput.CanPauseFromGameplay(
                 view.GetChild(1).touchable,
                 gameScene.gameplayFlow.TransitionActive,
