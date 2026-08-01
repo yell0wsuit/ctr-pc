@@ -441,6 +441,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
+                    // A touch that lands on the wheel belongs to the wheel: without this, a wheel
+                    // hook riding a manual belt let the same touch also start a belt drag.
+                    return true;
                 }
                 if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
@@ -730,6 +733,18 @@ namespace CutTheRopeDX.GameMain
                         for (int j = 0; j < bungees.Count; j++)
                         {
                             Grab grab = bungees[j];
+                            // A grab that carries its own movement is not the disc's to move: a path
+                            // mover drives itself, and a drag rail belongs to the player. Scratching
+                            // the disc would otherwise sweep such a hook off its rail, leaving the
+                            // rail drawn where it was. Same rule the disc-capture test in the update
+                            // loop applies, so both agree on what this disc owns.
+                            if (!GrabPlatformBind.FollowsPlatform(
+                                    GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
+                                    grab.kickable && grab.kicked)
+                                || grab is IGhostApparition)
+                            {
+                                continue;
+                            }
                             if (VectDistance(Vect(grab.x, grab.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
@@ -779,6 +794,12 @@ namespace CutTheRopeDX.GameMain
                         for (int l = 0; l < bubbles.Count; l++)
                         {
                             Bubble bubble = bubbles[l];
+                            // A ghost's bubble belongs to the ghost, not the disc: its morph clouds
+                            // stay at the ghost's spot, so rotating the bubble alone would strand them.
+                            if (bubble is IGhostApparition)
+                            {
+                                continue;
+                            }
                             if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)

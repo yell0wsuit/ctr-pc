@@ -161,18 +161,6 @@ namespace CutTheRopeDX.GameMain
             {
                 time += delta;
             }
-            bool handHoldingCandy = false;
-            if (hands != null)
-            {
-                foreach (MechanicalHand hand in hands)
-                {
-                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
-                    {
-                        handHoldingCandy = true;
-                        break;
-                    }
-                }
-            }
             if (bungees.Count > 0)
             {
                 bool flag = false;
@@ -283,8 +271,9 @@ namespace CutTheRopeDX.GameMain
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee);
 
-                                    // If mouse already has this candy, immediately cut the rope
-                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    // If the mouse already has THIS half, immediately cut the rope.
+                                    // Per-candy: a mouse carrying another candy must not cut it.
+                                    if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), starL))
                                     {
                                         bungee.SetCut(bungee.parts.Count - 2);
                                     }
@@ -302,8 +291,9 @@ namespace CutTheRopeDX.GameMain
                                     grab.hideRadius = true;
                                     grab.SetRope(bungee2);
 
-                                    // If mouse already has this candy, immediately cut the rope
-                                    if (miceManager?.ActiveMouseHasCandy() ?? false)
+                                    // If the mouse already has THIS half, immediately cut the rope.
+                                    // Per-candy: a mouse carrying another candy must not cut it.
+                                    if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), starR))
                                     {
                                         bungee2.SetCut(bungee2.parts.Count - 2);
                                     }
@@ -459,7 +449,9 @@ namespace CutTheRopeDX.GameMain
                         CandyContext ctx = candies[ci];
                         if (ci == 0)
                         {
-                            if (!flag && !noCandy && !handHoldingCandy)
+                            // Per-candy, matching the extras branch below: only a hand holding
+                            // THIS candy freezes its rotation coast.
+                            if (!flag && !noCandy && ctx.capturingHand == null)
                             {
                                 candyMain.rotation += MIN(5, lastCandyRotateDelta);
                                 lastCandyRotateDelta *= 0.98f;
@@ -842,6 +834,17 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
+                            if (ctx.HasActiveRocket)
+                            {
+                                // Rocket-bound candy pops bubbles it touches instead of entering
+                                // them (Experiments reference): the bubble is consumed, never captured.
+                                PopBubbleAtXY(bubble3.x, bubble3.y);
+                                bubble3.popped = true;
+                                bubble3.RemoveChildWithID(0);
+                                conveyors.Remove(bubble3);
+                                captured = true;
+                                break;
+                            }
                             if (candyBubble != null)
                             {
                                 PopBubbleAtXY(bubble3.x, bubble3.y);
@@ -883,6 +886,15 @@ namespace CutTheRopeDX.GameMain
                             || !BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                         {
                             continue;
+                        }
+                        if (ctx.HasActiveRocket)
+                        {
+                            PopBubbleAtXY(bubble3.x, bubble3.y);
+                            bubble3.popped = true;
+                            bubble3.RemoveChildWithID(0);
+                            conveyors.Remove(bubble3);
+                            captured = true;
+                            break;
                         }
                         // Already carried by a different bubble: release the old one and swap to the
                         // new bubble, mirroring the candies[0] path. Without this, a bubbled body
@@ -926,6 +938,22 @@ namespace CutTheRopeDX.GameMain
                         if (VectDistance(Vect(bubble3.x, bubble3.y), Vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
                         {
                             bubble3.withoutShadow = true;
+                        }
+                    }
+                }
+
+                // A bubble lying on a belt drops its ground shadow the same way, or the shadow is
+                // stamped across the plates. An ordinary bubble gets that from being bound to the
+                // belt; a ghost's bubble never binds (it stays with the ghost that conjured it) and
+                // is conjured long after the one-off bind pass, so it needs the test here.
+                if (!bubble3.withoutShadow && bubble3 is IGhostApparition && conveyors != null)
+                {
+                    foreach (ConveyorBelt belt in conveyors.Iterator())
+                    {
+                        if (belt.CollidesWithCircle(Vect(bubble3.x, bubble3.y), bubble3.CollisionRadius * 0.6f))
+                        {
+                            bubble3.withoutShadow = true;
+                            break;
                         }
                     }
                 }
@@ -1032,6 +1060,16 @@ namespace CutTheRopeDX.GameMain
                     ctx.candy.PlayTimeline(0);
                     ReleaseRopesForPoint(ctx.point);
                     DetachHandsForPoint(ctx.point);
+                    DropMouseCandyForPoint(ctx.point);
+                    // Lantern capture is terminal for this candy's riders: snails hop off (giving
+                    // their weight back) and ants stop carrying it, mirroring hand-grab.
+                    int lanternDetachedSnails = ActiveSnailCountForPoint(ctx.point);
+                    DetachSnailsForPoint(ctx.point);
+                    if (lanternDetachedSnails > 0)
+                    {
+                        ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, lanternDetachedSnails));
+                    }
+                    DetachCandyFromConveyor(ctx);
                     if (ci == 0)
                     {
                         if (candyBubble != null)
@@ -1057,7 +1095,12 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj9 in bungees)
                 {
                     Grab bungee4 = (Grab)obj9;
-                    if (VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
+                    // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
+                    bool discBindable = GrabPlatformBind.FollowsPlatform(
+                        GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0),
+                        bungee4.kickable && bungee4.kicked)
+                        && bungee4 is not IGhostApparition;
+                    if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.IndexOf(bungee4) == -1)
                         {
@@ -1072,7 +1115,8 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj10 in bubbles)
                 {
                     Bubble bubble4 = (Bubble)obj10;
-                    if (VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
+                    if (bubble4 is not IGhostApparition
+                        && VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
                     {
                         if (rotatedCircle7.containedObjects.IndexOf(bubble4) == -1)
                         {
@@ -1111,7 +1155,13 @@ namespace CutTheRopeDX.GameMain
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.noCandy, miceManager.IsActiveMouseInRange(ctx.point)))
                         {
                             miceManager.GrabWithActiveMouse(ctx.point, ctx.candy);
-                            ExhaustRocketForCandy(ctx);
+                            // The rocket steals from nobody and nobody kills it (PD 2026-07-24):
+                            // a stolen rocket-bound candy keeps its rocket, which strains at the
+                            // mouse's mouth and launches when the mouse drops the candy. The
+                            // per-frame gravity enforcement in the rocket update keeps flight
+                            // physics intact across the mouse's drop path. The mouse likewise
+                            // keeps a bubble (official levels carry bubbled candy) and any
+                            // riding snail.
                             TriggerSpecialTutorial(4);
                             break;
                         }
@@ -1177,9 +1227,20 @@ namespace CutTheRopeDX.GameMain
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(ctx.point);
                             DetachHandsForPoint(ctx.point);
+                            DropMouseCandyForPoint(ctx.point);
+                            // Take the candy off the ants too: a lingering antSegment hard-overwrites
+                            // the point position all through transit and then yanks/brakes the candy
+                            // at the exit sock, killing the teleport throw.
+                            DetachCandyFromConveyor(ctx);
                             ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
                             ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             ctx.targetSock = sock4;
+                            // The rocket teleports with the candy; hide it for the transit like the
+                            // reference (Gift catch sets visible = 0; Teleport re-shows it).
+                            if (ctx.HasActiveRocket)
+                            {
+                                ctx.activeRocket.visible = false;
+                            }
                             ctx.lightBulb?.SyncFromContext(ctx);
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
@@ -1216,25 +1277,66 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
-                    rocket.Update(delta);
-                    rocket.UpdateRotation();
                     // The rocket flies exactly one candy; resolve it (null while idle/unbound).
+                    // Resolved BEFORE rocket.Update so a parked rocket can pre-snap: the mice
+                    // update (which teleports the candy across the level on a mouse handoff) runs
+                    // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
+                    // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
                     ConstraintedPoint rocketStar = rocketCandy?.point ?? star;
                     GameObject rocketCandyMain = rocketCandy?.candyMain ?? candyMain;
+                    // Park the rocket while the mouse carries its candy. The kinematic pin plus the
+                    // per-frame rocket-point snap keep the rest-0 pair exactly coincident, and the
+                    // solver's coincident fallback (DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION, 30
+                    // iterations/frame) makes the pair random-walk around the mouth — a visible
+                    // wobble, frozen in as a position drift if the candy is dropped mid-jitter.
+                    // Parked: no satisfaction, no thrust; position snap, rotation sync, fuse tick
+                    // and gravity heal keep running, and full flight resumes on drop.
+                    bool parkedOnMouse = rocketCandy?.carriedByMouse == true;
+                    if (parkedOnMouse && rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        // prevPos too: rocket.Update integrates the point next, and a bare pos
+                        // teleport would replay the whole jump as one frame of velocity.
+                        rocket.point.pos = rocketStar.pos;
+                        rocket.point.prevPos = rocketStar.pos;
+                    }
+                    rocket.Update(delta);
+                    rocket.UpdateRotation();
+                    // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
+                    // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
+                    // candy) is healed here every frame while the rocket is bound — mirrors the
+                    // reference's recurring `star->disableGravity = activeRocket != 0`.
+                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    {
+                        rocketStar.disableGravity = true;
+                    }
                     float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
                     if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
                     {
-                        for (int i = 0; i < 30; i++)
+                        if (!parkedOnMouse)
                         {
-                            ConstraintedPoint.SatisfyConstraints(rocketStar);
-                            ConstraintedPoint.SatisfyConstraints(rocket.point);
+                            for (int i = 0; i < 30; i++)
+                            {
+                                ConstraintedPoint.SatisfyConstraints(rocketStar);
+                                ConstraintedPoint.SatisfyConstraints(rocket.point);
+                            }
                         }
                         rocket.rotation = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_FLY)
                     {
-                        lastCandyRotateDelta = 0f;
+                        // Silence THIS candy's rope-spin coast: the rocket's heading tracks
+                        // candyMain.rotation, so a leftover coast (e.g. after the rope is cut)
+                        // curves the flight as if it were still steering along the rope.
+                        // candies[0] uses the singleton field, extras their own (see ~410).
+                        if (rocketCandy == null || rocketCandy == candies[0])
+                        {
+                            lastCandyRotateDelta = 0f;
+                        }
+                        else
+                        {
+                            rocketCandy.lastCandyRotateDelta = 0f;
+                        }
                         bool ropeRelaxed = false;
                         if (bungees != null)
                         {
@@ -1243,7 +1345,7 @@ namespace CutTheRopeDX.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.rope;
-                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && !handHoldingCandy)
+                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.capturingHand == null)
                                     {
                                         ropeRelaxed = true;
                                         AlignRocketAngleToRope(rocket, rope, delta);
@@ -1253,7 +1355,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         // iOS steers the rocket off the candy connector too. It lives outside the grab
                         // list and joins two candy points, so there is no rocketStar tail check and no
-                        // handHoldingCandy gate. The connector counts as relaxed while it is nearly
+                        // hand gate. The connector counts as relaxed while it is nearly
                         // straight: |straight-line span - polyline length| < polyline length / 4.
                         if (candyConnector != null && candyConnector.cut == -1)
                         {
@@ -1279,7 +1381,10 @@ namespace CutTheRopeDX.GameMain
                         {
                             impulse = VectMult(impulse, rocket.impulseFactor);
                         }
-                        rocketStar.ApplyImpulseDelta(impulse, delta);
+                        if (!parkedOnMouse)
+                        {
+                            rocketStar.ApplyImpulseDelta(impulse, delta);
+                        }
                         rocketStar.gravity = vectZero;
                         rocket.point.pos.X = rocketStar.pos.X;
                         rocket.point.pos.Y = rocketStar.pos.Y;
@@ -1291,7 +1396,8 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
-                        if (handHoldingCandy || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
+                        // Per-candy: only a hand holding THIS rocket's candy skips the reel-in.
+                        if (rocketCandy?.capturingHand != null || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
                         }
@@ -1310,17 +1416,31 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
-                            // Per-candy: only the candy the mouse actually holds is blocked from binding,
-                            // not every candy while the mouse holds any one of them.
-                            bool mouseHasCandy = ctx.carriedByMouse;
-                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, mouseHasCandy, intersects))
+                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, intersects))
                             {
                                 continue;
                             }
 
+                            // A rocket and a bubble are contradictory drivers on the same point;
+                            // the Experiments reference pops the bubble at bind.
+                            if (ctx == candies[0])
+                            {
+                                if (candyBubble != null)
+                                {
+                                    PopCandyBubble(false);
+                                }
+                            }
+                            else if (ctx.bubble != null)
+                            {
+                                PopCandyBubble(ctx);
+                            }
+
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
-                            if (handHoldingCandy)
+                            // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
+                            // The rocket steals from nobody — it coexists with hand or mouse and
+                            // launches when the holder releases.
+                            if (RocketBindPath.UsesDirectFlyPath(ctx.capturingHand != null, ctx.carriedByMouse))
                             {
                                 rocket.point.pos = ctx.point.pos;
                                 rocket.point.AddConstraintwithRestLengthofType(ctx.point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
@@ -1331,7 +1451,15 @@ namespace CutTheRopeDX.GameMain
                                 rocket.point.AddConstraintwithRestLengthofType(ctx.point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_DIST;
                             }
-                            lastCandyRotateDelta = 0f;
+                            // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
+                            if (ctx == candies[0])
+                            {
+                                lastCandyRotateDelta = 0f;
+                            }
+                            else
+                            {
+                                ctx.lastCandyRotateDelta = 0f;
+                            }
                             Vector deltaPos = VectSub(ctx.point.pos, ctx.point.prevPos);
                             ctx.point.prevPos = VectAdd(ctx.point.prevPos, VectDiv(deltaPos, ctx.point.disableGravity ? 2f : 1.25f));
                             ctx.point.disableGravity = true;
@@ -1588,6 +1716,21 @@ namespace CutTheRopeDX.GameMain
                     if (snail.state == Snail.SNAIL_STATE_ACTIVE)
                     {
                         snail.rotation = CandyForPoint(snail.AttachedPoint()).InteractionRotation - snail.startRotation;
+                        // The snail wins over a bubble: pop the ridden candy's bubble
+                        // (Experiments reference) so the pair never floats up together.
+                        CandyContext ridden = CandyForPoint(snail.AttachedPoint());
+                        bool riddenHasBubble = ridden == candies[0] ? candyBubble != null : ridden.bubble != null;
+                        if (SnailBubblePop.ShouldPop(true, snail.AttachedPoint() != null, riddenHasBubble))
+                        {
+                            if (ridden == candies[0])
+                            {
+                                PopCandyBubble(false);
+                            }
+                            else
+                            {
+                                PopCandyBubble(ridden);
+                            }
+                        }
                     }
 
                     if (snail.state == Snail.SNAIL_STATE_INACTIVE)
@@ -1833,18 +1976,18 @@ namespace CutTheRopeDX.GameMain
                 {
                     noCandy = true;
                 }
-                // Only the leaver's own rocket dies (C breakCandy stops candy+392, not all rockets).
-                // A body that does not lose the level (e.g. a light bulb) still has to release its
-                // rope and exhaust its rocket when it leaves the screen: C's generic-object loop
-                // tears down any unguarded off-screen object, not just losable candy.
                 ExhaustRocketForCandy(ctx);
-                if (ctx.Capabilities.CanLoseLevelWhenOffScreen)
+                if (ci == 0)
                 {
-                    anyLeft = true;
+                    ReleaseAllRopes(false);
                 }
                 else
                 {
                     ReleaseRopesForPoint(ctx.point);
+                }
+                if (ctx.Capabilities.CanLoseLevelWhenOffScreen)
+                {
+                    anyLeft = true;
                 }
             }
             if (twoParts != 2)
@@ -2202,7 +2345,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, detachedSnails));
                     }
-                    miceManager?.ForceDropCandy();
+                    DropMouseCandyForPoint(ctx.point);
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);

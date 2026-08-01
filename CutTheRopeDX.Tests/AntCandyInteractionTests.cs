@@ -15,31 +15,64 @@ namespace CutTheRopeDX.Tests
                 candyWaitingForFly: false,
                 isLastSegment: false,
                 candyInsideBounds: true,
-                candyHeldByHand: false));
+                candyHeldByHand: false,
+                candyInLantern: false,
+                candyInTransport: false,
+                candyCarriedByMouse: false));
         }
 
         [Fact]
         public void CanAttach_TrueEvenWhenSegmentAlreadyCarriesAnotherCandy()
         {
             // A lane carries multiple candies at once; an occupied segment must not block a new one.
-            Assert.True(AntCandyInteraction.CanAttach(true, true, false, false, true, false));
+            Assert.True(AntCandyInteraction.CanAttach(true, true, false, false, true, false, false, false, false));
         }
 
         [Fact]
         public void CanAttach_FalseWhenCandyOrSegmentStateBlocksInteraction()
         {
-            Assert.False(AntCandyInteraction.CanAttach(false, true, false, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, segmentCanInteract: false, false, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, true, candyWaitingForFly: true, false, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, true, false, isLastSegment: true, true, false));
-            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, candyInsideBounds: false, false));
+            Assert.False(AntCandyInteraction.CanAttach(false, true, false, false, true, false, false, false, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, segmentCanInteract: false, false, false, true, false, false, false, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, candyWaitingForFly: true, false, true, false, false, false, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, isLastSegment: true, true, false, false, false, false));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, candyInsideBounds: false, false, false, false, false));
         }
 
         [Fact]
         public void CanAttach_FalseWhenCandyHeldByHand()
         {
             // A mechanical hand owns the candy; ants must not steal it back onto the conveyor.
-            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, true, candyHeldByHand: true));
+            Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, true, candyHeldByHand: true, candyInLantern: false, candyInTransport: false, candyCarriedByMouse: false));
+        }
+
+        [Fact]
+        public void CanAttach_FalseWhenCandyIsInALantern()
+        {
+            // A lantern parks the candy point at the lantern position; if that spot lies inside an
+            // ant lane, ungated ants re-grab it in a loop (attach sfx -> can't ride -> detach ->
+            // cooldown -> fresh attach sfx again, forever).
+            Assert.False(AntCandyInteraction.CanAttach(
+                true, true, false, false, true, candyHeldByHand: false, candyInLantern: true,
+                candyInTransport: false, candyCarriedByMouse: false));
+        }
+
+        [Fact]
+        public void CanAttach_FalseWhenCandyIsInSockOrBambooTransit()
+        {
+            // Sock transit keeps the candy "present" (noCandy stays false), so ants need an
+            // explicit transit gate just like the hand gate.
+            Assert.False(AntCandyInteraction.CanAttach(
+                true, true, false, false, true, candyHeldByHand: false, candyInLantern: false,
+                candyInTransport: true, candyCarriedByMouse: false));
+        }
+
+        [Fact]
+        public void CanAttach_FalseWhenTheMouseCarriesTheCandy()
+        {
+            // Same rule as the hand: a holder owns the candy; ants must not grab it mid-steal.
+            Assert.False(AntCandyInteraction.CanAttach(
+                true, true, false, false, true, candyHeldByHand: false, candyInLantern: false,
+                candyInTransport: false, candyCarriedByMouse: true));
         }
 
         [Fact]

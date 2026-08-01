@@ -8,6 +8,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Returns true when a segment may start carrying a candy. A segment can carry any number of
         /// candies at once (each rides its own marker), so prior occupancy does not block a new candy.
+        /// A candy owned by a holder (hand, mouse) or a capture device (lantern, sock/bamboo transit)
+        /// is off-limits: those park or pin the point, and an ungated re-grab loops the pickup sound
+        /// (attach, fail to ride, detach, cooldown, fresh attach again).
         /// </summary>
         public static bool CanAttach(
             bool candyPresent,
@@ -15,14 +18,20 @@ namespace CutTheRopeDX.GameMain
             bool candyWaitingForFly,
             bool isLastSegment,
             bool candyInsideBounds,
-            bool candyHeldByHand)
+            bool candyHeldByHand,
+            bool candyInLantern,
+            bool candyInTransport,
+            bool candyCarriedByMouse)
         {
             return candyPresent
                 && segmentCanInteract
                 && !candyWaitingForFly
                 && !isLastSegment
                 && candyInsideBounds
-                && !candyHeldByHand;
+                && !candyHeldByHand
+                && !candyInLantern
+                && !candyInTransport
+                && !candyCarriedByMouse;
         }
 
         /// <summary>Returns true when a carried candy has left its carrier after the snap grace period.</summary>

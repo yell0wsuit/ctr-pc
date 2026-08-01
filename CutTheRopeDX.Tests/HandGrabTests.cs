@@ -33,5 +33,24 @@ namespace CutTheRopeDX.Tests
             Assert.False(HandGrab.ShouldGrab(true, candyPresent: false, false, false, true));
             Assert.False(HandGrab.ShouldGrab(true, true, false, false, inRange: false));
         }
+
+        [Fact]
+        public void ShouldGrab_FalseForACandyInSockTransit()
+        {
+            // Sock transit keeps the candy "present" (noCandy stays false), so the gate needs
+            // the explicit sock parameter.
+            Assert.False(HandGrab.ShouldGrab(
+                handIdle: true, candyPresent: true, candyInLantern: false, candyInSock: true, inRange: true));
+        }
+
+        [Fact]
+        public void ShouldGrab_FalseForACandyInBambooTransit()
+        {
+            // Bamboo transit sets noCandy = true (GameScene.Systems.OperateBambooTube), so the
+            // candyPresent parameter is the bamboo gate. If bamboo ever stops setting noCandy,
+            // this pin documents that the hand gate must gain a bamboo parameter.
+            Assert.False(HandGrab.ShouldGrab(
+                handIdle: true, candyPresent: false, candyInLantern: false, candyInSock: false, inRange: true));
+        }
     }
 }

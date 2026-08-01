@@ -259,7 +259,10 @@ namespace CutTheRopeDX.GameMain
                 candyWaitingForFly: ctx.antWaitForFly,
                 isLastSegment: segment == ctx.lastAntSegment,
                 candyInsideBounds: contains,
-                candyHeldByHand: ctx.capturingHand != null))
+                candyHeldByHand: ctx.capturingHand != null,
+                candyInLantern: ctx.inLantern,
+                candyInTransport: ctx.InTransport,
+                candyCarriedByMouse: ctx.carriedByMouse))
             {
                 return false;
             }

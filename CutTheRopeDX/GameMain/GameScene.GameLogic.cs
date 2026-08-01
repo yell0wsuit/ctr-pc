@@ -105,6 +105,7 @@ namespace CutTheRopeDX.GameMain
                 ctx.candy.PlayTimeline(2);
                 if (ctx.HasActiveRocket)
                 {
+                    ctx.activeRocket.visible = true;
                     Vector holeOut = ctx.targetBambooTube.HoleOut;
                     Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
                     ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
@@ -145,6 +146,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (ctx.HasActiveRocket)
                 {
+                    ctx.activeRocket.visible = true;
                     ctx.activeRocket.point.pos = ctx.point.pos;
                     ctx.activeRocket.point.prevPos = ctx.point.prevPos;
                     ctx.activeRocket.point.v = ctx.point.v;
@@ -440,19 +442,7 @@ namespace CutTheRopeDX.GameMain
             DetachActiveSnails();
             DetachActiveHands();
 
-            // Make the mouse retreat and lock it from advancing to next mouse
-            if (miceManager != null && mice != null)
-            {
-                foreach (object obj in mice)
-                {
-                    if (obj is Mouse mouse && mouse.IsActive)
-                    {
-                        mouse.BeginRetreat();
-                        break;
-                    }
-                }
-            }
-            miceManager?.LockActiveMouse();
+            ShutDownMice();
         }
 
         /// <summary>
@@ -513,8 +503,32 @@ namespace CutTheRopeDX.GameMain
             // keeps burning through the restart animation, matching the original.
             DetachActiveHands();
 
-            // Make the mouse retreat and lock it from advancing to next mouse
-            if (miceManager != null && mice != null)
+            ShutDownMice();
+        }
+
+        /// <summary>
+        /// Ends mouse participation for a finished level: any candy still in a mouth goes back to
+        /// the physics solver with gravity on, the mouse on screen retreats empty-handed, and the
+        /// handoff is locked so no replacement pops out of the next hole.
+        /// </summary>
+        /// <remarks>
+        /// The release has to come first and the lock has to follow. Releasing while the mouse is
+        /// still active would only hand the candy back for a frame - it lands within grab radius of
+        /// the very hole it came from, so the per-frame grab check would steal it straight back.
+        /// Locking without releasing is what stranded it: the mouse leaves with the candy, the
+        /// locked handoff refuses to pass it to the next hole, and the point stays pinned mid-air
+        /// with gravity disabled and no mouse left to carry it.
+        /// </remarks>
+        private void ShutDownMice()
+        {
+            if (miceManager == null)
+            {
+                return;
+            }
+
+            miceManager.ReleaseAllCandy();
+
+            if (mice != null)
             {
                 foreach (object obj in mice)
                 {
@@ -525,7 +539,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            miceManager?.LockActiveMouse();
+
+            miceManager.LockActiveMouse();
         }
 
         /// <summary>
@@ -748,6 +763,7 @@ namespace CutTheRopeDX.GameMain
             }
             DetachHandsForPoint(ctx.point);
             DetachSnailsForPoint(ctx.point);
+            DropMouseCandyForPoint(ctx.point);
             if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);
@@ -864,6 +880,19 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Forces the active mouse to drop its candy only when that candy is <paramref name="point"/>.
+        /// Capture devices (hand grab, sock, bamboo, lantern) strip the mouse per-candy; a mouse
+        /// carrying a different candy keeps it.
+        /// </summary>
+        public void DropMouseCandyForPoint(ConstraintedPoint point)
+        {
+            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), point))
+            {
+                miceManager.ForceDropCandy();
+            }
+        }
+
+        /// <summary>
         /// Number of active snails currently riding the given candy point.
         /// </summary>
         /// <param name="point">Candy physics point to count attached snails for.</param>
@@ -934,7 +963,17 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
-        /// <summary>Releases only the mechanical hand holding the candy at <paramref name="point"/> (no-op if null).</summary>
+        /// <summary>
+        /// Releases only the mechanical hand holding the candy at <paramref name="point"/> (no-op if null).
+        /// </summary>
+        /// <remarks>
+        /// The drop sound plays here rather than being left to the release-to-idle transition, which is
+        /// what a hand that lets go on its own uses. That transition needs the candy to travel past
+        /// <see cref="MechanicalHand.MH_RELEASE_DISTANCE"/> from the claw, and a candy taken by a mouse
+        /// stops at the hole it was stolen through - often inside that radius - so the hand would sit
+        /// silently in the release state until the mouse eventually carried it away. Marking the sound
+        /// as played keeps the transition from repeating it. This mirrors the player tapping the claw.
+        /// </remarks>
         public void DetachHandsForPoint(ConstraintedPoint point)
         {
             if (hands == null || hands.Count <= 0 || point == null)
@@ -955,9 +994,10 @@ namespace CutTheRopeDX.GameMain
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
-                    hand.releaseSoundPlayed = false;
+                    hand.releaseSoundPlayed = true;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = (held?.capturingHand = null);
+                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }
         }

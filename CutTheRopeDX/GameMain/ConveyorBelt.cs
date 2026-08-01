@@ -523,6 +523,13 @@ namespace CutTheRopeDX.GameMain
 
             foreach (ITransporterItem item in boundObjects)
             {
+                // A kicked (detached) suction cup is a free physics body: stay bound but stop
+                // driving it; when it re-sticks the belt resumes moving it automatically.
+                if (item is Grab kickedGrab && !GrabPlatformBind.FollowsPlatform(true, kickedGrab.kickable && kickedGrab.kicked))
+                {
+                    continue;
+                }
+
                 Vector local = ToLocalSpace(item.BindPoint);
                 TransporterMovementResult movement = TransporterMovement.Move(
                     item.PositionOnTransporter,

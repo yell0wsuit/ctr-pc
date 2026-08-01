@@ -347,13 +347,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Releases the currently carried candy, re-enabling gravity and clearing references.
+        /// Hands the carried candy back to the physics solver, re-enabling gravity and clearing
+        /// references. Silent: the tap sound belongs to the player-driven drop, not to this.
         /// </summary>
-        public void DropCandy()
+        /// <returns><see langword="true"/> when candy was actually carried and has been released.</returns>
+        public bool ReleaseCarriedCandy()
         {
             if (carriedStar == null)
             {
-                return;
+                return false;
             }
 
             carriedStar.disableGravity = false;
@@ -361,7 +363,19 @@ namespace CutTheRopeDX.GameMain
             carriedStar = null;
             carriedCandy = null;
             grabAnimating = false;
-            CTRSoundMgr.PlaySound(Resources.Snd.MouseTap);
+            return true;
+        }
+
+        /// <summary>
+        /// Releases the currently carried candy in response to the player, re-enabling gravity and
+        /// clearing references.
+        /// </summary>
+        public void DropCandy()
+        {
+            if (ReleaseCarriedCandy())
+            {
+                CTRSoundMgr.PlaySound(Resources.Snd.MouseTap);
+            }
         }
 
         /// <summary>

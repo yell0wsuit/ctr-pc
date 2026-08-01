@@ -39,5 +39,15 @@ namespace CutTheRopeDX.Tests
             Assert.False(SnailAttach.ShouldAttach(
                 candyGone: false, canBeDraggedBySnail: true, snailIntersectsCandy: false));
         }
+
+        [Fact]
+        public void ShouldAttach_HasNoHandParameterByDesign()
+        {
+            // Coexist ruling (the Experiments reference has no hand gate): a snail attaches to a
+            // hand-held candy and rides until the candy leaves play. Grab-time stripping is the
+            // hand's job (hand grab detaches riders); attach-time is deliberately hand-agnostic.
+            Assert.True(SnailAttach.ShouldAttach(
+                candyGone: false, canBeDraggedBySnail: true, snailIntersectsCandy: true));
+        }
     }
 }
