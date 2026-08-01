@@ -525,8 +525,8 @@ namespace CutTheRopeDX.GameMain
                         GameScene gameScene4 = (GameScene)view.GetChild(0);
                         if (!GameControllerInput.CanPauseFromGameplay(
                             view.GetChild(1).touchable,
-                            gameScene4.outcomeTransitionActive,
-                            gameScene4.restartState == 0))
+                            gameScene4.gameplayFlow.TransitionActive,
+                            gameScene4.gameplayFlow.IsFadingOut))
                         {
                             return;
                         }
@@ -782,8 +782,8 @@ namespace CutTheRopeDX.GameMain
             GameScene gameScene = (GameScene)view.GetChild(0);
             if (GameControllerInput.CanPauseFromGameplay(
                 view.GetChild(1).touchable,
-                gameScene.outcomeTransitionActive,
-                gameScene.restartState == 0))
+                gameScene.gameplayFlow.TransitionActive,
+                gameScene.gameplayFlow.IsFadingOut))
             {
                 OnButtonPressed(GameControllerButtonId.Pause);
             }
@@ -793,7 +793,7 @@ namespace CutTheRopeDX.GameMain
             }
             else if (GameControllerInput.CanExitResultWithBack(
                 view.GetChild(4).touchable,
-                gameScene.outcomeTransitionActive))
+                gameScene.gameplayFlow.TransitionActive))
             {
                 OnButtonPressed(GameControllerButtonId.ExitFromWin);
             }
@@ -807,8 +807,8 @@ namespace CutTheRopeDX.GameMain
             GameScene gameScene = (GameScene)view.GetChild(0);
             if (GameControllerInput.CanPauseFromGameplay(
                 view.GetChild(1).touchable,
-                gameScene.outcomeTransitionActive,
-                gameScene.restartState == 0))
+                gameScene.gameplayFlow.TransitionActive,
+                gameScene.gameplayFlow.IsFadingOut))
             {
                 OnButtonPressed(GameControllerButtonId.Pause);
             }

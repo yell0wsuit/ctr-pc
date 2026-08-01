@@ -27,15 +27,15 @@ namespace CutTheRopeDX.Tests
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
             scene.ReleaseAllRopes(false);
-            for (int frame = 0; frame < MaxOutcomeFrames && !scene.outcomeTransitionActive; frame++)
+            for (int frame = 0; frame < MaxOutcomeFrames && !scene.gameplayFlow.TransitionActive; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
             }
 
             // Level 2-5 drops the candy onto a spike. Hazard loss is deliberately delayed so
             // the break animation can play, but the transition gate closes immediately.
-            Assert.True(scene.outcomeTransitionActive);
-            Assert.False(scene.gameLostTriggered);
+            Assert.True(scene.gameplayFlow.TransitionActive);
+            Assert.False(scene.gameplayFlow.LostTriggered);
 
             for (int frame = 0; frame < MaxOutcomeFrames && recorder.LostCount == 0; frame++)
             {
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(1, recorder.LostCount);
             Assert.Equal(0, recorder.WonCount);
-            Assert.True(scene.gameLostTriggered);
+            Assert.True(scene.gameplayFlow.LostTriggered);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(1, recorder.LostCount);
             Assert.Equal(0, recorder.WonCount);
-            Assert.True(scene.gameLostTriggered);
+            Assert.True(scene.gameplayFlow.LostTriggered);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(1, recorder.WonCount);
             Assert.Equal(0, recorder.LostCount);
-            Assert.True(scene.gameWonTriggered);
+            Assert.True(scene.gameplayFlow.WonTriggered);
         }
 
         [Fact]
@@ -100,12 +100,12 @@ namespace CutTheRopeDX.Tests
             HeadlessGame.StepFrames(scene, 30);
 
             scene.AnimateLevelRestart();
-            Assert.Equal(0, scene.restartState);
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
 
             HeadlessGame.StepFrames(scene, 60);
 
-            Assert.Equal(-1, scene.restartState);
-            Assert.Equal(0f, scene.dimTime);
+            Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
+            Assert.Equal(0f, scene.gameplayFlow.DimTime);
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests
 
             HeadlessGame.StepFrames(scene, 120);
 
-            Assert.False(scene.outcomeTransitionActive);
+            Assert.False(scene.gameplayFlow.TransitionActive);
         }
     }
 }

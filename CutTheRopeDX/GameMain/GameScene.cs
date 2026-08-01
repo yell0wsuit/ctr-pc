@@ -1133,23 +1133,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Single owner of the restart-dim machine and the win/lose flags.</summary>
         public readonly LevelFlowState gameplayFlow = new();
 
-#pragma warning disable IDE1006 // Temporary lowercase compatibility shims; removed after consumer migration.
-        /// <summary>Legacy accessor for <see cref="LevelFlowState.Phase"/>. Read-only; migrating.</summary>
-        public int restartState => (int)gameplayFlow.Phase;
-
-        /// <summary>Legacy accessor for <see cref="LevelFlowState.DimTime"/>. Read-only; migrating.</summary>
-        public float dimTime => gameplayFlow.DimTime;
-
-        /// <summary>Legacy accessor for <see cref="LevelFlowState.TransitionActive"/>. Read-only; migrating.</summary>
-        public bool outcomeTransitionActive => gameplayFlow.TransitionActive;
-
-        /// <summary>Legacy accessor for <see cref="LevelFlowState.WonTriggered"/>. Read-only; migrating.</summary>
-        public bool gameWonTriggered => gameplayFlow.WonTriggered;
-
-        /// <summary>Legacy accessor for <see cref="LevelFlowState.LostTriggered"/>. Read-only; migrating.</summary>
-        public bool gameLostTriggered => gameplayFlow.LostTriggered;
-#pragma warning restore IDE1006
-
         /// <summary>
         /// Whether restart should animate through the dim overlay.
         /// </summary>

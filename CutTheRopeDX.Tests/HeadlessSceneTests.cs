@@ -26,11 +26,11 @@ namespace CutTheRopeDX.Tests
             HeadlessGame.StepFrames(scene, 60);
 
             scene.AnimateLevelRestart();
-            Assert.Equal(0, scene.restartState);
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
 
             HeadlessGame.StepFrames(scene, 60);
 
-            Assert.Equal(-1, scene.restartState);
+            Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
         }
 
         [Fact]
