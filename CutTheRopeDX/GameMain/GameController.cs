@@ -475,7 +475,7 @@ namespace CutTheRopeDX.GameMain
             {
                 case var id when id == GameControllerButtonId.Continue:
                     ((GameScene)view.GetChild(0)).dimTime = tmpDimTime;
-                    tmpDimTime = 0;
+                    tmpDimTime = 0f;
                     SetPaused(false);
                     CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
@@ -530,7 +530,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             return;
                         }
-                        tmpDimTime = (int)gameScene4.dimTime;
+                        tmpDimTime = gameScene4.dimTime;
                         gameScene4.dimTime = 0f;
                         SetPaused(true);
                         CTRRootController.LogEvent("IG_MENU_PRESSED");
@@ -963,8 +963,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];
 
-        /// <summary>Temporary dim-time value saved while the pause menu is open.</summary>
-        private int tmpDimTime;
+        /// <summary>
+        /// Temporary dim-time value saved while the pause menu is open. Must stay floating point:
+        /// <c>dimTime</c> only ever holds 0..0.15, so truncating it to an integer would always
+        /// restore 0 and strand the restart state machine at <c>restartState == 0</c>, which
+        /// silently disables every win/loss path.
+        /// </summary>
+        private float tmpDimTime;
 
         /// <summary>Whether the result box close flow has already persisted score and achievement state.</summary>
         private bool boxCloseHandled;
