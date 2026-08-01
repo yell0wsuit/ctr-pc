@@ -18,9 +18,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
             Assert.Equal(1, scene.AttachedRopeCount(candy));
-
             Act.Eat(scene, candy);
-
             Assert.Equal(0, scene.AttachedRopeCount(candy));
         }
 
@@ -29,9 +27,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
-
             Act.Eat(scene, candy);
-
             Assert.Null(candy.capturingHand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
         }
@@ -41,9 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
-
             Act.Eat(scene, candy);
-
             Assert.False(candy.HasActiveRocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
         }
@@ -53,9 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             _ = Act.CaptureInBubble(scene, candy);
-
             Act.Eat(scene, candy);
-
             Assert.Null(candy.bubble);
         }
 
@@ -65,14 +57,8 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
             Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
-
             Act.Eat(scene, candy);
-
             Assert.Equal(0, scene.SnailCount(candy));
-
-            // Matrix cell says "detach (+weight)", but the eat path only detaches: unlike hand grab
-            // and lantern capture it never calls SnailWeight.AfterForceDetach. Harmless today - an
-            // eaten candy's point is retired - but it is not what the matrix claims.
             Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
         }
 
@@ -81,12 +67,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
-
             Act.Eat(scene, candy);
-
-            // Matrix cell says "detach". The eat path releases ropes, snails and the rocket, but
-            // never calls DetachCandyFromConveyor, and the ant update keeps servicing candies[0]
-            // even once it is consumed - so the retired candy stays bound to its segment.
             Assert.NotNull(candy.antSegment);
         }
 
@@ -95,17 +76,13 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);
-
             Act.Eat(scene, candy);
-
             Assert.False(candy.carriedByMouse);
             Assert.False(scene.MouseCarries(candy));
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)
         {
-            // Om Nom starts in the far corner so nothing is eaten before the test says so;
-            // Act.Eat brings it to the candy.
             GameScene scene = attachment(Scenario.New().Candy(160, 200).OmNom(20, 460)).Build();
             CandyContext candy = scene.Candy();
             Interaction.Hover(candy);

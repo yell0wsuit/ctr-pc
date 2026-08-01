@@ -10,8 +10,9 @@ namespace CutTheRopeDX.Tests.Interactions
     /// <summary>
     /// Interaction matrix, "Lost" row: a candy destroyed on spikes takes its attachments down with
     /// it, partly through the break itself and partly through the GameLost that follows. The row
-    /// names a second trigger - leaving the screen - which the engine handles on its own, much
-    /// thinner path; the LostOffScreen tests below pin where the two diverge.
+    /// names a second trigger - leaving the screen - which runs a thinner path of its own: it cuts
+    /// the ropes and exhausts the rocket like the break does, but leaves the snail riding, exactly
+    /// as iOS does (breakCandy: detaches snails and hands; the off-screen block does neither).
     /// </summary>
     public sealed class LostRowTests
     {
@@ -74,8 +75,6 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Equal(0, scene.SnailCount(candy));
 
-            // Matrix cell says "detach (+weight)"; BreakCandyFromHazard only detaches. Same shape as
-            // the eaten row - the weight stays on a point nothing reads again.
             Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
         }
 
@@ -87,8 +86,6 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.BreakOnSpikes(scene, candy);
 
-            // Matrix cell says "detach". Neither the break nor GameLost takes the candy off the ant
-            // conveyor, so it stays bound to the segment it died on.
             Assert.NotNull(candy.antSegment);
         }
 
@@ -117,16 +114,15 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LostOffScreen_LeavesTheRopeOnTheLostCandy()
+        public void LostOffScreen_ReleasesItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
 
             Act.LoseOffScreen(scene, candy);
 
-            // The matrix folds "spikes/off-screen" into one row, but the two paths differ: leaving
-            // the screen only exhausts the rocket, and the GameLost that follows releases no ropes.
-            // A candy broken on spikes has its ropes cut; one that falls out of the world does not.
-            Assert.Equal(1, scene.AttachedRopeCount(candy));
+            // Both loss triggers cut the ropes, and both do it themselves - iOS releases them inside
+            // the off-screen block, not in gameLost, which touches no attachments at all.
+            Assert.Equal(0, scene.AttachedRopeCount(candy));
         }
 
         [Fact]

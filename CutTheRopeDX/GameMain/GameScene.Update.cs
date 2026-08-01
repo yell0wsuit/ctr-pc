@@ -1976,18 +1976,18 @@ namespace CutTheRopeDX.GameMain
                 {
                     noCandy = true;
                 }
-                // Only the leaver's own rocket dies (C breakCandy stops candy+392, not all rockets).
-                // A body that does not lose the level (e.g. a light bulb) still has to release its
-                // rope and exhaust its rocket when it leaves the screen: C's generic-object loop
-                // tears down any unguarded off-screen object, not just losable candy.
                 ExhaustRocketForCandy(ctx);
-                if (ctx.Capabilities.CanLoseLevelWhenOffScreen)
+                if (ci == 0)
                 {
-                    anyLeft = true;
+                    ReleaseAllRopes(false);
                 }
                 else
                 {
                     ReleaseRopesForPoint(ctx.point);
+                }
+                if (ctx.Capabilities.CanLoseLevelWhenOffScreen)
+                {
+                    anyLeft = true;
                 }
             }
             if (twoParts != 2)

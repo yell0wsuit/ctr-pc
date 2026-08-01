@@ -763,6 +763,7 @@ namespace CutTheRopeDX.GameMain
             }
             DetachHandsForPoint(ctx.point);
             DetachSnailsForPoint(ctx.point);
+            DropMouseCandyForPoint(ctx.point);
             if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);
