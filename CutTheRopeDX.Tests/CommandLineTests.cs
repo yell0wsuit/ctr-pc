@@ -6,12 +6,12 @@ using Xunit;
 
 namespace CutTheRopeDX.Tests
 {
-    public class CustomLevelCommandLineTests
+    public class CommandLineTests
     {
         [Fact]
         public void Parse_NoArguments_IsNotCustomLevel()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse([]);
+            CommandLineResult result = CommandLine.Parse([]);
 
             Assert.False(result.IsCustomLevel);
             Assert.Null(result.ErrorMessage);
@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_UnrelatedArguments_IsNotCustomLevel()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["--windowed"]);
+            CommandLineResult result = CommandLine.Parse(["--windowed"]);
 
             Assert.False(result.IsCustomLevel);
             Assert.Null(result.ErrorMessage);
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_LevelWithPath_ReturnsAbsolutePath()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["--level", "/maps/test.xml"]);
+            CommandLineResult result = CommandLine.Parse(["--level", "/maps/test.xml"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.Null(result.ErrorMessage);
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_LevelWithoutValue_ReturnsError()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["--level"]);
+            CommandLineResult result = CommandLine.Parse(["--level"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.NotNull(result.ErrorMessage);
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_LevelWithEmptyValue_ReturnsError()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["--level", "   "]);
+            CommandLineResult result = CommandLine.Parse(["--level", "   "]);
 
             Assert.True(result.IsCustomLevel);
             Assert.NotNull(result.ErrorMessage);
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_BareXmlPath_IsTreatedAsCustomLevel()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse([@"C:\maps\dropped.xml"]);
+            CommandLineResult result = CommandLine.Parse([@"C:\maps\dropped.xml"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.Null(result.ErrorMessage);
@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_BareXmlPath_IgnoresCase()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["level.XML"]);
+            CommandLineResult result = CommandLine.Parse(["level.XML"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.Equal(Path.GetFullPath("level.XML"), result.LevelPath);
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_BareNonXmlPath_IsNotCustomLevel()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["notes.txt"]);
+            CommandLineResult result = CommandLine.Parse(["notes.txt"]);
 
             Assert.False(result.IsCustomLevel);
             Assert.Null(result.ErrorMessage);
@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_LevelSwitchTakesPrecedenceOverBarePath()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["bare.xml", "--level", "chosen.xml"]);
+            CommandLineResult result = CommandLine.Parse(["bare.xml", "--level", "chosen.xml"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.EndsWith("chosen.xml", result.LevelPath);
@@ -95,12 +95,38 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void Parse_RelativePath_IsResolvedAgainstWorkingDirectory()
         {
-            CustomLevelCommandLineResult result = CustomLevelCommandLine.Parse(["--level", "level.xml"]);
+            CommandLineResult result = CommandLine.Parse(["--level", "level.xml"]);
 
             Assert.True(result.IsCustomLevel);
             Assert.Equal(
                 Path.GetFullPath("level.xml"),
                 result.LevelPath);
+        }
+
+        [Fact]
+        public void Parse_SetsIsHeadless_WhenFlagPresent()
+        {
+            CommandLineResult result = CommandLine.Parse(["--headless"]);
+
+            Assert.True(result.IsHeadless);
+        }
+
+        [Fact]
+        public void Parse_IsHeadlessFalse_WhenFlagAbsent()
+        {
+            CommandLineResult result = CommandLine.Parse([]);
+
+            Assert.False(result.IsHeadless);
+        }
+
+        [Fact]
+        public void Parse_CombinesHeadlessWithLevel()
+        {
+            CommandLineResult result = CommandLine.Parse(["--headless", "--level", "/tmp/a.xml"]);
+
+            Assert.True(result.IsHeadless);
+            Assert.True(result.IsCustomLevel);
+            Assert.EndsWith("a.xml", result.LevelPath);
         }
     }
 }
