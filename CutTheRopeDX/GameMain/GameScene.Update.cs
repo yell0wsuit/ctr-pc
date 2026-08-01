@@ -1713,7 +1713,7 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
                 // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep))
+                if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.asleep))
                 {
                     continue;
                 }
@@ -1758,13 +1758,13 @@ namespace CutTheRopeDX.GameMain
             // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
             // Once a win/loss transition is active, no further candy may be eaten so a sad Om Nom
             // does not consume a remaining candy during the loss transition.
-            if (restartState != 0 && GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive))
+            if (gameplayFlow.CanTriggerOutcome && gameplayFlow.CanReactToCandy())
             {
                 for (int ti = 0; ti < targets.Count; ti++)
                 {
                     TargetContext t = targets[ti];
                     bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
-                    if (!canInteractWithTarget || !GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep) || !t.mouthOpen || t.targetObject == null)
+                    if (!canInteractWithTarget || !gameplayFlow.CanReactToCandy(t.asleep) || !t.mouthOpen || t.targetObject == null)
                     {
                         continue;
                     }
@@ -1864,7 +1864,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (anyLeft)
             {
-                if (restartState != 0)
+                if (gameplayFlow.CanTriggerOutcome)
                 {
                     int candiesLostCount = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
                     Preferences.SetIntForKey(candiesLostCount, "PREFS_CANDIES_LOST", false);
@@ -1984,18 +1984,17 @@ namespace CutTheRopeDX.GameMain
                     _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
             }
-            if (Mover.MoveVariableToTarget(ref dimTime, 0, 1, delta))
+            switch (gameplayFlow.Advance(delta))
             {
-                if (restartState == 0)
-                {
-                    restartState = 1;
+                case RestartStep.SwapScene:
+                    dd.CancelAllDispatches();
                     Hide();
                     Show();
-                    dimTime = 0.15f;
                     return;
-                }
-                restartState = -1;
-                outcomeTransitionActive = false;
+                case RestartStep.Completed:
+                case RestartStep.None:
+                default:
+                    break;
             }
         }
 

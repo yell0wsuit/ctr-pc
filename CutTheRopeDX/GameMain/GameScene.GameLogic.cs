@@ -166,8 +166,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void AnimateLevelRestart()
         {
-            restartState = 0;
-            dimTime = 0.15f;
+            gameplayFlow.BeginRestartDim();
         }
 
         /// <summary>
@@ -375,12 +374,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameWon()
         {
-            if (!GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered, gameLostTriggered))
+            if (!gameplayFlow.CanTriggerTerminalOutcome)
             {
                 return;
             }
-            gameWonTriggered = true;
-            outcomeTransitionActive = true;
+            gameplayFlow.MarkWon();
 
             EndActiveFingerTraces();
             conveyors?.CancelAllDrags();
@@ -462,12 +460,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameLost()
         {
-            if (!GameOutcomeTransition.CanTriggerTerminalOutcome(gameWonTriggered, gameLostTriggered))
+            if (!gameplayFlow.CanTriggerTerminalOutcome)
             {
                 return;
             }
-            gameLostTriggered = true;
-            outcomeTransitionActive = true;
+            gameplayFlow.MarkLost();
 
             EndActiveFingerTraces();
             conveyors?.CancelAllDrags();
@@ -703,7 +700,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="delay">Seconds to wait before running the loss sequence.</param>
         private void ScheduleGameLost(float delay)
         {
-            outcomeTransitionActive = true;
+            gameplayFlow.MarkTransitionActive();
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, delay);
         }
 
@@ -751,7 +748,7 @@ namespace CutTheRopeDX.GameMain
             }
             DetachHandsForPoint(ctx.point);
             DetachSnailsForPoint(ctx.point);
-            if (restartState != 0)
+            if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);
             }
@@ -794,7 +791,7 @@ namespace CutTheRopeDX.GameMain
             ReleaseAllRopes(left);
             DetachHandsForPoint(candies[0].point);
             DetachSnailsForPoint(candies[0].point);
-            if (restartState != 0 && (!noCandyL || !noCandyR))
+            if (gameplayFlow.CanTriggerOutcome && (!noCandyL || !noCandyR))
             {
                 ScheduleGameLost(0.3f);
             }

@@ -83,9 +83,7 @@ namespace CutTheRopeDX.GameMain
             targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
-            gameLostTriggered = false;
-            gameWonTriggered = false;
-            outcomeTransitionActive = false;
+            gameplayFlow.ResetOutcome();
             levelName = null;
         }
 

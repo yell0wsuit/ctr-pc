@@ -112,7 +112,7 @@ namespace CutTheRopeDX.GameMain
 
             // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
             // candy body is still in play.
-            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyNightCandyBodyPresent())
+            if (nightLevel && !hasActiveLightEmitter && gameplayFlow.CanTriggerOutcome && AnyNightCandyBodyPresent())
             {
                 GameLost();
             }
@@ -149,7 +149,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                bool canUpdateSleepState = GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep);
+                bool canUpdateSleepState = gameplayFlow.CanReactToCandy(t.asleep);
 
                 bool isAwake = false;
                 Vector targetPosition = Vect(t.targetObject.x, t.targetObject.y);

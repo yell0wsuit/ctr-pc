@@ -539,7 +539,7 @@ namespace CutTheRopeDX.GameMain
             _ = aniPool.AddChild(image);
             ExhaustRocketForCandy(candies[0]);
             DetachSnailsForPoint(capturedStar);
-            if (restartState != 0)
+            if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(2);
             }
