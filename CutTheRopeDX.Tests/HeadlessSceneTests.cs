@@ -34,6 +34,19 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TutorialTextLevel_LoadsAndSteps()
+        {
+            HeadlessGame ctr = HeadlessGame.Boot();
+
+            // 1-1 carries tutorial text, so it drives Text.UpdateDrawerValues through
+            // HeadlessFont's single-charmap stub — the one font path the stub could break.
+            GameScene scene = ctr.LoadLevel(pack: 0, level: 0);
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.NotNull(scene);
+        }
+
+        [Fact]
         public void Sound_IsSilentAndDoesNotThrow_WithoutContentManager()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
