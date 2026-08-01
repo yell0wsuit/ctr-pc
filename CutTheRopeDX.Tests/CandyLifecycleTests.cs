@@ -64,5 +64,68 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(CandyPresence.Split, lifecycle.Presence);
             Assert.Equal([left.Body, right.Body], lifecycle.ActiveBodies);
         }
+
+        [Fact]
+        public void BambooFactory_PreservesTransportPayload()
+        {
+            CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
+
+            Assert.Equal(CandyTransportKind.Bamboo, session.Kind);
+            Assert.Null(session.Candy);
+            Assert.Null(session.BambooTube);
+            Assert.Null(session.Sock);
+        }
+
+        [Fact]
+        public void SockFactory_PreservesTransportPayloadAndExitSpeed()
+        {
+            CandyTransportSession session = CandyTransportSession.ForSock(candy: null, sock: null, savedExitSpeed: 123f);
+
+            Assert.Equal(CandyTransportKind.Sock, session.Kind);
+            Assert.Null(session.Candy);
+            Assert.Null(session.BambooTube);
+            Assert.Null(session.Sock);
+            Assert.Equal(123f, session.SavedExitSpeed);
+        }
+
+        [Fact]
+        public void HiddenTransport_SuppressesBodyButDoesNotCountAsEaten()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
+
+            Assert.True(lifecycle.TryHide(session));
+            Assert.Equal(CandyPresence.Hidden, lifecycle.Presence);
+            Assert.Empty(lifecycle.ActiveBodies);
+            Assert.False(lifecycle.WasEaten);
+        }
+
+        [Fact]
+        public void MatchingTransportCompletion_RestoresWholeBody()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession session = CandyTransportSession.ForSock(null, null, 123f);
+            Assert.True(lifecycle.TryHide(session));
+
+            Assert.True(lifecycle.TryCompleteTransport(session));
+            Assert.Equal(CandyPresence.Present, lifecycle.Presence);
+            Assert.Null(lifecycle.Transport);
+            Assert.Equal([lifecycle.WholeBody], lifecycle.ActiveBodies);
+        }
+
+        [Fact]
+        public void StaleCompletion_CannotCompleteNewerSession()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession oldSession = CandyTransportSession.ForBamboo(null, null);
+            CandyTransportSession newSession = CandyTransportSession.ForSock(null, null, 123f);
+            _ = lifecycle.TryHide(oldSession);
+            Assert.True(lifecycle.TryCompleteTransport(oldSession));
+            _ = lifecycle.TryHide(newSession);
+
+            Assert.False(lifecycle.TryCompleteTransport(oldSession));
+            Assert.Same(newSession, lifecycle.Transport);
+            Assert.Equal(CandyPresence.Hidden, lifecycle.Presence);
+        }
     }
 }

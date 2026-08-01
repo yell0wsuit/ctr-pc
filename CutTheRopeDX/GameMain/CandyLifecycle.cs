@@ -24,6 +24,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the owned split payload, or <see langword="null"/> outside <see cref="CandyPresence.Split"/>.</summary>
         public SplitCandyState Split { get; private set; }
 
+        /// <summary>Gets the current hidden transport session, or <see langword="null"/> outside transport.</summary>
+        public CandyTransportSession Transport { get; private set; }
+
         /// <summary>Gets the physical bodies currently available to scene systems.</summary>
         public IReadOnlyList<CandyBody> ActiveBodies =>
             Presence == CandyPresence.Present ? [WholeBody] :
@@ -87,6 +90,43 @@ namespace CutTheRopeDX.GameMain
             }
 
             Split = null;
+            Presence = CandyPresence.Present;
+            return true;
+        }
+
+        /// <summary>Temporarily hides a present whole body inside the specified transport session.</summary>
+        /// <param name="session">The exact transport session that will later complete this transition.</param>
+        /// <returns>
+        /// <see langword="true"/> when a present whole candy becomes hidden; otherwise,
+        /// <see langword="false"/> when the lifecycle is removed, split, or already hidden.
+        /// </returns>
+        public bool TryHide(CandyTransportSession session)
+        {
+            if (Presence != CandyPresence.Present)
+            {
+                return false;
+            }
+
+            Transport = session;
+            Presence = CandyPresence.Hidden;
+            return true;
+        }
+
+        /// <summary>Completes the current hidden transport session and restores the whole body.</summary>
+        /// <param name="expectedSession">The exact session whose delayed completion is executing.</param>
+        /// <returns>
+        /// <see langword="true"/> when <paramref name="expectedSession"/> is the current hidden session and
+        /// the whole body returns to <see cref="CandyPresence.Present"/>; otherwise, <see langword="false"/>.
+        /// A stale or non-current session cannot mutate lifecycle state.
+        /// </returns>
+        public bool TryCompleteTransport(CandyTransportSession expectedSession)
+        {
+            if (Presence != CandyPresence.Hidden || !ReferenceEquals(Transport, expectedSession))
+            {
+                return false;
+            }
+
+            Transport = null;
             Presence = CandyPresence.Present;
             return true;
         }
