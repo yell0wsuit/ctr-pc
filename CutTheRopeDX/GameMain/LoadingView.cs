@@ -58,11 +58,20 @@ namespace CutTheRopeDX.GameMain
 
             if (currentPercent < targetPercent)
             {
-                currentPercent += (targetPercent - currentPercent) * 0.16f; // Smooth lerp
+                currentPercent += (targetPercent - currentPercent) * LoadProgressLerp;
                 if (targetPercent - currentPercent < 0.5f)
                 {
                     currentPercent = targetPercent; // Snap when close enough
                 }
+            }
+
+            // The lerp exists only to soften the step between individual resource loads; it must
+            // never outlive loading itself. Before this snap the bar trailed real progress by ~23
+            // frames, so a 21-resource load showed a 43-frame screen — over half of it after every
+            // resource was already in.
+            if (targetPercent >= 100f)
+            {
+                currentPercent = 100f;
             }
 
             // Mark animation as complete when we've reached 100%
@@ -115,6 +124,13 @@ namespace CutTheRopeDX.GameMain
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.Disable(Renderer.GL_BLEND);
         }
+
+        /// <summary>
+        /// Fraction of the remaining gap the progress bar closes each frame. Fast enough that the
+        /// bar stays close to real progress; the snap at 100 is what guarantees it cannot lag past
+        /// completion.
+        /// </summary>
+        private const float LoadProgressLerp = 0.5f;
 
         /// <summary>Whether the view is loading into gameplay instead of the menu flow.</summary>
         public bool game;
