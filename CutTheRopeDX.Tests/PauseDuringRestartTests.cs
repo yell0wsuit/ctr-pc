@@ -48,5 +48,33 @@ namespace CutTheRopeDX.Tests
 
             Assert.False(scene.updateable);
         }
+
+        [Fact]
+        public void PauseAndRestart_SameFrame_PauseDispatchedFirstKeepsGamePaused()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+
+            Assert.False(scene.updateable);
+            Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
+            Assert.True(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
+
+        [Fact]
+        public void PauseAndRestart_SameFrame_RestartDispatchedFirstKeepsRestartRunning()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            Assert.True(scene.updateable);
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
+            Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
     }
 }

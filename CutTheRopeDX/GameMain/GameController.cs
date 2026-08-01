@@ -479,6 +479,13 @@ namespace CutTheRopeDX.GameMain
                     CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case var id when id == GameControllerButtonId.Restart:
+                    GameScene restartScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+                    if (isGamePaused
+                        || !view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).touchable
+                        || restartScene.gameplayFlow.Phase != RestartPhase.Playing)
+                    {
+                        return;
+                    }
                     break;
                 case var id when id == GameControllerButtonId.SkipLevel:
                     PostFlurryLevelEvent("LEVEL_SKIPPED");
