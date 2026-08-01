@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
 
             (int W, int H)? dims = platform.ImageDimensions("images/obj_axe");
 
-            Assert.NotNull(dims);
+            _ = Assert.NotNull(dims);
             Assert.True(dims.Value.W > 0);
             Assert.True(dims.Value.H > 0);
         }
@@ -23,7 +23,7 @@ namespace CutTheRopeDX.Tests
         {
             HeadlessAssetPlatform platform = new();
 
-            Assert.NotNull(platform.ImageDimensions("images/backgrounds/bgr_01_p1"));
+            _ = Assert.NotNull(platform.ImageDimensions("images/backgrounds/bgr_01_p1"));
         }
 
         [Fact]

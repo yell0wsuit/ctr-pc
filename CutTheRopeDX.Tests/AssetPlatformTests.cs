@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests
         {
             // Current cannot be asserted here: HeadlessGame.Boot swaps it process-wide and the
             // engine's one-shot statics make that irreversible, so the default is pinned instead.
-            Assert.IsType<DesktopAssetPlatform>(AssetPlatform.Default);
+            _ = Assert.IsType<DesktopAssetPlatform>(AssetPlatform.Default);
         }
     }
 }
