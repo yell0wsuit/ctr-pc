@@ -163,18 +163,8 @@ namespace CutTheRopeDX.Framework.Core
                 return LoadSpriteFontInfo(path, resourceName);
             }
 
-            // Load FontStashSharp font using the new system
-            FontConfiguration config = Resources.FontConfig.GetConfiguration(resourceName, LanguageHelper.CurrentAsInt);
-            FontStashFont fontStashFont = FontManager.LoadFont(
-                config.FontFile,
-                config.Size,
-                config.Color,
-                config.Effects,
-                config.LineSpacing,
-                config.TopSpacing
-            );
-
-            return fontStashFont;
+            // Font loading goes through the asset platform so headless runs can supply a stub.
+            return Platform.AssetPlatform.Current.Font(resourceName);
         }
 
         /// <summary>

@@ -141,6 +141,13 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="musicResourceName">Logical music resource name to load and play.</param>
         public static void PlayMusic(string musicResourceName)
         {
+            // Headless runs install no content manager and are silent. GetSound already tolerates
+            // this via its try/catch; the music load below sits outside one, so it is checked here.
+            if (_contentManager == null)
+            {
+                return;
+            }
+
             string localizedName = CTRResourceMgr.HandleLocalizedResource(musicResourceName);
             if (string.IsNullOrEmpty(localizedName))
             {

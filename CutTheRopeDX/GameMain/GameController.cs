@@ -21,7 +21,8 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float t)
         {
-            if (!isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
+            // XnaGame is the desktop host and is absent headless, where there is no keyboard.
+            if (!isGamePaused && Global.XnaGame?.IsKeyPressed(Keys.F5) == true)
             {
                 OnButtonPressed(GameControllerButtonId.Restart);
             }
@@ -398,7 +399,7 @@ namespace CutTheRopeDX.GameMain
 
             // Update RPC to show win state with stars and score
             CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
-            Game1.RPC.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), gameScene.starsCollected, true, gameScene.levelName, gameScene.score, (int)gameScene.time);
+            Game1.RPC?.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), gameScene.starsCollected, true, gameScene.levelName, gameScene.score, (int)gameScene.time);
 
             if (!CustomLevelSession.IsActive)
             {

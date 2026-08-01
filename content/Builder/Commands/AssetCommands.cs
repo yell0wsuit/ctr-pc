@@ -69,7 +69,52 @@ namespace CutTheRopeDX.Content.Commands
                 });
             }
 
-            return builder.FailedToBuild > 0 ? -1 : 0;
+            if (builder.FailedToBuild > 0)
+            {
+                return -1;
+            }
+
+            EmitImageDimensionsManifest(arguments);
+            return 0;
+        }
+
+        /// <summary>
+        /// Emits the headless image-dimensions manifest next to the built image assets.
+        /// Only the argument-driven build (the one MSBuild runs) carries explicit source and
+        /// output directories; a bare invocation resolves them itself and is skipped with a note.
+        /// </summary>
+        /// <param name="arguments">Arguments forwarded to the MonoGame builder.</param>
+        private static void EmitImageDimensionsManifest(IReadOnlyList<string> arguments)
+        {
+            string? sourceDirectory = FindOptionValue(arguments, "-s", "--source");
+            string? outputDirectory = FindOptionValue(arguments, "-o", "--output");
+
+            if (sourceDirectory is null || outputDirectory is null)
+            {
+                Console.WriteLine(
+                    "[I] Skipping image_dimensions.json: build was invoked without -s/-o.");
+                return;
+            }
+
+            GameContentBuilder.EmitImageDimensionsManifest(
+                Path.Combine(sourceDirectory, "images"),
+                Path.Combine(outputDirectory, "images"));
+        }
+
+        private static string? FindOptionValue(
+            IReadOnlyList<string> arguments,
+            string shortName,
+            string longName)
+        {
+            for (int index = 0; index < arguments.Count - 1; index++)
+            {
+                if (arguments[index] == shortName || arguments[index] == longName)
+                {
+                    return arguments[index + 1];
+                }
+            }
+
+            return null;
         }
 
         private static async Task<int> RunFetchAsync(string contentDirectory)

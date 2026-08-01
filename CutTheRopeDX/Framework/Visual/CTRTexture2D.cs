@@ -212,12 +212,13 @@ namespace CutTheRopeDX.Framework.Visual
             _resName = path;
             // _localTexParams = _texParams;
             Reg();
-            xnaTexture_ = Images.Get(path);
-            if (xnaTexture_ == null)
+            (int W, int H)? dimensions = Platform.AssetPlatform.Current.ImageDimensions(path);
+            if (dimensions == null)
             {
                 return null;
             }
-            ImageLoaded(xnaTexture_.Width, xnaTexture_.Height);
+            xnaTexture_ = Platform.AssetPlatform.Current.ImageTexture(path);
+            ImageLoaded(dimensions.Value.W, dimensions.Value.H);
             quadsCount = 0;
             CalculateForQuickDrawing();
             Resume();

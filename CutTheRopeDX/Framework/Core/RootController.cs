@@ -86,10 +86,15 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Sets the <paramref name="transition"/> effect used when switching views.
         /// </summary>
+        /// <remarks>
+        /// A transition is built by drawing the outgoing and incoming views into grabbed
+        /// textures, so it needs a graphics device. Headless runs have none and stay at -1,
+        /// which makes every view change immediate.
+        /// </remarks>
         /// <param name="transition">Transition type constant to use.</param>
         public virtual void SetViewTransition(int transition)
         {
-            viewTransition = transition;
+            viewTransition = Renderer.IsAvailable ? transition : -1;
         }
 
         /// <summary>

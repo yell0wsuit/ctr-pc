@@ -28,9 +28,10 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float t)
         {
             base.Update(t);
+            shownSeconds += t;
 
             // Wait for animation to complete before transitioning
-            if (resourcesLoaded)
+            if (resourcesLoaded && shownSeconds >= MinimumDisplaySeconds)
             {
                 LoadingView loadingView = (LoadingView)GetView(0);
                 if (loadingView.IsAnimationComplete())
@@ -48,6 +49,7 @@ namespace CutTheRopeDX.GameMain
             AndroidAPI.ShowBanner();
             base.Activate();
             resourcesLoaded = false; // Reset flag when activating
+            shownSeconds = 0f;
             ((LoadingView)GetView(0)).game = nextController == 0;
             ShowView(0);
         }
@@ -79,11 +81,19 @@ namespace CutTheRopeDX.GameMain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Shortest time the loading screen stays up.
+        /// </summary>
+        private const float MinimumDisplaySeconds = 0.5f;
+
         /// <summary>Controller ID to activate after the loading screen completes.</summary>
         public int nextController;
 
         /// <summary>Whether the resource manager has finished loading the requested resources.</summary>
         private bool resourcesLoaded;
+
+        /// <summary>Seconds the loading screen has been visible since the last activation.</summary>
+        private float shownSeconds;
 
         /// <summary>
         /// View identifiers owned by the loading controller.

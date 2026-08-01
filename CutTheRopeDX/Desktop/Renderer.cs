@@ -54,6 +54,12 @@ namespace CutTheRopeDX.Desktop
         #region Initialization
 
         /// <summary>
+        /// Gets a value indicating whether a graphics device is present. Headless runs have none,
+        /// so the few render calls that sit outside the draw loop must skip themselves.
+        /// </summary>
+        public static bool IsAvailable => Global.GraphicsDevice != null;
+
+        /// <summary>
         /// Initializes the OpenGL emulation layer. Must be called before any rendering operations.
         /// Sets up BasicEffect shaders and rasterizer states.
         /// </summary>

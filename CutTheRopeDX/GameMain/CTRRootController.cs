@@ -155,9 +155,13 @@ namespace CutTheRopeDX.GameMain
                 ActivateChild(0);
             }
 
-            Application.SharedCanvas().BeforeRender();
-            ActiveChild().ActiveView().Draw();
-            GLCanvas.AfterRender();
+            // A priming draw outside the draw loop; headless runs have no device to draw with.
+            if (Desktop.Renderer.IsAvailable)
+            {
+                Application.SharedCanvas().BeforeRender();
+                ActiveChild().ActiveView().Draw();
+                GLCanvas.AfterRender();
+            }
         }
 
         /// <summary>
