@@ -513,21 +513,6 @@ namespace CutTheRopeDX.GameMain
         public const int BUTTON_GRAVITY = 0;
 
         /// <summary>
-        /// Split-candy mode where both candy parts move independently.
-        /// </summary>
-        public const int PARTS_SEPARATE = 0;
-
-        /// <summary>
-        /// Split-candy mode where the part distance is animated.
-        /// </summary>
-        public const int PARTS_DIST = 1;
-
-        /// <summary>
-        /// Split-candy mode where no extra part behavior is active.
-        /// </summary>
-        public const int PARTS_NONE = 2;
-
-        /// <summary>
         /// The timeout window for combo rope cuts.
         /// </summary>
         public const float SCOMBO_TIMEOUT = 0.2f;
@@ -736,36 +721,6 @@ namespace CutTheRopeDX.GameMain
         private Animation candyBlink => candies[0].candyBlink;
 
         /// <summary>
-        /// Animation used for the main candy bubble effect.
-        /// </summary>
-        private Animation candyBubbleAnimation;
-
-        /// <summary>
-        /// Animation used for the left split candy bubble effect.
-        /// </summary>
-        private Animation candyBubbleAnimationL;
-
-        /// <summary>
-        /// Animation used for the right split candy bubble effect.
-        /// </summary>
-        private Animation candyBubbleAnimationR;
-
-        /// <summary>
-        /// Ghost bubble animation for the main candy.
-        /// </summary>
-        private CandyInGhostBubbleAnimation candyGhostBubbleAnimation;
-
-        /// <summary>
-        /// Ghost bubble animation for the left candy half.
-        /// </summary>
-        private CandyInGhostBubbleAnimation candyGhostBubbleAnimationL;
-
-        /// <summary>
-        /// Ghost bubble animation for the right candy half.
-        /// </summary>
-        private CandyInGhostBubbleAnimation candyGhostBubbleAnimationR;
-
-        /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
         private ConstraintedPoint star => candies[0].point;
@@ -936,22 +891,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private CandyBody pendingRightHalf;
 
-#pragma warning disable IDE1006
-
-        /// <summary>The left candy half's visual, or <see langword="null"/> when the candy is whole.</summary>
-        private GameObject candyL => PrimarySplit?.Left.Body.Visual;
-
-        /// <summary>The right candy half's visual, or <see langword="null"/> when the candy is whole.</summary>
-        private GameObject candyR => PrimarySplit?.Right.Body.Visual;
-
-        /// <summary>The left candy half's physics point, or <see langword="null"/> when the candy is whole.</summary>
-        private ConstraintedPoint starL => PrimarySplit?.Left.Body.Point;
-
-        /// <summary>The right candy half's physics point, or <see langword="null"/> when the candy is whole.</summary>
-        private ConstraintedPoint starR => PrimarySplit?.Right.Body.Point;
-
-#pragma warning restore IDE1006
-
         /// <summary>
         /// The default horizontal scale applied to the Om Nom target.
         /// </summary>
@@ -997,29 +936,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private WaterElement waterLayer;
 
-#pragma warning disable IDE1006
-        /// <summary>
-        /// The primary candy's bubble gameplay object. Sealed onto <c>candies[0]</c> so the primary
-        /// candy's bubble is stored like every other candy's (the split-half bubbles
-        /// <see cref="candyBubbleL"/>/<see cref="candyBubbleR"/> stay separate).
-        /// </summary>
-        private GameObject candyBubble
-        {
-            get => candies[0].WholeBody.Bubble;
-            set => candies[0].WholeBody.Bubble = value;
-        }
-#pragma warning restore IDE1006
-
-        /// <summary>
-        /// The left split candy bubble gameplay object.
-        /// </summary>
-        private GameObject candyBubbleL;
-
-        /// <summary>
-        /// The right split candy bubble gameplay object.
-        /// </summary>
-        private GameObject candyBubbleR;
-
         /// <summary>
         /// The HUD star animations that show collected stars.
         /// </summary>
@@ -1050,21 +966,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private float mapOriginY;
 
-        /// <summary>
-        /// Cached rotation delta for the main candy.
-        /// </summary>
-        private float lastCandyRotateDelta;
-
-        /// <summary>
-        /// Cached rotation delta for the left candy half.
-        /// </summary>
-        private float lastCandyRotateDeltaL;
-
-        /// <summary>
-        /// Cached rotation delta for the right candy half.
-        /// </summary>
-        private float lastCandyRotateDeltaR;
-
         // private bool spiderTookCandy;
 
         /// <summary>
@@ -1078,24 +979,11 @@ namespace CutTheRopeDX.GameMain
         private bool fastenCamera;
 
         /// <summary>
-        /// Whether the main ghost bubble animation has been loaded.
+        /// The ghost bubble parked behind the merged candy's own bubble when both split halves were
+        /// carrying one. It is released when that bubble pops or is replaced, and is
+        /// <see langword="null"/> whenever no second ghost is waiting.
         /// </summary>
-        private bool isCandyInGhostBubbleAnimationLoaded;
-
-        /// <summary>
-        /// Whether the left ghost bubble animation has been loaded.
-        /// </summary>
-        private bool isCandyInGhostBubbleAnimationLeftLoaded;
-
-        /// <summary>
-        /// Whether the right ghost bubble animation has been loaded.
-        /// </summary>
-        private bool isCandyInGhostBubbleAnimationRightLoaded;
-
-        /// <summary>
-        /// Whether the second ghost should be restored after a transition.
-        /// </summary>
-        private bool shouldRestoreSecondGhost;
+        private GameObject pendingSecondGhostBubble;
 
         /// <summary>
         /// The number of ropes cut within the active combo window.
@@ -1185,45 +1073,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public int gravityTouchDown;
 
-        // Derived split topology. These keep their legacy lowercase names (and so suppress
-        // IDE1006) while the call sites still read them; Task 9 replaces them with direct
-        // PrimarySplit access.
-#pragma warning disable IDE1006
-        /// <summary>
-        /// The current split-candy state, derived from the primary candy's lifecycle:
-        /// <see cref="PARTS_NONE"/> when it is whole, <see cref="PARTS_SEPARATE"/> while its two halves
-        /// move independently, and <see cref="PARTS_DIST"/> while they are merging. For "does this map
-        /// author a split candy", which is known before the lifecycle exists, see
-        /// <see cref="levelAuthorsSplitCandy"/>.
-        /// </summary>
-        public int twoParts => PrimarySplit == null
-            ? PARTS_NONE
-            : PrimarySplit.Phase == SplitPhase.Merging ? PARTS_DIST : PARTS_SEPARATE;
-
         /// <summary>
         /// Whether the loaded map declares a split candy. Level metadata, parsed before the split
-        /// lifecycle is built, so it cannot be derived from <see cref="twoParts"/> during loading.
+        /// lifecycle exists, so the loader cannot ask the primary candy's lifecycle instead.
         /// </summary>
         private bool levelAuthorsSplitCandy;
-
-        /// <summary>
-        /// The primary candy's split state while it owns two halves, or <see langword="null"/> when it
-        /// is whole. This is the one authority for split topology; the members below read it.
-        /// </summary>
-        private SplitCandyState PrimarySplit => candies[0].Lifecycle.Split;
-
-        /// <summary>
-        /// Whether the left candy half has been removed from play. Only meaningful while the primary
-        /// is split; every reader is already inside a <c>twoParts != PARTS_NONE</c> guard.
-        /// </summary>
-        public bool noCandyL => PrimarySplit == null || !PrimarySplit.Left.IsPresent;
-
-        /// <summary>
-        /// Whether the right candy half has been removed from play. Only meaningful while the primary
-        /// is split; every reader is already inside a <c>twoParts != PARTS_NONE</c> guard.
-        /// </summary>
-        public bool noCandyR => PrimarySplit == null || !PrimarySplit.Right.IsPresent;
-#pragma warning restore IDE1006
 
         /// <summary>
         /// The X value for the global gravity.

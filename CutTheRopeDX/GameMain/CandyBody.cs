@@ -55,6 +55,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the body's role within its logical candy.</summary>
         public CandyBodyRole Role { get; }
 
+        /// <summary>
+        /// Gets the logical candy that owns this body. Set once when the owning
+        /// <see cref="CandyContext"/> is built, so a scene system holding a body can always ask the
+        /// logical questions (capabilities, carriers, lifecycle) that are not per-body.
+        /// </summary>
+        public CandyContext Owner { get; private set; }
+
         /// <summary>Gets the root visual, or <see langword="null"/> for a headless body.</summary>
         public GameObject Visual { get; }
 
@@ -87,5 +94,33 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets or sets whether the body is fully below the water surface.</summary>
         public bool Underwater { get; set; }
+
+        /// <summary>Determines whether the specified scene system may act on this body right now.</summary>
+        /// <param name="interaction">The scene system asking to act on the body.</param>
+        /// <returns>
+        /// <see langword="true"/> when this body's <see cref="Role"/> permits
+        /// <paramref name="interaction"/>; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool Allows(CandyInteraction interaction)
+        {
+            return CandyBodyEligibility.Allows(Role, interaction);
+        }
+
+        /// <summary>Takes the physical snapshot the pure body decisions read.</summary>
+        /// <returns>
+        /// This body's world position paired with its owner's capabilities. A body only exists while
+        /// it is active, so the snapshot is never "consumed" and never mid-transport.
+        /// </returns>
+        public CandyView ToView()
+        {
+            return new CandyView(Point.pos, Consumed: false, InTransport: false, Owner?.Capabilities);
+        }
+
+        /// <summary>Records the logical candy that owns this body.</summary>
+        /// <param name="owner">The owning logical candy.</param>
+        internal void AttachTo(CandyContext owner)
+        {
+            Owner = owner;
+        }
     }
 }

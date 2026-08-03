@@ -131,6 +131,84 @@ namespace CutTheRopeDX.Tests
             Assert.True(CandyDecisions.AnyFailedRemoval([primary.ToOutcomeView()]));
         }
 
+        [Fact]
+        public void SplitLevel_OffersBothHalfBodiesToSceneSystems()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+
+            Assert.Equal([split.Left.Body, split.Right.Body], scene.ActiveBodies());
+        }
+
+        [Fact]
+        public void SplitLevel_ResolvesEachHalfPointBackToItsOwnBodyAndLogicalCandy()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+
+            CandyBody left = scene.BodyForPoint(split.Left.Body.Point);
+            CandyBody right = scene.BodyForPoint(split.Right.Body.Point);
+
+            Assert.Same(split.Left.Body, left);
+            Assert.Same(split.Right.Body, right);
+            Assert.Same(primary, left.Owner);
+            Assert.Same(primary, right.Owner);
+        }
+
+        [Fact]
+        public void SplitLevel_NeverOffersTheDormantWholeBodyToSceneSystems()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+
+            Assert.DoesNotContain(primary.WholeBody, scene.ActiveBodies());
+            Assert.Null(scene.BodyForPoint(primary.WholeBody.Point));
+        }
+
+        [Fact]
+        public void ALostHalf_LeavesOnlyTheSurvivorInTheSceneBodyEnumerator()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+
+            DropHalfOffScreen(scene, split.Left);
+
+            Assert.Equal([split.Right.Body], scene.ActiveBodies());
+            Assert.Null(scene.BodyForPoint(split.Left.Body.Point));
+        }
+
+        /// <summary>
+        /// 5_10 floats a bubble right on top of its right half. The capture has to land on that half's
+        /// own body, not on a scene-level split-bubble slot, or a half's bubble is invisible to every
+        /// system that reads bodies.
+        /// </summary>
+        [Fact]
+        public void ABubbleOverAHalf_IsStoredOnThatHalfsOwnBody()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+
+            Assert.True(
+                Interaction.StepUntil(
+                    scene,
+                    () => split.Left.Body.Bubble != null || split.Right.Body.Bubble != null),
+                "no half ever picked up one of the level's bubbles");
+            Assert.Null(primary.WholeBody.Bubble);
+        }
+
+        [Fact]
+        public void SplitLevel_KeepsEachHalfsVisualOnItsOwnBody()
+        {
+            (GameScene _, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+
+            Assert.NotNull(split.Left.Body.Visual);
+            Assert.NotNull(split.Left.Body.BubbleAnimation);
+            Assert.NotNull(split.Left.Body.GhostBubbleAnimation);
+            Assert.NotSame(split.Left.Body.Visual, split.Right.Body.Visual);
+            Assert.NotSame(split.Left.Body.BubbleAnimation, split.Right.Body.BubbleAnimation);
+            Assert.NotSame(split.Left.Body.GhostBubbleAnimation, split.Right.Body.GhostBubbleAnimation);
+        }
+
         /// <summary>
         /// Holds the two halves on top of each other until the scene notices they touch. They hang on
         /// their own ropes, so a single placement springs apart before the intersection test runs.

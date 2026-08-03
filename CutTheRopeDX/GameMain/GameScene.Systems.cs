@@ -189,26 +189,11 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
 
-            // Lift every candy in the steam column in one pass. candies[0] keeps its split-candy
-            // carve-out (starL/starR halves); non-split candies[0] and index 1+ run the generic body.
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Lift every body in the steam column in one pass: whole candies and surviving split
+            // halves alike, since the column pushes on physics points and knows nothing of topology.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Steam))
             {
-                CandyContext ctx = candies[ci];
-                if (ci == 0 && twoParts != 2)
-                {
-                    if (!noCandyL)
-                    {
-                        _ = ApplyImpulse(starL);
-                    }
-                    if (!noCandyR)
-                    {
-                        _ = ApplyImpulse(starR);
-                    }
-                }
-                else if (!ctx.HasNoWholeBodyInPlay)
-                {
-                    _ = ApplyImpulse(ctx.point);
-                }
+                _ = ApplyImpulse(body.Point);
             }
 
         }
@@ -231,26 +216,10 @@ namespace CutTheRopeDX.GameMain
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
             _ = aniPool.AddChild(pumpDirt);
-            // Pump every candy in the flow in one pass. candies[0] keeps its split-candy carve-out
-            // (starL/starR halves); non-split candies[0] and index 1+ run the generic body.
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Pump every body in the flow in one pass: whole candies and surviving split halves alike.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Pump))
             {
-                CandyContext ctx = candies[ci];
-                if (ci == 0 && twoParts != 2)
-                {
-                    if (!noCandyL)
-                    {
-                        HandlePumpFlowPtSkin(p, starL, candyL);
-                    }
-                    if (!noCandyR)
-                    {
-                        HandlePumpFlowPtSkin(p, starR, candyR);
-                    }
-                }
-                else if (!ctx.HasNoWholeBodyInPlay)
-                {
-                    HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
-                }
+                HandlePumpFlowPtSkin(p, body.Point, body.Visual);
             }
             foreach (object bungee in bungees)
             {
@@ -270,8 +239,9 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ctx">The candy entering the tube.</param>
         public void OperateBambooTube(BambooTube bambooTube, CandyContext ctx)
         {
-            bool isPrimary = ctx == candies[0];
-            if (bambooTube == null || (isPrimary && twoParts != PARTS_NONE) || ctx.HasNoWholeBodyInPlay)
+            // A split candy has no whole body to swallow, so the lifecycle check below already
+            // refuses it: HasNoWholeBodyInPlay covers removed, hidden, and split alike.
+            if (bambooTube == null || ctx.HasNoWholeBodyInPlay)
             {
                 return;
             }
@@ -514,23 +484,10 @@ namespace CutTheRopeDX.GameMain
             }
             sg.hasSpider = false;
             // spiderTookCandy = true;
-            GameObject capturedCandy;
-            SplitCandyState split = candies[0].Lifecycle.Split;
-            if (capturedStar == starL)
-            {
-                _ = split?.Left.TryRemove(CandyRemovalReason.Spider);
-                capturedCandy = candyL;
-            }
-            else if (capturedStar == starR)
-            {
-                _ = split?.Right.TryRemove(CandyRemovalReason.Spider);
-                capturedCandy = candyR;
-            }
-            else
-            {
-                _ = candies[0].Lifecycle.TryRemove(CandyRemovalReason.Spider);
-                capturedCandy = candy;
-            }
+            // The spider takes whichever body its rope ends on - a whole candy or one split half.
+            CandyBody capturedBody = CandyBodyForPointOrNull(capturedStar) ?? candies[0].WholeBody;
+            _ = TryRemoveBody(capturedBody, CandyRemovalReason.Spider);
+            GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();
             capturedCandy.anchor = capturedCandy.parentAnchor = 18;
@@ -557,7 +514,7 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
-            ExhaustRocketForCandy(candies[0]);
+            ExhaustRocketForCandy(capturedBody.Owner);
             DetachSnailsForPoint(capturedStar);
             if (gameplayFlow.CanTriggerOutcome)
             {

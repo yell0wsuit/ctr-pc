@@ -9,28 +9,32 @@ namespace CutTheRopeDX.GameMain
     {
         /// <summary>
         /// Whether any candy body is still in play. Night-level sleep and lights-out loss must
-        /// continue for split halves, while ignoring the inactive whole-candy slot during a split.
+        /// continue for split halves, and must not end the level while the only candy is briefly
+        /// hidden inside a transporter.
         /// </summary>
         private bool AnyNightCandyBodyPresent()
         {
             List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
             {
-                if (ci == 0 && twoParts != 2)
+                CandyContext ctx = candies[ci];
+                if (ctx.Lifecycle.Presence == CandyPresence.Split)
                 {
+                    // A split candy has no whole body; its surviving halves are added below.
                     continue;
                 }
-                candyViews.Add(candies[ci].ToView());
+                candyViews.Add(ctx.ToView());
             }
 
-            List<CandyView> splitCandyViews = [];
-            if (twoParts != 2)
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                splitCandyViews.Add(new CandyView(starL.pos, noCandyL));
-                splitCandyViews.Add(new CandyView(starR.pos, noCandyR));
+                if (body.Role != CandyBodyRole.Whole)
+                {
+                    candyViews.Add(body.ToView());
+                }
             }
 
-            return CandyDecisions.AnyCandyBodyPresent(candyViews, splitCandyViews);
+            return CandyDecisions.AnyCandyBodyPresent(candyViews);
         }
 
         /// <summary>
@@ -70,19 +74,15 @@ namespace CutTheRopeDX.GameMain
                 ctx.lightBulb?.SyncFromContext(ctx);
             }
 
-            // Split candy halves are still legacy singleton points, so they need explicit
-            // collision with light emitters. Whole-body collisions use ResolveCandyCollisions().
-            if (twoParts != 2)
+            // ResolveCandyCollisions pairs logical candies, so it never sees a split half. Each
+            // surviving half still has to collide with every light emitter.
+            foreach (CandyContext ctx in LightEmitters())
             {
-                foreach (CandyContext ctx in LightEmitters())
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.LightCollision))
                 {
-                    if (!noCandyL)
+                    if (body.Role != CandyBodyRole.Whole)
                     {
-                        HandleCandyIntersection(ctx.point, starL, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
-                    }
-                    if (!noCandyR)
-                    {
-                        HandleCandyIntersection(ctx.point, starR, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
+                        HandleCandyIntersection(ctx.point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
                 }
             }

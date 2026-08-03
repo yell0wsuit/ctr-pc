@@ -11,28 +11,112 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
-        private CandyContext CandyForPointOrNull(ConstraintedPoint point)
+        /// <summary>
+        /// Every physical candy body the scene currently offers to its systems: one whole body per
+        /// present candy and one per surviving half of a split candy. A candy that is removed or
+        /// hidden in transport contributes nothing, so a system iterating this never has to ask
+        /// whether the body it is holding still exists.
+        /// </summary>
+        /// <returns>The active bodies, in candy order and left-before-right within a split candy.</returns>
+        internal IEnumerable<CandyBody> ActiveCandyBodies()
         {
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].point == point)
+                IReadOnlyList<CandyBody> bodies = candies[i].Lifecycle.ActiveBodies;
+                for (int b = 0; b < bodies.Count; b++)
                 {
-                    return candies[i];
+                    yield return bodies[b];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every active body that the specified system is allowed to act on, filtered by
+        /// <see cref="CandyBodyEligibility"/>.
+        /// </summary>
+        /// <param name="interaction">The scene system asking for candidates.</param>
+        /// <returns>The eligible active bodies, in <see cref="ActiveCandyBodies()"/> order.</returns>
+        private IEnumerable<CandyBody> ActiveCandyBodies(CandyInteraction interaction)
+        {
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Allows(interaction))
+                {
+                    yield return body;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves the active body standing on a physics point. A rope tail, a snail's anchor, or a
+        /// hand's constraint all identify a candy this way.
+        /// </summary>
+        /// <param name="point">The physics point to resolve.</param>
+        /// <returns>
+        /// The active body whose <see cref="CandyBody.Point"/> is <paramref name="point"/>, or
+        /// <see langword="null"/> when no active body owns it — including the dormant whole body of a
+        /// split candy and the body of a candy that was removed or hidden.
+        /// </returns>
+        internal CandyBody CandyBodyForPointOrNull(ConstraintedPoint point)
+        {
+            if (point == null)
+            {
+                return null;
+            }
+
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Point == point)
+                {
+                    return body;
                 }
             }
 
             return null;
         }
 
-        private bool IsSpiderGrabbableCandyPoint(ConstraintedPoint point)
+        /// <summary>
+        /// Resolves the active body a free bubble is currently carrying.
+        /// </summary>
+        /// <param name="bubbleObj">The bubble to resolve.</param>
+        /// <returns>
+        /// The body whose <see cref="CandyBody.Bubble"/> is <paramref name="bubbleObj"/>, or
+        /// <see langword="null"/> when the bubble carries nothing.
+        /// </returns>
+        private CandyBody CandyBodyForBubbleOrNull(GameObject bubbleObj)
         {
-            if (point == star || point == starL || point == starR)
+            if (bubbleObj == null)
             {
-                return true;
+                return null;
             }
 
-            CandyContext ctx = CandyForPointOrNull(point);
-            return ctx != null && ctx.Capabilities.CanBeGrabbedBySpider;
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Bubble == bubbleObj)
+                {
+                    return body;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// The point the camera follows: the primary candy's first active body, which is its left
+        /// half while it is split and its whole body otherwise. Falls back to the whole body's point
+        /// when the primary has no active body at all, so the camera never loses its target.
+        /// </summary>
+        /// <returns>The camera's focus point.</returns>
+        private ConstraintedPoint CameraFocusPoint()
+        {
+            IReadOnlyList<CandyBody> primaryBodies = candies[0].Lifecycle.ActiveBodies;
+            return primaryBodies.Count > 0 ? primaryBodies[0].Point : candies[0].WholeBody.Point;
+        }
+
+        private bool IsSpiderGrabbableCandyPoint(ConstraintedPoint point)
+        {
+            CandyBody body = CandyBodyForPointOrNull(point);
+            return body != null && body.Owner.Capabilities.CanBeGrabbedBySpider;
         }
 
         private IEnumerable<CandyContext> LightEmitters()
@@ -168,35 +252,17 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Releases all ropes attached to the active candy body or candy half.
+        /// Releases every rope holding one candy body. A split half also drops the ropes authored on
+        /// its logical candy's whole point, which is where a <c>&lt;grab&gt;</c> without a
+        /// <c>part</c> attribute lands.
         /// </summary>
-        /// <param name="left"><see langword="true"/> to release ropes attached to the left candy half; <see langword="false"/> to release the right half or whole candy.</param>
-        public void ReleaseAllRopes(bool left)
+        /// <param name="body">The body whose ropes are released.</param>
+        public void ReleaseRopesForBody(CandyBody body)
         {
-            int grabCount = bungees.Count;
-            for (int i = 0; i < grabCount; i++)
+            ReleaseRopesForPoint(body.Point);
+            if (body.Role != CandyBodyRole.Whole)
             {
-                Grab grab = bungees[i];
-                Bungee rope = grab.rope;
-                if (rope != null && (rope.tail == star || (rope.tail == starL && left) || (rope.tail == starR && !left)))
-                {
-                    if (rope.cut == -1)
-                    {
-                        rope.SetCut(rope.parts.Count - 2);
-                    }
-                    else
-                    {
-                        rope.hideTailParts = true;
-                    }
-                    if (grab.hasSpider && grab.spiderActive)
-                    {
-                        SpiderBusted(grab);
-                    }
-                    if (grab.gun && grab.gunCup != null && RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, grab.gunCup.color))
-                    {
-                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_DROP_AND_HIDE);
-                    }
-                }
+                ReleaseRopesForPoint(body.Owner.WholeBody.Point);
             }
         }
 
@@ -410,10 +476,7 @@ namespace CutTheRopeDX.GameMain
                 targetAnimationController?.PlayChewing();
                 CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, targetAnimationController?.SkinDefinition);
             }
-            if (candyBubble != null)
-            {
-                PopCandyBubble(false);
-            }
+            PopCandyBubble(candies[0].WholeBody);
             // The primary is already Removed(Eaten) here: the single caller runs behind AllEaten,
             // which cannot pass while an eatable candy still has a body. So the win timeline below
             // owns the visual outright and no longer has to raise a gone-flag of its own first.
@@ -435,7 +498,7 @@ namespace CutTheRopeDX.GameMain
             _ = aniPool.AddChild(candy);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             CalculateScore();
-            ReleaseAllRopes(false);
+            ReleaseRopesForBody(candies[0].WholeBody);
             ExhaustAllActiveRockets();
             DetachActiveSnails();
             DetachActiveHands();
@@ -542,106 +605,54 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Pops the bubble currently holding the candy or one of its split halves.
+        /// Pops the bubble carrying one candy body, releasing the bubble's ghost (if any) and
+        /// clearing the body's bubble overlays. No-op when the body carries no bubble.
         /// </summary>
-        /// <param name="left"><see langword="true"/> to pop the left candy bubble when the candy is split; <see langword="false"/> to pop the right or whole-candy bubble.</param>
-        public void PopCandyBubble(bool left)
+        /// <param name="body">The body whose bubble is popped.</param>
+        public void PopCandyBubble(CandyBody body)
         {
-            if (twoParts == 2)
+            if (body?.Bubble != null)
             {
-                if (ghosts != null)
-                {
-                    foreach (Ghost ghost in ghosts)
-                    {
-                        if (ghost != null)
-                        {
-                            if (ghost.bubble == candyBubble)
-                            {
-                                ghost.cyclingEnabled = true;
-                                ghost.ResetToState(1);
-                            }
-                            if (shouldRestoreSecondGhost && ghost.bubble == candyBubbleR)
-                            {
-                                ghost.cyclingEnabled = true;
-                                ghost.ResetToState(1);
-                                candyBubbleR = null;
-                                shouldRestoreSecondGhost = false;
-                            }
-                        }
-                    }
-                }
-                candyBubble = null;
-                candyBubbleAnimation.visible = false;
-                if (isCandyInGhostBubbleAnimationLoaded)
-                {
-                    candyGhostBubbleAnimation.visible = false;
-                }
-                PopBubbleAtXY(candy.x, candy.y);
-                return;
+                PopCandyBubbleAt(body, Vect(body.Visual.x, body.Visual.y));
             }
-            if (left)
-            {
-                if (ghosts != null)
-                {
-                    foreach (Ghost ghost2 in ghosts)
-                    {
-                        if (ghost2 != null && ghost2.bubble == candyBubbleL)
-                        {
-                            ghost2.cyclingEnabled = true;
-                            ghost2.ResetToState(1);
-                        }
-                    }
-                }
-                candyBubbleL = null;
-                candyBubbleAnimationL.visible = false;
-                if (isCandyInGhostBubbleAnimationLeftLoaded)
-                {
-                    candyGhostBubbleAnimationL.visible = false;
-                }
-                PopBubbleAtXY(candyL.x, candyL.y);
-                return;
-            }
-            if (ghosts != null)
-            {
-                foreach (Ghost ghost3 in ghosts)
-                {
-                    if (ghost3 != null && ghost3.bubble == candyBubbleR)
-                    {
-                        ghost3.cyclingEnabled = true;
-                        ghost3.ResetToState(1);
-                    }
-                }
-            }
-            candyBubbleR = null;
-            candyBubbleAnimationR.visible = false;
-            if (isCandyInGhostBubbleAnimationRightLoaded)
-            {
-                candyGhostBubbleAnimationR.visible = false;
-            }
-            PopBubbleAtXY(candyR.x, candyR.y);
         }
 
-        /// <summary>Pops the bubble carrying a specific additional candy (candies[1+]).</summary>
-        public void PopCandyBubble(CandyContext ctx)
+        /// <summary>
+        /// Pops the bubble carrying one candy body and plays the pop effect at an explicit position,
+        /// so a device that snatches the candy away (a mechanical hand's claw) can burst the bubble
+        /// where it took it rather than where the body now sits.
+        /// </summary>
+        /// <param name="body">The body whose bubble is popped; ignored when it carries no bubble.</param>
+        /// <param name="effectPosition">World position for the pop animation and sound.</param>
+        public void PopCandyBubbleAt(CandyBody body, Vector effectPosition)
         {
-            if (ctx == null || ctx.bubble == null)
+            if (body?.Bubble == null)
             {
                 return;
             }
-            if (ctx.bubbleHasGhost)
+
+            GameObject popped = body.Bubble;
+            EnableGhostCycleForBubble(popped);
+
+            // A merge can fold both halves' ghost bubbles onto the merged candy, parking the second
+            // one behind the first. Popping the survivor releases the ghost that was parked with it.
+            if (pendingSecondGhostBubble != null && body.Role == CandyBodyRole.Whole)
             {
-                EnableGhostCycleForBubble(ctx.bubble);
+                EnableGhostCycleForBubble(pendingSecondGhostBubble);
+                pendingSecondGhostBubble = null;
             }
-            if (ctx.bubble is Bubble bubble)
+
+            if (popped is Bubble bubble)
             {
                 bubble.capturedByBulb = false;
             }
-            ctx.WholeBody.Bubble = null;
-            ctx.WholeBody.BubbleHasGhost = false;
-            ctx.lightBulb?.SyncFromContext(ctx);
-            _ = (ctx.candyBubbleAnimation?.visible = false);
-            _ = (ctx.candyGhostBubbleAnimation?.visible = false);
-            PopBubbleAtXY(ctx.candy.x, ctx.candy.y);
+
+            body.Bubble = null;
+            body.BubbleHasGhost = false;
+            body.Owner.lightBulb?.SyncFromContext(body.Owner);
+            _ = (body.BubbleAnimation?.visible = false);
+            _ = (body.GhostBubbleAnimation?.visible = false);
+            PopBubbleAtXY(effectPosition.X, effectPosition.Y);
         }
 
         /// <summary>
@@ -718,88 +729,51 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Destroys a whole candy that touched a hazard (spike, axe, ...): pops its bubble, removes
-        /// it as a hazard loss, releases its ropes, detaches transports, schedules the loss, and flags
-        /// ghosts. The per-index effect calls still differ deliberately: candies[0] uses the singleton
-        /// bubble and rope paths (candyBubble, ReleaseAllRopes + gun-cup drop), which are NOT
-        /// equivalent to the per-candy paths used by candies[1..]. Removal itself is now common.
+        /// Permanently removes one active body for the given reason, routing the removal to whichever
+        /// owner actually holds that body's state: a whole body's own lifecycle, or the matching half
+        /// of its logical candy's split state.
         /// </summary>
-        /// <param name="index">Index of the candy in <c>candies</c>.</param>
-        /// <param name="ctx">The candy being destroyed.</param>
-        private void BreakCandyFromHazard(int index, CandyContext ctx)
+        /// <param name="body">The body being removed.</param>
+        /// <param name="reason">The reason the body is removed.</param>
+        /// <returns>
+        /// <see langword="true"/> when the body transitioned to removed; otherwise,
+        /// <see langword="false"/> when it was already removed or the transition is illegal.
+        /// </returns>
+        private static bool TryRemoveBody(CandyBody body, CandyRemovalReason reason)
         {
-            if (index == 0)
+            SplitCandyState split = body.Owner.Lifecycle.Split;
+            return body.Role switch
             {
-                if (candyBubble != null)
-                {
-                    PopCandyBubble(false);
-                }
-            }
-            else
-            {
-                PopCandyBubble(ctx);
-            }
-            ctx.candy.x = ctx.point.pos.X;
-            ctx.candy.y = ctx.point.pos.Y;
-            _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard);
-            ExhaustRocketForCandy(ctx);
-            SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
-            if (index == 0)
-            {
-                ReleaseAllRopes(false);
-            }
-            else
-            {
-                ReleaseRopesForPoint(ctx.point);
-            }
-            DetachHandsForPoint(ctx.point);
-            DetachSnailsForPoint(ctx.point);
-            DropMouseCandyForPoint(ctx.point);
-            if (gameplayFlow.CanTriggerOutcome)
-            {
-                ScheduleGameLost(0.3f);
-            }
-            MarkGhostsCandyBreak();
+                CandyBodyRole.LeftHalf => split?.Left.TryRemove(reason) == true,
+                CandyBodyRole.RightHalf => split?.Right.TryRemove(reason) == true,
+                CandyBodyRole.Whole => body.Owner.Lifecycle.TryRemove(reason),
+                _ => false,
+            };
         }
 
         /// <summary>
-        /// Destroys one half of the split candy (candies[0], <c>twoParts != 2</c>) that touched a
-        /// hazard. Keeps the half-aware singleton effect calls verbatim.
+        /// Destroys one candy body that touched a hazard (spike, axe, ...): pops its bubble, removes
+        /// it as a hazard loss, releases its ropes, detaches its carriers, schedules the loss, and
+        /// flags ghosts. A split half loses only itself; its sibling keeps playing until the
+        /// scheduled loss lands.
         /// </summary>
-        /// <param name="left"><see langword="true"/> when the left half was hit; otherwise the right half.</param>
-        private void BreakSplitCandyHalf(bool left)
+        /// <param name="body">The body being destroyed.</param>
+        private void BreakCandyBody(CandyBody body)
         {
-            if (left)
-            {
-                if (candyBubbleL != null)
-                {
-                    PopCandyBubble(true);
-                }
-            }
-            else if (candyBubbleR != null)
-            {
-                PopCandyBubble(false);
-            }
-            float breakX, breakY;
-            SplitCandyState split = candies[0].Lifecycle.Split;
-            if (left)
-            {
-                breakX = candyL.x;
-                breakY = candyL.y;
-                _ = split?.Left.TryRemove(CandyRemovalReason.Hazard);
-            }
-            else
-            {
-                breakX = candyR.x;
-                breakY = candyR.y;
-                _ = split?.Right.TryRemove(CandyRemovalReason.Hazard);
-            }
-            ExhaustRocketForCandy(candies[0]);
-            SpawnCandyBreakParticles(breakX, breakY);
-            ReleaseAllRopes(left);
-            DetachHandsForPoint(candies[0].point);
-            DetachSnailsForPoint(candies[0].point);
-            if (gameplayFlow.CanTriggerOutcome && (!noCandyL || !noCandyR))
+            CandyContext ctx = body.Owner;
+            PopCandyBubble(body);
+            body.Visual.x = body.Point.pos.X;
+            body.Visual.y = body.Point.pos.Y;
+            _ = TryRemoveBody(body, CandyRemovalReason.Hazard);
+            ExhaustRocketForCandy(ctx);
+            SpawnCandyBreakParticles(body.Visual.x, body.Visual.y);
+            ReleaseRopesForBody(body);
+            // Carriers only ever hold a whole body, so they are always detached from the logical
+            // candy's whole point - which for a whole body is this body's own point.
+            DetachHandsForPoint(ctx.WholeBody.Point);
+            DetachSnailsForPoint(ctx.WholeBody.Point);
+            DropMouseCandyForPoint(ctx.WholeBody.Point);
+            if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);
             }

@@ -39,9 +39,10 @@ namespace CutTheRopeDX.GameMain
         public string candyNumber;
 
         // Migration accessors: read-only forwards onto WholeBody that keep pre-lifecycle call sites
-        // compiling while physical state moves into CandyBody. They hold no state of their own.
-        // Task 9 migrates the remaining callers to WholeBody/ActiveBodies and Task 11 deletes these.
-        // They keep the old field names (and so suppress IDE1006) purely to bound that migration diff.
+        // compiling. They hold no state of their own. Task 9 routed every scene system through
+        // CandyBody, so only the handful still read by the scene's own primary-candy aliases and by
+        // the interaction tests remain; Task 11 deletes them with those aliases. They keep the old
+        // field names (and so suppress IDE1006) purely to bound that migration diff.
 #pragma warning disable IDE1006
 
         /// <summary>Migration accessor for <see cref="CandyBody.Point"/> on the whole body.</summary>
@@ -59,26 +60,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Migration accessor for <see cref="CandyBody.BlinkAnimation"/> on the whole body.</summary>
         public Animation candyBlink => WholeBody.BlinkAnimation;
 
-        /// <summary>Migration accessor for <see cref="CandyBody.BubbleAnimation"/> on the whole body.</summary>
-        public Animation candyBubbleAnimation => WholeBody.BubbleAnimation;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.GhostBubbleAnimation"/> on the whole body.</summary>
-        public CandyInGhostBubbleAnimation candyGhostBubbleAnimation => WholeBody.GhostBubbleAnimation;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.ResidualRotation"/> on the whole body.</summary>
-        public float lastCandyRotateDelta => WholeBody.ResidualRotation;
-
         /// <summary>Migration accessor for <see cref="CandyBody.Bubble"/> on the whole body.</summary>
         public GameObject bubble => WholeBody.Bubble;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.BubbleHasGhost"/> on the whole body.</summary>
-        public bool bubbleHasGhost => WholeBody.BubbleHasGhost;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Splashes"/> on the whole body.</summary>
-        public bool splashes => WholeBody.Splashes;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Underwater"/> on the whole body.</summary>
-        public bool underwater => WholeBody.Underwater;
 
 #pragma warning restore IDE1006
 
@@ -245,7 +228,29 @@ namespace CutTheRopeDX.GameMain
         internal CandyContext(CandyBody wholeBody)
         {
             WholeBody = wholeBody;
+            wholeBody.AttachTo(this);
             Lifecycle = CandyLifecycle.CreatePresent(wholeBody);
+        }
+
+        /// <summary>
+        /// Replaces this candy's whole body with the two authored halves and takes ownership of their
+        /// bodies, so a scene system holding a half can still reach this logical candy.
+        /// </summary>
+        /// <param name="split">The owned split-half state built from the map's halves.</param>
+        /// <returns>
+        /// <see langword="true"/> when the lifecycle accepted the split; otherwise,
+        /// <see langword="false"/> and no body changes owner.
+        /// </returns>
+        internal bool TryBeginSplit(SplitCandyState split)
+        {
+            if (!Lifecycle.TryBeginSplit(split))
+            {
+                return false;
+            }
+
+            split.Left.Body.AttachTo(this);
+            split.Right.Body.AttachTo(this);
+            return true;
         }
     }
 }

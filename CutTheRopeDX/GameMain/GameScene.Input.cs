@@ -13,15 +13,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Handles tapping a candy bubble and pops it when the touch is inside the bubble touch area.
         /// </summary>
-        /// <param name="s">Candy constraint point associated with the bubble.</param>
+        /// <param name="body">Candy body whose bubble the touch may pop.</param>
         /// <param name="tx">Touch x-coordinate in screen space.</param>
         /// <param name="ty">Touch y-coordinate in screen space.</param>
         /// <returns><see langword="true"/> when the bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
-        public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
+        public bool HandleBubbleTouchXY(CandyBody body, float tx, float ty)
         {
-            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
+            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, body.Point.pos.X - 60f, body.Point.pos.Y - 60f, 120f, 120f))
             {
-                PopCandyBubble(s == starL);
+                PopCandyBubble(body);
                 RegisterBubblePopped();
                 return true;
             }
@@ -111,11 +111,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (snailobjects != null && twoParts == 2)
+            if (snailobjects != null)
             {
-                for (int ci = 0; ci < candies.Count; ci++)
+                // Shaking a snail off only ever applies to a whole candy, which the body-role table
+                // enforces for the snail interaction.
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Snail))
                 {
-                    ConstraintedPoint p = candies[ci].point;
+                    ConstraintedPoint p = body.Point;
                     if (PointInRect(worldX, worldY, p.pos.X - 30f, p.pos.Y - 30f, 60f, 60f) && p.weight > 1f)
                     {
                         p.SetWeight(p.weight - 3f);
@@ -128,36 +130,11 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (twoParts != 2)
+            // Tapping a bubbled body pops its bubble, whether that body is a whole candy or a half.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bubble))
             {
-                if (candyBubbleL != null && HandleBubbleTouchXY(starL, tx, ty))
+                if (body.Bubble != null && HandleBubbleTouchXY(body, tx, ty))
                 {
-                    return true;
-                }
-                if (candyBubbleR != null && HandleBubbleTouchXY(starR, tx, ty))
-                {
-                    return true;
-                }
-            }
-            for (int ci = 0; ci < candies.Count; ci++)
-            {
-                CandyContext ctx = candies[ci];
-                if (ci == 0)
-                {
-                    if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
-                    {
-                        return true;
-                    }
-                    continue;
-                }
-                if (ctx.bubble == null)
-                {
-                    continue;
-                }
-                if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, ctx.point.pos.X - 60f, ctx.point.pos.Y - 60f, 120f, 120f))
-                {
-                    PopCandyBubble(ctx);
-                    RegisterBubblePopped();
                     return true;
                 }
             }
@@ -321,15 +298,9 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
 
-            for (int ci = 0; ci < candies.Count; ci++)
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.HasNoWholeBodyInPlay) || ctx.point == null)
-                {
-                    continue;
-                }
-
-                if (HandleConveyorTouchConstraintedPointXY(ctx.point, tx, ty))
+                if (body.Point != null && HandleConveyorTouchConstraintedPointXY(body.Point, tx, ty))
                 {
                     return true;
                 }
@@ -801,7 +772,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
-                            if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
+                            if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && CandyBodyForBubbleOrNull(bubble) == null)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
                                 {

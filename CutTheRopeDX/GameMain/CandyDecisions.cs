@@ -29,12 +29,12 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>True when any candy body that participates in candy gameplay is still active.</summary>
-        public static bool AnyCandyBodyPresent(IReadOnlyList<CandyView> candies, IReadOnlyList<CandyView> splitCandies)
-        {
-            return AnyCandyBodyPresent(candies) || AnyCandyBodyPresent(splitCandies);
-        }
-
-        private static bool AnyCandyBodyPresent(IReadOnlyList<CandyView> candies)
+        /// <param name="candies">Physical snapshots of the bodies to test.</param>
+        /// <returns>
+        /// <see langword="true"/> when at least one edible body is still in play or hidden inside a
+        /// transporter; otherwise <see langword="false"/>.
+        /// </returns>
+        public static bool AnyCandyBodyPresent(IReadOnlyList<CandyView> candies)
         {
             if (candies == null)
             {

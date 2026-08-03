@@ -1,4 +1,5 @@
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -26,7 +27,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
-            scene.ReleaseAllRopes(false);
+            scene.ReleaseRopesForBody(scene.Candy().WholeBody);
             for (int frame = 0; frame < MaxOutcomeFrames && !scene.gameplayFlow.TransitionActive; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
@@ -53,7 +54,7 @@ namespace CutTheRopeDX.Tests
             // Level 2-1 has no hazards and the target is outside the candy's fall line.
             (GameScene scene, RecordingSceneDelegate recorder) = Load(level: 0);
 
-            scene.ReleaseAllRopes(false);
+            scene.ReleaseRopesForBody(scene.Candy().WholeBody);
             for (int frame = 0; frame < MaxOutcomeFrames && recorder.LostCount == 0; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
@@ -69,7 +70,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
-            scene.ReleaseAllRopes(false);
+            scene.ReleaseRopesForBody(scene.Candy().WholeBody);
             for (int frame = 0; frame < MaxOutcomeFrames && recorder.LostCount == 0; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);

@@ -30,15 +30,15 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Ants only ever carry a whole candy, which the body-role table already enforces.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Ants))
             {
-                CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.HasNoWholeBodyInPlay) || ctx.point == null || !ctx.Capabilities.CanAttachAnts)
+                if (body.Point == null || !body.Owner.Capabilities.CanAttachAnts)
                 {
                     continue;
                 }
 
-                UpdateAntConveyorForCandy(ctx, delta);
+                UpdateAntConveyorForCandy(body.Owner, delta);
             }
         }
 
@@ -290,14 +290,7 @@ namespace CutTheRopeDX.GameMain
                 PlayAntConveyorAttachSound();
             }
 
-            if (ctx == candies[0] && candyBubble != null)
-            {
-                PopCandyBubble(false);
-            }
-            else if (ctx.bubble != null)
-            {
-                PopCandyBubble(ctx);
-            }
+            PopCandyBubble(ctx.WholeBody);
 
             if (ctx.point.weight > 1f)
             {

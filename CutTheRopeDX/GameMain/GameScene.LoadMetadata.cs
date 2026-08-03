@@ -192,8 +192,13 @@ namespace CutTheRopeDX.GameMain
 
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
             candy.bb = GetCandyBoundingBox();
-            _ = (candyL?.bb = GetSplitCandyBoundingBox());
-            _ = (candyR?.bb = GetSplitCandyBoundingBox());
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Role != CandyBodyRole.Whole)
+                {
+                    body.Visual.bb = GetSplitCandyBoundingBox();
+                }
+            }
 
             // candiesConnected: join the two candies with a mutual elastic. Both candy points are
             // passed directly as head/tail; Bungee preserves their weights and skips integrating

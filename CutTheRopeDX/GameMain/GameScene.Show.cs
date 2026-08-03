@@ -46,8 +46,6 @@ namespace CutTheRopeDX.GameMain
             conveyors.ProcessItems(bungees);
             conveyors.ProcessItems(LightEmitterVisuals());
 
-            // Load two-parts candy bubble animations
-            LoadCandyBubbleAnimations();
             foreach (object obj in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj;
@@ -59,9 +57,10 @@ namespace CutTheRopeDX.GameMain
             starsCollected = 0;
             // Update RPC with current level info (on start/restart)
             Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
-            candyBubble = null;
-            candyBubbleL = null;
-            candyBubbleR = null;
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                body.Bubble = null;
+            }
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 targets[ti].controller?.ResetBlink();
@@ -149,7 +148,7 @@ namespace CutTheRopeDX.GameMain
                 camera.type = CAMERATYPE.CAMERASPEEDPIXELS;
                 camera.speed = 20f;
                 cameraMoveMode = 0;
-                ConstraintedPoint constraintedPoint = twoParts != 2 ? starL : star;
+                ConstraintedPoint constraintedPoint = CameraFocusPoint();
                 float cameraStartX;
                 float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)

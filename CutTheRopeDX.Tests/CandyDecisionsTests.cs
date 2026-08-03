@@ -42,10 +42,10 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void AnyCandyBodyPresent_TrueWhenSplitHalfRemains()
         {
-            List<CandyView> candies = [];
-            List<CandyView> splitCandies = [Candy(10, 10, false), Candy(20, 20, true)];
+            // A split candy contributes one snapshot per surviving half, not a whole-body snapshot.
+            List<CandyView> splitHalves = [Candy(10, 10, false), Candy(20, 20, true)];
 
-            Assert.True(CandyDecisions.AnyCandyBodyPresent(candies, splitCandies));
+            Assert.True(CandyDecisions.AnyCandyBodyPresent(splitHalves));
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Tests
                 new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
             ];
 
-            Assert.False(CandyDecisions.AnyCandyBodyPresent(candies, []));
+            Assert.False(CandyDecisions.AnyCandyBodyPresent(candies));
         }
 
         [Fact]

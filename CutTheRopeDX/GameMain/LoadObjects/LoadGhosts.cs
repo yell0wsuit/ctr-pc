@@ -39,7 +39,6 @@ namespace CutTheRopeDX.GameMain
                 bouncers,
                 this);
             ghosts.Add(ghost);
-            EnsureCandyGhostBubbleAnimations();
         }
     }
 }

@@ -137,6 +137,23 @@ namespace CutTheRopeDX.Tests.Interactions
             return (RecordingSceneDelegate)scene.gameSceneDelegate;
         }
 
+        /// <summary>Every physical candy body the scene currently offers to its systems.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The active bodies, in scene enumeration order.</returns>
+        public static List<CandyBody> ActiveBodies(this GameScene scene)
+        {
+            return [.. scene.ActiveCandyBodies()];
+        }
+
+        /// <summary>The active body standing on a physics point, or null when no body owns it.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="point">Physics point to resolve.</param>
+        /// <returns>The owning body, or <see langword="null"/>.</returns>
+        public static CandyBody BodyForPoint(this GameScene scene, ConstraintedPoint point)
+        {
+            return scene.CandyBodyForPointOrNull(point);
+        }
+
         /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns><see langword="true"/> when the primary candy is removed, hidden, or split.</returns>
