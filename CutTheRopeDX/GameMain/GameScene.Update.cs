@@ -352,7 +352,7 @@ namespace CutTheRopeDX.GameMain
                                 for (int ci = 0; ci < candies.Count; ci++)
                                 {
                                     CandyContext ctx = candies[ci];
-                                    bool gone = CandyGone(ci, ctx);
+                                    bool gone = ctx.HasNoWholeBodyInPlay;
                                     bool chosen = ci == 0 ? flag : candyRotated[ci];
                                     if (!gone && !chosen && constraintedPoint2 == ctx.point)
                                     {
@@ -451,7 +451,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             // Per-candy, matching the extras branch below: only a hand holding
                             // THIS candy freezes its rotation coast.
-                            if (!flag && !noCandy && ctx.capturingHand == null)
+                            if (!flag && !ctx.HasNoWholeBodyInPlay && ctx.capturingHand == null)
                             {
                                 candyMain.rotation += MIN(5, lastCandyRotateDelta);
                                 lastCandyRotateDelta *= 0.98f;
@@ -477,15 +477,13 @@ namespace CutTheRopeDX.GameMain
                 candyConnector.Update(delta * ropePhysicsSpeed);
             }
 
-            // Step every candy point + visual in one pass. candies[0]'s "gone" flag is the
-            // singleton `noCandy` (not synced to candies[0].noCandy - see plan); index 1+ use
-            // their own noCandy. During split-candy, singleton noCandy is true, so candies[0] is
-            // skipped here and its halves are stepped by the twoParts block below.
+            // Step every candy point + visual in one pass. A candy is skipped whenever its
+            // lifecycle has no whole body in play, so a split candies[0] is skipped here and its
+            // halves are stepped by the twoParts block below.
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                bool gone = CandyGone(ci, ctx);
-                if (gone)
+                if (ctx.HasNoWholeBodyInPlay)
                 {
                     continue;
                 }
@@ -525,7 +523,6 @@ namespace CutTheRopeDX.GameMain
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
                         _ = candies[0].Lifecycle.TryCompleteMerge();
-                        noCandy = false;
                         int candiesUnitedCount = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
                         Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
                         if (candiesUnitedCount == 100)
@@ -689,7 +686,7 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     // Which candy (if any) collects this star. candies[0] keeps its split-aware
-                    // test (singleton `noCandy` / candyL,candyR halves); index 1+ are whole candies.
+                    // test (whole body / candyL,candyR halves); index 1+ are whole candies.
                     bool candyTouchesStar = false;
                     CandyContext collectingCandy = null;
                     for (int ci = 0; ci < candies.Count; ci++)
@@ -701,7 +698,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         bool touches = ci == 0
                             ? (twoParts == 2
-                                ? GameObject.ObjectsIntersect(candy, star) && !noCandy
+                                ? GameObject.ObjectsIntersect(candy, star) && !ctx.HasNoWholeBodyInPlay
                                 : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
                                   (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
                             : !ctx.HasNoWholeBodyInPlay && GameObject.ObjectsIntersect(ctx.candy, star);
@@ -832,7 +829,7 @@ namespace CutTheRopeDX.GameMain
                         CandyContext ctx = candies[ci];
                         if (ci == 0)
                         {
-                            if (noCandy || bubble3.popped
+                            if (ctx.HasNoWholeBodyInPlay || bubble3.popped
                                 || !BubbleCapture.Captures(Vect(candy.x, candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                             {
                                 continue;
@@ -1534,7 +1531,7 @@ namespace CutTheRopeDX.GameMain
                 float spikeCollisionRadius = 15f;
                 // Break whichever candy touches the spike, in one pass. candies[0] is tested first
                 // (preserving priority) and keeps its exact singleton effect calls (PopCandyBubble(false),
-                // ReleaseAllRopes(false), singleton noCandy) - these are NOT equivalent to the per-candy
+                // ReleaseAllRopes(false)) - these are NOT equivalent to the per-candy
                 // calls (gun-cup drop + starR ropes; singleton candyBubble + split-restore). Split
                 // candies[0] keeps its half-aware branch. Decision routed through BarrierCollision.Hits.
                 if (!spike.electro || (spike.electro && spike.electroOn))
@@ -1578,7 +1575,7 @@ namespace CutTheRopeDX.GameMain
                             return;
                         }
 
-                        bool gone = CandyGone(ci, ctx);
+                        bool gone = ctx.HasNoWholeBodyInPlay;
                         if (gone || ctx.inLantern)
                         {
                             continue;
@@ -1636,7 +1633,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        if (CandyGone(ci, ctx))
+                        if (ctx.HasNoWholeBodyInPlay)
                         {
                             continue;
                         }
@@ -1748,7 +1745,7 @@ namespace CutTheRopeDX.GameMain
                         for (int ci = 0; ci < candies.Count; ci++)
                         {
                             CandyContext ctx = candies[ci];
-                            bool gone = CandyGone(ci, ctx);
+                            bool gone = ctx.HasNoWholeBodyInPlay;
                             if (!SnailAttach.ShouldAttach(gone, ctx.Capabilities.CanBeDraggedBySnail, GameObject.ObjectsIntersect(ctx.candy, snail)))
                             {
                                 continue;
@@ -1936,11 +1933,7 @@ namespace CutTheRopeDX.GameMain
                         ctx.candy.y = ctx.point.pos.Y;
                         if (GameObject.ObjectsIntersect(ctx.candy, t.targetObject))
                         {
-                            ctx.noCandy = true;
-                            if (ci == 0)
-                            {
-                                noCandy = true;
-                            }
+                            _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.Eaten);
                             ExhaustRocketForCandy(ctx);
                             ReleaseRopesForPoint(ctx.point);
                             // Drop this candy's riders here, not at GameWon(). With one candy the
@@ -1960,13 +1953,14 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                // Win when every candy has been consumed, excluding candies hidden in transport.
-                List<CandyView> allCandyViews = [];
+                // Win only when every edible candy reached Removed(Eaten). A candy still in play,
+                // hidden in transport, split, or removed by a hazard never satisfies this.
+                List<CandyOutcomeView> allCandyOutcomes = [];
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    allCandyViews.Add(candies[ci].ToView());
+                    allCandyOutcomes.Add(candies[ci].ToOutcomeView());
                 }
-                if (CandyDecisions.AllConsumed(allCandyViews))
+                if (CandyDecisions.AllEaten(allCandyOutcomes))
                 {
                     GameWon();
                     return;
@@ -1981,11 +1975,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                ctx.noCandy = true;
-                if (ci == 0)
-                {
-                    noCandy = true;
-                }
+                _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.OffScreen);
                 ExhaustRocketForCandy(ctx);
                 if (ci == 0)
                 {
@@ -2034,7 +2024,7 @@ namespace CutTheRopeDX.GameMain
                     return;
                 }
             }
-            if (special != 0 && special == 1 && !noCandy && candyBubble != null && candy.y < 400f && candy.x > 1200f)
+            if (special != 0 && special == 1 && !candies[0].HasNoWholeBodyInPlay && candyBubble != null && candy.y < 400f && candy.x > 1200f)
             {
                 special = 0;
                 foreach (object obj16 in tutorials)

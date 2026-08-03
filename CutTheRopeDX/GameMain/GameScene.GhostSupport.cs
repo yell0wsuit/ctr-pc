@@ -48,7 +48,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private ConstraintedPoint FallbackStarPoint()
         {
-            return !noCandy && star != null ? star : star ?? starL ?? starR;
+            return !candies[0].HasNoWholeBodyInPlay && star != null ? star : star ?? starL ?? starR;
         }
     }
 }

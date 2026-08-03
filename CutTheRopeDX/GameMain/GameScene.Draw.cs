@@ -284,7 +284,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                bool gone = CandyGone(ci, ctx);
+                bool gone = ctx.HasNoWholeBodyInPlay;
                 Sock sock = ctx.Lifecycle.Transport?.Sock;
                 if (!gone && sock == null)
                 {

@@ -16,50 +16,6 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void AllConsumed_TrueWhenEveryCandyEaten()
-        {
-            List<CandyView> candies = [Candy(0, 0, true), Candy(1, 1, true)];
-            Assert.True(CandyDecisions.AllConsumed(candies));
-        }
-
-        [Fact]
-        public void AllConsumed_FalseWhenAnyRemains()
-        {
-            List<CandyView> candies = [Candy(0, 0, true), Candy(1, 1, false)];
-            Assert.False(CandyDecisions.AllConsumed(candies));
-        }
-
-        [Fact]
-        public void AllConsumed_FalseWhenCandyIsTemporarilyInTransport()
-        {
-            List<CandyView> candies =
-            [
-                new CandyView(new Vector(0, 0), Consumed: true, InTransport: true),
-                new CandyView(new Vector(1, 1), Consumed: true)
-            ];
-
-            Assert.False(CandyDecisions.AllConsumed(candies));
-        }
-
-        [Fact]
-        public void AllConsumed_FalseWhenEmpty()
-        {
-            Assert.False(CandyDecisions.AllConsumed([]));
-        }
-
-        [Fact]
-        public void AllConsumed_IgnoresObjectsThatCannotBeEaten()
-        {
-            List<CandyView> candies =
-            [
-                new CandyView(new Vector(0, 0), Consumed: true, InTransport: false, CandyCapabilities.Candy),
-                new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
-            ];
-
-            Assert.True(CandyDecisions.AllConsumed(candies));
-        }
-
-        [Fact]
         public void AnyConsumablePresent_TrueWhenSecondaryCandyRemainsAfterPrimaryConsumed()
         {
             List<CandyView> candies =
@@ -266,6 +222,33 @@ namespace CutTheRopeDX.Tests
                 HasFailedSplitHalf: false);
 
             Assert.False(CandyDecisions.AnyFailedRemoval([candy]));
+        }
+
+        /// <summary>
+        /// <see cref="CandyDecisions.AllEaten"/> is the win gate, and "every candy in an empty list
+        /// was eaten" is vacuously true - so the guard has to be explicit or a candy-less level wins
+        /// on its first frame.
+        /// </summary>
+        [Fact]
+        public void NoCandiesAtAll_NeverWins()
+        {
+            Assert.False(CandyDecisions.AllEaten([]));
+        }
+
+        /// <summary>
+        /// Only the eatable candies gate the win, so a level holding nothing but light bulbs is
+        /// won immediately - exactly what the helper this replaced did with its candy-count guard.
+        /// </summary>
+        [Fact]
+        public void InedibleBodiesAlone_SatisfyTheWinVacuously()
+        {
+            CandyOutcomeView bulb = new(
+                CandyPresence.Present,
+                RemovalReason: null,
+                CanBeEaten: false,
+                HasFailedSplitHalf: false);
+
+            Assert.True(CandyDecisions.AllEaten([bulb]));
         }
     }
 }

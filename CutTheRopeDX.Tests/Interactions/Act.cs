@@ -172,7 +172,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     spikes.y = position.Y;
                     spikes.UpdateRotation();
                 },
-                () => candy.noCandy || scene.PrimaryCandyGone(),
+                () => candy.HasNoWholeBodyInPlay,
                 "the spikes never broke the candy");
 
             // Losing is a two-stage event: the break tears the candy down, and the scheduled

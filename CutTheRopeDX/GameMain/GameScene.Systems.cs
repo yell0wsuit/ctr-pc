@@ -205,7 +205,7 @@ namespace CutTheRopeDX.GameMain
                         _ = ApplyImpulse(starR);
                     }
                 }
-                else if (!CandyGone(ci, ctx))
+                else if (!ctx.HasNoWholeBodyInPlay)
                 {
                     _ = ApplyImpulse(ctx.point);
                 }
@@ -247,7 +247,7 @@ namespace CutTheRopeDX.GameMain
                         HandlePumpFlowPtSkin(p, starR, candyR);
                     }
                 }
-                else if (!CandyGone(ci, ctx))
+                else if (!ctx.HasNoWholeBodyInPlay)
                 {
                     HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
                 }
@@ -528,7 +528,7 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                noCandy = true;
+                _ = candies[0].Lifecycle.TryRemove(CandyRemovalReason.Spider);
                 capturedCandy = candy;
             }
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);

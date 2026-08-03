@@ -195,7 +195,6 @@ namespace CutTheRopeDX.GameMain
             {
                 candyNumber = null,
                 Capabilities = CandyCapabilities.Candy,
-                noCandy = false,
             });
         }
 
@@ -208,7 +207,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="x">World X of the half.</param>
         /// <param name="y">World Y of the half.</param>
         /// <returns>The new half body.</returns>
-        private CandyBody CreateSplitHalfBody(CandyBodyRole role, float x, float y)
+        private static CandyBody CreateSplitHalfBody(CandyBodyRole role, float x, float y)
         {
             ConstraintedPoint point = new();
             point.SetWeight(1f);
@@ -292,7 +291,6 @@ namespace CutTheRopeDX.GameMain
             {
                 candyNumber = candyNumber,
                 Capabilities = CandyCapabilities.Candy,
-                noCandy = false,
             };
             candies.Add(ctx);
             return ctx;

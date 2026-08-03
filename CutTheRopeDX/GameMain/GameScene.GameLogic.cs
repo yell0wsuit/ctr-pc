@@ -11,17 +11,6 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
-        /// <summary>
-        /// Whether candy <paramref name="ci"/> is gone. The primary candy (index 0) tracks its presence
-        /// through the scene singleton <see cref="noCandy"/> (which a split also forces true); every
-        /// other candy uses its own <see cref="CandyContext.noCandy"/>. Centralised so the primary-vs-extra
-        /// rule lives in one place.
-        /// </summary>
-        private bool CandyGone(int ci, CandyContext ctx)
-        {
-            return ci == 0 ? noCandy : ctx.HasNoWholeBodyInPlay;
-        }
-
         private CandyContext CandyForPointOrNull(ConstraintedPoint point)
         {
             for (int i = 0; i < candies.Count; i++)
@@ -425,7 +414,9 @@ namespace CutTheRopeDX.GameMain
             {
                 PopCandyBubble(false);
             }
-            noCandy = true;
+            // The primary is already Removed(Eaten) here: the single caller runs behind AllEaten,
+            // which cannot pass while an eatable candy still has a body. So the win timeline below
+            // owns the visual outright and no longer has to raise a gone-flag of its own first.
             candy.passTransformationsToChilds = true;
             candyMain.scaleX = candyMain.scaleY = 1f;
             candyTop.scaleX = candyTop.scaleY = 1f;
@@ -715,7 +706,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Schedules the loss sequence after a delay (e.g. while a candy-break animation plays) and
-        /// immediately marks the outcome transition active. A destroyed candy sets <c>noCandy</c> but
+        /// immediately marks the outcome transition active. A destroyed candy is removed at once but
         /// defers <see cref="GameLost"/>; without marking the transition, another candy eaten during
         /// that window would satisfy the win check and trigger a false win in a multi-candy level.
         /// </summary>
@@ -727,11 +718,11 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Destroys a whole candy that touched a hazard (spike, axe, ...): pops its bubble, marks it
-        /// gone, releases its ropes, detaches transports, schedules the loss, and flags ghosts. The
-        /// per-index effect calls differ deliberately: candies[0] uses the singleton paths
-        /// (candyBubble, ReleaseAllRopes + gun-cup drop, singleton noCandy) which are NOT equivalent
-        /// to the per-candy paths used by candies[1..].
+        /// Destroys a whole candy that touched a hazard (spike, axe, ...): pops its bubble, removes
+        /// it as a hazard loss, releases its ropes, detaches transports, schedules the loss, and flags
+        /// ghosts. The per-index effect calls still differ deliberately: candies[0] uses the singleton
+        /// bubble and rope paths (candyBubble, ReleaseAllRopes + gun-cup drop), which are NOT
+        /// equivalent to the per-candy paths used by candies[1..]. Removal itself is now common.
         /// </summary>
         /// <param name="index">Index of the candy in <c>candies</c>.</param>
         /// <param name="ctx">The candy being destroyed.</param>
@@ -750,14 +741,7 @@ namespace CutTheRopeDX.GameMain
             }
             ctx.candy.x = ctx.point.pos.X;
             ctx.candy.y = ctx.point.pos.Y;
-            if (index == 0)
-            {
-                noCandy = true;
-            }
-            else
-            {
-                ctx.noCandy = true;
-            }
+            _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard);
             ExhaustRocketForCandy(ctx);
             SpawnCandyBreakParticles(ctx.candy.x, ctx.candy.y);
             if (index == 0)

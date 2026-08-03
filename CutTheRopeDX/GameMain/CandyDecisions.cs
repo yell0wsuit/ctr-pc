@@ -11,27 +11,6 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal static class CandyDecisions
     {
-        /// <summary>Win condition: at least one candy exists and every candy is consumed.</summary>
-        public static bool AllConsumed(IReadOnlyList<CandyView> candies)
-        {
-            if (candies == null || candies.Count == 0)
-            {
-                return false;
-            }
-            for (int i = 0; i < candies.Count; i++)
-            {
-                if (!candies[i].CanBeEaten)
-                {
-                    continue;
-                }
-                if (!candies[i].Consumed || candies[i].InTransport)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         /// <summary>True when any edible candy body is still active or hidden in transport.</summary>
         public static bool AnyConsumablePresent(IReadOnlyList<CandyView> candies)
         {
@@ -130,13 +109,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="candies">The logical candy outcome snapshots to evaluate.</param>
         /// <returns>
-        /// <see langword="true"/> when every eatable candy is
+        /// <see langword="true"/> when at least one candy exists and every eatable candy is
         /// <see cref="CandyPresence.Removed"/> with
-        /// <see cref="CandyRemovalReason.Eaten"/>; otherwise <see langword="false"/>.
+        /// <see cref="CandyRemovalReason.Eaten"/>; otherwise <see langword="false"/>. This is the
+        /// win gate, so a level with no candies at all never satisfies it.
         /// </returns>
         internal static bool AllEaten(IEnumerable<CandyOutcomeView> candies)
         {
-            return candies
+            return candies.Any()
+                && candies
                 .Where(static candy => candy.CanBeEaten)
                 .All(static candy =>
                     candy.Presence == CandyPresence.Removed

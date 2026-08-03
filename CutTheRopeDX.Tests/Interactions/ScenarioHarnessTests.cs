@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests.Interactions
             CandyContext candy = scene.Candy();
             _ = Assert.Single(scene.Grabs());
             Assert.Equal(1, scene.AttachedRopeCount(candy));
-            Assert.False(candy.noCandy);
+            Assert.False(candy.HasNoWholeBodyInPlay);
         }
 
         [Fact]

@@ -189,13 +189,14 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // Handle gun tap
-            if (!noCandy)
+            bool primaryInPlay = !candies[0].HasNoWholeBodyInPlay;
+            if (primaryInPlay)
             {
                 foreach (object obj in bungees)
                 {
                     Grab grab = (Grab)obj;
                     if (grab.gun && GunAvailability.CanFire(
-                        candyPresent: !noCandy,
+                        candyPresent: primaryInPlay,
                         candyInLantern: candies[0].inLantern,
                         gunFired: grab.gunFired,
                         ropeAbsent: grab.rope == null))

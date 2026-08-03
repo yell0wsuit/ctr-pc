@@ -28,7 +28,6 @@ namespace CutTheRopeDX.GameMain
                 lightRadius = lightRadius,
                 emitsLight = LightBulbDefinition.EmitsLight,
                 collisionDistanceOverride = LightBulbDefinition.CollisionDistance,
-                noCandy = false,
             };
         }
     }

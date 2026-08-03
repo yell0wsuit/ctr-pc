@@ -165,7 +165,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             CandyContext candy = scene.Candy();
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.noCandy));
+            Assert.True(Interaction.StepUntil(scene, () => candy.HasNoWholeBodyInPlay));
         }
 
         [Fact]
@@ -177,8 +177,6 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Spikes(160, 260)
                 .Build();
 
-            // A hazard break of the *primary* candy goes down the singleton path, which sets the
-            // scene's own gone-flag rather than the context's (BreakCandyFromHazard, index 0).
             Assert.True(Interaction.StepUntil(scene, scene.PrimaryCandyGone));
         }
     }

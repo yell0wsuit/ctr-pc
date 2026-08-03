@@ -97,7 +97,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.point))
                 {
-                    ctx.noCandy = true;
+                    _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.OffScreen);
                     // A light emitter leaving the screen is a non-candy object escaping: release its
                     // rope and exhaust its bound rocket, matching C's generic-object off-screen loop.
                     ExhaustRocketForCandy(ctx);
@@ -111,8 +111,8 @@ namespace CutTheRopeDX.GameMain
                     || ctx.Lifecycle.Presence == CandyPresence.Hidden;
             }
 
-            // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
-            // candy body is still in play.
+            // Multi-candy/split-aware presence: the primary can be out of play while another candy
+            // body is still around.
             if (nightLevel && !hasActiveLightEmitter && gameplayFlow.CanTriggerOutcome && AnyNightCandyBodyPresent())
             {
                 GameLost();

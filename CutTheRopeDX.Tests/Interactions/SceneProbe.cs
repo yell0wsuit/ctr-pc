@@ -137,12 +137,12 @@ namespace CutTheRopeDX.Tests.Interactions
             return (RecordingSceneDelegate)scene.gameSceneDelegate;
         }
 
-        /// <summary>Whether the scene considers the primary candy consumed.</summary>
+        /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>
         /// <param name="scene">Scene to read.</param>
-        /// <returns><see langword="true"/> when the primary candy is gone.</returns>
+        /// <returns><see langword="true"/> when the primary candy is removed, hidden, or split.</returns>
         public static bool PrimaryCandyGone(this GameScene scene)
         {
-            return Field<bool>(scene, "noCandy");
+            return scene.Candies()[0].HasNoWholeBodyInPlay;
         }
 
         /// <summary>Ropes still attached (uncut) to the given candy.</summary>

@@ -1051,11 +1051,6 @@ namespace CutTheRopeDX.GameMain
         private float mapOriginY;
 
         /// <summary>
-        /// Whether the main candy has been removed from play.
-        /// </summary>
-        private bool noCandy;
-
-        /// <summary>
         /// Cached rotation delta for the main candy.
         /// </summary>
         private float lastCandyRotateDelta;

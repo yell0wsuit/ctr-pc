@@ -82,15 +82,13 @@ namespace CutTheRopeDX.GameMain
 
 #pragma warning restore IDE1006
 
-        /// <summary>True once this candy has been eaten/removed.</summary>
-        public bool noCandy;
-
         /// <summary>
-        /// True when this candy has no whole body in play right now: it was removed, or it is hidden
-        /// inside a transport session. Every system that used to read <see cref="noCandy"/> alone means
-        /// this, because entering a transporter used to raise that flag too.
+        /// True when this candy has no whole body in play right now, because it was permanently
+        /// removed, hidden inside a transport session, or replaced by its split halves. The lifecycle
+        /// is the only answer: the scene no longer keeps a second, separately maintained flag for the
+        /// primary candy.
         /// </summary>
-        public bool HasNoWholeBodyInPlay => noCandy || Lifecycle.Presence == CandyPresence.Hidden;
+        public bool HasNoWholeBodyInPlay => Lifecycle.Presence != CandyPresence.Present;
 
         /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
         public bool inLantern;
