@@ -106,14 +106,11 @@ namespace CutTheRopeDX.GameMain
             return CandyBodyEligibility.Allows(Role, interaction);
         }
 
-        /// <summary>Takes the physical snapshot the pure body decisions read.</summary>
-        /// <returns>
-        /// This body's world position paired with its owner's capabilities. A body only exists while
-        /// it is active, so the snapshot is never "consumed" and never mid-transport.
-        /// </returns>
+        /// <summary>Takes the physical snapshot the pure mouth-range decision reads.</summary>
+        /// <returns>This body's world position paired with its owner's capabilities.</returns>
         public CandyView ToView()
         {
-            return new CandyView(Point.pos, Consumed: false, InTransport: false, Owner?.Capabilities);
+            return new CandyView(Point.pos, Owner?.Capabilities);
         }
 
         /// <summary>Records the logical candy that owns this body.</summary>

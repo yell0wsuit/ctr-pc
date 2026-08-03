@@ -30,7 +30,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldEnter_FalseWhenSplitActive()
         {
-            // split-candy (twoParts) is handled by the singleton halves, not per-candy transit.
+            // A split candy has no whole body to swallow; its halves have to merge before a
+            // transporter can take it, which the body-role table enforces on the scene side.
             Assert.False(TransportEntry.ShouldEnter(true, false, false, splitActive: true, inRange: true));
         }
 

@@ -10,132 +10,24 @@ namespace CutTheRopeDX.Tests
 {
     public class CandyDecisionsTests
     {
-        private static CandyView Candy(float x, float y, bool consumed)
+        private static CandyView Candy(float x, float y)
         {
-            return new CandyView(new Vector(x, y), consumed);
+            return new CandyView(new Vector(x, y));
         }
 
         [Fact]
-        public void AnyConsumablePresent_TrueWhenSecondaryCandyRemainsAfterPrimaryConsumed()
-        {
-            List<CandyView> candies =
-            [
-                Candy(0, 0, true),
-                Candy(1, 1, false)
-            ];
-
-            Assert.True(CandyDecisions.AnyConsumablePresent(candies));
-        }
-
-        [Fact]
-        public void AnyConsumablePresent_FalseWhenOnlyLightBulbRemains()
-        {
-            List<CandyView> candies =
-            [
-                Candy(0, 0, true),
-                new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
-            ];
-
-            Assert.False(CandyDecisions.AnyConsumablePresent(candies));
-        }
-
-        [Fact]
-        public void AnyCandyBodyPresent_TrueWhenSplitHalfRemains()
-        {
-            // A split candy contributes one snapshot per surviving half, not a whole-body snapshot.
-            List<CandyView> splitHalves = [Candy(10, 10, false), Candy(20, 20, true)];
-
-            Assert.True(CandyDecisions.AnyCandyBodyPresent(splitHalves));
-        }
-
-        [Fact]
-        public void AnyCandyBodyPresent_FalseWhenOnlyLightBulbRemains()
-        {
-            List<CandyView> candies =
-            [
-                new CandyView(new Vector(1, 1), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
-            ];
-
-            Assert.False(CandyDecisions.AnyCandyBodyPresent(candies));
-        }
-
-        [Fact]
-        public void AnyUneatenOutOfScreen_TrueOnlyForUneatenOutside()
-        {
-            List<CandyView> candies = [Candy(0, 0, false), Candy(999, 999, true)];
-            // Out-of-screen predicate: anything with |coord| >= 500.
-            static bool IsOut(Vector p)
-            {
-                return p.X >= 500 || p.Y >= 500 || p.X <= -500 || p.Y <= -500;
-            }
-
-            Assert.False(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut)); // (0,0) inside; (999,999) eaten
-        }
-
-        [Fact]
-        public void AnyUneatenOutOfScreen_TrueWhenUneatenCandyLeaves()
-        {
-            List<CandyView> candies = [Candy(0, 0, false), Candy(999, 0, false)];
-            static bool IsOut(Vector p)
-            {
-                return p.X >= 500;
-            }
-
-            Assert.True(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut));
-        }
-
-        [Fact]
-        public void AnyUneatenOutOfScreen_FalseForCandyLikeObjectThatCannotLoseLevel()
-        {
-            List<CandyView> candies =
-            [
-                new CandyView(new Vector(999, 0), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
-            ];
-            static bool IsOut(Vector p)
-            {
-                return p.X >= 500;
-            }
-
-            Assert.False(CandyDecisions.AnyUneatenOutOfScreen(candies, IsOut));
-        }
-
-        [Fact]
-        public void AnyUneatenOutOfScreen_TrueWhenUneatenSplitHalfLeaves()
-        {
-            List<CandyView> candies = [];
-            List<CandyView> splitCandies = [Candy(999, 0, false), Candy(0, 0, false)];
-            static bool IsOut(Vector p)
-            {
-                return p.X >= 500;
-            }
-
-            Assert.True(CandyDecisions.AnyUneatenOutOfScreen(candies, splitCandies, IsOut));
-        }
-
-        [Fact]
-        public void ShouldOpenMouth_TrueWhenUneatenCandyInRange()
+        public void ShouldOpenMouth_TrueWhenCandyInRange()
         {
             Vector target = new(100, 100);
-            List<CandyView> candies = [Candy(150, 100, false)]; // 50px away
+            List<CandyView> candies = [Candy(150, 100)]; // 50px away
             Assert.True(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
-        }
-
-        [Fact]
-        public void ShouldOpenMouth_FalseWhenOnlyEatenCandyInRange()
-        {
-            Vector target = new(100, 100);
-            List<CandyView> candies = [Candy(150, 100, true)];
-            Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
         }
 
         [Fact]
         public void ShouldOpenMouth_FalseForCandyLikeObjectThatCannotOpenMouth()
         {
             Vector target = new(100, 100);
-            List<CandyView> candies =
-            [
-                new CandyView(new Vector(150, 100), Consumed: false, InTransport: false, CandyCapabilities.LightBulb)
-            ];
+            List<CandyView> candies = [new CandyView(new Vector(150, 100), CandyCapabilities.LightBulb)];
 
             Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
         }
@@ -144,7 +36,7 @@ namespace CutTheRopeDX.Tests
         public void ShouldOpenMouth_FalseWhenCandyOutOfRange()
         {
             Vector target = new(100, 100);
-            List<CandyView> candies = [Candy(400, 100, false)]; // 300px away
+            List<CandyView> candies = [Candy(400, 100)]; // 300px away
             Assert.False(CandyDecisions.ShouldOpenMouth(target, candies, 200f));
         }
 
