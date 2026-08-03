@@ -162,6 +162,40 @@ namespace CutTheRopeDX.Tests.Interactions
                 "Om Nom never ate the candy");
         }
 
+        /// <summary>
+        /// Cuts a grab's rope by swiping across it, the way a player does. The swipe crosses the
+        /// rope's first segment square-on, so it lands whatever angle the rope is hanging at.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="grab">Grab whose rope to cut.</param>
+        public static void CutRope(GameScene scene, Grab grab)
+        {
+            Bungee rope = grab.rope;
+            Assert.NotNull(rope);
+            Assert.Equal(-1, rope.cut);
+
+            Vector from = rope.parts[0].pos;
+            Vector to = rope.parts[1].pos;
+            Vector midpoint = new((from.X + to.X) / 2f, (from.Y + to.Y) / 2f);
+            float dx = to.X - from.X;
+            float dy = to.Y - from.Y;
+            float length = MathF.Sqrt((dx * dx) + (dy * dy));
+            Assert.True(length > 0f, "the rope segment being cut has no length");
+
+            // Unit normal to the segment, so the swipe crosses it rather than running along it.
+            float nx = -dy / length;
+            float ny = dx / length;
+            Vector swipeStart = new(midpoint.X - (nx * SwipeReach), midpoint.Y - (ny * SwipeReach));
+            Vector swipeEnd = new(midpoint.X + (nx * SwipeReach), midpoint.Y + (ny * SwipeReach));
+
+            int cuts = scene.CutWithRazorOrLine1Line2Immediate(null, swipeStart, swipeEnd, true);
+            Assert.True(cuts > 0, "the swipe cut no rope");
+            HeadlessGame.StepFrames(scene, 1);
+        }
+
+        /// <summary>How far to either side of a rope a cutting swipe extends, in world units.</summary>
+        private const float SwipeReach = 40f;
+
         /// <summary>Destroys the candy on the scene's spikes.</summary>
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to destroy.</param>

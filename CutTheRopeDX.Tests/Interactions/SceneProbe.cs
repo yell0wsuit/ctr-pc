@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
@@ -186,6 +187,33 @@ namespace CutTheRopeDX.Tests.Interactions
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// The grab whose hook sits closest to a world position. Shipped levels are addressed by
+        /// where their hooks are authored, so a test names the rope it cuts the way a player sees it
+        /// rather than by an index into load order.
+        /// </summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="world">World position to search near.</param>
+        /// <returns>The nearest grab.</returns>
+        public static Grab GrabNearestTo(this GameScene scene, Vector world)
+        {
+            Grab nearest = null;
+            float best = float.MaxValue;
+            foreach (Grab grab in scene.Grabs())
+            {
+                float dx = grab.x - world.X;
+                float dy = grab.y - world.Y;
+                float distance = (dx * dx) + (dy * dy);
+                if (distance < best)
+                {
+                    best = distance;
+                    nearest = grab;
+                }
+            }
+
+            return nearest;
         }
 
         /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>

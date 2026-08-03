@@ -105,6 +105,50 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.InRange(MergeFramesForGap(gap), expectedFrames, expectedFrames + 1);
         }
 
+        /// <summary>
+        /// The same merge rate on the shipped level that teaches it. 5_1 hangs each half from an
+        /// outer rope plus a shared central hook; cutting the two outer ropes is the level's own
+        /// solution and swings the halves together, so this measures the merge a player actually
+        /// sees rather than one a test pinned into place.
+        /// </summary>
+        [Fact]
+        public void SplitCandy_MergesAtTheReferenceRateOnShippedLevel5_1()
+        {
+            HeadlessGame ctr = HeadlessGame.Boot();
+            GameScene scene = ctr.LoadLevel(pack: 4, level: 0);
+            scene.gameSceneDelegate = new RecordingSceneDelegate();
+            CandyContext primary = scene.Candies()[0];
+            SplitCandyState split = primary.Lifecycle.Split;
+            Assert.Equal(SplitPhase.Separate, split.Phase);
+
+            Act.CutRope(scene, scene.GrabNearestTo(Level5_1World(98, 59)));
+            Act.CutRope(scene, scene.GrabNearestTo(Level5_1World(227, 58)));
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => split.Phase == SplitPhase.Merging),
+                "the cut halves never swung together");
+
+            float gap = split.MergeDistance;
+            Assert.True(gap > 0f, "the merge began with nothing left to close");
+            int expectedFrames = (int)MathF.Ceiling(gap / (MergeSpeed * FrameDelta));
+
+            int frames = 0;
+            while (frames < expectedFrames + 8 && primary.Lifecycle.Presence != CandyPresence.Present)
+            {
+                HeadlessGame.StepFrames(scene, 1);
+                frames++;
+            }
+
+            Assert.Equal(CandyPresence.Present, primary.Lifecycle.Presence);
+            Assert.InRange(frames, expectedFrames, expectedFrames + 1);
+        }
+
+        /// <summary>5_1 is a 320-wide map, so its authored coordinates land at x*3 + 800.</summary>
+        private static Vector Level5_1World(int x, int y)
+        {
+            return new Vector((x * 3f) + 800f, y * 3f);
+        }
+
         [Fact]
         public void SplitCandy_NeverOffersAHalfToTheRocket()
         {
