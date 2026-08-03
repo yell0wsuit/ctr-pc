@@ -994,8 +994,14 @@ namespace CutTheRopeDX.GameMain
                     // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
                     // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
-                    ConstraintedPoint rocketStar = rocketCandy?.WholeBody.Point ?? star;
-                    GameObject rocketCandyMain = rocketCandy?.WholeBody.Main ?? candyMain;
+                    ConstraintedPoint rocketStar = rocketCandy?.WholeBody.Point;
+                    GameObject rocketCandyMain = rocketCandy?.WholeBody.Main;
+                    // Every branch below steers the bound candy, and a rocket only reaches DIST or
+                    // FLY by binding one. An unresolved rocket now does nothing instead of falling
+                    // back on candies[0]/star, which made a stray rocket thrust and de-spin whichever
+                    // candy happened to be the primary.
+                    bool carriesCandy = rocketCandy != null
+                        && rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST;
                     // Park the rocket while the mouse carries its candy. The kinematic pin plus the
                     // per-frame rocket-point snap keep the rest-0 pair exactly coincident, and the
                     // solver's coincident fallback (DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION, 30
@@ -1004,7 +1010,7 @@ namespace CutTheRopeDX.GameMain
                     // Parked: no satisfaction, no thrust; position snap, rotation sync, fuse tick
                     // and gravity heal keep running, and full flight resumes on drop.
                     bool parkedOnMouse = rocketCandy?.carriedByMouse == true;
-                    if (parkedOnMouse && rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    if (parkedOnMouse && carriesCandy)
                     {
                         // prevPos too: rocket.Update integrates the point next, and a bare pos
                         // teleport would replay the whole jump as one frame of velocity.
@@ -1017,12 +1023,12 @@ namespace CutTheRopeDX.GameMain
                     // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
                     // candy) is healed here every frame while the rocket is bound — mirrors the
                     // reference's recurring `star->disableGravity = activeRocket != 0`.
-                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    if (carriesCandy)
                     {
                         rocketStar.disableGravity = true;
                     }
-                    float dist = VectLength(VectSub(rocketStar.pos, rocket.point.pos));
-                    if (rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST)
+                    float dist = carriesCandy ? VectLength(VectSub(rocketStar.pos, rocket.point.pos)) : 0f;
+                    if (carriesCandy)
                     {
                         if (!parkedOnMouse)
                         {
@@ -1034,12 +1040,12 @@ namespace CutTheRopeDX.GameMain
                         }
                         rocket.rotation = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
                     }
-                    if (rocket.state == Rocket.STATE_ROCKET_FLY)
+                    if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_FLY)
                     {
                         // Silence THIS candy's rope-spin coast: the rocket's heading tracks
                         // candyMain.rotation, so a leftover coast (e.g. after the rope is cut)
                         // curves the flight as if it were still steering along the rope.
-                        (rocketCandy ?? candies[0]).WholeBody.ResidualRotation = 0f;
+                        rocketCandy.WholeBody.ResidualRotation = 0f;
                         bool ropeRelaxed = false;
                         if (bungees != null)
                         {
@@ -1094,10 +1100,10 @@ namespace CutTheRopeDX.GameMain
                         if (rocket.time != -1f && Mover.MoveVariableToTarget(ref rocket.time, 0f, 1f, delta))
                         {
                             rocketStar.disableGravity = false;
-                            ExhaustRocketForCandy(rocketCandy ?? candies[0]);
+                            ExhaustRocketForCandy(rocketCandy);
                         }
                     }
-                    if (rocket.state == Rocket.STATE_ROCKET_DIST)
+                    if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
                         // Per-candy: only a hand holding THIS rocket's candy skips the reel-in.
                         if (rocketCandy?.capturingHand != null || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
@@ -1141,7 +1147,8 @@ namespace CutTheRopeDX.GameMain
                             }
                             else
                             {
-                                rocket.point.AddConstraintwithRestLengthofType(body.Point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                float bindDist = VectLength(VectSub(body.Point.pos, rocket.point.pos));
+                                rocket.point.AddConstraintwithRestLengthofType(body.Point, bindDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_DIST;
                             }
                             // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
@@ -1319,12 +1326,14 @@ namespace CutTheRopeDX.GameMain
 
                     snail.Update(delta);
 
-                    if (snail.state == Snail.SNAIL_STATE_ACTIVE)
+                    // A snail that is riding nothing resolvable steers nothing: it used to read the
+                    // primary candy's rotation and pop the primary candy's bubble instead.
+                    CandyContext ridden = CandyForPointOrNull(snail.AttachedPoint());
+                    if (snail.state == Snail.SNAIL_STATE_ACTIVE && ridden != null)
                     {
-                        snail.rotation = CandyForPoint(snail.AttachedPoint()).InteractionRotation - snail.startRotation;
+                        snail.rotation = ridden.InteractionRotation - snail.startRotation;
                         // The snail wins over a bubble: pop the ridden candy's bubble
                         // (Experiments reference) so the pair never floats up together.
-                        CandyContext ridden = CandyForPoint(snail.AttachedPoint());
                         if (SnailBubblePop.ShouldPop(true, snail.AttachedPoint() != null, ridden.WholeBody.Bubble != null))
                         {
                             PopCandyBubble(ridden.WholeBody);

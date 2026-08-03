@@ -487,8 +487,14 @@ namespace CutTheRopeDX.GameMain
             }
             sg.hasSpider = false;
             // spiderTookCandy = true;
-            // The spider takes whichever body its rope ends on - a whole candy or one split half.
-            CandyBody capturedBody = CandyBodyForPointOrNull(capturedStar) ?? candies[0].WholeBody;
+            // The spider takes whichever body its rope ends on - a whole candy or one split half. A
+            // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
+            CandyBody capturedBody = CandyBodyForPointOrNull(capturedStar);
+            if (capturedBody == null)
+            {
+                return;
+            }
+
             _ = TryRemoveBody(capturedBody, CandyRemovalReason.Spider);
             GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);

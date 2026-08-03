@@ -378,19 +378,40 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Resolves the candy whose physics point is <paramref name="point"/>; falls back to candies[0].
+        /// Resolves the logical candy that owns <paramref name="point"/> - either its whole body's
+        /// point or, for a split candy, one of its halves' points.
         /// </summary>
-        private CandyContext CandyForPoint(ConstraintedPoint point)
+        /// <param name="point">The physics point to resolve.</param>
+        /// <returns>
+        /// The owning candy, or <see langword="null"/> when no candy owns the point. It used to fall
+        /// back to <c>candies[0]</c>, which silently handed an unrelated point to the primary candy;
+        /// a split half only resolved that way by accident, because the primary happens to own the
+        /// halves. Callers decide what an unowned point means.
+        /// </returns>
+        private CandyContext CandyForPointOrNull(ConstraintedPoint point)
         {
+            if (point == null)
+            {
+                return null;
+            }
+
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].WholeBody.Point == point)
+                CandyContext ctx = candies[i];
+                if (ctx.WholeBody.Point == point)
                 {
-                    return candies[i];
+                    return ctx;
+                }
+
+                SplitCandyState split = ctx.Lifecycle.Split;
+                if (split != null
+                    && (split.Left.Body.Point == point || split.Right.Body.Point == point))
+                {
+                    return ctx;
                 }
             }
 
-            return candies[0];
+            return null;
         }
 
         /// <summary>

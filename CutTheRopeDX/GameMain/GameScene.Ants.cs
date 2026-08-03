@@ -179,8 +179,8 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            CandyContext ctx = CandyForPoint(point);
-            if (ctx.WholeBody.Point != point || ctx.antSegment == null)
+            CandyContext ctx = CandyForPointOrNull(point);
+            if (ctx == null || ctx.WholeBody.Point != point || ctx.antSegment == null)
             {
                 return false;
             }
@@ -326,7 +326,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             ConstraintedPoint tail = rope.tail;
-            CandyContext ctx = tail != null ? CandyForPoint(tail) : null;
+            CandyContext ctx = CandyForPointOrNull(tail);
             bool carried = ctx != null && ctx.WholeBody.Point == tail && ctx.antSegment != null;
             if (!carried)
             {

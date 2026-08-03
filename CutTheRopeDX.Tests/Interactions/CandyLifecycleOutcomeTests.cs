@@ -124,6 +124,35 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         /// <summary>
+        /// A spider whose rope no longer ends on a live body has nothing to steal. The capture used to
+        /// fall back to <c>candies[0]</c>, so a spider on an already-lost candy stole the primary one
+        /// instead - a loss the player never caused.
+        /// </summary>
+        [Fact]
+        public void ASpiderOnAnAlreadyLostCandy_StealsNothing()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(60, 200, number: "1")
+                .Candy(260, 200, number: "2")
+                .Grab(260, 120, length: 100, spider: true, candyNumber: "2")
+                .OmNom(30, 440)
+                .Build();
+            CandyContext primary = scene.Candies()[0];
+            CandyContext spidered = scene.Candies()[1];
+            Interaction.Hover(primary);
+            Assert.Equal(1, scene.AttachedRopeCount(spidered));
+
+            Act.LoseOffScreen(scene, spidered);
+            Assert.Equal(CandyRemovalReason.OffScreen, spidered.Lifecycle.RemovalReason);
+
+            scene.SpiderWon(scene.Grabs()[0]);
+
+            Assert.Equal(CandyPresence.Present, primary.Lifecycle.Presence);
+            Assert.Null(primary.Lifecycle.RemovalReason);
+            Assert.Equal(CandyRemovalReason.OffScreen, spidered.Lifecycle.RemovalReason);
+        }
+
+        /// <summary>
         /// Transport hid the whole body for extras but not for the primary, whose singleton stayed
         /// clear - so an invisible candy inside a tube still integrated and still met the scene.
         /// </summary>
