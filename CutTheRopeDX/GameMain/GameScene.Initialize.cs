@@ -164,10 +164,6 @@ namespace CutTheRopeDX.GameMain
             // Initialize constraint points for ropes
             ConstraintedPoint starPoint = new();
             starPoint.SetWeight(1f);
-            starL = new ConstraintedPoint();
-            starL.SetWeight(1f);
-            starR = new ConstraintedPoint();
-            starR.SetWeight(1f);
 
             (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim, Animation primaryBubble, CandyInGhostBubbleAnimation primaryGhostBubble) = CreateCandyVisual();
 
@@ -204,6 +200,39 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Builds one authored split half: its physics point and the visual that follows it. Called as
+        /// <c>&lt;candyL&gt;</c>/<c>&lt;candyR&gt;</c> parse, before the halves are handed to the
+        /// primary candy's lifecycle.
+        /// </summary>
+        /// <param name="role">Which half this is.</param>
+        /// <param name="x">World X of the half.</param>
+        /// <param name="y">World Y of the half.</param>
+        /// <returns>The new half body.</returns>
+        private CandyBody CreateSplitHalfBody(CandyBodyRole role, float x, float y)
+        {
+            ConstraintedPoint point = new();
+            point.SetWeight(1f);
+            point.pos.X = x;
+            point.pos.Y = y;
+            point.prevPos = point.pos;
+
+            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+            GameObject visual = GameObject.GameObject_createWithResIDQuad(
+                candyResource,
+                role == CandyBodyRole.LeftHalf ? SplitCandyLeftQuad : SplitCandyRightQuad);
+            visual.scaleX = visual.scaleY = 0.71f;
+            visual.passTransformationsToChilds = false;
+            visual.DoRestoreCutTransparency();
+            visual.anchor = 18;
+            visual.x = x;
+            visual.y = y;
+            visual.bb = GetSplitCandyBoundingBox();
+
+            return new CandyBody(point, role, visual);
+        }
+
+        /// <summary>
         /// Moves one split half's visual onto its physics point and refreshes the cached draw
         /// position that collision reads.
         /// </summary>
@@ -225,13 +254,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void InstallSplitCandyState()
         {
-            if (!levelAuthorsSplitCandy || candyL == null || candyR == null)
+            if (!levelAuthorsSplitCandy || pendingLeftHalf == null || pendingRightHalf == null)
             {
                 return;
             }
 
-            CandyHalf left = new(new CandyBody(starL, CandyBodyRole.LeftHalf, candyL));
-            CandyHalf right = new(new CandyBody(starR, CandyBodyRole.RightHalf, candyR));
+            CandyHalf left = new(pendingLeftHalf);
+            CandyHalf right = new(pendingRightHalf);
+            pendingLeftHalf = null;
+            pendingRightHalf = null;
 
             // The first <candy> element would otherwise claim candies[0]; a split level has no whole
             // <candy> of its own, so the primary is the split candy and later elements build extras.

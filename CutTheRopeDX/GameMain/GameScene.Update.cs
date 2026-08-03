@@ -602,20 +602,24 @@ namespace CutTheRopeDX.GameMain
                         lastCandyRotateDelta = 0f;
                         lastCandyRotateDeltaL = 0f;
                         lastCandyRotateDeltaR = 0f;
-                        star.pos.X = starL.pos.X;
-                        star.pos.Y = starL.pos.Y;
+                        // The merge already detached the split, so the halves are reached through the
+                        // aggregate captured above rather than through starL/starR.
+                        ConstraintedPoint mergedLeft = merging.Left.Body.Point;
+                        ConstraintedPoint mergedRight = merging.Right.Body.Point;
+                        star.pos.X = mergedLeft.pos.X;
+                        star.pos.Y = mergedLeft.pos.Y;
                         candy.x = star.pos.X;
                         candy.y = star.pos.Y;
                         CalculateTopLeft(candy);
-                        Vector vector = VectSub(starL.pos, starL.prevPos);
-                        Vector vector2 = VectSub(starR.pos, starR.prevPos);
+                        Vector vector = VectSub(mergedLeft.pos, mergedLeft.prevPos);
+                        Vector vector2 = VectSub(mergedRight.pos, mergedRight.prevPos);
                         Vector v2 = Vect((vector.X + vector2.X) / 2f, (vector.Y + vector2.Y) / 2f);
                         star.prevPos = VectSub(star.pos, v2);
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
                             Bungee rope2 = bungees[m].rope;
-                            if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
+                            if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == mergedLeft || rope2.tail == mergedRight))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
                                 int restLength = (int)rope2.tail.RestLengthFor(constraintedPoint3);
@@ -637,8 +641,8 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        starL.ChangeRestLengthToFor(merging.MergeDistance, starR);
-                        starR.ChangeRestLengthToFor(merging.MergeDistance, starL);
+                        merging.Left.Body.Point.ChangeRestLengthToFor(merging.MergeDistance, merging.Right.Body.Point);
+                        merging.Right.Body.Point.ChangeRestLengthToFor(merging.MergeDistance, merging.Left.Body.Point);
                     }
                 }
                 if (!noCandyL && !noCandyR && GameObject.ObjectsIntersect(candyL, candyR) && twoParts == 0)

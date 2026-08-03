@@ -4,7 +4,6 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
@@ -147,36 +146,16 @@ namespace CutTheRopeDX.GameMain
                             candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
                             break;
                         case "candyL":
-                            starL.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starL.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-                            {
-                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                                candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
-                            }
-                            candyL.scaleX = candyL.scaleY = 0.71f;
-                            candyL.passTransformationsToChilds = false;
-                            candyL.DoRestoreCutTransparency();
-                            candyL.anchor = 18;
-                            candyL.x = starL.pos.X;
-                            candyL.y = starL.pos.Y;
-                            candyL.bb = GetSplitCandyBoundingBox();
+                            pendingLeftHalf = CreateSplitHalfBody(
+                                CandyBodyRole.LeftHalf,
+                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candyR":
-                            starR.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starR.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-                            {
-                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                                candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
-                            }
-                            candyR.scaleX = candyR.scaleY = 0.71f;
-                            candyR.passTransformationsToChilds = false;
-                            candyR.DoRestoreCutTransparency();
-                            candyR.anchor = 18;
-                            candyR.x = starR.pos.X;
-                            candyR.y = starR.pos.Y;
-                            candyR.bb = GetSplitCandyBoundingBox();
+                            pendingRightHalf = CreateSplitHalfBody(
+                                CandyBodyRole.RightHalf,
+                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candy":
                             {
@@ -209,12 +188,12 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
+            InstallSplitCandyState();
+
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
             candy.bb = GetCandyBoundingBox();
             _ = (candyL?.bb = GetSplitCandyBoundingBox());
             _ = (candyR?.bb = GetSplitCandyBoundingBox());
-
-            InstallSplitCandyState();
 
             // candiesConnected: join the two candies with a mutual elastic. Both candy points are
             // passed directly as head/tail; Bungee preserves their weights and skips integrating

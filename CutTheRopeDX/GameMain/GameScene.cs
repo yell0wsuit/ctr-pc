@@ -228,10 +228,10 @@ namespace CutTheRopeDX.GameMain
                 waterLayer.Dispose();
                 waterLayer = null;
             }
-            candyL = null;
-            candyR = null;
-            starL = null;
-            starR = null;
+            // The half bodies belong to the primary candy's lifecycle, which goes away with the scene;
+            // only a half-finished load can still be holding one here.
+            pendingLeftHalf = null;
+            pendingRightHalf = null;
             Lantern.RemoveAllLanterns();
         }
 
@@ -918,25 +918,39 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private List<AntsPath> antsPaths;
 
-        /// <summary>
-        /// The left candy half when split mode is active.
-        /// </summary>
-        private GameObject candyL;
+        /// <summary>Atlas quad holding the left split-candy sprite.</summary>
+        private const int SplitCandyLeftQuad = 8;
+
+        /// <summary>Atlas quad holding the right split-candy sprite.</summary>
+        private const int SplitCandyRightQuad = 9;
 
         /// <summary>
-        /// The right candy half when split mode is active.
+        /// The left half body built while <c>&lt;candyL&gt;</c> parses, held until the halves are
+        /// handed to the primary candy's lifecycle. Null outside loading.
         /// </summary>
-        private GameObject candyR;
+        private CandyBody pendingLeftHalf;
 
         /// <summary>
-        /// The left constrained point when split mode is active.
+        /// The right half body built while <c>&lt;candyR&gt;</c> parses, held until the halves are
+        /// handed to the primary candy's lifecycle. Null outside loading.
         /// </summary>
-        private ConstraintedPoint starL;
+        private CandyBody pendingRightHalf;
 
-        /// <summary>
-        /// The right constrained point when split mode is active.
-        /// </summary>
-        private ConstraintedPoint starR;
+#pragma warning disable IDE1006
+
+        /// <summary>The left candy half's visual, or <see langword="null"/> when the candy is whole.</summary>
+        private GameObject candyL => PrimarySplit?.Left.Body.Visual;
+
+        /// <summary>The right candy half's visual, or <see langword="null"/> when the candy is whole.</summary>
+        private GameObject candyR => PrimarySplit?.Right.Body.Visual;
+
+        /// <summary>The left candy half's physics point, or <see langword="null"/> when the candy is whole.</summary>
+        private ConstraintedPoint starL => PrimarySplit?.Left.Body.Point;
+
+        /// <summary>The right candy half's physics point, or <see langword="null"/> when the candy is whole.</summary>
+        private ConstraintedPoint starR => PrimarySplit?.Right.Body.Point;
+
+#pragma warning restore IDE1006
 
         /// <summary>
         /// The default horizontal scale applied to the Om Nom target.
