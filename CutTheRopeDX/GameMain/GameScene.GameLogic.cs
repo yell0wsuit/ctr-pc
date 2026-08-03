@@ -36,7 +36,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="interaction">The scene system asking for candidates.</param>
         /// <returns>The eligible active bodies, in <see cref="ActiveCandyBodies()"/> order.</returns>
-        private IEnumerable<CandyBody> ActiveCandyBodies(CandyInteraction interaction)
+        internal IEnumerable<CandyBody> ActiveCandyBodies(CandyInteraction interaction)
         {
             foreach (CandyBody body in ActiveCandyBodies())
             {

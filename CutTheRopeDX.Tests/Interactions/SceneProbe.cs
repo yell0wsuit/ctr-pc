@@ -145,6 +145,19 @@ namespace CutTheRopeDX.Tests.Interactions
             return [.. scene.ActiveCandyBodies()];
         }
 
+        /// <summary>
+        /// The active bodies one scene system is allowed to act on. Reads the scene's own filtered
+        /// enumerator, so a system that stopped consulting <see cref="CandyBodyEligibility"/> fails
+        /// here rather than being re-derived by the test.
+        /// </summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="interaction">The scene system asking for candidates.</param>
+        /// <returns>The eligible active bodies, in scene enumeration order.</returns>
+        public static List<CandyBody> ActiveBodies(this GameScene scene, CandyInteraction interaction)
+        {
+            return [.. scene.ActiveCandyBodies(interaction)];
+        }
+
         /// <summary>The active body standing on a physics point, or null when no body owns it.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <param name="point">Physics point to resolve.</param>

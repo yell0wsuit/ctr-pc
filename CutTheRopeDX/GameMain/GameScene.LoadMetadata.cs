@@ -110,6 +110,16 @@ namespace CutTheRopeDX.GameMain
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
                             levelAuthorsSplitCandy = twoPartsBool;
+                            if (levelAuthorsSplitCandy)
+                            {
+                                // A split level's primary candy is the split one, so candies[0] is
+                                // reserved for the halves this pass is about to parse. Claiming it
+                                // here - the settings layer is read before the object layers - is
+                                // what lets a level author a split candy and ordinary candies at the
+                                // same time: every <candy> element then builds its own whole context
+                                // instead of the first one taking the split candy's place.
+                                primaryCandyClaimed = true;
+                            }
                             waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {

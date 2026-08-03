@@ -66,6 +66,33 @@ namespace CutTheRopeDX.Tests.Interactions
             candy.candy.y = position.Y;
         }
 
+        /// <summary>
+        /// Teleports one physical body to a world position and kills its velocity. The
+        /// <see cref="CandyContext"/> overload only ever reaches a whole body, so this is how a split
+        /// half - which its logical candy has no single point for - is parked where a test wants it.
+        /// </summary>
+        /// <param name="body">Body to move.</param>
+        /// <param name="position">World position.</param>
+        public static void PlaceBodyAt(CandyBody body, Vector position)
+        {
+            body.Point.pos = position;
+            body.Point.prevPos = position;
+            body.Point.v = new Vector(0f, 0f);
+            body.Point.posDelta = new Vector(0f, 0f);
+            if (body.Visual != null)
+            {
+                body.Visual.x = position.X;
+                body.Visual.y = position.Y;
+            }
+        }
+
+        /// <summary>Holds one body in place so a slow interaction is not outrun by gravity.</summary>
+        /// <param name="body">Body to hold.</param>
+        public static void Hover(CandyBody body)
+        {
+            body.Point.disableGravity = true;
+        }
+
         /// <summary>World position of a scene object that carries x/y (rocket, hat, disc, ...).</summary>
         /// <param name="x">Object X.</param>
         /// <param name="y">Object Y.</param>

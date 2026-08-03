@@ -30,6 +30,7 @@ namespace CutTheRopeDX.Tests.Interactions
         private readonly List<XAttribute> design = [];
         private readonly int width = DefaultWidth;
         private readonly int height = DefaultHeight;
+        private bool splitCandy;
 
         private Scenario()
         {
@@ -75,6 +76,31 @@ namespace CutTheRopeDX.Tests.Interactions
             }
 
             return Add(candy);
+        }
+
+        /// <summary>
+        /// Makes the primary candy a split candy: turns on the level's <c>twoParts</c> design flag
+        /// and emits the <c>&lt;candyL&gt;</c>/<c>&lt;candyR&gt;</c> halves that the loader hands to
+        /// <c>candies[0]</c>'s lifecycle as one <see cref="SplitCandyState"/>.
+        /// </summary>
+        /// <remarks>
+        /// Only the primary candy can be split - that is the shipped maps' one topology, and the
+        /// loader keeps it: a split level reserves <c>candies[0]</c>, so every later
+        /// <see cref="Candy"/> call builds an additional whole candy context beside the split one.
+        /// Call this once per scenario; a second call would leave the loader holding only the last
+        /// pair of halves. The design flag is set on the scenario rather than through
+        /// <see cref="Design"/>, so <c>twoParts</c> is never written twice onto one element.
+        /// </remarks>
+        /// <param name="leftX">Level-space X of the left half.</param>
+        /// <param name="leftY">Level-space Y of the left half.</param>
+        /// <param name="rightX">Level-space X of the right half.</param>
+        /// <param name="rightY">Level-space Y of the right half.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario SplitCandy(int leftX, int leftY, int rightX, int rightY)
+        {
+            splitCandy = true;
+            _ = Add(Node("candyL", leftX, leftY));
+            return Add(Node("candyR", rightX, rightY));
         }
 
         /// <summary>Adds an Om Nom. Every scenario needs one; the scene assumes a target exists.</summary>
@@ -359,7 +385,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     "gameDesign",
                     new XAttribute("ropePhysicsSpeed", "1.0"),
                     new XAttribute("special", "1"),
-                    new XAttribute("twoParts", "false"),
+                    new XAttribute("twoParts", Flag(splitCandy)),
                     design));
 
             XElement map = new(

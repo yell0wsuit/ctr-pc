@@ -234,7 +234,9 @@ namespace CutTheRopeDX.GameMain
         /// is one logical candy with two bodies, so the halves become a <see cref="SplitCandyState"/>
         /// owned by <c>candies[0]</c>'s lifecycle rather than a second scene-level candy. A map that
         /// declares <c>twoParts</c> but authors only one half is left whole, matching the old
-        /// behavior of a null <c>candyL</c>/<c>candyR</c> pair.
+        /// behavior of a null <c>candyL</c>/<c>candyR</c> pair; because reading <c>twoParts</c>
+        /// already reserved the primary, such a map keeps an unplaced whole primary and turns its
+        /// <c>&lt;candy&gt;</c> elements into extra candies. No shipped map authors that.
         /// </summary>
         private void InstallSplitCandyState()
         {
@@ -248,9 +250,8 @@ namespace CutTheRopeDX.GameMain
             pendingLeftHalf = null;
             pendingRightHalf = null;
 
-            // The first <candy> element would otherwise claim candies[0]; a split level has no whole
-            // <candy> of its own, so the primary is the split candy and later elements build extras.
-            primaryCandyClaimed = true;
+            // candies[0] was already reserved for the split candy when the level's twoParts flag was
+            // read, so no <candy> element parsed in between can have taken it.
             _ = candies[0].TryBeginSplit(new SplitCandyState(left, right));
         }
 

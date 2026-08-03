@@ -141,12 +141,17 @@ namespace CutTheRopeDX.Tests.Interactions
                 "the ants never picked up the candy");
         }
 
-        /// <summary>Feeds the candy to the nearest Om Nom.</summary>
+        /// <summary>
+        /// Feeds the candy to one of the scene's Om Noms. An Om Nom falls asleep once it has been
+        /// fed and never reacts again, so a scenario that feeds two candies needs two of them and
+        /// must name which one eats this time.
+        /// </summary>
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to feed.</param>
-        public static void Eat(GameScene scene, CandyContext candy)
+        /// <param name="targetIndex">Index of the Om Nom in the scene.</param>
+        public static void Eat(GameScene scene, CandyContext candy, int targetIndex = 0)
         {
-            TargetContext target = scene.Targets()[0];
+            TargetContext target = scene.Targets()[targetIndex];
             Chase(
                 scene,
                 candy,
