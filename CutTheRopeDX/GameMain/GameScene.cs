@@ -369,12 +369,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private static void RestoreCandyProperties(CandyContext ctx)
         {
-            ctx.candy.passTransformationsToChilds = false;
+            ctx.WholeBody.Visual.passTransformationsToChilds = false;
             foreach (BaseElement visual in ctx.HandCatchVisuals())
             {
                 visual.scaleX = visual.scaleY = ctx.HandCatchScale;
             }
-            ctx.candy.color = RGBAColor.solidOpaqueRGBA;
+            ctx.WholeBody.Visual.color = RGBAColor.solidOpaqueRGBA;
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].point == point)
+                if (candies[i].WholeBody.Point == point)
                 {
                     return candies[i];
                 }
@@ -423,7 +423,7 @@ namespace CutTheRopeDX.GameMain
             if (ctx != null)
             {
                 ctx.activeRocket = null;
-                ctx.point.disableGravity = false;
+                ctx.WholeBody.Point.disableGravity = false;
             }
         }
 
@@ -703,27 +703,27 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The main candy gameplay object.
         /// </summary>
-        private GameObject candy => candies[0].candy;
+        private GameObject candy => candies[0].WholeBody.Visual;
 
         /// <summary>
         /// The base candy sprite for split or layered visuals.
         /// </summary>
-        private GameObject candyMain => candies[0].candyMain;
+        private GameObject candyMain => candies[0].WholeBody.Main;
 
         /// <summary>
         /// The top candy sprite for split or layered visuals.
         /// </summary>
-        private GameObject candyTop => candies[0].candyTop;
+        private GameObject candyTop => candies[0].WholeBody.Top;
 
         /// <summary>
         /// Animation used for the candy blink effect.
         /// </summary>
-        private Animation candyBlink => candies[0].candyBlink;
+        private Animation candyBlink => candies[0].WholeBody.BlinkAnimation;
 
         /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
-        private ConstraintedPoint star => candies[0].point;
+        private ConstraintedPoint star => candies[0].WholeBody.Point;
 #pragma warning restore IDE1006
 
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>

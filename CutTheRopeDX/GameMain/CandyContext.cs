@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
-using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -37,33 +36,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Rope-binding key from XML (<c>"first"</c>/<c>"second"</c>); see <see cref="CandyMatch"/>.</summary>
         public string candyNumber;
-
-        // Migration accessors: read-only forwards onto WholeBody that keep pre-lifecycle call sites
-        // compiling. They hold no state of their own. Task 9 routed every scene system through
-        // CandyBody, so only the handful still read by the scene's own primary-candy aliases and by
-        // the interaction tests remain; Task 11 deletes them with those aliases. They keep the old
-        // field names (and so suppress IDE1006) purely to bound that migration diff.
-#pragma warning disable IDE1006
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Point"/> on the whole body.</summary>
-        public ConstraintedPoint point => WholeBody.Point;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Visual"/> on the whole body.</summary>
-        public GameObject candy => WholeBody.Visual;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Main"/> on the whole body.</summary>
-        public GameObject candyMain => WholeBody.Main;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Top"/> on the whole body.</summary>
-        public GameObject candyTop => WholeBody.Top;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.BlinkAnimation"/> on the whole body.</summary>
-        public Animation candyBlink => WholeBody.BlinkAnimation;
-
-        /// <summary>Migration accessor for <see cref="CandyBody.Bubble"/> on the whole body.</summary>
-        public GameObject bubble => WholeBody.Bubble;
-
-#pragma warning restore IDE1006
 
         /// <summary>
         /// True when this candy has no whole body in play right now, because it was permanently
@@ -144,7 +116,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Rotation used by interactions that follow this body's visual orientation.
         /// </summary>
-        public float InteractionRotation => Capabilities.CanRotateWithRopes ? (candyMain ?? candy)?.rotation ?? 0f : 0f;
+        public float InteractionRotation => Capabilities.CanRotateWithRopes
+            ? (WholeBody.Main ?? WholeBody.Visual)?.rotation ?? 0f
+            : 0f;
 
         /// <summary>
         /// Distinct visual elements that should receive mechanical-hand catch/restoration effects.
@@ -152,17 +126,25 @@ namespace CutTheRopeDX.GameMain
         public List<BaseElement> HandCatchVisuals()
         {
             List<BaseElement> visuals = [];
-            AddDistinctVisual(visuals, candy);
-            AddDistinctVisual(visuals, candyMain);
-            AddDistinctVisual(visuals, candyTop);
+            AddDistinctVisual(visuals, WholeBody.Visual);
+            AddDistinctVisual(visuals, WholeBody.Main);
+            AddDistinctVisual(visuals, WholeBody.Top);
             return visuals;
         }
 
         /// <summary>
         /// Base scale for mechanical-hand catch/restoration effects.
         /// </summary>
-        public float HandCatchScale =>
-            candyMain != null && candyTop != null && candyMain != candy && candyTop != candy ? 0.71f : 0.9f;
+        public float HandCatchScale
+        {
+            get
+            {
+                GameObject root = WholeBody.Visual;
+                GameObject main = WholeBody.Main;
+                GameObject top = WholeBody.Top;
+                return main != null && top != null && main != root && top != root ? 0.71f : 0.9f;
+            }
+        }
 
         /// <summary>
         /// Distinct child visual parts that should be normalized when the root carries transformations.
@@ -170,14 +152,14 @@ namespace CutTheRopeDX.GameMain
         public List<BaseElement> TransformChildVisuals()
         {
             List<BaseElement> visuals = [];
-            AddDistinctChildVisual(visuals, candyMain);
-            AddDistinctChildVisual(visuals, candyTop);
+            AddDistinctChildVisual(visuals, WholeBody.Main);
+            AddDistinctChildVisual(visuals, WholeBody.Top);
             return visuals;
         }
 
         private void AddDistinctChildVisual(List<BaseElement> visuals, BaseElement visual)
         {
-            if (visual != null && visual != candy && !visuals.Contains(visual))
+            if (visual != null && visual != WholeBody.Visual && !visuals.Contains(visual))
             {
                 visuals.Add(visual);
             }
@@ -193,16 +175,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;
-
-        /// <summary>
-        /// Physical snapshot for the pure body decisions (mouth range, off-screen loss).
-        /// Migration-only: <see cref="ToOutcomeView"/> is the logical counterpart, and Task 9
-        /// replaces this with per-body snapshots taken from <see cref="CandyLifecycle.ActiveBodies"/>.
-        /// </summary>
-        public CandyView ToView()
-        {
-            return new CandyView(point.pos, HasNoWholeBodyInPlay, Lifecycle.Presence == CandyPresence.Hidden, Capabilities);
-        }
 
         /// <summary>
         /// Takes a logical outcome snapshot of this candy for the win/loss decisions, independent

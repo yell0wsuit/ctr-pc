@@ -215,8 +215,8 @@ namespace CutTheRopeDX.GameMain
             // non-owned endpoints.
             if (candiesConnected && candies.Count >= 2)
             {
-                ConstraintedPoint connectorHead = candies[0].point;
-                ConstraintedPoint connectorTail = candies[1].point;
+                ConstraintedPoint connectorHead = candies[0].WholeBody.Point;
+                ConstraintedPoint connectorTail = candies[1].WholeBody.Point;
                 candyConnector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                     connectorHead, connectorHead.pos.X, connectorHead.pos.Y,
                     connectorTail, connectorTail.pos.X, connectorTail.pos.Y,

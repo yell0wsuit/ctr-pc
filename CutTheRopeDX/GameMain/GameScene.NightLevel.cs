@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -12,29 +11,32 @@ namespace CutTheRopeDX.GameMain
         /// continue for split halves, and must not end the level while the only candy is briefly
         /// hidden inside a transporter.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> while any eatable candy still has an active body or is hidden in
+        /// transport; otherwise <see langword="false"/>.
+        /// </returns>
         private bool AnyNightCandyBodyPresent()
         {
-            List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (ctx.Lifecycle.Presence == CandyPresence.Split)
+                if (!ctx.Capabilities.CanBeEaten)
                 {
-                    // A split candy has no whole body; its surviving halves are added below.
+                    // A light bulb is a candy-like body that nobody is waiting to eat.
                     continue;
                 }
-                candyViews.Add(ctx.ToView());
-            }
 
-            foreach (CandyBody body in ActiveCandyBodies())
-            {
-                if (body.Role != CandyBodyRole.Whole)
+                // One question per logical candy, however many bodies it has: a present candy and a
+                // split candy with one surviving half both answer yes, and a candy inside a
+                // transporter answers yes too because it is coming back out.
+                if (ctx.Lifecycle.ActiveBodies.Count > 0
+                    || ctx.Lifecycle.Presence == CandyPresence.Hidden)
                 {
-                    candyViews.Add(body.ToView());
+                    return true;
                 }
             }
 
-            return CandyDecisions.AnyCandyBodyPresent(candyViews);
+            return false;
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (body.Role != CandyBodyRole.Whole)
                     {
-                        HandleCandyIntersection(ctx.point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
+                        HandleCandyIntersection(ctx.WholeBody.Point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
                 }
             }
@@ -95,13 +97,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.point))
+                if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.WholeBody.Point))
                 {
                     _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.OffScreen);
                     // A light emitter leaving the screen is a non-candy object escaping: release its
                     // rope and exhaust its bound rocket, matching C's generic-object off-screen loop.
                     ExhaustRocketForCandy(ctx);
-                    ReleaseRopesForPoint(ctx.point);
+                    ReleaseRopesForPoint(ctx.WholeBody.Point);
                     ctx.lightBulb?.SyncFromContext(ctx);
                 }
                 // A bulb mid-teleport is Hidden for the brief transport window but is not lost: count
@@ -156,7 +158,7 @@ namespace CutTheRopeDX.GameMain
                 Vector targetPosition = Vect(t.targetObject.x, t.targetObject.y);
                 foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(targetPosition, light.point.pos, light.lightRadius))
+                    if (LightProximity.IsWithinLight(targetPosition, light.WholeBody.Point.pos, light.lightRadius))
                     {
                         isAwake = true;
                         break;
@@ -235,7 +237,7 @@ namespace CutTheRopeDX.GameMain
                 bool lit = false;
                 foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), light.point.pos, light.lightRadius))
+                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), light.WholeBody.Point.pos, light.lightRadius))
                     {
                         lit = true;
                         break;

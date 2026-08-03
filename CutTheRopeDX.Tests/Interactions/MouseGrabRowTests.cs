@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.CarryByMouse(scene, candy);
 
-            Assert.Same(bubble, candy.bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
         }
 
         [Fact]

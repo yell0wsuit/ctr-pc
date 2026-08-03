@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.BindRocket(scene, candy);
 
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
             Assert.True(bubble.popped);
         }
 

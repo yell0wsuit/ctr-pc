@@ -184,7 +184,7 @@ namespace CutTheRopeDX.Tests.Interactions
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.rope != null && grab.rope.tail == candy.point && grab.rope.cut == -1)
+                if (grab.rope != null && grab.rope.tail == candy.WholeBody.Point && grab.rope.cut == -1)
                 {
                     count++;
                 }
@@ -199,7 +199,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The count of active snails on this candy.</returns>
         public static int SnailCount(this GameScene scene, CandyContext candy)
         {
-            return scene.ActiveSnailCountForPoint(candy.point);
+            return scene.ActiveSnailCountForPoint(candy.WholeBody.Point);
         }
 
         /// <summary>Whether the mouse system currently carries the given candy.</summary>
@@ -210,7 +210,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             MiceObject mice = Field<MiceObject>(scene, "miceManager");
             ConstraintedPoint carried = mice?.ActiveMouseCarriedStar();
-            return carried != null && carried == candy.point;
+            return carried != null && carried == candy.WholeBody.Point;
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>

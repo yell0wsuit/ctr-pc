@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.CaptureInLantern(scene, captured);
 
             Assert.True(captured.inLantern);
-            Assert.Same(bubble, kept.bubble);
+            Assert.Same(bubble, kept.WholeBody.Bubble);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.GrabWithHand(scene, grabbed);
 
             Assert.Equal(1, scene.SnailCount(kept));
-            Assert.Equal(1 + SnailWeight.PerSnailWeight, kept.point.weight);
+            Assert.Equal(1 + SnailWeight.PerSnailWeight, kept.WholeBody.Point.weight);
         }
 
         [Fact]

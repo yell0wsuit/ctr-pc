@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
             Assert.True(bubble.popped);
         }
 

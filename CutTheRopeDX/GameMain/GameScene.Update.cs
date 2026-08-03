@@ -752,33 +752,33 @@ namespace CutTheRopeDX.GameMain
 
                     ctx.inLantern = true;
                     ExhaustRocketForCandy(ctx);
-                    ctx.candy.passTransformationsToChilds = true;
-                    ctx.candyMain.scaleX = ctx.candyMain.scaleY = 1f;
-                    ctx.candyTop.scaleX = ctx.candyTop.scaleY = 1f;
+                    body.Visual.passTransformationsToChilds = true;
+                    body.Main.scaleX = body.Main.scaleY = 1f;
+                    body.Top.scaleX = body.Top.scaleY = 1f;
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                    timeline.AddKeyFrame(KeyFrame.MakePos((int)ctx.candy.x, (int)ctx.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                    timeline.AddKeyFrame(KeyFrame.MakePos((int)body.Visual.x, (int)body.Visual.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakePos((int)lantern.x, (int)lantern.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeScale(0.3f, 0.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-                    ctx.candy.RemoveTimeline(0);
-                    ctx.candy.AddTimelinewithID(timeline, 0);
-                    ctx.candy.PlayTimeline(0);
-                    ReleaseRopesForPoint(ctx.point);
-                    DetachHandsForPoint(ctx.point);
-                    DropMouseCandyForPoint(ctx.point);
+                    body.Visual.RemoveTimeline(0);
+                    body.Visual.AddTimelinewithID(timeline, 0);
+                    body.Visual.PlayTimeline(0);
+                    ReleaseRopesForPoint(body.Point);
+                    DetachHandsForPoint(body.Point);
+                    DropMouseCandyForPoint(body.Point);
                     // Lantern capture is terminal for this candy's riders: snails hop off (giving
                     // their weight back) and ants stop carrying it, mirroring hand-grab.
-                    int lanternDetachedSnails = ActiveSnailCountForPoint(ctx.point);
-                    DetachSnailsForPoint(ctx.point);
+                    int lanternDetachedSnails = ActiveSnailCountForPoint(body.Point);
+                    DetachSnailsForPoint(body.Point);
                     if (lanternDetachedSnails > 0)
                     {
-                        ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, lanternDetachedSnails));
+                        body.Point.SetWeight(SnailWeight.AfterForceDetach(body.Point.weight, lanternDetachedSnails));
                     }
                     DetachCandyFromConveyor(ctx);
                     PopCandyBubble(body);
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), ctx.point, 0.05f);
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), body.Point, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);
@@ -869,7 +869,7 @@ namespace CutTheRopeDX.GameMain
                 ConstraintedPoint carried = miceManager.ActiveMouseCarriedStar();
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
-                    candies[ci].carriedByMouse = MouseOwnership.CarriesCandy(carried, candies[ci].point);
+                    candies[ci].carriedByMouse = MouseOwnership.CarriesCandy(carried, candies[ci].WholeBody.Point);
                 }
             }
             float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
@@ -919,7 +919,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (sock4 != sock3 && sock4.group == sock3.group)
                         {
-                            float exitSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v)
+                            float exitSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(body.Point.v)
                                 * ActivePhysicsConstants.SockTeleportSpeedMultiplier;
                             // The exit speed is read off the entry velocity, so the session has to be
                             // built before anything below disturbs the point.
@@ -931,9 +931,9 @@ namespace CutTheRopeDX.GameMain
 
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
-                            ReleaseRopesForPoint(ctx.point);
-                            DetachHandsForPoint(ctx.point);
-                            DropMouseCandyForPoint(ctx.point);
+                            ReleaseRopesForPoint(body.Point);
+                            DetachHandsForPoint(body.Point);
+                            DropMouseCandyForPoint(body.Point);
                             // Take the candy off the ants too: a lingering antSegment hard-overwrites
                             // the point position all through transit and then yanks/brakes the candy
                             // at the exit sock, killing the teleport throw.
@@ -986,8 +986,8 @@ namespace CutTheRopeDX.GameMain
                     // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
                     // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
-                    ConstraintedPoint rocketStar = rocketCandy?.point ?? star;
-                    GameObject rocketCandyMain = rocketCandy?.candyMain ?? candyMain;
+                    ConstraintedPoint rocketStar = rocketCandy?.WholeBody.Point ?? star;
+                    GameObject rocketCandyMain = rocketCandy?.WholeBody.Main ?? candyMain;
                     // Park the rocket while the mouse carries its candy. The kinematic pin plus the
                     // per-frame rocket-point snap keep the rest-0 pair exactly coincident, and the
                     // solver's coincident fallback (DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION, 30
@@ -1127,20 +1127,20 @@ namespace CutTheRopeDX.GameMain
                             // launches when the holder releases.
                             if (RocketBindPath.UsesDirectFlyPath(ctx.capturingHand != null, ctx.carriedByMouse))
                             {
-                                rocket.point.pos = ctx.point.pos;
-                                rocket.point.AddConstraintwithRestLengthofType(ctx.point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.point.pos = body.Point.pos;
+                                rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_FLY;
                             }
                             else
                             {
-                                rocket.point.AddConstraintwithRestLengthofType(ctx.point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.point.AddConstraintwithRestLengthofType(body.Point, dist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_DIST;
                             }
                             // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
                             body.ResidualRotation = 0f;
-                            Vector deltaPos = VectSub(ctx.point.pos, ctx.point.prevPos);
-                            ctx.point.prevPos = VectAdd(ctx.point.prevPos, VectDiv(deltaPos, ctx.point.disableGravity ? 2f : 1.25f));
-                            ctx.point.disableGravity = true;
+                            Vector deltaPos = VectSub(body.Point.pos, body.Point.prevPos);
+                            body.Point.prevPos = VectAdd(body.Point.prevPos, VectDiv(deltaPos, body.Point.disableGravity ? 2f : 1.25f));
+                            body.Point.disableGravity = true;
 
                             // Exhaust any rocket already bound to this candy before re-binding (one-time-use safety).
                             if (ctx.HasActiveRocket && ctx.activeRocket != rocket)
@@ -1152,7 +1152,7 @@ namespace CutTheRopeDX.GameMain
                             rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             ctx.activeRocket = rocket;
                             rocket.isOperating = -1;
-                            rocket.startCandyRotation = ctx.candyMain.rotation;
+                            rocket.startCandyRotation = body.Main.rotation;
 
                             Image grid = Image.Image_createWithResID(Resources.Img.ObjRocket);
                             grid.DoRestoreCutTransparency();
@@ -1368,11 +1368,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
+                // A rocket only ever binds a whole body, so damping has one point to act on.
+                ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
                 bool inWater = waterLayer != null
                     && waterLevel > 0f
-                    && WaterSubmersion.IsSubmerged(ctx.point.pos.X, ctx.point.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius);
+                    && WaterSubmersion.IsSubmerged(rocketPoint.pos.X, rocketPoint.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius);
                 float rocketDamping = inWater ? waterRocketDamping : ActivePhysicsConstants.RocketActiveVelocityDamping;
-                ctx.point.ApplyImpulseDelta(Vect(-ctx.point.v.X / rocketDamping, -ctx.point.v.Y / rocketDamping), delta);
+                rocketPoint.ApplyImpulseDelta(Vect(-rocketPoint.v.X / rocketDamping, -rocketPoint.v.Y / rocketDamping), delta);
             }
             ApplyAntCarryToCandyPosition();
 
@@ -1718,21 +1720,22 @@ namespace CutTheRopeDX.GameMain
                 CandyContext heldCandy = HandHeldCandy(hand);
                 if (hand.state == MechanicalHand.STATE_HAND_CANDY && heldCandy != null)
                 {
-                    heldCandy.candy.drawX += hand.cPoint.pos.X - heldCandy.point.pos.X;
-                    heldCandy.candy.drawY += hand.cPoint.pos.Y - heldCandy.point.pos.Y;
-                    heldCandy.point.pos = hand.cPoint.pos;
+                    CandyBody heldBody = heldCandy.WholeBody;
+                    heldBody.Visual.drawX += hand.cPoint.pos.X - heldBody.Point.pos.X;
+                    heldBody.Visual.drawY += hand.cPoint.pos.Y - heldBody.Point.pos.Y;
+                    heldBody.Point.pos = hand.cPoint.pos;
 
                     // Pin prevPos to the claw as well. Otherwise prevPos keeps the candy's pre-grab
                     // physics position while pos is teleported to the claw, so Verlet reads the teleport
                     // gap (e.g. the rope still pulling the candy up) as a fake velocity. A bouncer sitting
                     // at the claw amplifies that phantom velocity into a huge impulse and launches the candy.
-                    heldCandy.point.prevPos = heldCandy.point.pos;
+                    heldBody.Point.prevPos = heldBody.Point.pos;
 
                     if (hand.doRotateCandy)
                     {
                         if (hand.rotatingSegment != null)
                         {
-                            GameObject rotatingCandyVisual = heldCandy.candyMain ?? heldCandy.candy;
+                            GameObject rotatingCandyVisual = heldBody.Main ?? heldBody.Visual;
                             rotatingCandyVisual.rotation += hand.rotatingSegment.RotationDelta();
                         }
                     }
@@ -1789,6 +1792,8 @@ namespace CutTheRopeDX.GameMain
                         distance < MechanicalHand.MH_GRAB_DISTANCE))
                 {
                     CandyContext ctx = nearestCandy;
+                    // A hand only grabs a whole candy, so the claw constrains one body's point.
+                    CandyBody grabbedBody = ctx.WholeBody;
 
                     // Hand-stealing: release any other hand currently holding this same candy.
                     if (hands.Count > 1)
@@ -1800,7 +1805,7 @@ namespace CutTheRopeDX.GameMain
                                     otherHand.state == MechanicalHand.STATE_HAND_CANDY,
                                     ctx.capturingHand == otherHand))
                             {
-                                otherHand.cPoint.RemoveConstraint(ctx.point);
+                                otherHand.cPoint.RemoveConstraint(grabbedBody.Point);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
                                 otherHand.releaseSoundPlayed = false;
                                 reorderHands = true;
@@ -1809,7 +1814,7 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
-                    hand.cPoint.AddConstraintwithRestLengthofType(ctx.point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
                     hand.releaseSoundPlayed = false;
                     selectedHandIndex = hands.IndexOf(hand);
@@ -1821,7 +1826,7 @@ namespace CutTheRopeDX.GameMain
 
                     // The claw bursts the bubble where it snatched the candy, not where the candy
                     // ends up.
-                    PopCandyBubbleAt(ctx.WholeBody, hand.ClawPosition());
+                    PopCandyBubbleAt(grabbedBody, hand.ClawPosition());
 
                     if (ctx.HasActiveRocket)
                     {
@@ -1837,13 +1842,13 @@ namespace CutTheRopeDX.GameMain
                     // here must give that weight back, otherwise the released candy keeps falling as if the
                     // snail were still attached. Gate on real snail presence so a heavier rocket candy grabbed
                     // without a snail keeps its own weight.
-                    int detachedSnails = ActiveSnailCountForPoint(ctx.point);
-                    DetachSnailsForPoint(ctx.point);
+                    int detachedSnails = ActiveSnailCountForPoint(grabbedBody.Point);
+                    DetachSnailsForPoint(grabbedBody.Point);
                     if (detachedSnails > 0)
                     {
-                        ctx.point.SetWeight(SnailWeight.AfterForceDetach(ctx.point.weight, detachedSnails));
+                        grabbedBody.Point.SetWeight(SnailWeight.AfterForceDetach(grabbedBody.Point.weight, detachedSnails));
                     }
-                    DropMouseCandyForPoint(ctx.point);
+                    DropMouseCandyForPoint(grabbedBody.Point);
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);

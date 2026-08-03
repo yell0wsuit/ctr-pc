@@ -58,12 +58,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="position">World position.</param>
         public static void PlaceCandyAt(CandyContext candy, Vector position)
         {
-            candy.point.pos = position;
-            candy.point.prevPos = position;
-            candy.point.v = new Vector(0f, 0f);
-            candy.point.posDelta = new Vector(0f, 0f);
-            candy.candy.x = position.X;
-            candy.candy.y = position.Y;
+            PlaceBodyAt(candy.WholeBody, position);
         }
 
         /// <summary>
@@ -106,14 +101,14 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="candy">Candy to hold.</param>
         public static void Hover(CandyContext candy)
         {
-            candy.point.disableGravity = true;
+            Hover(candy.WholeBody);
         }
 
         /// <summary>Lets a held candy fall again.</summary>
         /// <param name="candy">Candy to release.</param>
         public static void Drop(CandyContext candy)
         {
-            candy.point.disableGravity = false;
+            candy.WholeBody.Point.disableGravity = false;
         }
     }
 }

@@ -254,9 +254,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            ReleaseRopesForPoint(ctx.point);
-            DetachHandsForPoint(ctx.point);
-            DropMouseCandyForPoint(ctx.point);
+            // The tube swallows the whole body; the guard above already refused a split candy.
+            CandyBody body = ctx.WholeBody;
+            GameObject candyVisual = body.Visual;
+            ReleaseRopesForPoint(body.Point);
+            DetachHandsForPoint(body.Point);
+            DropMouseCandyForPoint(body.Point);
             // Take the candy off the ants too: a lingering antSegment hard-overwrites the point
             // position all through transit and then yanks/brakes the candy at the exit tube,
             // killing the teleport throw.
@@ -267,31 +270,31 @@ namespace CutTheRopeDX.GameMain
                 ctx.activeRocket.visible = false;
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.15f);
-            ctx.point.disableGravity = true;
-            ctx.candy.passTransformationsToChilds = true;
+            body.Point.disableGravity = true;
+            candyVisual.passTransformationsToChilds = true;
             foreach (BaseElement visual in ctx.TransformChildVisuals())
             {
                 visual.scaleX = visual.scaleY = 1f;
             }
 
-            if (ctx.candy.GetTimeline(1) != null)
+            if (candyVisual.GetTimeline(1) != null)
             {
-                ctx.candy.RemoveTimeline(1);
+                candyVisual.RemoveTimeline(1);
             }
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos((int)ctx.candy.x, (int)ctx.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            float towardTubeX = ctx.candy.x + ((bambooTube.x - ctx.candy.x) * 0.3f);
-            float towardTubeY = ctx.candy.y + ((bambooTube.y - ctx.candy.y) * 0.3f);
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)candyVisual.x, (int)candyVisual.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            float towardTubeX = candyVisual.x + ((bambooTube.x - candyVisual.x) * 0.3f);
+            float towardTubeY = candyVisual.y + ((bambooTube.y - candyVisual.y) * 0.3f);
             timeline.AddKeyFrame(KeyFrame.MakePos((int)towardTubeX, (int)towardTubeY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(ctx.candy.scaleX, ctx.candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(candyVisual.scaleX, candyVisual.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            ctx.candy.AddTimelinewithID(timeline, 1);
-            ctx.candy.PlayTimeline(1);
+            candyVisual.AddTimelinewithID(timeline, 1);
+            candyVisual.PlayTimeline(1);
             timeline.delegateTimelineDelegate = aniPool;
-            _ = aniPool.AddChild(ctx.candy);
+            _ = aniPool.AddChild(candyVisual);
         }
 
         /// <summary>

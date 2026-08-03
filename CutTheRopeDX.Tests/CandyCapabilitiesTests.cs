@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests
             };
             CandyContext ctx = Context(visual: body);
 
-            Assert.Equal(225f, GameObject.BoundsTopY(ctx.candy));
+            Assert.Equal(225f, GameObject.BoundsTopY(ctx.WholeBody.Visual));
         }
 
         [Fact]
@@ -130,12 +130,12 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CandyContext_ToView_PreservesCapabilities()
+        public void CandyBody_ToView_PreservesItsOwnersCapabilities()
         {
             CandyContext ctx = Context(point: new ConstraintedPoint { pos = new Vector(1f, 2f) });
             ctx.Capabilities = CandyCapabilities.LightBulb;
 
-            CandyView view = ctx.ToView();
+            CandyView view = ctx.WholeBody.ToView();
 
             Assert.False(view.Capabilities.CanBeEaten);
             Assert.False(view.Capabilities.CanCollectStars);

@@ -48,7 +48,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             _ = Act.CaptureInBubble(scene, candy);
             Act.Eat(scene, candy);
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
         }
 
         [Fact]
@@ -56,10 +56,10 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
-            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
+            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.WholeBody.Point.weight);
             Act.Eat(scene, candy);
             Assert.Equal(0, scene.SnailCount(candy));
-            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
+            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.WholeBody.Point.weight);
         }
 
         [Fact]

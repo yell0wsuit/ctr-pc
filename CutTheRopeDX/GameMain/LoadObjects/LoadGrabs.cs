@@ -84,7 +84,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     // Multi-candy: bind to the candy named by candyNumber.
                     grab.candyNumber = 0;
-                    constraintedPoint = targetCandy.point;
+                    constraintedPoint = targetCandy.WholeBody.Point;
                 }
                 else
                 {
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.GameMain
                     if (bindBulb)
                     {
                         CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
-                        constraintedPoint = bulb != null ? bulb.point : authoredHalf ?? star;
+                        constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
                     }
                     else if (authoredHalf != null)
                     {

@@ -179,12 +179,16 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // Transport only ever hides and restores the whole body; halves never enter a
+            // transporter, so the session has exactly one body to put back on the field.
+            CandyBody body = ctx.WholeBody;
+
             if (session.Kind == CandyTransportKind.Bamboo)
             {
                 RestoreCandyProperties(ctx);
-                session.BambooTube.ThrowCandy(ctx.point);
+                session.BambooTube.ThrowCandy(body.Point);
                 session.BambooTube.ThrowParticlesOut(particlesAniPool);
-                ctx.candy.PlayTimeline(2);
+                body.Visual.PlayTimeline(2);
                 if (ctx.HasActiveRocket)
                 {
                     ctx.activeRocket.visible = true;
@@ -193,18 +197,18 @@ namespace CutTheRopeDX.GameMain
                     ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
                     ctx.activeRocket.startRotation = ctx.activeRocket.rotation;
                     ctx.activeRocket.startCandyRotation = 0f;
-                    GameObject rocketCandyVisual = ctx.candyMain ?? ctx.candy;
+                    GameObject rocketCandyVisual = body.Main ?? body.Visual;
                     rocketCandyVisual.rotation = 0f;
                     ctx.activeRocket.additionalAngle = 0f;
                     ctx.activeRocket.UpdateRotation();
                     ctx.activeRocket.point.posDelta = vectZero;
-                    ctx.activeRocket.point.pos = ctx.point.pos;
+                    ctx.activeRocket.point.pos = body.Point.pos;
                     ctx.activeRocket.point.prevPos = ctx.activeRocket.point.pos;
                     ctx.activeRocket.point.v = vectZero;
                 }
                 else
                 {
-                    ctx.point.disableGravity = false;
+                    body.Point.disableGravity = false;
                 }
 
                 return;
@@ -216,25 +220,25 @@ namespace CutTheRopeDX.GameMain
                 session.Sock.light.visible = true;
                 Vector v = Vect(0f, ActivePhysicsConstants.SockExitOffsetY);
                 v = VectRotate(v, DEGREES_TO_RADIANS(session.Sock.rotation));
-                ctx.point.pos.X = session.Sock.x;
-                ctx.point.pos.Y = session.Sock.y;
-                ctx.point.pos = VectAdd(ctx.point.pos, v);
-                ctx.point.prevPos.X = ctx.point.pos.X;
-                ctx.point.prevPos.Y = ctx.point.pos.Y;
-                ctx.point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(session.Sock.rotation)), session.SavedExitSpeed);
-                ctx.point.posDelta = VectDiv(ctx.point.v, 60f);
-                ctx.point.prevPos = VectSub(ctx.point.pos, ctx.point.posDelta);
+                body.Point.pos.X = session.Sock.x;
+                body.Point.pos.Y = session.Sock.y;
+                body.Point.pos = VectAdd(body.Point.pos, v);
+                body.Point.prevPos.X = body.Point.pos.X;
+                body.Point.prevPos.Y = body.Point.pos.Y;
+                body.Point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(session.Sock.rotation)), session.SavedExitSpeed);
+                body.Point.posDelta = VectDiv(body.Point.v, 60f);
+                body.Point.prevPos = VectSub(body.Point.pos, body.Point.posDelta);
 
                 if (ctx.HasActiveRocket)
                 {
                     ctx.activeRocket.visible = true;
-                    ctx.activeRocket.point.pos = ctx.point.pos;
-                    ctx.activeRocket.point.prevPos = ctx.point.prevPos;
-                    ctx.activeRocket.point.v = ctx.point.v;
-                    ctx.activeRocket.point.posDelta = ctx.point.posDelta;
+                    ctx.activeRocket.point.pos = body.Point.pos;
+                    ctx.activeRocket.point.prevPos = body.Point.prevPos;
+                    ctx.activeRocket.point.v = body.Point.v;
+                    ctx.activeRocket.point.posDelta = body.Point.posDelta;
                     ctx.activeRocket.rotation = session.Sock.rotation + DEG_90;
                     ctx.activeRocket.startRotation = session.Sock.rotation + DEG_90;
-                    ctx.activeRocket.startCandyRotation = ctx.candyMain.rotation;
+                    ctx.activeRocket.startCandyRotation = body.Main.rotation;
                     ctx.activeRocket.additionalAngle = 0f;
                     ctx.activeRocket.UpdateRotation();
                 }
@@ -367,7 +371,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                float d = VectDistance(hand.cPoint.pos, ctx.point.pos);
+                float d = VectDistance(hand.cPoint.pos, ctx.WholeBody.Point.pos);
                 if (d < distance)
                 {
                     distance = d;
@@ -770,9 +774,10 @@ namespace CutTheRopeDX.GameMain
             ReleaseRopesForBody(body);
             // Carriers only ever hold a whole body, so they are always detached from the logical
             // candy's whole point - which for a whole body is this body's own point.
-            DetachHandsForPoint(ctx.WholeBody.Point);
-            DetachSnailsForPoint(ctx.WholeBody.Point);
-            DropMouseCandyForPoint(ctx.WholeBody.Point);
+            ConstraintedPoint carrierPoint = ctx.WholeBody.Point;
+            DetachHandsForPoint(carrierPoint);
+            DetachSnailsForPoint(carrierPoint);
+            DropMouseCandyForPoint(carrierPoint);
             if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);
@@ -918,7 +923,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.point ?? star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.state = MechanicalHand.STATE_HAND_RELEASE;
                     hand.doRotateCandy = false;
@@ -952,7 +957,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.point ?? star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
                     if (heldPoint != point)
                     {
                         continue;

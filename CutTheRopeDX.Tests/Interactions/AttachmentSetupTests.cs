@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(candy);
             Interaction.PlaceCandyAt(candy, Interaction.At(bubble.x, bubble.y));
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.bubble != null));
+            Assert.True(Interaction.StepUntil(scene, () => candy.WholeBody.Bubble != null));
         }
 
         [Fact]

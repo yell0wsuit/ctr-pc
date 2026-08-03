@@ -53,7 +53,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Bubble CaptureInBubble(GameScene scene, CandyContext candy, int bubbleIndex = 0)
         {
             Bubble bubble = scene.Bubbles()[bubbleIndex];
-            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.bubble == bubble, "the bubble never captured the candy");
+            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.WholeBody.Bubble == bubble, "the bubble never captured the candy");
             return bubble;
         }
 
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 scene,
                 candy,
                 position => MoveTo(snail, position),
-                () => snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == candy.point,
+                () => snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == candy.WholeBody.Point,
                 "the snail never attached to the candy");
             return snail;
         }
@@ -197,7 +197,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static void LoseOffScreen(GameScene scene, CandyContext candy)
         {
             Interaction.Drop(candy);
-            Vector belowTheMap = new(candy.point.pos.X, OffScreenY);
+            Vector belowTheMap = new(candy.WholeBody.Point.pos.X, OffScreenY);
             Interaction.PlaceCandyAt(candy, belowTheMap);
 
             Assert.True(
@@ -231,7 +231,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 position =>
                 {
                     MoveTo(hat, position);
-                    hat.rotation = MouthAngleFacing(candy.point.posDelta, hat.rotation);
+                    hat.rotation = MouthAngleFacing(candy.WholeBody.Point.posDelta, hat.rotation);
                     hat.UpdateRotation();
                 },
                 () => candy.Lifecycle.Transport?.Sock != null,
@@ -343,9 +343,9 @@ namespace CutTheRopeDX.Tests.Interactions
 
         private static void Chase(GameScene scene, CandyContext candy, Action<Vector> place, Func<bool> done, string message)
         {
-            place(candy.point.pos);
+            place(candy.WholeBody.Point.pos);
             Assert.True(
-                Interaction.StepUntil(scene, () => place(candy.point.pos), done),
+                Interaction.StepUntil(scene, () => place(candy.WholeBody.Point.pos), done),
                 message);
 
             // The matrix describes the settled state, not the state mid-frame: several teardowns
