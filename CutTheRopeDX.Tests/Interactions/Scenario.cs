@@ -196,13 +196,27 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="angle">Nozzle angle in degrees.</param>
         /// <param name="impulse">Thrust impulse.</param>
         /// <param name="time">Burn time in seconds, or -1 to burn until it leaves.</param>
+        /// <param name="impulseFactor">
+        /// Thrust multiplier applied while the candy's rope is relaxed; the loader substitutes
+        /// <c>0.6</c> when a map leaves it at zero, so that is the default here too.
+        /// </param>
+        /// <param name="isRotatable">Whether the player can spin the rocket before it fires.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Rocket(int x, int y, float angle = 0f, float impulse = 200f, float time = -1f)
+        public Scenario Rocket(
+            int x,
+            int y,
+            float angle = 0f,
+            float impulse = 200f,
+            float time = -1f,
+            float impulseFactor = 0.6f,
+            bool isRotatable = false)
         {
             XElement rocket = Node("rocket", x, y);
             rocket.SetAttributeValue("angle", Num(angle));
             rocket.SetAttributeValue("impulse", Num(impulse));
             rocket.SetAttributeValue("time", Num(time));
+            rocket.SetAttributeValue("impulseFactor", Num(impulseFactor));
+            rocket.SetAttributeValue("isRotatable", Flag(isRotatable));
             return Add(rocket);
         }
 

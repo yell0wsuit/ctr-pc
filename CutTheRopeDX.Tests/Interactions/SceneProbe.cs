@@ -167,6 +167,27 @@ namespace CutTheRopeDX.Tests.Interactions
             return scene.CandyBodyForPointOrNull(point);
         }
 
+        /// <summary>
+        /// The rest length of the leash a rocket created when it bound a candy - the reach it will
+        /// reel in. It has to be measured to the candy the rocket actually bound; a rocket that took
+        /// its reach from whichever candy was primary gets a leash that is slack or snaps.
+        /// </summary>
+        /// <param name="rocket">Rocket to inspect.</param>
+        /// <param name="candy">Candy the rocket is expected to have bound.</param>
+        /// <returns>The rest length, or <see langword="null"/> when the rocket holds no leash on it.</returns>
+        public static float? BindReach(this Rocket rocket, CandyContext candy)
+        {
+            foreach (Constraint constraint in rocket.point.constraints)
+            {
+                if (constraint.cp == candy.WholeBody.Point)
+                {
+                    return constraint.restLength;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns><see langword="true"/> when the primary candy is removed, hidden, or split.</returns>
