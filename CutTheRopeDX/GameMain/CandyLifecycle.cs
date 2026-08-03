@@ -65,6 +65,29 @@ namespace CutTheRopeDX.GameMain
             return new(CandyPresence.Split, wholeBody, split);
         }
 
+        /// <summary>
+        /// Replaces the present whole body with two owned halves. A level authors its candy as split,
+        /// so this runs once while the map loads rather than in response to gameplay; the whole body
+        /// stays dormant until <see cref="TryCompleteMerge"/> brings it back.
+        /// </summary>
+        /// <param name="split">The owned split-half state built from the map's halves.</param>
+        /// <returns>
+        /// <see langword="true"/> when a present candy becomes split; otherwise, <see langword="false"/>
+        /// when <paramref name="split"/> is <see langword="null"/> or the candy is already removed,
+        /// hidden, or split.
+        /// </returns>
+        public bool TryBeginSplit(SplitCandyState split)
+        {
+            if (split == null || Presence != CandyPresence.Present)
+            {
+                return false;
+            }
+
+            Split = split;
+            Presence = CandyPresence.Split;
+            return true;
+        }
+
         /// <summary>Permanently removes a present candy for the specified reason.</summary>
         /// <param name="reason">The reason the candy is removed.</param>
         /// <returns>

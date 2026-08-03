@@ -503,6 +503,11 @@ namespace CutTheRopeDX.GameMain
                 starL.Update(delta * ropePhysicsSpeed);
                 candyR.Update(delta);
                 starR.Update(delta * ropePhysicsSpeed);
+                // Halves follow their points here, exactly like whole candies above. This used to
+                // happen in Draw, which left the merge's ObjectsIntersect test reading last frame's
+                // positions - and never running at all when nothing draws.
+                SyncHalfVisual(candyL, starL);
+                SyncHalfVisual(candyR, starR);
                 if (twoParts == 1)
                 {
                     for (int l = 0; l < 30; l++)
@@ -511,22 +516,16 @@ namespace CutTheRopeDX.GameMain
                         ConstraintedPoint.SatisfyConstraints(starR);
                     }
                 }
-                if (partsDist > 0)
+                // A destroyed half already cancelled the merge on the split aggregate, which clears the
+                // phase and the remaining distance together, so the old separate abort branch is gone.
+                SplitCandyState merging = PrimarySplit;
+                if (merging != null && merging.MergeDistance > 0)
                 {
-                    // Abort merge if one half was destroyed to prevent
-                    // reviving the broken half into a full candy
-                    if (noCandyL || noCandyR)
-                    {
-                        partsDist = 0f;
-                        twoParts = 0;
-                    }
-                    else if (Mover.MoveVariableToTarget(ref partsDist, 0, ActivePhysicsConstants.CandyPartsMergeSpeed, delta))
+                    if (merging.TryAdvanceMerge(ActivePhysicsConstants.CandyPartsMergeSpeed, delta))
                     {
                         CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
-                        twoParts = 2;
+                        _ = candies[0].Lifecycle.TryCompleteMerge();
                         noCandy = false;
-                        noCandyL = true;
-                        noCandyR = true;
                         int candiesUnitedCount = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
                         Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
                         if (candiesUnitedCount == 100)
@@ -638,16 +637,16 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        starL.ChangeRestLengthToFor(partsDist, starR);
-                        starR.ChangeRestLengthToFor(partsDist, starL);
+                        starL.ChangeRestLengthToFor(merging.MergeDistance, starR);
+                        starR.ChangeRestLengthToFor(merging.MergeDistance, starL);
                     }
                 }
                 if (!noCandyL && !noCandyR && GameObject.ObjectsIntersect(candyL, candyR) && twoParts == 0)
                 {
-                    twoParts = 1;
-                    partsDist = VectDistance(starL.pos, starR.pos);
-                    starL.AddConstraintwithRestLengthofType(starR, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                    starR.AddConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    float gap = VectDistance(starL.pos, starR.pos);
+                    _ = PrimarySplit?.TryBeginMerge(gap);
+                    starL.AddConstraintwithRestLengthofType(starR, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    starR.AddConstraintwithRestLengthofType(starL, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
             targetObject?.Update(delta);
@@ -1999,15 +1998,16 @@ namespace CutTheRopeDX.GameMain
             }
             if (twoParts != 2)
             {
+                SplitCandyState offScreenSplit = candies[0].Lifecycle.Split;
                 if (!noCandyL && PointOutOfScreen(starL))
                 {
-                    noCandyL = true;
+                    _ = offScreenSplit?.Left.TryRemove(CandyRemovalReason.OffScreen);
                     ExhaustRocketForCandy(candies[0]);
                     anyLeft = true;
                 }
                 if (!noCandyR && PointOutOfScreen(starR))
                 {
-                    noCandyR = true;
+                    _ = offScreenSplit?.Right.TryRemove(CandyRemovalReason.OffScreen);
                     ExhaustRocketForCandy(candies[0]);
                     anyLeft = true;
                 }

@@ -323,14 +323,10 @@ namespace CutTheRopeDX.GameMain
             {
                 if (!noCandyL)
                 {
-                    candyL.x = starL.pos.X;
-                    candyL.y = starL.pos.Y;
                     candyL.Draw();
                 }
                 if (!noCandyR)
                 {
-                    candyR.x = starR.pos.X;
-                    candyR.y = starR.pos.Y;
                     candyR.Draw();
                 }
             }

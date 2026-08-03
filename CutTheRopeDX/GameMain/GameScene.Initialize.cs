@@ -29,8 +29,6 @@ namespace CutTheRopeDX.GameMain
             }
             waterLevel = 0f;
             waterSpeed = 0f;
-            twoParts = 2;
-            partsDist = 0f;
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
@@ -203,6 +201,42 @@ namespace CutTheRopeDX.GameMain
                 Capabilities = CandyCapabilities.Candy,
                 noCandy = false,
             });
+        }
+
+        /// <summary>
+        /// Moves one split half's visual onto its physics point and refreshes the cached draw
+        /// position that collision reads.
+        /// </summary>
+        /// <param name="halfVisual">The half's visual.</param>
+        /// <param name="halfPoint">The half's physics point.</param>
+        private static void SyncHalfVisual(GameObject halfVisual, ConstraintedPoint halfPoint)
+        {
+            halfVisual.x = halfPoint.pos.X;
+            halfVisual.y = halfPoint.pos.Y;
+            CalculateTopLeft(halfVisual);
+        }
+
+        /// <summary>
+        /// Hands the primary candy its two authored halves once metadata has built them. A split level
+        /// is one logical candy with two bodies, so the halves become a <see cref="SplitCandyState"/>
+        /// owned by <c>candies[0]</c>'s lifecycle rather than a second scene-level candy. A map that
+        /// declares <c>twoParts</c> but authors only one half is left whole, matching the old
+        /// behavior of a null <c>candyL</c>/<c>candyR</c> pair.
+        /// </summary>
+        private void InstallSplitCandyState()
+        {
+            if (!levelAuthorsSplitCandy || candyL == null || candyR == null)
+            {
+                return;
+            }
+
+            CandyHalf left = new(new CandyBody(starL, CandyBodyRole.LeftHalf, candyL));
+            CandyHalf right = new(new CandyBody(starR, CandyBodyRole.RightHalf, candyR));
+
+            // The first <candy> element would otherwise claim candies[0]; a split level has no whole
+            // <candy> of its own, so the primary is the split candy and later elements build extras.
+            primaryCandyClaimed = true;
+            _ = candies[0].Lifecycle.TryBeginSplit(new SplitCandyState(left, right));
         }
 
         /// <summary>

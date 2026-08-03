@@ -110,7 +110,7 @@ namespace CutTheRopeDX.GameMain
                             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
-                            twoParts = twoPartsBool ? 0 : 2;
+                            levelAuthorsSplitCandy = twoPartsBool;
                             waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {
@@ -213,6 +213,8 @@ namespace CutTheRopeDX.GameMain
             candy.bb = GetCandyBoundingBox();
             _ = (candyL?.bb = GetSplitCandyBoundingBox());
             _ = (candyR?.bb = GetSplitCandyBoundingBox());
+
+            InstallSplitCandyState();
 
             // candiesConnected: join the two candies with a mutual elastic. Both candy points are
             // passed directly as head/tail; Bungee preserves their weights and skips integrating

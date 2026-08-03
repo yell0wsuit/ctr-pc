@@ -63,8 +63,6 @@ namespace CutTheRopeDX.GameMain
             candyBubbleL = null;
             candyBubbleR = null;
             noCandy = twoParts != 2;
-            noCandyL = false;
-            noCandyR = false;
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 targets[ti].controller?.ResetBlink();

@@ -797,17 +797,18 @@ namespace CutTheRopeDX.GameMain
                 PopCandyBubble(false);
             }
             float breakX, breakY;
+            SplitCandyState split = candies[0].Lifecycle.Split;
             if (left)
             {
                 breakX = candyL.x;
                 breakY = candyL.y;
-                noCandyL = true;
+                _ = split?.Left.TryRemove(CandyRemovalReason.Hazard);
             }
             else
             {
                 breakX = candyR.x;
                 breakY = candyR.y;
-                noCandyR = true;
+                _ = split?.Right.TryRemove(CandyRemovalReason.Hazard);
             }
             ExhaustRocketForCandy(candies[0]);
             SpawnCandyBreakParticles(breakX, breakY);

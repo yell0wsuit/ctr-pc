@@ -1176,25 +1176,45 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public int gravityTouchDown;
 
+        // Derived split topology. These keep their legacy lowercase names (and so suppress
+        // IDE1006) while the call sites still read them; Task 9 replaces them with direct
+        // PrimarySplit access.
+#pragma warning disable IDE1006
         /// <summary>
-        /// The current split-candy state.
+        /// The current split-candy state, derived from the primary candy's lifecycle:
+        /// <see cref="PARTS_NONE"/> when it is whole, <see cref="PARTS_SEPARATE"/> while its two halves
+        /// move independently, and <see cref="PARTS_DIST"/> while they are merging. For "does this map
+        /// author a split candy", which is known before the lifecycle exists, see
+        /// <see cref="levelAuthorsSplitCandy"/>.
         /// </summary>
-        public int twoParts;
+        public int twoParts => PrimarySplit == null
+            ? PARTS_NONE
+            : PrimarySplit.Phase == SplitPhase.Merging ? PARTS_DIST : PARTS_SEPARATE;
 
         /// <summary>
-        /// Whether the left candy half has been removed from play.
+        /// Whether the loaded map declares a split candy. Level metadata, parsed before the split
+        /// lifecycle is built, so it cannot be derived from <see cref="twoParts"/> during loading.
         /// </summary>
-        public bool noCandyL;
+        private bool levelAuthorsSplitCandy;
 
         /// <summary>
-        /// Whether the right candy half has been removed from play.
+        /// The primary candy's split state while it owns two halves, or <see langword="null"/> when it
+        /// is whole. This is the one authority for split topology; the members below read it.
         /// </summary>
-        public bool noCandyR;
+        private SplitCandyState PrimarySplit => candies[0].Lifecycle.Split;
 
         /// <summary>
-        /// The current distance between split candy parts.
+        /// Whether the left candy half has been removed from play. Only meaningful while the primary
+        /// is split; every reader is already inside a <c>twoParts != PARTS_NONE</c> guard.
         /// </summary>
-        public float partsDist;
+        public bool noCandyL => PrimarySplit == null || !PrimarySplit.Left.IsPresent;
+
+        /// <summary>
+        /// Whether the right candy half has been removed from play. Only meaningful while the primary
+        /// is split; every reader is already inside a <c>twoParts != PARTS_NONE</c> guard.
+        /// </summary>
+        public bool noCandyR => PrimarySplit == null || !PrimarySplit.Right.IsPresent;
+#pragma warning restore IDE1006
 
         /// <summary>
         /// The X value for the global gravity.

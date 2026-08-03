@@ -515,14 +515,15 @@ namespace CutTheRopeDX.GameMain
             sg.hasSpider = false;
             // spiderTookCandy = true;
             GameObject capturedCandy;
+            SplitCandyState split = candies[0].Lifecycle.Split;
             if (capturedStar == starL)
             {
-                noCandyL = true;
+                _ = split?.Left.TryRemove(CandyRemovalReason.Spider);
                 capturedCandy = candyL;
             }
             else if (capturedStar == starR)
             {
-                noCandyR = true;
+                _ = split?.Right.TryRemove(CandyRemovalReason.Spider);
                 capturedCandy = candyR;
             }
             else

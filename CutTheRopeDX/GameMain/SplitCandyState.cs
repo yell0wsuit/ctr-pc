@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework.Helpers;
+
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>Merge phase of the two bodies owned by a split logical candy.</summary>
@@ -107,6 +109,28 @@ namespace CutTheRopeDX.GameMain
             MergeDistance = mergeDistance;
             Phase = SplitPhase.Merging;
             return true;
+        }
+
+        /// <summary>
+        /// Closes an active merge by one frame, shrinking the distance the halves still have to cover.
+        /// </summary>
+        /// <param name="speed">Distance closed per second.</param>
+        /// <param name="delta">Frame delta in seconds.</param>
+        /// <returns>
+        /// <see langword="true"/> when the halves have closed the whole distance and the merge is ready
+        /// to complete; <see langword="false"/> while distance remains, or when no merge is active.
+        /// </returns>
+        public bool TryAdvanceMerge(float speed, float delta)
+        {
+            if (Phase != SplitPhase.Merging)
+            {
+                return false;
+            }
+
+            float remaining = MergeDistance;
+            bool closed = Mover.MoveVariableToTarget(ref remaining, 0, speed, delta);
+            MergeDistance = remaining;
+            return closed;
         }
 
         /// <summary>Checks whether two intact merging halves can complete their lifecycle merge.</summary>
