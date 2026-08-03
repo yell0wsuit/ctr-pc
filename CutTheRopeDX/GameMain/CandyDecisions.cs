@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -121,6 +122,44 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Determines whether every candy that participates in the win condition
+        /// was permanently removed as eaten.
+        /// </summary>
+        /// <param name="candies">The logical candy outcome snapshots to evaluate.</param>
+        /// <returns>
+        /// <see langword="true"/> when every eatable candy is
+        /// <see cref="CandyPresence.Removed"/> with
+        /// <see cref="CandyRemovalReason.Eaten"/>; otherwise <see langword="false"/>.
+        /// </returns>
+        internal static bool AllEaten(IEnumerable<CandyOutcomeView> candies)
+        {
+            return candies
+                .Where(static candy => candy.CanBeEaten)
+                .All(static candy =>
+                    candy.Presence == CandyPresence.Removed
+                    && candy.RemovalReason == CandyRemovalReason.Eaten);
+        }
+
+        /// <summary>
+        /// Determines whether any candy has a failed removal caused by a hazard,
+        /// spider, off-screen exit, or the loss of an owned split half.
+        /// </summary>
+        /// <param name="candies">The logical candy outcome snapshots to evaluate.</param>
+        /// <returns>
+        /// <see langword="true"/> when any candy records a failed removal;
+        /// otherwise <see langword="false"/>.
+        /// </returns>
+        internal static bool AnyFailedRemoval(IEnumerable<CandyOutcomeView> candies)
+        {
+            return candies.Any(static candy =>
+                candy.HasFailedSplitHalf
+                || (candy.Presence == CandyPresence.Removed
+                && candy.RemovalReason is CandyRemovalReason.Hazard
+                    or CandyRemovalReason.Spider
+                    or CandyRemovalReason.OffScreen));
         }
     }
 }
