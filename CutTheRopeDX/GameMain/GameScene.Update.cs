@@ -331,6 +331,14 @@ namespace CutTheRopeDX.GameMain
                 candyConnector.Update(delta * ropePhysicsSpeed);
             }
 
+            SplitCandyState primarySplit = candies[0].Lifecycle.Split;
+
+            // Sample whether the halves touch before the loop below re-tops-left their visuals.
+            bool halvesTouchedLastFrame = primarySplit != null
+                && primarySplit.Left.IsPresent
+                && primarySplit.Right.IsPresent
+                && GameObject.ObjectsIntersect(primarySplit.Left.Body.Visual, primarySplit.Right.Body.Visual);
+
             // Step every active body's point and visual in one pass: whole candies and surviving
             // split halves alike. A removed, hidden, or split candy offers no body, so the old
             // presence guards are the enumerator's job.
@@ -344,7 +352,6 @@ namespace CutTheRopeDX.GameMain
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
             ResolveCandyCollisions(delta);
-            SplitCandyState primarySplit = candies[0].Lifecycle.Split;
             if (primarySplit != null)
             {
                 ConstraintedPoint leftPoint = primarySplit.Left.Body.Point;
@@ -467,9 +474,10 @@ namespace CutTheRopeDX.GameMain
                         merging.Right.Body.Point.ChangeRestLengthToFor(merging.MergeDistance, merging.Left.Body.Point);
                     }
                 }
+                // The gap is measured from the live points even though the touch test above is a frame old.
                 if (primarySplit.Left.IsPresent && primarySplit.Right.IsPresent
                     && primarySplit.Phase == SplitPhase.Separate
-                    && GameObject.ObjectsIntersect(primarySplit.Left.Body.Visual, primarySplit.Right.Body.Visual))
+                    && halvesTouchedLastFrame)
                 {
                     float gap = VectDistance(leftPoint.pos, rightPoint.pos);
                     _ = primarySplit.TryBeginMerge(gap);

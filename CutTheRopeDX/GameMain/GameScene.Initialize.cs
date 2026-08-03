@@ -219,6 +219,11 @@ namespace CutTheRopeDX.GameMain
             visual.y = y;
             visual.bb = GetSplitCandyBoundingBox();
 
+            // Seed the draw position from the authored one. The merge test reads where a half was
+            // last drawn, which is a frame behind its point, so on the very first frame it has to
+            // read the half's authored spot - not the origin.
+            CalculateTopLeft(visual);
+
             // Normal bubble first, then the ghost-form bubble, matching the child order the whole
             // candy's visual stack uses.
             Animation bubbleAnim = BubbleAnimationFactory.CreateBubble();
