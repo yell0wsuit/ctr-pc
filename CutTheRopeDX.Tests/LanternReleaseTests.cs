@@ -38,14 +38,14 @@ namespace CutTheRopeDX.Tests
 
         private static CandyContext CapturedCandy(ConstraintedPoint point)
         {
-            return new CandyContext
-            {
-                point = point,
-                candy = CapturedVisual(),
-                candyMain = CapturedVisual(),
-                candyTop = CapturedVisual(),
-                inLantern = true
-            };
+            CandyBody body = new(
+                point,
+                CandyBodyRole.Whole,
+                CapturedVisual(),
+                CapturedVisual(),
+                CapturedVisual());
+
+            return new CandyContext(body) { inLantern = true };
         }
 
         private static GameObject CapturedVisual()

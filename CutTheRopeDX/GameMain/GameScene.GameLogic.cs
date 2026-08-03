@@ -638,8 +638,8 @@ namespace CutTheRopeDX.GameMain
             {
                 bubble.capturedByBulb = false;
             }
-            ctx.bubble = null;
-            ctx.bubbleHasGhost = false;
+            ctx.WholeBody.Bubble = null;
+            ctx.WholeBody.BubbleHasGhost = false;
             ctx.lightBulb?.SyncFromContext(ctx);
             _ = (ctx.candyBubbleAnimation?.visible = false);
             _ = (ctx.candyGhostBubbleAnimation?.visible = false);

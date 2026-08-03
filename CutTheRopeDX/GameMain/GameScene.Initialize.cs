@@ -185,15 +185,21 @@ namespace CutTheRopeDX.GameMain
             // the first <candy> element claims it and takes the key from XML.
             candies.Clear();
             primaryCandyClaimed = false;
-            candies.Add(new CandyContext
+
+            // The primary candy's ghost bubble stays off its body: the ci==0 paths drive it through
+            // the scene singleton above, so passing it here would give it two owners.
+            CandyBody primaryBody = new(
+                starPoint,
+                CandyBodyRole.Whole,
+                candyObj,
+                candyMainObj,
+                candyTopObj,
+                candyBlinkAnim,
+                candyBubbleAnimation);
+
+            candies.Add(new CandyContext(primaryBody)
             {
                 candyNumber = null,
-                point = starPoint,
-                candy = candyObj,
-                candyMain = candyMainObj,
-                candyTop = candyTopObj,
-                candyBlink = candyBlinkAnim,
-                candyBubbleAnimation = candyBubbleAnimation,
                 Capabilities = CandyCapabilities.Candy,
                 noCandy = false,
             });
@@ -215,16 +221,11 @@ namespace CutTheRopeDX.GameMain
             c.x = px;
             c.y = py;
 
-            CandyContext ctx = new()
+            CandyBody body = new(p, CandyBodyRole.Whole, c, cMain, cTop, blink, bubbleAnim, ghostBubbleAnim);
+
+            CandyContext ctx = new(body)
             {
                 candyNumber = candyNumber,
-                point = p,
-                candy = c,
-                candyMain = cMain,
-                candyTop = cTop,
-                candyBlink = blink,
-                candyBubbleAnimation = bubbleAnim,
-                candyGhostBubbleAnimation = ghostBubbleAnim,
                 Capabilities = CandyCapabilities.Candy,
                 noCandy = false,
             };

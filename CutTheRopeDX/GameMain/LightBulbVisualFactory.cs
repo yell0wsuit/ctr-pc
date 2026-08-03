@@ -17,13 +17,12 @@ namespace CutTheRopeDX.GameMain
         {
             LightBulb bulb = new(lightRadius, point, bulbNumber);
 
-            return new CandyContext
+            CandyBody body = new(point, CandyBodyRole.Whole, visual: bulb, main: bulb);
+
+            return new CandyContext(body)
             {
                 candyNumber = null,
                 lightBulbNumber = bulb.bulbNumber,
-                point = point,
-                candy = bulb,
-                candyMain = bulb,
                 lightBulb = bulb,
                 Capabilities = LightBulbDefinition.Capabilities,
                 lightRadius = lightRadius,

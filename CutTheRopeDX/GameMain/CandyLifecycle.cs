@@ -36,11 +36,17 @@ namespace CutTheRopeDX.GameMain
         public bool WasEaten => Presence == CandyPresence.Removed
             && RemovalReason == CandyRemovalReason.Eaten;
 
+        /// <summary>
+        /// Gets whether an owned split half was permanently removed. Split halves cannot be eaten, so
+        /// any removed half is a loss even while the logical candy is still <see cref="CandyPresence.Split"/>.
+        /// </summary>
+        public bool HasFailedSplitHalf => Presence == CandyPresence.Split
+            && (Split.Left.RemovalReason != null || Split.Right.RemovalReason != null);
+
         /// <summary>Gets whether the candy reached terminal removal for a loss reason.</summary>
         public bool HasFailedRemoval => (Presence == CandyPresence.Removed
                 && RemovalReason is not CandyRemovalReason.Eaten)
-            || (Presence == CandyPresence.Split
-                && (Split.Left.RemovalReason != null || Split.Right.RemovalReason != null));
+            || HasFailedSplitHalf;
 
         /// <summary>Creates a lifecycle whose whole <paramref name="wholeBody"/> is present.</summary>
         /// <param name="wholeBody">The whole physical body owned by the lifecycle.</param>

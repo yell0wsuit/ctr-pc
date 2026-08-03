@@ -29,11 +29,18 @@ namespace CutTheRopeDX.Tests
             Assert.True(CandyCollision.ShouldParticipate(noCandy: false, inLantern: false));
         }
 
+        private static CandyContext Context()
+        {
+            return new CandyContext(new CandyBody(new ConstraintedPoint(), CandyBodyRole.Whole));
+        }
+
         [Fact]
         public void PairDistance_UsesExplicitAdditiveRadii()
         {
-            CandyContext a = new() { collisionRadius = 32f };
-            CandyContext b = new() { collisionRadius = 32f };
+            CandyContext a = Context();
+            a.collisionRadius = 32f;
+            CandyContext b = Context();
+            b.collisionRadius = 32f;
 
             Assert.Equal(64f, CandyCollision.PairDistance(a, b));
         }
@@ -45,8 +52,8 @@ namespace CutTheRopeDX.Tests
             try
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = false;
-                CandyContext a = new();
-                CandyContext b = new();
+                CandyContext a = Context();
+                CandyContext b = Context();
 
                 Assert.Equal(102.4f, CandyCollision.PairDistance(a, b), precision: 3);
             }
@@ -63,8 +70,8 @@ namespace CutTheRopeDX.Tests
             try
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = true;
-                CandyContext a = new();
-                CandyContext b = new();
+                CandyContext a = Context();
+                CandyContext b = Context();
 
                 Assert.Equal(96f, CandyCollision.PairDistance(a, b), precision: 3);
             }
@@ -77,8 +84,10 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void PairDistance_UsesLargestAbsoluteOverride()
         {
-            CandyContext candy = new() { collisionRadius = 32f };
-            CandyContext bulb = new() { collisionDistanceOverride = 94.5f };
+            CandyContext candy = Context();
+            candy.collisionRadius = 32f;
+            CandyContext bulb = Context();
+            bulb.collisionDistanceOverride = 94.5f;
 
             Assert.Equal(94.5f, CandyCollision.PairDistance(candy, bulb));
             Assert.Equal(94.5f, CandyCollision.PairDistance(bulb, bulb));
@@ -87,15 +96,13 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldUseHtmlModel_TrueOnlyForDesktopCandyToCandy()
         {
-            CandyContext candy = new();
-            CandyContext other = new()
-            {
-                Capabilities = CandyCapabilities.LightBulb,
-                collisionDistanceOverride = 94.5f
-            };
+            CandyContext candy = Context();
+            CandyContext other = Context();
+            other.Capabilities = CandyCapabilities.LightBulb;
+            other.collisionDistanceOverride = 94.5f;
 
-            Assert.True(CandyCollision.ShouldUseHtmlModel(candy, new CandyContext(), useMobilePhysicsModel: false));
-            Assert.False(CandyCollision.ShouldUseHtmlModel(candy, new CandyContext(), useMobilePhysicsModel: true));
+            Assert.True(CandyCollision.ShouldUseHtmlModel(candy, Context(), useMobilePhysicsModel: false));
+            Assert.False(CandyCollision.ShouldUseHtmlModel(candy, Context(), useMobilePhysicsModel: true));
             Assert.False(CandyCollision.ShouldUseHtmlModel(candy, other, useMobilePhysicsModel: false));
             Assert.False(CandyCollision.ShouldUseHtmlModel(other, candy, useMobilePhysicsModel: false));
         }

@@ -85,11 +85,11 @@ namespace CutTheRopeDX.GameMain
                             waterLayer.AddWaterParticlesAtXY(ctx.candy.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                         }
-                        ctx.splashes = true;
+                        ctx.WholeBody.Splashes = true;
                     }
                     else
                     {
-                        ctx.splashes = false;
+                        ctx.WholeBody.Splashes = false;
                     }
 
                     if (GameObject.BoundsTopY(ctx.candy) > waterSurfaceY)
@@ -103,11 +103,11 @@ namespace CutTheRopeDX.GameMain
                                 CTRRootController.PostAchievementName("acDeepDiver");
                             }
                         }
-                        ctx.underwater = true;
+                        ctx.WholeBody.Underwater = true;
                     }
                     else
                     {
-                        ctx.underwater = false;
+                        ctx.WholeBody.Underwater = false;
                     }
                 }
             }
@@ -403,7 +403,7 @@ namespace CutTheRopeDX.GameMain
                                         }
                                         else
                                         {
-                                            rotateCandy.lastCandyRotateDelta = rotateDelta;
+                                            rotateCandy.WholeBody.ResidualRotation = rotateDelta;
                                             candyRotated[rotateCandyIndex] = true;
                                         }
                                     }
@@ -414,7 +414,7 @@ namespace CutTheRopeDX.GameMain
                                     }
                                     else
                                     {
-                                        rotateCandy.lastCandyRotateDelta = 0f;
+                                        rotateCandy.WholeBody.ResidualRotation = 0f;
                                         candyRotated[rotateCandyIndex] = true;
                                     }
                                 }
@@ -460,12 +460,12 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (!ctx.Capabilities.CanRotateWithRopes)
                         {
-                            ctx.lastCandyRotateDelta = 0f;
+                            ctx.WholeBody.ResidualRotation = 0f;
                         }
                         else if (!candyRotated[ci] && !ctx.noCandy && ctx.capturingHand == null)
                         {
                             ctx.candyMain.rotation += MIN(5, ctx.lastCandyRotateDelta);
-                            ctx.lastCandyRotateDelta *= 0.98f;
+                            ctx.WholeBody.ResidualRotation *= 0.98f;
                         }
                     }
                 }
@@ -905,8 +905,8 @@ namespace CutTheRopeDX.GameMain
                             EnableGhostCycleForBubble(ctx.bubble);
                         }
                         bool extraHasGhost = DisableGhostCycleForBubble(bubble3);
-                        ctx.bubble = bubble3;
-                        ctx.bubbleHasGhost = extraHasGhost;
+                        ctx.WholeBody.Bubble = bubble3;
+                        ctx.WholeBody.BubbleHasGhost = extraHasGhost;
                         if (ctx.lightBulb != null)
                         {
                             bubble3.capturedByBulb = !extraHasGhost;
@@ -1335,7 +1335,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         else
                         {
-                            rocketCandy.lastCandyRotateDelta = 0f;
+                            rocketCandy.WholeBody.ResidualRotation = 0f;
                         }
                         bool ropeRelaxed = false;
                         if (bungees != null)
@@ -1458,7 +1458,7 @@ namespace CutTheRopeDX.GameMain
                             }
                             else
                             {
-                                ctx.lastCandyRotateDelta = 0f;
+                                ctx.WholeBody.ResidualRotation = 0f;
                             }
                             Vector deltaPos = VectSub(ctx.point.pos, ctx.point.prevPos);
                             ctx.point.prevPos = VectAdd(ctx.point.prevPos, VectDiv(deltaPos, ctx.point.disableGravity ? 2f : 1.25f));

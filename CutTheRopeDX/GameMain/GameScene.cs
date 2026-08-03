@@ -988,8 +988,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private GameObject candyBubble
         {
-            get => candies[0].bubble;
-            set => candies[0].bubble = value;
+            get => candies[0].WholeBody.Bubble;
+            set => candies[0].WholeBody.Bubble = value;
         }
 #pragma warning restore IDE1006
 

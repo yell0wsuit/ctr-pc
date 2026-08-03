@@ -8,10 +8,23 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// All per-candy state for one independent candy. One per <c>&lt;candy&gt;</c> element.
+    /// One logical candy, created per <c>&lt;candy&gt;</c> element. It owns the carrier and capability
+    /// state that answers "what is happening to this candy", while its physics, visuals, and transient
+    /// presentation state live on the <see cref="CandyBody"/> instances owned by its
+    /// <see cref="CandyLifecycle"/>. The lifecycle decides which bodies exist; win/loss decisions read
+    /// <see cref="ToOutcomeView"/> once per context regardless of how many bodies that is.
     /// </summary>
     internal sealed class CandyContext
     {
+        /// <summary>Gets the whole physical body owned by this logical candy.</summary>
+        internal CandyBody WholeBody { get; }
+
+        /// <summary>
+        /// Gets the lifecycle that owns this candy's presence, removal, split,
+        /// and transport state.
+        /// </summary>
+        internal CandyLifecycle Lifecycle { get; }
+
         // Cut the Rope: Time Travel's candy bounding box is 70x70 with a
         // candy↔candy collision radius of 32. Preserve that radius-to-body ratio by scaling it
         // against DX's candy bounding-box width, which already resolves the correct desktop/mobile
@@ -25,37 +38,52 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Rope-binding key from XML (<c>"first"</c>/<c>"second"</c>); see <see cref="CandyMatch"/>.</summary>
         public string candyNumber;
 
-        /// <summary>Physics point (the engine's "star") that ropes attach to and that gravity acts on.</summary>
-        public ConstraintedPoint point;
+        // Migration accessors: read-only forwards onto WholeBody that keep pre-lifecycle call sites
+        // compiling while physical state moves into CandyBody. They hold no state of their own.
+        // Task 9 migrates the remaining callers to WholeBody/ActiveBodies and Task 11 deletes these.
+        // They keep the old field names (and so suppress IDE1006) purely to bound that migration diff.
+#pragma warning disable IDE1006
 
-        /// <summary>Visual container and its layers.</summary>
-        public GameObject candy;
+        /// <summary>Migration accessor for <see cref="CandyBody.Point"/> on the whole body.</summary>
+        public ConstraintedPoint point => WholeBody.Point;
 
-        public GameObject candyMain;
+        /// <summary>Migration accessor for <see cref="CandyBody.Visual"/> on the whole body.</summary>
+        public GameObject candy => WholeBody.Visual;
 
-        public GameObject candyTop;
+        /// <summary>Migration accessor for <see cref="CandyBody.Main"/> on the whole body.</summary>
+        public GameObject candyMain => WholeBody.Main;
 
-        public Animation candyBlink;
+        /// <summary>Migration accessor for <see cref="CandyBody.Top"/> on the whole body.</summary>
+        public GameObject candyTop => WholeBody.Top;
 
-        public Animation candyBubbleAnimation;
+        /// <summary>Migration accessor for <see cref="CandyBody.BlinkAnimation"/> on the whole body.</summary>
+        public Animation candyBlink => WholeBody.BlinkAnimation;
 
-        public CandyInGhostBubbleAnimation candyGhostBubbleAnimation;
+        /// <summary>Migration accessor for <see cref="CandyBody.BubbleAnimation"/> on the whole body.</summary>
+        public Animation candyBubbleAnimation => WholeBody.BubbleAnimation;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.GhostBubbleAnimation"/> on the whole body.</summary>
+        public CandyInGhostBubbleAnimation candyGhostBubbleAnimation => WholeBody.GhostBubbleAnimation;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.ResidualRotation"/> on the whole body.</summary>
+        public float lastCandyRotateDelta => WholeBody.ResidualRotation;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.Bubble"/> on the whole body.</summary>
+        public GameObject bubble => WholeBody.Bubble;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.BubbleHasGhost"/> on the whole body.</summary>
+        public bool bubbleHasGhost => WholeBody.BubbleHasGhost;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.Splashes"/> on the whole body.</summary>
+        public bool splashes => WholeBody.Splashes;
+
+        /// <summary>Migration accessor for <see cref="CandyBody.Underwater"/> on the whole body.</summary>
+        public bool underwater => WholeBody.Underwater;
+
+#pragma warning restore IDE1006
 
         /// <summary>True once this candy has been eaten/removed.</summary>
         public bool noCandy;
-
-        /// <summary>
-        /// Residual rope-swing rotation for this candy, decayed each frame so the candy
-        /// coasts to a stop when no rope is actively steering it. candies[0] uses the
-        /// singleton <c>lastCandyRotateDelta</c> instead; index 1+ use this field.
-        /// </summary>
-        public float lastCandyRotateDelta;
-
-        /// <summary>The bubble currently carrying this candy, if any.</summary>
-        public GameObject bubble;
-
-        /// <summary>True when <see cref="bubble"/> belongs to a ghost-transformed bubble.</summary>
-        public bool bubbleHasGhost;
 
         /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
         public bool inLantern;
@@ -194,16 +222,41 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;
 
-        /// <summary>Edge-detect flag: candy is breaking the water surface (splash played once).</summary>
-        public bool splashes;
-
-        /// <summary>Edge-detect flag: candy is fully below the water surface.</summary>
-        public bool underwater;
-
-        /// <summary>Snapshot for the pure decision helpers.</summary>
+        /// <summary>
+        /// Physical snapshot for the pure body decisions (mouth range, off-screen loss).
+        /// Migration-only: <see cref="ToOutcomeView"/> is the logical counterpart, and Task 9
+        /// replaces this with per-body snapshots taken from <see cref="CandyLifecycle.ActiveBodies"/>.
+        /// </summary>
         public CandyView ToView()
         {
             return new CandyView(point.pos, noCandy, InTransport, Capabilities);
+        }
+
+        /// <summary>
+        /// Takes a logical outcome snapshot of this candy for the win/loss decisions, independent
+        /// of how many physical bodies it currently has.
+        /// </summary>
+        /// <returns>
+        /// The candy's lifecycle presence and removal reason paired with the capability that decides
+        /// whether it counts toward the win condition.
+        /// </returns>
+        public CandyOutcomeView ToOutcomeView()
+        {
+            return new CandyOutcomeView(
+                Lifecycle.Presence,
+                Lifecycle.RemovalReason,
+                Capabilities.CanBeEaten,
+                Lifecycle.HasFailedSplitHalf);
+        }
+
+        /// <summary>
+        /// Initializes logical state for a candy that owns the supplied whole physical body.
+        /// </summary>
+        /// <param name="wholeBody">The whole physical body owned by this candy.</param>
+        internal CandyContext(CandyBody wholeBody)
+        {
+            WholeBody = wholeBody;
+            Lifecycle = CandyLifecycle.CreatePresent(wholeBody);
         }
     }
 }
