@@ -88,7 +88,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.EnterBambooTube(scene, swallowed, TubeMouth.CatchesFalling);
 
-            Assert.NotNull(swallowed.targetBambooTube);
+            Assert.NotNull(swallowed.Lifecycle.Transport?.BambooTube);
             Assert.Same(rocket, kept.activeRocket);
             Assert.True(rocket.visible);
         }

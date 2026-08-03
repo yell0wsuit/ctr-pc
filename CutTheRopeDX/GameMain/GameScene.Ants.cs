@@ -33,7 +33,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.noCandy) || ctx.point == null || !ctx.Capabilities.CanAttachAnts)
+                if ((ci != 0 && ctx.HasNoWholeBodyInPlay) || ctx.point == null || !ctx.Capabilities.CanAttachAnts)
                 {
                     continue;
                 }
@@ -261,7 +261,7 @@ namespace CutTheRopeDX.GameMain
                 candyInsideBounds: contains,
                 candyHeldByHand: ctx.capturingHand != null,
                 candyInLantern: ctx.inLantern,
-                candyInTransport: ctx.InTransport,
+                candyInTransport: ctx.Lifecycle.Presence == CandyPresence.Hidden,
                 candyCarriedByMouse: ctx.carriedByMouse))
             {
                 return false;

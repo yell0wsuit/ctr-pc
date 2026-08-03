@@ -263,12 +263,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Starts bamboo tube teleport sequence for a specific candy.
+        /// Starts the bamboo teleport for one candy: hides its whole body inside a new
+        /// <see cref="CandyTransportSession"/> and enqueues that exact session for the delayed exit.
         /// </summary>
+        /// <param name="bambooTube">The tube swallowing the candy.</param>
+        /// <param name="ctx">The candy entering the tube.</param>
         public void OperateBambooTube(BambooTube bambooTube, CandyContext ctx)
         {
             bool isPrimary = ctx == candies[0];
-            if (bambooTube == null || ctx.targetBambooTube != null || (isPrimary && twoParts != PARTS_NONE) || ctx.noCandy)
+            if (bambooTube == null || (isPrimary && twoParts != PARTS_NONE) || ctx.HasNoWholeBodyInPlay)
+            {
+                return;
+            }
+
+            // TryHide is the entry gate as well as the transition: it refuses a candy that is already
+            // hidden in another transit, removed, or split.
+            CandyTransportSession session = CandyTransportSession.ForBamboo(ctx, bambooTube);
+            if (!ctx.Lifecycle.TryHide(session))
             {
                 return;
             }
@@ -280,14 +291,12 @@ namespace CutTheRopeDX.GameMain
             // position all through transit and then yanks/brakes the candy at the exit tube,
             // killing the teleport throw.
             DetachCandyFromConveyor(ctx);
-            ctx.targetBambooTube = bambooTube;
             // The Experiments reference's operateTube: sets the rocket invisible for the transit.
             if (ctx.HasActiveRocket)
             {
                 ctx.activeRocket.visible = false;
             }
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
-            ctx.noCandy = true;
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.15f);
             ctx.point.disableGravity = true;
             ctx.candy.passTransformationsToChilds = true;
             foreach (BaseElement visual in ctx.TransformChildVisuals())

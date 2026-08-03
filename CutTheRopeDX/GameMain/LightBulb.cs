@@ -217,11 +217,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ctx">The logical candy context whose whole body this bulb represents.</param>
         public void SyncFromContext(CandyContext ctx)
         {
-            visible = !ctx.noCandy && ctx.targetSock == null;
+            CandyTransportSession transport = ctx.Lifecycle.Transport;
+            visible = !ctx.HasNoWholeBodyInPlay && transport?.Sock == null;
             capturingBubble = ctx.WholeBody.Bubble as Bubble;
             capturingGhostBubble = ctx.WholeBody.BubbleHasGhost;
-            sockSpeed = ctx.savedSockSpeed;
-            attachedSock = ctx.targetSock;
+            sockSpeed = transport?.SavedExitSpeed ?? 0f;
+            attachedSock = transport?.Sock;
             SyncToConstraint();
         }
 

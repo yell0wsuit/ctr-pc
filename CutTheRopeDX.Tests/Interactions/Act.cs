@@ -229,7 +229,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     hat.rotation = MouthAngleFacing(candy.point.posDelta, hat.rotation);
                     hat.UpdateRotation();
                 },
-                () => candy.targetSock != null,
+                () => candy.Lifecycle.Transport?.Sock != null,
                 "the magic hat never took the candy");
         }
 
@@ -253,7 +253,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     MoveTo(tube, new Vector(position.X + (toCentre.X * halfBody), position.Y + (toCentre.Y * halfBody)));
                     RefreshTubeHoles(tube);
                 },
-                () => candy.targetBambooTube != null,
+                () => candy.Lifecycle.Transport?.BambooTube != null,
                 "the bamboo tube never took the candy");
         }
 

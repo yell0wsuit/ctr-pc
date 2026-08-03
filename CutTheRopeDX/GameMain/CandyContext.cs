@@ -85,24 +85,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True once this candy has been eaten/removed.</summary>
         public bool noCandy;
 
+        /// <summary>
+        /// True when this candy has no whole body in play right now: it was removed, or it is hidden
+        /// inside a transport session. Every system that used to read <see cref="noCandy"/> alone means
+        /// this, because entering a transporter used to raise that flag too.
+        /// </summary>
+        public bool HasNoWholeBodyInPlay => noCandy || Lifecycle.Presence == CandyPresence.Hidden;
+
         /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
         public bool inLantern;
-
-        /// <summary>The sock currently teleporting this candy, if any (was the singleton <c>targetSock</c>).</summary>
-        public Sock targetSock;
-
-        /// <summary>Cached exit speed for the in-progress sock teleport (was the singleton <c>savedSockSpeed</c>).</summary>
-        public float savedSockSpeed;
-
-        /// <summary>The bamboo tube currently teleporting this candy, if any (was the singleton <c>targetBambooTube</c>).</summary>
-        public BambooTube targetBambooTube;
-
-        /// <summary>
-        /// True while this candy is mid-teleport through a transporter (bamboo tube or hat/sock).
-        /// Bamboo transit also flips <see cref="noCandy"/>, but hat transit does not, so any
-        /// "is it teleporting" decision must consult both targets — this is the single source of truth.
-        /// </summary>
-        public bool InTransport => targetBambooTube != null || targetSock != null;
 
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
@@ -115,10 +106,10 @@ namespace CutTheRopeDX.GameMain
         /// capabilities permit it. The <c>Is*</c> form folds in presence; <see cref="CandyCapabilities"/>
         /// flags (e.g. <c>Capabilities.CanBeGrabbedByHand</c>) are the static capability alone.
         /// </summary>
-        public bool IsHandGrabbable => !noCandy && Capabilities.CanBeGrabbedByHand;
+        public bool IsHandGrabbable => !HasNoWholeBodyInPlay && Capabilities.CanBeGrabbedByHand;
 
         /// <summary>True when this candy can attach to an ant conveyor right now: present and capable.</summary>
-        public bool IsAntAttachable => !noCandy && Capabilities.CanAttachAnts;
+        public bool IsAntAttachable => !HasNoWholeBodyInPlay && Capabilities.CanAttachAnts;
 
         /// <summary>Ant-conveyor segment currently carrying this candy (null if not carried).</summary>
         public AntsPathSegment antSegment;
@@ -229,7 +220,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public CandyView ToView()
         {
-            return new CandyView(point.pos, noCandy, InTransport, Capabilities);
+            return new CandyView(point.pos, HasNoWholeBodyInPlay, Lifecycle.Presence == CandyPresence.Hidden, Capabilities);
         }
 
         /// <summary>

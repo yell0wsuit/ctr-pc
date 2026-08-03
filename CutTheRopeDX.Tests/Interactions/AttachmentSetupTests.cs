@@ -136,7 +136,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             CandyContext candy = scene.Candy();
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.targetSock != null));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Transport?.Sock != null));
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             CandyContext candy = scene.Candy();
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.targetBambooTube != null));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Transport?.BambooTube != null));
         }
 
         [Fact]

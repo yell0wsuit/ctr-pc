@@ -63,7 +63,7 @@ namespace CutTheRopeDX.GameMain
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     CandyContext ctx = candies[ci];
-                    if (ci != 0 && ctx.noCandy)
+                    if (ci != 0 && ctx.HasNoWholeBodyInPlay)
                     {
                         continue;
                     }
@@ -462,7 +462,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             ctx.WholeBody.ResidualRotation = 0f;
                         }
-                        else if (!candyRotated[ci] && !ctx.noCandy && ctx.capturingHand == null)
+                        else if (!candyRotated[ci] && !ctx.HasNoWholeBodyInPlay && ctx.capturingHand == null)
                         {
                             ctx.candyMain.rotation += MIN(5, ctx.lastCandyRotateDelta);
                             ctx.WholeBody.ResidualRotation *= 0.98f;
@@ -701,7 +701,7 @@ namespace CutTheRopeDX.GameMain
                                 ? GameObject.ObjectsIntersect(candy, star) && !noCandy
                                 : (GameObject.ObjectsIntersect(candyL, star) && !noCandyL) ||
                                   (GameObject.ObjectsIntersect(candyR, star) && !noCandyR))
-                            : !ctx.noCandy && GameObject.ObjectsIntersect(ctx.candy, star);
+                            : !ctx.HasNoWholeBodyInPlay && GameObject.ObjectsIntersect(ctx.candy, star);
                         if (touches)
                         {
                             candyTouchesStar = true;
@@ -882,7 +882,7 @@ namespace CutTheRopeDX.GameMain
                             break;
                         }
 
-                        if (ctx.noCandy || bubble3.popped
+                        if (ctx.HasNoWholeBodyInPlay || bubble3.popped
                             || !BubbleCapture.Captures(Vect(ctx.candy.x, ctx.candy.y), Vect(bubble3.x, bubble3.y), bubbleCaptureRadius))
                         {
                             continue;
@@ -999,8 +999,8 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
                     bool splitActive = ci == 0 && twoParts != PARTS_NONE;
-                    bool inRange = !ctx.noCandy && bambooTube.TryCatchCandy(ctx.point);
-                    if (TransportEntry.ShouldEnter(!ctx.noCandy, ctx.targetSock != null, ctx.targetBambooTube != null, ctx.inLantern, splitActive, inRange))
+                    bool inRange = !ctx.HasNoWholeBodyInPlay && bambooTube.TryCatchCandy(ctx.point);
+                    if (TransportEntry.ShouldEnter(!ctx.HasNoWholeBodyInPlay, ctx.Lifecycle.Presence == CandyPresence.Hidden, ctx.inLantern, splitActive, inRange))
                     {
                         OperateBambooTube(bambooTube, ctx);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
@@ -1038,7 +1038,7 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
                     bool inRange = VectDistance(ctx.point.pos, Vect(lantern.x, lantern.y)) < ActivePhysicsConstants.LanternCaptureRadius;
-                    if (!LanternCapture.ShouldCapture(lanternInactive, groupOccupied, !ctx.noCandy, ctx.inLantern, inRange))
+                    if (!LanternCapture.ShouldCapture(lanternInactive, groupOccupied, !ctx.HasNoWholeBodyInPlay, ctx.inLantern, inRange))
                     {
                         continue;
                     }
@@ -1148,11 +1148,11 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (ctx.noCandy || ctx.inLantern || ctx.InTransport || !ctx.Capabilities.CanBeGrabbedByMouse)
+                        if (ctx.HasNoWholeBodyInPlay || ctx.inLantern || ctx.Lifecycle.Presence == CandyPresence.Hidden || !ctx.Capabilities.CanBeGrabbedByMouse)
                         {
                             continue;
                         }
-                        if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.noCandy, miceManager.IsActiveMouseInRange(ctx.point)))
+                        if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), !ctx.HasNoWholeBodyInPlay, miceManager.IsActiveMouseInRange(ctx.point)))
                         {
                             miceManager.GrabWithActiveMouse(ctx.point, ctx.candy);
                             // The rocket steals from nobody and nobody kills it (PD 2026-07-24):
@@ -1214,7 +1214,7 @@ namespace CutTheRopeDX.GameMain
                     anyCandyHits = anyCandyHits || candyHits;
 
                     bool splitActive = ci == 0 && twoParts != PARTS_NONE;
-                    if (!wasIdle || !TransportEntry.ShouldEnter(!ctx.noCandy, ctx.targetSock != null, ctx.targetBambooTube != null, ctx.inLantern, splitActive, candyHits))
+                    if (!wasIdle || !TransportEntry.ShouldEnter(!ctx.HasNoWholeBodyInPlay, ctx.Lifecycle.Presence == CandyPresence.Hidden, ctx.inLantern, splitActive, candyHits))
                     {
                         continue;
                     }
@@ -1223,6 +1223,16 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (sock4 != sock3 && sock4.group == sock3.group)
                         {
+                            float exitSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v)
+                                * ActivePhysicsConstants.SockTeleportSpeedMultiplier;
+                            // The exit speed is read off the entry velocity, so the session has to be
+                            // built before anything below disturbs the point.
+                            CandyTransportSession session = CandyTransportSession.ForSock(ctx, sock4, exitSpeed);
+                            if (!ctx.Lifecycle.TryHide(session))
+                            {
+                                break;
+                            }
+
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(ctx.point);
@@ -1232,9 +1242,6 @@ namespace CutTheRopeDX.GameMain
                             // the point position all through transit and then yanks/brakes the candy
                             // at the exit sock, killing the teleport throw.
                             DetachCandyFromConveyor(ctx);
-                            ctx.savedSockSpeed = ActivePhysicsConstants.SockSpeedKoeff * VectLength(ctx.point.v);
-                            ctx.savedSockSpeed *= ActivePhysicsConstants.SockTeleportSpeedMultiplier;
-                            ctx.targetSock = sock4;
                             // The rocket teleports with the candy; hide it for the transit like the
                             // reference (Gift catch sets visible = 0; Teleport re-shows it).
                             if (ctx.HasActiveRocket)
@@ -1254,7 +1261,7 @@ namespace CutTheRopeDX.GameMain
                                 CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
                             }
 
-                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.1f);
+                            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.1f);
                             break;
                         }
                     }
@@ -1416,7 +1423,7 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, ctx.candy);
-                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.noCandy, ctx.inLantern, intersects))
+                            if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, !ctx.HasNoWholeBodyInPlay, ctx.inLantern, intersects))
                             {
                                 continue;
                             }
@@ -1660,7 +1667,7 @@ namespace CutTheRopeDX.GameMain
                 for (int ci = 0; ci < candies.Count; ci++)
                 {
                     CandyContext ctx = candies[ci];
-                    if (ci != 0 && ctx.noCandy)
+                    if (ci != 0 && ctx.HasNoWholeBodyInPlay)
                     {
                         continue;
                     }
@@ -1815,7 +1822,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                if (ci != 0 && ctx.noCandy)
+                if (ci != 0 && ctx.HasNoWholeBodyInPlay)
                 {
                     continue;
                 }
@@ -1918,7 +1925,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             continue;
                         }
-                        if (ctx.noCandy)
+                        if (ctx.HasNoWholeBodyInPlay)
                         {
                             continue;
                         }
@@ -1967,7 +1974,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (ctx.noCandy || !PointOutOfScreen(ctx.point))
+                if (ctx.HasNoWholeBodyInPlay || !PointOutOfScreen(ctx.point))
                 {
                     continue;
                 }
@@ -2151,9 +2158,9 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         private static bool TryAutoAttachGrabToCandy(Grab grab, CandyContext ctx)
         {
-            bool inRange = !ctx.noCandy
+            bool inRange = !ctx.HasNoWholeBodyInPlay
                 && VectDistance(Vect(grab.x, grab.y), ctx.point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
-            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, !ctx.noCandy, inRange))
+            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, !ctx.HasNoWholeBodyInPlay, inRange))
             {
                 return false;
             }
@@ -2275,9 +2282,9 @@ namespace CutTheRopeDX.GameMain
                 if (nearestCandy != null
                     && HandGrab.ShouldGrab(
                         hand.state == MechanicalHand.STATE_HAND_IDLE,
-                        !nearestCandy.noCandy,
+                        !nearestCandy.HasNoWholeBodyInPlay,
                         nearestCandy.inLantern,
-                        nearestCandy.targetSock != null,
+                        nearestCandy.Lifecycle.Transport?.Sock != null,
                         distance < MechanicalHand.MH_GRAB_DISTANCE))
                 {
                     CandyContext ctx = nearestCandy;

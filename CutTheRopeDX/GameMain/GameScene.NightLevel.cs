@@ -95,7 +95,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                if (!ctx.noCandy && PointOutOfScreen(ctx.point))
+                if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.point))
                 {
                     ctx.noCandy = true;
                     // A light emitter leaving the screen is a non-candy object escaping: release its
@@ -104,10 +104,11 @@ namespace CutTheRopeDX.GameMain
                     ReleaseRopesForPoint(ctx.point);
                     ctx.lightBulb?.SyncFromContext(ctx);
                 }
-                // A bulb mid-teleport has noCandy == true for the brief transport window but is not
-                // lost: count it as active so a lone emitter in a bamboo tube or hat does not trip the
-                // lights-out loss the instant its light blinks out.
-                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
+                // A bulb mid-teleport is Hidden for the brief transport window but is not lost: count
+                // it as active so a lone emitter in a bamboo tube or hat does not trip the lights-out
+                // loss the instant its light blinks out.
+                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.HasNoWholeBodyInPlay
+                    || ctx.Lifecycle.Presence == CandyPresence.Hidden;
             }
 
             // Multi-candy/split-aware presence: the primary noCandy flag can be true while another

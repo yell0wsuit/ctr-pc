@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private bool CandyGone(int ci, CandyContext ctx)
         {
-            return ci == 0 ? noCandy : ctx.noCandy;
+            return ci == 0 ? noCandy : ctx.HasNoWholeBodyInPlay;
         }
 
         private CandyContext CandyForPointOrNull(ConstraintedPoint point)
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (ctx.emitsLight && !ctx.noCandy)
+                if (ctx.emitsLight && !ctx.HasNoWholeBodyInPlay)
                 {
                     yield return ctx;
                 }
@@ -92,22 +92,31 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Completes pending candy teleportation through a bamboo tube or sock for one candy.
+        /// Completes one pending candy teleport. The session is the dispatcher payload enqueued when
+        /// the candy entered the transporter, and it identifies the transit as well as carrying it:
+        /// a session that is no longer the candy's current one is a stale callback from a transit
+        /// that already finished, and it is dropped without touching the candy.
         /// </summary>
-        public void Teleport(CandyContext ctx)
+        /// <param name="session">The transport session whose delayed completion is firing.</param>
+        public void Teleport(CandyTransportSession session)
         {
-            if (ctx.targetBambooTube != null)
+            CandyContext ctx = session?.Candy;
+            if (ctx == null || !ctx.Lifecycle.TryCompleteTransport(session))
             {
-                ctx.noCandy = false;
+                return;
+            }
+
+            if (session.Kind == CandyTransportKind.Bamboo)
+            {
                 RestoreCandyProperties(ctx);
-                ctx.targetBambooTube.ThrowCandy(ctx.point);
-                ctx.targetBambooTube.ThrowParticlesOut(particlesAniPool);
+                session.BambooTube.ThrowCandy(ctx.point);
+                session.BambooTube.ThrowParticlesOut(particlesAniPool);
                 ctx.candy.PlayTimeline(2);
                 if (ctx.HasActiveRocket)
                 {
                     ctx.activeRocket.visible = true;
-                    Vector holeOut = ctx.targetBambooTube.HoleOut;
-                    Vector tubeCenter = Vect(ctx.targetBambooTube.x, ctx.targetBambooTube.y);
+                    Vector holeOut = session.BambooTube.HoleOut;
+                    Vector tubeCenter = Vect(session.BambooTube.x, session.BambooTube.y);
                     ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
                     ctx.activeRocket.startRotation = ctx.activeRocket.rotation;
                     ctx.activeRocket.startCandyRotation = 0f;
@@ -125,22 +134,21 @@ namespace CutTheRopeDX.GameMain
                     ctx.point.disableGravity = false;
                 }
 
-                ctx.targetBambooTube = null;
                 return;
             }
 
-            if (ctx.targetSock != null)
+            if (session.Sock != null)
             {
-                ctx.targetSock.light.PlayTimeline(0);
-                ctx.targetSock.light.visible = true;
+                session.Sock.light.PlayTimeline(0);
+                session.Sock.light.visible = true;
                 Vector v = Vect(0f, ActivePhysicsConstants.SockExitOffsetY);
-                v = VectRotate(v, DEGREES_TO_RADIANS(ctx.targetSock.rotation));
-                ctx.point.pos.X = ctx.targetSock.x;
-                ctx.point.pos.Y = ctx.targetSock.y;
+                v = VectRotate(v, DEGREES_TO_RADIANS(session.Sock.rotation));
+                ctx.point.pos.X = session.Sock.x;
+                ctx.point.pos.Y = session.Sock.y;
                 ctx.point.pos = VectAdd(ctx.point.pos, v);
                 ctx.point.prevPos.X = ctx.point.pos.X;
                 ctx.point.prevPos.Y = ctx.point.pos.Y;
-                ctx.point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(ctx.targetSock.rotation)), ctx.savedSockSpeed);
+                ctx.point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(session.Sock.rotation)), session.SavedExitSpeed);
                 ctx.point.posDelta = VectDiv(ctx.point.v, 60f);
                 ctx.point.prevPos = VectSub(ctx.point.pos, ctx.point.posDelta);
 
@@ -151,14 +159,13 @@ namespace CutTheRopeDX.GameMain
                     ctx.activeRocket.point.prevPos = ctx.point.prevPos;
                     ctx.activeRocket.point.v = ctx.point.v;
                     ctx.activeRocket.point.posDelta = ctx.point.posDelta;
-                    ctx.activeRocket.rotation = ctx.targetSock.rotation + DEG_90;
-                    ctx.activeRocket.startRotation = ctx.targetSock.rotation + DEG_90;
+                    ctx.activeRocket.rotation = session.Sock.rotation + DEG_90;
+                    ctx.activeRocket.startRotation = session.Sock.rotation + DEG_90;
                     ctx.activeRocket.startCandyRotation = ctx.candyMain.rotation;
                     ctx.activeRocket.additionalAngle = 0f;
                     ctx.activeRocket.UpdateRotation();
                 }
 
-                ctx.targetSock = null;
                 ctx.lightBulb?.SyncFromContext(ctx);
             }
         }
@@ -301,7 +308,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (!ctx.IsHandGrabbable || ctx.inLantern || ctx.targetSock != null)
+                if (!ctx.IsHandGrabbable || ctx.inLantern || ctx.Lifecycle.Transport?.Sock != null)
                 {
                     continue;
                 }

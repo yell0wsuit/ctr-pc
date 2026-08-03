@@ -345,12 +345,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Timeline selector callback that teleports the active object.
+        /// Delayed-dispatch callback that completes one candy transport.
         /// </summary>
-        /// <param name="param">Candy physics point payload.</param>
+        /// <param name="param">
+        /// The <see cref="CandyTransportSession"/> enqueued when the candy entered the transporter.
+        /// Anything else is ignored, as is a session the candy has since replaced.
+        /// </param>
         private void Selector_teleport(FrameworkTypes param)
         {
-            Teleport(param is ConstraintedPoint p ? CandyForPoint(p) : candies[0]);
+            Teleport(param as CandyTransportSession);
         }
 
         /// <summary>

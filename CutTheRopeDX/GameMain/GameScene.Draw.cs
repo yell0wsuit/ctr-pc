@@ -263,7 +263,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (rocket == ctx.activeRocket && ctx.InTransport)
+                        if (rocket == ctx.activeRocket && ctx.Lifecycle.Presence == CandyPresence.Hidden)
                         {
                             hiddenForTransit = true;
                             break;
@@ -285,7 +285,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 bool gone = CandyGone(ci, ctx);
-                Sock sock = ctx.targetSock;
+                Sock sock = ctx.Lifecycle.Transport?.Sock;
                 if (!gone && sock == null)
                 {
                     if (!ctx.inLantern)

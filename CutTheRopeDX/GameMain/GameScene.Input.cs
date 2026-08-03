@@ -323,7 +323,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.noCandy) || ctx.point == null)
+                if ((ci != 0 && ctx.HasNoWholeBodyInPlay) || ctx.point == null)
                 {
                     continue;
                 }
