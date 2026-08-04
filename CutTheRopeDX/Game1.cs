@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
@@ -241,6 +243,23 @@ namespace CutTheRopeDX
         /// <inheritdoc />
         protected override void Update(GameTime gameTime)
         {
+            _frameWorkTimer.Start();
+            try
+            {
+                UpdateFrame(gameTime);
+            }
+            finally
+            {
+                _frameWorkTimer.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Advances input, audio and the game runtime by one fixed step.
+        /// </summary>
+        /// <param name="gameTime">Timing state for the step.</param>
+        private void UpdateFrame(GameTime gameTime)
+        {
             SoundMgr.Update(gameTime.ElapsedGameTime);
             KeyboardState keyboardState = Keyboard.GetState();
             HandleFullscreenToggle(keyboardState);
@@ -248,12 +267,19 @@ namespace CutTheRopeDX
             if (elapsedTime > TimeSpan.FromSeconds(1))
             {
                 elapsedTime -= TimeSpan.FromSeconds(1);
-                frameRate = frameCounter;
-                frameCounter = 0;
                 Preferences.Update();
             }
-            IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
+            // Always fixed. The runtime advances a hardcoded 16ms per update (see CtrRenderer.Update), so
+            // game time only tracks wall time because the fixed step runs the update again on any frame that
+            // overran. Letting this go variable would leave the game running at whatever fraction of real
+            // speed the frame rate happened to be.
+            IsFixedTimeStep = true;
             keyboardStateXna = Keyboard.GetState();
+
+            if (IsKeyPressed(Keys.F3))
+            {
+                RenderDiagnostics.Toggle();
+            }
 
             if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
@@ -346,7 +372,51 @@ namespace CutTheRopeDX
         /// <inheritdoc />
         protected override void Draw(GameTime gameTime)
         {
-            frameCounter++;
+            _frameWorkTimer.Start();
+            try
+            {
+                DrawFrame(gameTime);
+            }
+            finally
+            {
+                _frameWorkTimer.Stop();
+                RecordFrameWork();
+            }
+        }
+
+        /// <summary>
+        /// Feeds the frame's measured work to the adaptive render scale and starts the next measurement.
+        /// </summary>
+        /// <remarks>
+        /// The measurement spans the updates and the draw, and deliberately not the wait that follows. A
+        /// frame that finishes early still blocks until the presentation interval lets it through, so timing
+        /// anything that includes the present would read every cheap frame as a full one and walk the
+        /// resolution down for no reason.
+        /// <para>
+        /// A movie replaces the scene, so its frames describe a cost the divisor has no bearing on; they are
+        /// dropped rather than measured, along with whatever partial window preceded them.
+        /// </para>
+        /// </remarks>
+        private void RecordFrameWork()
+        {
+            SoftwareRenderScale scale = SoftwareRenderScale.Shared;
+            if (_DrawMovie || bFirstFrame)
+            {
+                scale.Reset();
+            }
+            else if (GraphicsFallback.IsSoftwareRendering)
+            {
+                scale.RecordFrame(_frameWorkTimer.Elapsed.TotalMilliseconds);
+            }
+            _frameWorkTimer.Reset();
+        }
+
+        /// <summary>
+        /// Draws one frame of the game, or the movie that replaces it.
+        /// </summary>
+        /// <param name="gameTime">Timing state for the frame.</param>
+        private void DrawFrame(GameTime gameTime)
+        {
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
@@ -409,22 +479,22 @@ namespace CutTheRopeDX
         private bool _DrawMovie;
 
         /// <summary>
+        /// Accumulates the wall-clock time one displayed frame spends updating and drawing.
+        /// </summary>
+        /// <remarks>
+        /// Accumulated rather than sampled once, because the fixed step runs the update more than once per
+        /// drawn frame whenever the previous frame overran, and all of those updates are work that frame
+        /// cost.
+        /// </remarks>
+        private readonly Stopwatch _frameWorkTimer = new();
+
+        /// <summary>
         /// Remaining frames to ignore mouse clicks after the window regains focus.
         /// </summary>
         private int _ignoreMouseClick;
 
         /// <summary>
-        /// Measured frames per second from the previous one-second interval.
-        /// </summary>
-        private int frameRate;
-
-        /// <summary>
-        /// Number of frames rendered in the current one-second interval.
-        /// </summary>
-        private int frameCounter;
-
-        /// <summary>
-        /// Accumulated elapsed time used to measure the one-second FPS interval.
+        /// Accumulated elapsed time used to drive the once-a-second preference flush.
         /// </summary>
         private TimeSpan elapsedTime = TimeSpan.Zero;
 

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using System.Globalization;
 
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Desktop.Graphics;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -49,35 +50,43 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Enables FPS text rendering using the supplied <paramref name="font"/>.
+        /// Draws the frame diagnostics readout in the top-left corner, when it is switched on.
         /// </summary>
-        /// <param name="font">Font used to draw the FPS overlay.</param>
-        public void InitFPSMeterWithFont(Font font)
-        {
-            fpsFont = font;
-            fpsText = new Text().InitWithFont(fpsFont);
-        }
-
-        /// <summary>
-        /// Draws the current frames-per-second value in the top-left corner.
-        /// </summary>
-        /// <param name="fps">FPS value to display.</param>
+        /// <param name="fps">Frames per second measured by the runtime.</param>
+        /// <remarks>
+        /// Called every frame; costs nothing until <see cref="RenderDiagnostics"/> is enabled. The font is
+        /// fetched on first use rather than at startup, because the resource manager has nothing loaded
+        /// when the canvas is created and the readout has to survive being switched on at any point.
+        /// </remarks>
         public void DrawFPS(float fps)
         {
-            if (fpsText != null && fpsFont != null)
+            if (!RenderDiagnostics.Enabled)
             {
-                string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
-                fpsText.SetString(@string);
-                Renderer.SetColor(Color.White);
-                Renderer.Enable(Renderer.GL_TEXTURE_2D);
-                Renderer.Enable(Renderer.GL_BLEND);
-                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                fpsText.x = 5f;
-                fpsText.y = 5f;
-                fpsText.Draw();
-                Renderer.Disable(Renderer.GL_BLEND);
-                Renderer.Disable(Renderer.GL_TEXTURE_2D);
+                return;
             }
+            fpsFont ??= Application.GetFont(Resources.Fnt.SmallFont);
+            if (fpsFont == null)
+            {
+                return;
+            }
+            fpsText ??= new Text().InitWithFont(fpsFont);
+            SoftwareRenderScale scale = SoftwareRenderScale.Shared;
+            fpsText.SetString(RenderDiagnostics.Format(
+                (int)fps,
+                scale.LastMedianMs,
+                scale.Divisor,
+                backingWidth,
+                backingHeight,
+                GraphicsFallback.IsSoftwareRendering));
+            Renderer.SetColor(Color.White);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.Enable(Renderer.GL_BLEND);
+            Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            fpsText.x = 5f;
+            fpsText.y = 5f;
+            fpsText.Draw();
+            Renderer.Disable(Renderer.GL_BLEND);
+            Renderer.Disable(Renderer.GL_TEXTURE_2D);
         }
 
         /// <summary>
@@ -149,10 +158,15 @@ namespace CutTheRopeDX.Framework.Platform
         public void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            (backingWidth, backingHeight) = ScreenSizeManager.CapRenderSize(
+            (int cappedWidth, int cappedHeight) = ScreenSizeManager.CapRenderSize(
                 scaledViewRect.Width,
                 scaledViewRect.Height,
                 GraphicsFallback.IsSoftwareRendering);
+            // The fixed cap keeps a large display from costing more than a small one; the divisor on top of
+            // it is what answers a machine that cannot afford even the capped size. On the hardware path the
+            // divisor stays at one, so both are identities and this is the size it always was.
+            _appliedRenderDivisor = GraphicsFallback.IsSoftwareRendering ? SoftwareRenderScale.Shared.Divisor : 1;
+            (backingWidth, backingHeight) = SoftwareRenderScale.Apply(cappedWidth, cappedHeight, _appliedRenderDivisor);
             SetDefaultProjection();
         }
 
@@ -252,7 +266,18 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public void BeforeRender()
         {
-            SetDefaultProjection();
+            // Reshape is otherwise only reached from a window resize, and the adaptive divisor changes
+            // without one. Recomputing the backing size here is what lets a divisor the policy picked mid-
+            // level take effect: Renderer.SetViewport, which SetDefaultProjection calls either way, rebuilds
+            // the render target as soon as the size it is handed differs from the target it holds.
+            if (GraphicsFallback.IsSoftwareRendering && _appliedRenderDivisor != SoftwareRenderScale.Shared.Divisor)
+            {
+                Reshape();
+            }
+            else
+            {
+                SetDefaultProjection();
+            }
             Renderer.Disable(Renderer.GL_BLEND);
         }
 
@@ -290,9 +315,9 @@ namespace CutTheRopeDX.Framework.Platform
         public ITouchDelegate touchDelegate;
 
         /// <summary>
-        /// Font used by the FPS overlay.
+        /// Font used by the diagnostics overlay, fetched on first use.
         /// </summary>
-        private Font fpsFont;
+        private FontGeneric fpsFont;
 
         /// <summary>
         /// Cached text element used to render the FPS overlay.
@@ -345,5 +370,10 @@ namespace CutTheRopeDX.Framework.Platform
         /// Current backing-surface height after scaling and letterboxing.
         /// </summary>
         public int backingHeight;
+
+        /// <summary>
+        /// Divisor the current backing size was computed with, so a change to it can be noticed per frame.
+        /// </summary>
+        private int _appliedRenderDivisor = 1;
     }
 }
