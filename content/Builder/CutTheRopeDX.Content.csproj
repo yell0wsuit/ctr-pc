@@ -11,6 +11,7 @@
     <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Jit" />
     <PackageReference Include="MonoGame.Framework.Content.Pipeline" />
     <PackageReference Include="MonoGame.Framework.Native">
       <PrivateAssets>All</PrivateAssets>
