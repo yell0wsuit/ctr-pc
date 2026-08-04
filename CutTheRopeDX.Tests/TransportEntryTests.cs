@@ -7,38 +7,39 @@ namespace CutTheRopeDX.Tests
     public class TransportEntryTests
     {
         [Fact]
-        public void ShouldEnter_TrueForFreeCandyInRange()
+        public void ShouldEnterTrueForFreeCandyInRange()
         {
             Assert.True(TransportEntry.ShouldEnter(
-                candyPresent: true, alreadyInSock: false, alreadyInBamboo: false,
+                candyPresent: true, alreadyInTransit: false,
                 inLantern: false, splitActive: false, inRange: true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenAlreadyInTransit()
+        public void ShouldEnterFalseWhenAlreadyInTransit()
         {
-            Assert.False(TransportEntry.ShouldEnter(true, alreadyInSock: true, false, false, false, true));
-            Assert.False(TransportEntry.ShouldEnter(true, false, alreadyInBamboo: true, false, false, true));
+            // Sock and bamboo transit are one lifecycle state, so one flag closes the gate for both.
+            Assert.False(TransportEntry.ShouldEnter(true, alreadyInTransit: true, false, false, true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenInLantern()
+        public void ShouldEnterFalseWhenInLantern()
         {
-            Assert.False(TransportEntry.ShouldEnter(true, false, false, inLantern: true, false, true));
+            Assert.False(TransportEntry.ShouldEnter(true, false, inLantern: true, splitActive: false, inRange: true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenSplitActive()
+        public void ShouldEnterFalseWhenSplitActive()
         {
-            // split-candy (twoParts) is handled by the singleton halves, not per-candy transit.
-            Assert.False(TransportEntry.ShouldEnter(true, false, false, false, splitActive: true, true));
+            // A split candy has no whole body to swallow; its halves have to merge before a
+            // transporter can take it, which the body-role table enforces on the scene side.
+            Assert.False(TransportEntry.ShouldEnter(true, false, false, splitActive: true, inRange: true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenMissingOrOutOfRange()
+        public void ShouldEnterFalseWhenMissingOrOutOfRange()
         {
-            Assert.False(TransportEntry.ShouldEnter(candyPresent: false, false, false, false, false, true));
-            Assert.False(TransportEntry.ShouldEnter(true, false, false, false, false, inRange: false));
+            Assert.False(TransportEntry.ShouldEnter(candyPresent: false, false, false, false, true));
+            Assert.False(TransportEntry.ShouldEnter(true, false, false, false, inRange: false));
         }
     }
 }

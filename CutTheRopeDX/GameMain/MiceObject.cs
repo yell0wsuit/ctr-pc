@@ -198,6 +198,24 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Returns every candy still held by a mouse to the physics solver, gravity back on. Used
+        /// when the level ends: a mouse that keeps its candy through the outcome leaves that point
+        /// pinned at the hole with gravity off, which strands the candy once the mice stop cycling.
+        /// The manager-level handoff references are cleared too, so a mouse spawning afterwards is
+        /// not handed a candy that has already been let go.
+        /// </summary>
+        public void ReleaseAllCandy()
+        {
+            foreach (Mouse mouse in mice)
+            {
+                _ = mouse?.ReleaseCarriedCandy();
+            }
+
+            carriedStar = null;
+            carriedCandy = null;
+        }
+
+        /// <summary>
         /// Locks the active mouse, preventing further advancement
         /// to other mice.
         /// </summary>

@@ -198,7 +198,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="points">Number of bezier sample points per segment.</param>
         private static void DrawBungee(Bungee b, Vector[] pts, int count, int points)
         {
-            float alphaMultiplier = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
+            float alphaMultiplier = GetCutFadeAlpha(b);
             float stretchRedThreshold = ActivePhysicsConstants.BungeeStretchRedThreshold;
             float segmentLength = VectDistance(Vect(pts[0].X, pts[0].Y), Vect(pts[1].X, pts[1].Y));
 
@@ -329,6 +329,255 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Returns the fade alpha for cut rope and chain draw paths.
+        /// </summary>
+        /// <param name="b">The bungee instance being drawn.</param>
+        /// <returns>Opaque before cutting or during the force-white cut frame, then fades by remaining cut time.</returns>
+        internal static float GetCutFadeAlpha(Bungee b)
+        {
+            return b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
+        }
+
+        /// <summary>
+        /// Returns the straight-alpha blend factors used while fading chain textures.
+        /// </summary>
+        /// <returns>Source and destination blend factors for chain texture fade.</returns>
+        internal static (BlendingFactor Source, BlendingFactor Destination) GetChainFadeBlendFactors()
+        {
+            return (BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+        }
+
+        /// <summary>
+        /// Builds per-vertex colors for chain sprites, reproducing the original renderer's per-link
+        /// masking: each link randomly stays opaque white or is tinted with a "chain mask" shade.
+        /// The RGB choice is stable per link (driven by <paramref name="seed" /> + link index, so it
+        /// matches the original's generate-once-and-cache behavior without flickering across frames
+        /// or head/tail draw calls), while the alpha is always the current fade value.
+        /// </summary>
+        /// <param name="spriteCount">Number of chain sprites.</param>
+        /// <param name="alpha">Alpha to apply to each vertex.</param>
+        /// <param name="seed">Per-bungee seed selecting which links are masked.</param>
+        /// <returns>Four colors per sprite.</returns>
+        internal static RGBAColor[] BuildChainSpriteColors(int spriteCount, float alpha, int seed)
+        {
+            RGBAColor[] colors = new RGBAColor[spriteCount * 4];
+            for (int i = 0; i < spriteCount; i++)
+            {
+                uint hash = HashChainSprite(seed, i);
+                RGBAColor color = (hash & 1) != 0 ? RGBAColor.whiteRGBA : GetChainMaskColor(hash);
+                color.AlphaChannel = alpha;
+                int baseIndex = i * 4;
+                colors[baseIndex] = color;
+                colors[baseIndex + 1] = color;
+                colors[baseIndex + 2] = color;
+                colors[baseIndex + 3] = color;
+            }
+            return colors;
+        }
+
+        /// <summary>
+        /// Returns the per-link tint applied to the masked half of the chain sprites.
+        /// </summary>
+        /// <remarks>
+        /// In the original the unmasked half stays opaque white (<c>solidOpaqueRGBA</c>) and the rest
+        /// are tinted by <c>Bungee::getChainMaskColor</c>. That function's body did not survive
+        /// decompilation (it reduced to a bare <c>rand()</c> and took the fade alpha), so the tint is
+        /// reconstructed here as a random grey shade, which matches the "mask" semantics of varied
+        /// link shading. Adjust the range if the captured asset behavior differs.
+        /// </remarks>
+        /// <param name="hash">Stable per-link hash supplying the random grey value.</param>
+        /// <returns>An opaque grey color; alpha is overwritten by the caller.</returns>
+        private static RGBAColor GetChainMaskColor(uint hash)
+        {
+            float grey = 0.5f + (((hash >> 8) & 0xFF) / 255f * 0.5f);
+            return RGBAColor.MakeRGBA(grey, grey, grey, 1f);
+        }
+
+        /// <summary>
+        /// Produces a stable pseudo-random hash for a chain link from the bungee seed and link index.
+        /// </summary>
+        /// <param name="seed">Per-bungee seed.</param>
+        /// <param name="index">Link index.</param>
+        /// <returns>A well-mixed 32-bit hash.</returns>
+        private static uint HashChainSprite(int seed, int index)
+        {
+            uint h = (uint)(seed * 73856093) ^ (uint)((index + 1) * 19349663);
+            h ^= h >> 13;
+            h *= 0x5BD1E995u;
+            h ^= h >> 15;
+            return h;
+        }
+
+        /// <summary>
+        /// Builds the chain sprite layout: one sprite at each sampled curve point
+        /// and a second sprite centered between adjacent samples.
+        /// </summary>
+        /// <param name="pts">Control points along the chain.</param>
+        /// <param name="count">Number of valid control points.</param>
+        /// <param name="points">Number of bezier samples per control-point segment.</param>
+        /// <param name="pointSpriteSize">Size of the sprite drawn at sampled points.</param>
+        /// <param name="midpointSpriteSize">Size of the sprite drawn between sampled points.</param>
+        /// <returns>The chain sprites to submit in draw order.</returns>
+        internal static ChainSprite[] BuildChainSpritePlan(Vector[] pts, int count, int points, Vector pointSpriteSize, Vector midpointSpriteSize)
+        {
+            int sampleCount = (count - 1) * points;
+            if (pts == null || count < 2 || sampleCount <= 0)
+            {
+                return [];
+            }
+
+            Vector[] samples = new Vector[sampleCount];
+            float bezierT = 0f;
+            float sampleStep = 1f / sampleCount;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                samples[i] = DrawHelper.CalcPathBezier(pts, count, bezierT);
+                bezierT += sampleStep;
+            }
+
+            ChainSprite[] sprites = new ChainSprite[sampleCount + Math.Max(0, sampleCount - 1)];
+            int spriteIndex = 0;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                float angle = i == 0 ? 0f : GetChainAngle(samples[i - 1], samples[i]);
+                sprites[spriteIndex++] = new ChainSprite(ChainPointQuad, samples[i], angle, CreateCenteredRotatedQuad(samples[i], pointSpriteSize, angle));
+            }
+            for (int i = 0; i < sampleCount - 1; i++)
+            {
+                Vector center = Vect(
+                    samples[i].X + ((samples[i + 1].X - samples[i].X) * 0.5f),
+                    samples[i].Y + ((samples[i + 1].Y - samples[i].Y) * 0.5f));
+                float angle = GetChainAngle(samples[i], samples[i + 1]);
+                sprites[spriteIndex++] = new ChainSprite(ChainMidpointQuad, center, angle, CreateCenteredRotatedQuad(center, midpointSpriteSize, angle));
+            }
+            return sprites;
+        }
+
+        /// <summary>
+        /// Draws a chain bungee using the two separate chain sprites.
+        /// </summary>
+        /// <param name="b">The bungee instance being drawn.</param>
+        /// <param name="pts">Control points along the chain.</param>
+        /// <param name="count">Number of valid control points.</param>
+        /// <param name="points">Number of bezier samples per control-point segment.</param>
+        private static void DrawChain(Bungee b, Vector[] pts, int count, int points)
+        {
+            CTRTexture2D texture = Application.GetTexture(Resources.Img.ObjExpChain);
+            if (texture?.quadRects == null || texture.quads == null || texture.quadsCount < 2)
+            {
+                DrawBungee(b, pts, count, points);
+                return;
+            }
+
+            ChainSprite[] sprites = BuildChainSpritePlan(
+                pts,
+                count,
+                points,
+                Vect(texture.quadRects[ChainPointQuad].w, texture.quadRects[ChainPointQuad].h),
+                Vect(texture.quadRects[ChainMidpointQuad].w, texture.quadRects[ChainMidpointQuad].h));
+            if (sprites.Length == 0)
+            {
+                return;
+            }
+
+            Quad3D[] vertices = new Quad3D[sprites.Length];
+            Quad2D[] texCoordinates = new Quad2D[sprites.Length];
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                ChainSprite sprite = sprites[i];
+                vertices[i] = sprite.VertexQuad;
+                texCoordinates[i] = texture.quads[sprite.QuadIndex];
+            }
+
+            VertexPositionColorTexture[] vertexBuffer = new VertexPositionColorTexture[sprites.Length * 4];
+            short[] indices = BuildQuadIndices(sprites.Length);
+            RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, GetCutFadeAlpha(b), b.ChainColorSeed);
+            Renderer.FillTexturedColoredVertices(vertices, texCoordinates, colors, vertexBuffer, sprites.Length);
+
+            Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
+            (BlendingFactor source, BlendingFactor destination) = GetChainFadeBlendFactors();
+            Renderer.SetBlendFunc(source, destination);
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+            Renderer.BindTexture(texture.Name());
+            Renderer.DrawTriangleList(vertexBuffer, indices, indices.Length);
+            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+        }
+
+        /// <summary>
+        /// Builds triangle-list indices for a sequence of quads.
+        /// </summary>
+        /// <param name="quadCount">Number of quads.</param>
+        /// <returns>Six indices per quad.</returns>
+        private static short[] BuildQuadIndices(int quadCount)
+        {
+            short[] indices = new short[quadCount * 6];
+            for (int i = 0; i < quadCount; i++)
+            {
+                indices[i * 6] = (short)(i * 4);
+                indices[(i * 6) + 1] = (short)((i * 4) + 1);
+                indices[(i * 6) + 2] = (short)((i * 4) + 2);
+                indices[(i * 6) + 3] = (short)((i * 4) + 3);
+                indices[(i * 6) + 4] = (short)((i * 4) + 2);
+                indices[(i * 6) + 5] = (short)((i * 4) + 1);
+            }
+            return indices;
+        }
+
+        /// <summary>
+        /// Returns the sprite angle used by the original chain renderer for a segment.
+        /// </summary>
+        /// <param name="previous">Previous sample point.</param>
+        /// <param name="current">Current sample point.</param>
+        /// <returns>Rotation in radians.</returns>
+        private static float GetChainAngle(Vector previous, Vector current)
+        {
+            return MathF.Atan2(previous.Y - current.Y, previous.X - current.X) + (MathF.PI / 2f);
+        }
+
+        /// <summary>
+        /// Creates a rotated vertex quad centered on <paramref name="center"/>.
+        /// </summary>
+        /// <param name="center">Sprite center in world coordinates.</param>
+        /// <param name="size">Sprite size.</param>
+        /// <param name="angle">Rotation in radians.</param>
+        /// <returns>The rotated quad vertices.</returns>
+        private static Quad3D CreateCenteredRotatedQuad(Vector center, Vector size, float angle)
+        {
+            float halfWidth = size.X * 0.5f;
+            float halfHeight = size.Y * 0.5f;
+            Vector bl = Vect(center.X - halfWidth, center.Y - halfHeight);
+            Vector br = Vect(center.X + halfWidth, center.Y - halfHeight);
+            Vector tl = Vect(center.X - halfWidth, center.Y + halfHeight);
+            Vector tr = Vect(center.X + halfWidth, center.Y + halfHeight);
+            if (angle != 0f)
+            {
+                bl = RotateAround(bl, angle, center);
+                br = RotateAround(br, angle, center);
+                tl = RotateAround(tl, angle, center);
+                tr = RotateAround(tr, angle, center);
+            }
+            return Quad3D.MakeQuad3DEx(bl.X, bl.Y, br.X, br.Y, tl.X, tl.Y, tr.X, tr.Y);
+        }
+
+        /// <summary>
+        /// Rotates <paramref name="point"/> around <paramref name="center"/> without relying on global math lookup tables.
+        /// </summary>
+        /// <param name="point">Point to rotate.</param>
+        /// <param name="angle">Rotation in radians.</param>
+        /// <param name="center">Rotation center.</param>
+        /// <returns>The rotated point.</returns>
+        private static Vector RotateAround(Vector point, float angle, Vector center)
+        {
+            float dx = point.X - center.X;
+            float dy = point.Y - center.Y;
+            float cos = MathF.Cos(angle);
+            float sin = MathF.Sin(angle);
+            return Vect(
+                center.X + (dx * cos) - (dy * sin),
+                center.Y + (dx * sin) + (dy * cos));
+        }
+
+        /// <summary>
         /// Initializes a bungee rope between head and tail constraint points.
         /// </summary>
         /// <param name="h">Optional existing head constraint point; a new anchor is created when this is <see langword="null"/>.</param>
@@ -376,7 +625,18 @@ namespace CutTheRopeDX.GameMain
             initialCandleAngle = -1f;
             chosenOne = false;
             hideTailParts = false;
+            breakable = false;
             return this;
+        }
+
+        /// <summary>
+        /// Marks this bungee as a chain: it renders as a chain and can only be cut by the Time Travel
+        /// axe (the original's single <c>isUnBreakable</c> flag), ignoring finger/razor cuts.
+        /// </summary>
+        public void SetCutOnlyByAxe()
+        {
+            breakable = true;
+            cutOnlyByAxe = true;
         }
 
         /// <summary>
@@ -629,6 +889,7 @@ namespace CutTheRopeDX.GameMain
         {
             int count = parts.Count;
             int drawSamplePoints = ActivePhysicsConstants.BungeeDrawSamplePoints;
+            int chainSamplePoints = ChainDrawSamplePoints;
             Renderer.SetColor(s_Color1);
             if (cut == -1)
             {
@@ -641,7 +902,14 @@ namespace CutTheRopeDX.GameMain
                 s_lightCounter = 0;
                 s_lightStartCoord = 8;
                 s_lightEndSkip = 8;
-                DrawBungee(this, array, count, drawSamplePoints);
+                if (breakable)
+                {
+                    DrawChain(this, array, count, chainSamplePoints);
+                }
+                else
+                {
+                    DrawBungee(this, array, count, drawSamplePoints);
+                }
                 return;
             }
             Vector[] array2 = new Vector[count];
@@ -682,12 +950,26 @@ namespace CutTheRopeDX.GameMain
             {
                 s_lightStartCoord = 8;
                 s_lightEndSkip = tailPartCount > 0 ? 0 : 8;
-                DrawBungee(this, array2, headPartCount, drawSamplePoints);
+                if (breakable)
+                {
+                    DrawChain(this, array2, headPartCount, chainSamplePoints);
+                }
+                else
+                {
+                    DrawBungee(this, array2, headPartCount, drawSamplePoints);
+                }
             }
             if (tailPartCount > 0 && !hideTailParts)
             {
                 s_lightStartCoord = headPartCount > 0 ? s_lightSavedEnd : 8;
-                DrawBungee(this, array3, tailPartCount, drawSamplePoints);
+                if (breakable)
+                {
+                    DrawChain(this, array3, tailPartCount, chainSamplePoints);
+                }
+                else
+                {
+                    DrawBungee(this, array3, tailPartCount, drawSamplePoints);
+                }
             }
         }
 
@@ -889,6 +1171,56 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether tail-side rope parts should be hidden after the bungee is cut.</summary>
         public bool hideTailParts;
+
+        /// <summary>Whether this bungee renders as a chain.</summary>
+        public bool breakable;
+
+        /// <summary>Whether this chain can only be cut by an axe blade, not a finger trace or razor.</summary>
+        public bool cutOnlyByAxe;
+
+        /// <summary>Texture quad used at each sampled chain point.</summary>
+        private const int ChainPointQuad = 0;
+
+        /// <summary>Texture quad used between sampled chain points.</summary>
+        private const int ChainMidpointQuad = 1;
+
+        /// <summary>
+        /// Bezier samples per segment for chain rendering. The original always passes 2 to
+        /// <c>drawChain</c>, independent of the (higher) bungee rope sample density.
+        /// </summary>
+        private const int ChainDrawSamplePoints = 2;
+
+        /// <summary>Backing seed for <see cref="ChainColorSeed" />; <c>null</c> until first use.</summary>
+        private int? chainColorSeed;
+
+        /// <summary>
+        /// Stable per-bungee seed driving which chain links are masked. Generated once on first
+        /// access (via the shared <see cref="CTRMathHelper" /> RNG) so the masking pattern stays
+        /// fixed for the rope's lifetime.
+        /// </summary>
+        private int ChainColorSeed => chainColorSeed ??= (int)Arc4random();
+
+        /// <summary>
+        /// A planned chain sprite draw.
+        /// </summary>
+        /// <param name="quadIndex">Texture quad index.</param>
+        /// <param name="center">Sprite center.</param>
+        /// <param name="rotation">Sprite rotation in radians.</param>
+        /// <param name="vertexQuad">Rotated destination vertices.</param>
+        internal readonly struct ChainSprite(int quadIndex, Vector center, float rotation, Quad3D vertexQuad)
+        {
+            /// <summary>Texture quad index.</summary>
+            public int QuadIndex { get; } = quadIndex;
+
+            /// <summary>Sprite center.</summary>
+            public Vector Center { get; } = center;
+
+            /// <summary>Sprite rotation in radians.</summary>
+            public float Rotation { get; } = rotation;
+
+            /// <summary>Rotated destination vertices.</summary>
+            public Quad3D VertexQuad { get; } = vertexQuad;
+        }
 
         /// <summary>Random number generator used for Christmas light frame selection.</summary>
         private static readonly Random christmasRandom = new();

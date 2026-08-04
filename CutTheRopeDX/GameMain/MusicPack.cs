@@ -23,7 +23,8 @@ namespace CutTheRopeDX.GameMain
             Resources.Music.GameMusic,
             Resources.Music.GameMusic2,
             Resources.Music.GameMusic3,
-            Resources.Music.GameMusic4
+            Resources.Music.GameMusic4,
+            Resources.Music.GameMusic5
         ];
     }
 }

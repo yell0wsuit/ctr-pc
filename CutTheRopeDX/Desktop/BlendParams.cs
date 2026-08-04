@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -50,84 +52,106 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         public static void ApplyDefault()
         {
-            if (states[0] == null)
-            {
-                states[0] = BlendState.Opaque;
-            }
-            Global.GraphicsDevice.BlendState = states[0];
-            Global.GraphicsDevice.BlendFactor = Color.White;
+            ApplySnapshot(BlendType.Default);
         }
 
         /// <summary>
-        /// Applies the current blend configuration to the graphics device.
+        /// Applies the current blend configuration to the graphics device, skipping the
+        /// device write when the same type was already applied and nothing external
+        /// invalidated the cache.
         /// </summary>
         public void Apply()
         {
-            if (defaultBlending || !enabled)
+            BlendType snapshot = Snapshot();
+            if (snapshot == BlendType.Unknown || snapshot == s_lastApplied)
             {
-                if (lastBlend != BlendType.Default)
-                {
-                    lastBlend = BlendType.Default;
-                    ApplyDefault();
-                    return;
-                }
+                return;
             }
-            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
+            ApplySnapshot(snapshot);
+        }
+
+        /// <summary>
+        /// Computes the effective blend type from this configuration without touching the device.
+        /// </summary>
+        /// <returns>The effective blend type; Unknown for factor pairs with no cached state.</returns>
+        public BlendType Snapshot()
+        {
+            return (defaultBlending || !enabled, sfactor, dfactor) switch
             {
-                if (lastBlend != BlendType.SourceAlpha_InverseSourceAlpha)
-                {
-                    lastBlend = BlendType.SourceAlpha_InverseSourceAlpha;
-                    if (states[(int)lastBlend] == null)
-                    {
-                        BlendState blendState = new()
-                        {
-                            AlphaSourceBlend = Blend.SourceAlpha,
-                            AlphaDestinationBlend = Blend.InverseSourceAlpha
-                        };
-                        blendState.ColorDestinationBlend = blendState.AlphaDestinationBlend;
-                        blendState.ColorSourceBlend = blendState.AlphaSourceBlend;
-                        states[(int)lastBlend] = blendState;
-                    }
-                    Global.GraphicsDevice.BlendState = states[(int)lastBlend];
-                    return;
-                }
-            }
-            else if (sfactor == BlendingFactor.GLONE && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
+                (true, _, _) => BlendType.Default,
+                (false, BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA) => BlendType.SourceAlpha_InverseSourceAlpha,
+                (false, BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA) => BlendType.One_InverseSourceAlpha,
+                (false, BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE) => BlendType.SourceAlpha_One,
+                _ => BlendType.Unknown
+            };
+        }
+
+        /// <summary>
+        /// Applies the given blend type to the graphics device unconditionally and records it.
+        /// Used by the quad-batch flush, which must not trust the lazy cache.
+        /// </summary>
+        /// <param name="snapshot">The blend type to apply. Unknown is ignored.</param>
+        public static void ApplySnapshot(BlendType snapshot)
+        {
+            if (snapshot == BlendType.Unknown)
             {
-                if (lastBlend != BlendType.One_InverseSourceAlpha)
-                {
-                    lastBlend = BlendType.One_InverseSourceAlpha;
-                    if (states[(int)lastBlend] == null)
-                    {
-                        BlendState blendState2 = new()
-                        {
-                            AlphaSourceBlend = Blend.One,
-                            AlphaDestinationBlend = Blend.InverseSourceAlpha
-                        };
-                        blendState2.ColorDestinationBlend = blendState2.AlphaDestinationBlend;
-                        blendState2.ColorSourceBlend = blendState2.AlphaSourceBlend;
-                        states[(int)lastBlend] = blendState2;
-                    }
-                    Global.GraphicsDevice.BlendState = states[(int)lastBlend];
-                    return;
-                }
+                return;
             }
-            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONE && lastBlend != BlendType.SourceAlpha_One)
+            Global.GraphicsDevice.BlendState = GetState(snapshot);
+            if (snapshot == BlendType.Default)
             {
-                lastBlend = BlendType.SourceAlpha_One;
-                if (states[(int)lastBlend] == null)
-                {
-                    BlendState blendState3 = new()
-                    {
-                        AlphaSourceBlend = Blend.SourceAlpha,
-                        AlphaDestinationBlend = Blend.One
-                    };
-                    blendState3.ColorDestinationBlend = blendState3.AlphaDestinationBlend;
-                    blendState3.ColorSourceBlend = blendState3.AlphaSourceBlend;
-                    states[(int)lastBlend] = blendState3;
-                }
-                Global.GraphicsDevice.BlendState = states[(int)lastBlend];
+                Global.GraphicsDevice.BlendFactor = Color.White;
             }
+            s_lastApplied = snapshot;
+        }
+
+        /// <summary>
+        /// Marks the cached device blend state as unknown. Call after any code outside this
+        /// class changes GraphicsDevice.BlendState (SpriteBatch.Begin does).
+        /// </summary>
+        public static void InvalidateDeviceCache()
+        {
+            s_lastApplied = BlendType.Unknown;
+        }
+
+        /// <summary>
+        /// Returns the cached BlendState for a blend type, building it on first use.
+        /// </summary>
+        /// <param name="type">The blend type to look up.</param>
+        /// <returns>The cached blend state.</returns>
+        private static BlendState GetState(BlendType type)
+        {
+            int index = (int)type;
+            if (states[index] == null)
+            {
+                states[index] = type switch
+                {
+                    BlendType.Default => BlendState.Opaque,
+                    BlendType.SourceAlpha_InverseSourceAlpha => NewState(Blend.SourceAlpha, Blend.InverseSourceAlpha),
+                    BlendType.One_InverseSourceAlpha => NewState(Blend.One, Blend.InverseSourceAlpha),
+                    BlendType.SourceAlpha_One => NewState(Blend.SourceAlpha, Blend.One),
+                    BlendType.Unknown => throw new InvalidOperationException("Unknown blend snapshots cannot be applied."),
+                    _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+                };
+            }
+            return states[index];
+        }
+
+        /// <summary>
+        /// Builds a blend state with identical color and alpha factors.
+        /// </summary>
+        /// <param name="source">Source blend factor.</param>
+        /// <param name="destination">Destination blend factor.</param>
+        /// <returns>The new blend state.</returns>
+        private static BlendState NewState(Blend source, Blend destination)
+        {
+            return new BlendState
+            {
+                AlphaSourceBlend = source,
+                AlphaDestinationBlend = destination,
+                ColorSourceBlend = source,
+                ColorDestinationBlend = destination
+            };
         }
 
         /// <summary>
@@ -147,9 +171,10 @@ namespace CutTheRopeDX.Desktop
         private static readonly BlendState[] states = new BlendState[4];
 
         /// <summary>
-        /// Tracks the last applied blend mode to avoid redundant state changes.
+        /// The blend type last applied to the graphics device through this class.
+        /// Static because it mirrors global device state, not per-instance state.
         /// </summary>
-        private BlendType lastBlend = BlendType.Unknown;
+        private static BlendType s_lastApplied = BlendType.Unknown;
 
         /// <summary>
         /// Indicates whether the custom blend parameters are enabled.
@@ -174,7 +199,7 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Identifies the cached blend-state variants supported by the desktop renderer.
         /// </summary>
-        private enum BlendType
+        internal enum BlendType
         {
             /// <summary>
             /// No cached blend state has been applied yet.

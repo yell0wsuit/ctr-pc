@@ -10,7 +10,10 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
-OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "osx-arm64"
+# Kept separate from bundle_macos.sh's osx-arm64 directory: that script builds a
+# different product (net10.0 + ffmpeg dylibs) under the same .app name, and
+# sharing a publish path lets one build inherit the other's leftovers.
+OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "osx-arm64-avfoundation"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 APP_BUNDLE = OUTPUT_DIR / "CutTheRope-DX.app"
 
@@ -97,14 +100,28 @@ def create_dmg(version: str) -> None:
     print(f"Created {dmg_path} ({size_mb:.1f} MB)")
 
 
-def main() -> None:
+def resolve_options() -> tuple[str, bool]:
+    """Take the version and AOT choice from argv, or prompt when interactive."""
+    args = [a for a in sys.argv[1:] if a != "--no-aot"]
+    use_aot = "--no-aot" not in sys.argv[1:]
+
+    if args:
+        return args[0], use_aot
+
+    if not sys.stdin.isatty():
+        print("Usage: release_macos_tahoe.py <version> [--no-aot]", file=sys.stderr)
+        sys.exit(1)
+
     version = input("Version (e.g. 2.12.0.1): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)
         sys.exit(1)
 
-    aot_input = input("Use NativeAOT? [Y/n]: ").strip().lower()
-    use_aot = aot_input != "n"
+    return version, input("Use NativeAOT? [Y/n]: ").strip().lower() != "n"
+
+
+def main() -> None:
+    version, use_aot = resolve_options()
 
     cmd = [
         "dotnet",

@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 56, "h": 56 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 56 },
+            "sourceSize": { "w": 56, "h": 56 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 59, "y": 1, "w": 56, "h": 56 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 56 },
+            "sourceSize": { "w": 56, "h": 56 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_exp_chain.png",
+        "format": "RGBA8888",
+        "size": { "w": 116, "h": 58 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:f188eec8a53b15f4cbb9b5efcd5bd953:a244687d8b3a4901a0e7eba1f12aab5c:2856059b5ce5b2cf72c95cfc907137a4$"
+    }
+}

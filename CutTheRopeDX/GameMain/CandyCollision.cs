@@ -22,9 +22,28 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public const float HtmlTriggerWidthFactor = 0.9f;
 
-        public static bool ShouldParticipate(bool noCandy, bool inLantern)
+        /// <summary>
+        /// Whether a candy takes part in candy-to-candy collision: it needs a whole body in play and
+        /// must not be held in a lantern.
+        /// </summary>
+        /// <param name="hasNoWholeBodyInPlay">Whether the candy's lifecycle leaves no whole body in play.</param>
+        /// <param name="inLantern">Whether a lantern currently holds the candy.</param>
+        /// <returns><see langword="true"/> when the candy can collide.</returns>
+        public static bool ShouldParticipate(bool hasNoWholeBodyInPlay, bool inLantern)
         {
-            return !noCandy && !inLantern;
+            return !hasNoWholeBodyInPlay && !inLantern;
+        }
+
+        /// <summary>
+        /// Whether a candy-like body takes part in candy-to-candy collision: its lifecycle must leave
+        /// a whole body in play, no lantern may hold it, and its capabilities must allow body collision
+        /// (an axe, for instance, is a physical hazard that does not push candies around).
+        /// </summary>
+        public static bool ShouldParticipate(CandyContext ctx)
+        {
+            return ctx != null
+                && ShouldParticipate(ctx.HasNoWholeBodyInPlay, ctx.inLantern)
+                && ctx.Capabilities.CanCollideWithCandyBodies;
         }
 
         public static float PairDistance(CandyContext a, CandyContext b)

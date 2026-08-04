@@ -141,6 +141,13 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="musicResourceName">Logical music resource name to load and play.</param>
         public static void PlayMusic(string musicResourceName)
         {
+            // Headless runs install no content manager and are silent. GetSound already tolerates
+            // this via its try/catch; the music load below sits outside one, so it is checked here.
+            if (_contentManager == null)
+            {
+                return;
+            }
+
             string localizedName = CTRResourceMgr.HandleLocalizedResource(musicResourceName);
             if (string.IsNullOrEmpty(localizedName))
             {
@@ -150,14 +157,63 @@ namespace CutTheRopeDX.Framework.Media
             StopMusic();
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
             XnaSong song = _contentManager.Load<XnaSong>(musicPath);
+            activeSong = song;
             XnaMediaPlayer.IsRepeating = true;
+            try
+            {
+                XnaMediaPlayer.Play(song);
+                usesSongCompletionWorkaround =
+                    MonoGameSongCompletionWorkaround.TryInstall(song, OnSongDecoderFinished);
+            }
+            catch (Exception)
+            {
+                activeSong = null;
+                usesSongCompletionWorkaround = false;
+            }
+        }
+
+        /// <summary>
+        /// Advances a pending music-loop restart after MonoGame's queued decoded tail
+        /// has had time to reach the audio device.
+        /// </summary>
+        /// <param name="elapsed">Elapsed game time since the previous update.</param>
+        public static void Update(TimeSpan elapsed)
+        {
+            if (!usesSongCompletionWorkaround ||
+                !songLoopScheduler.Advance(
+                    elapsed,
+                    XnaMediaPlayer.State == XnaMediaState.Playing))
+            {
+                return;
+            }
+
+            XnaSong song = activeSong;
+            if (song == null)
+            {
+                return;
+            }
+
             try
             {
                 XnaMediaPlayer.Play(song);
             }
             catch (Exception)
             {
+                StopMusic();
             }
+        }
+
+        /// <summary>
+        /// Records how much audio remains queued when MonoGame reports decoder EOF.
+        /// </summary>
+        private static void OnSongDecoderFinished(object sender, EventArgs args)
+        {
+            if (!usesSongCompletionWorkaround || !ReferenceEquals(sender, activeSong))
+            {
+                return;
+            }
+
+            songLoopScheduler.Schedule(activeSong.Duration);
         }
 
         /// <summary>
@@ -246,6 +302,9 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
+            usesSongCompletionWorkaround = false;
+            activeSong = null;
+            songLoopScheduler.Cancel();
             try
             {
                 XnaMediaPlayer.Stop();
@@ -430,6 +489,21 @@ namespace CutTheRopeDX.Framework.Media
         /// Content manager used to load sound effects and songs.
         /// </summary>
         private static ContentManager _contentManager;
+
+        /// <summary>
+        /// Song currently owned by the media player.
+        /// </summary>
+        private static XnaSong activeSong;
+
+        /// <summary>
+        /// Waits for the native voice's queued tail before restarting <see cref="activeSong"/>.
+        /// </summary>
+        private static readonly SongLoopScheduler songLoopScheduler = new();
+
+        /// <summary>
+        /// Whether MonoGame's premature completion callback was replaced successfully.
+        /// </summary>
+        private static bool usesSongCompletionWorkaround;
 
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.

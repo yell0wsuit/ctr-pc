@@ -8,20 +8,27 @@
     <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
   </PropertyGroup>
 
+  <!--
+    The RunMGCB condition sits on the tasks rather than the target so that
+    AddBuiltContent's AfterTargets hook fires either way. CI jobs that receive
+    prebuilt content leave RunMGCB false and still get it packaged.
+  -->
   <Target Name="BuildGameContent"
-          BeforeTargets="BeforeBuild"
-          Condition="'$(RunMGCB)' == 'true'">
+          BeforeTargets="BeforeBuild">
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Restore"
+             Condition="'$(RunMGCB)' == 'true'"
              RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
+             Condition="'$(RunMGCB)' == 'true'"
              RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
-    <Exec Condition="'$(CI)' != 'true'"
+    <Exec Condition="'$(RunMGCB)' == 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
-    <Exec Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
+    <Exec Condition="'$(RunMGCB)' == 'true'"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
           CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
   </Target>
 
-  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent" Condition="'$(RunMGCB)' == 'true'">
+  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent" Condition="Exists('$(ContentBuildOutput)')">
     <ItemGroup>
       <_BuiltContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
       <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">

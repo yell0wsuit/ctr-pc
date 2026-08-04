@@ -6,49 +6,33 @@ namespace CutTheRopeDX.GameMain
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Chooses the best candy constraint point for a ghost-created rope anchor.
+        /// Chooses the candy constraint point a ghost-created rope anchors on. A split candy offers
+        /// its surviving halves, ranked by distance to the ghost; every other level anchors on the
+        /// primary candy's own point, exactly as the single-candy engine did.
         /// </summary>
         /// <param name="ghostPosition">World position of the ghost creating the rope.</param>
-        /// <returns>The closest available candy constraint point, or a fallback candy point when none are active.</returns>
+        /// <returns>The closest split half, or the primary candy's point when none is offered.</returns>
         internal ConstraintedPoint GetGhostRopeAnchor(Vector ghostPosition)
         {
-            if (twoParts == 2)
-            {
-                return FallbackStarPoint();
-            }
-
             ConstraintedPoint best = null;
             float bestDistance = float.MaxValue;
 
-            // Local helper for ranking active candy points by distance to the ghost.
-            void Consider(ConstraintedPoint candidate, bool candyMissing)
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                if (candidate == null || candyMissing)
+                if (body.Role == CandyBodyRole.Whole)
                 {
-                    return;
+                    continue;
                 }
 
-                float distance = VectLength(VectSub(ghostPosition, candidate.pos));
+                float distance = VectLength(VectSub(ghostPosition, body.Point.pos));
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
-                    best = candidate;
+                    best = body.Point;
                 }
             }
 
-            Consider(starL, noCandyL);
-            Consider(starR, noCandyR);
-
-            return best ?? FallbackStarPoint();
-        }
-
-        /// <summary>
-        /// The primary candy point when present, otherwise the first available point
-        /// (whole candy, then either split half) as a last resort.
-        /// </summary>
-        private ConstraintedPoint FallbackStarPoint()
-        {
-            return !noCandy && star != null ? star : star ?? starL ?? starR;
+            return best ?? star;
         }
     }
 }

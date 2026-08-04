@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class TextCompositeTargetSelectionTests
     {
         [Fact]
-        public void GetNextCompositeTargetIndex_AlternatesConsecutiveTextDraws()
+        public void GetNextCompositeTargetIndexAlternatesConsecutiveTextDraws()
         {
             int first = Text.GetNextCompositeTargetIndex(-1);
             int second = Text.GetNextCompositeTargetIndex(first);

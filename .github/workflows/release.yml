@@ -1,0 +1,199 @@
+name: Release
+
+on:
+    push:
+        tags: ["v*"]
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Version to build, e.g. 2.12.0.1"
+                required: true
+                type: string
+
+permissions:
+    contents: read
+
+env:
+    DOTNET_VERSION: "10.x"
+    # Where BuildContent.targets expects the built content to sit.
+    CONTENT_DIR: content/Builder/bin/DesktopVK/content
+
+jobs:
+    version:
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.resolve.outputs.version }}
+        steps:
+            # Tag pushes carry a leading "v" the scripts must not receive; dispatch runs
+            # supply the bare version already.
+            - id: resolve
+              run: |
+                  if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+                      echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+                  fi
+
+    # Content is DesktopVK on every platform, so it is built once here and handed
+    # to the three packaging jobs. They run with CI=true, which leaves RunMGCB
+    # false, so they consume this output instead of refetching the 308MB archive.
+    content:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - uses: actions/cache@v6
+              id: content-cache
+              with:
+                  path: ${{ env.CONTENT_DIR }}
+                  key: content-DesktopVK-${{ hashFiles('content/file_manifest.json', 'content/Builder/**/*.cs', 'content/maps/**', 'content/locales/**', 'content/*.json') }}
+
+            # MonoGame falls back to ffmpeg on PATH when converting sounds/*.wav.
+            # Ubuntu's build has libvorbis; assert it rather than discovering a
+            # missing encoder halfway through the content build.
+            - name: Install ffmpeg
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              run: |
+                  sudo apt-get update && sudo apt-get install -y ffmpeg
+                  ffmpeg -hide_banner -encoders | grep -q libvorbis
+
+            - name: Fetch and build content
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              run: |
+                  BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
+                  dotnet build content/Builder/CutTheRopeDX.Content.csproj
+                  dotnet "$BUILDER" fetch -s content
+                  dotnet "$BUILDER" verify -s content
+                  dotnet "$BUILDER" build -p DesktopVK -s content \
+                      -o "$CONTENT_DIR" -i content/Builder/obj/DesktopVK --compress
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: built-content
+                  path: ${{ env.CONTENT_DIR }}
+                  # Already compressed by --compress; re-zipping only burns minutes.
+                  compression-level: 0
+                  retention-days: 1
+
+    windows:
+        needs: [version, content]
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+            - uses: actions/cache@v6
+              with:
+                  path: ~/.nuget/packages
+                  key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json') }}
+                  restore-keys: nuget-${{ runner.os }}-
+
+            - uses: actions/download-artifact@v8
+              with:
+                  name: built-content
+                  path: ${{ env.CONTENT_DIR }}
+
+            - run: pip install py7zr tqdm
+            - run: python distribution/release_windows.py "${{ needs.version.outputs.version }}"
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: bundle-windows
+                  path: CutTheRopeDX/bin/release_github/*.7z
+                  compression-level: 0
+                  retention-days: 7
+
+    macos:
+        needs: [version, content]
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+            - uses: actions/cache@v6
+              with:
+                  path: ~/.nuget/packages
+                  key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json') }}
+                  restore-keys: nuget-${{ runner.os }}-
+
+            - name: Install macOS workload
+              run: dotnet workload install macos
+
+            - uses: actions/download-artifact@v8
+              with:
+                  name: built-content
+                  path: ${{ env.CONTENT_DIR }}
+
+            # bundle_ffmpeg_macos.sh copies the dylibs out of Homebrew's ffmpeg.
+            - run: brew install ffmpeg
+
+            - name: Build ffmpeg DMG
+              env:
+                  USE_AOT: "true"
+              run: ./distribution/bundle_macos.sh "${{ needs.version.outputs.version }}"
+
+            - name: Build AVFoundation DMG
+              run: python3 distribution/release_macos_tahoe.py "${{ needs.version.outputs.version }}"
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: bundle-macos
+                  path: CutTheRopeDX/bin/release_github/*.dmg
+                  compression-level: 0
+                  retention-days: 7
+
+    linux:
+        needs: [version, content]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+            - uses: actions/cache@v6
+              with:
+                  path: ~/.nuget/packages
+                  key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json') }}
+                  restore-keys: nuget-${{ runner.os }}-
+
+            - uses: actions/download-artifact@v8
+              with:
+                  name: built-content
+                  path: ${{ env.CONTENT_DIR }}
+
+            - run: ./distribution/build_appimage.sh "${{ needs.version.outputs.version }}"
+            - run: ./distribution/build_deb.sh "${{ needs.version.outputs.version }}"
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: bundle-linux
+                  path: |
+                      CutTheRopeDX/bin/release_github/*.AppImage
+                      CutTheRopeDX/bin/release_github/*.deb
+                  compression-level: 0
+                  retention-days: 7
+
+    release:
+        needs: [version, windows, macos, linux]
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            # built-content is excluded by the pattern; only the bundles ship.
+            - uses: actions/download-artifact@v8
+              with:
+                  pattern: bundle-*
+                  path: artifacts
+                  merge-multiple: true
+
+            - uses: softprops/action-gh-release@v3
+              with:
+                  tag_name: v${{ needs.version.outputs.version }}
+                  name: v${{ needs.version.outputs.version }}
+                  files: artifacts/*
+                  generate_release_notes: true

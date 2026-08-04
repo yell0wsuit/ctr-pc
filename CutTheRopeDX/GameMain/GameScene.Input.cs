@@ -13,15 +13,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Handles tapping a candy bubble and pops it when the touch is inside the bubble touch area.
         /// </summary>
-        /// <param name="s">Candy constraint point associated with the bubble.</param>
+        /// <param name="body">Candy body whose bubble the touch may pop.</param>
         /// <param name="tx">Touch x-coordinate in screen space.</param>
         /// <param name="ty">Touch y-coordinate in screen space.</param>
         /// <returns><see langword="true"/> when the bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
-        public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
+        public bool HandleBubbleTouchXY(CandyBody body, float tx, float ty)
         {
-            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, s.pos.X - 60f, s.pos.Y - 60f, 120f, 120f))
+            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, body.Point.pos.X - 60f, body.Point.pos.Y - 60f, 120f, 120f))
             {
-                PopCandyBubble(s == starL);
+                PopCandyBubble(body);
                 RegisterBubblePopped();
                 return true;
             }
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -111,11 +111,13 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (snailobjects != null && twoParts == 2)
+            if (snailobjects != null)
             {
-                for (int ci = 0; ci < candies.Count; ci++)
+                // Shaking a snail off only ever applies to a whole candy, which the body-role table
+                // enforces for the snail interaction.
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Snail))
                 {
-                    ConstraintedPoint p = candies[ci].point;
+                    ConstraintedPoint p = body.Point;
                     if (PointInRect(worldX, worldY, p.pos.X - 30f, p.pos.Y - 30f, 60f, 60f) && p.weight > 1f)
                     {
                         p.SetWeight(p.weight - 3f);
@@ -128,36 +130,11 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (twoParts != 2)
+            // Tapping a bubbled body pops its bubble, whether that body is a whole candy or a half.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bubble))
             {
-                if (candyBubbleL != null && HandleBubbleTouchXY(starL, tx, ty))
+                if (body.Bubble != null && HandleBubbleTouchXY(body, tx, ty))
                 {
-                    return true;
-                }
-                if (candyBubbleR != null && HandleBubbleTouchXY(starR, tx, ty))
-                {
-                    return true;
-                }
-            }
-            for (int ci = 0; ci < candies.Count; ci++)
-            {
-                CandyContext ctx = candies[ci];
-                if (ci == 0)
-                {
-                    if (candyBubble != null && HandleBubbleTouchXY(star, tx, ty))
-                    {
-                        return true;
-                    }
-                    continue;
-                }
-                if (ctx.bubble == null)
-                {
-                    continue;
-                }
-                if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, ctx.point.pos.X - 60f, ctx.point.pos.Y - 60f, 120f, 120f))
-                {
-                    PopCandyBubble(ctx);
-                    RegisterBubblePopped();
                     return true;
                 }
             }
@@ -189,13 +166,14 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // Handle gun tap
-            if (!noCandy)
+            bool primaryInPlay = !candies[0].HasNoWholeBodyInPlay;
+            if (primaryInPlay)
             {
                 foreach (object obj in bungees)
                 {
                     Grab grab = (Grab)obj;
                     if (grab.gun && GunAvailability.CanFire(
-                        candyPresent: !noCandy,
+                        candyPresent: primaryInPlay,
                         candyInLantern: candies[0].inLantern,
                         gunFired: grab.gunFired,
                         ropeAbsent: grab.rope == null))
@@ -285,7 +263,7 @@ namespace CutTheRopeDX.GameMain
                     if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
                     {
                         CandyContext held = HandHeldCandy(hand);
-                        hand.cPoint.RemoveConstraint(held?.point ?? star);
+                        hand.cPoint.RemoveConstraint(held?.WholeBody.Point ?? star);
                         hand.state = MechanicalHand.STATE_HAND_RELEASE;
                         hand.doRotateCandy = false;
                         hand.releaseSoundPlayed = true;
@@ -320,15 +298,9 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
 
-            for (int ci = 0; ci < candies.Count; ci++)
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                CandyContext ctx = candies[ci];
-                if ((ci != 0 && ctx.noCandy) || ctx.point == null)
-                {
-                    continue;
-                }
-
-                if (HandleConveyorTouchConstraintedPointXY(ctx.point, tx, ty))
+                if (body.Point != null && HandleConveyorTouchConstraintedPointXY(body.Point, tx, ty))
                 {
                     return true;
                 }
@@ -441,6 +413,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                     bungee.wheelOperating = ti;
+                    // A touch that lands on the wheel belongs to the wheel: without this, a wheel
+                    // hook riding a manual belt let the same touch also start a belt drag.
+                    return true;
                 }
                 if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
                 {
@@ -481,7 +456,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -647,7 +622,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }
@@ -730,6 +705,18 @@ namespace CutTheRopeDX.GameMain
                         for (int j = 0; j < bungees.Count; j++)
                         {
                             Grab grab = bungees[j];
+                            // A grab that carries its own movement is not the disc's to move: a path
+                            // mover drives itself, and a drag rail belongs to the player. Scratching
+                            // the disc would otherwise sweep such a hook off its rail, leaving the
+                            // rail drawn where it was. Same rule the disc-capture test in the update
+                            // loop applies, so both agree on what this disc owns.
+                            if (!GrabPlatformBind.FollowsPlatform(
+                                    GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
+                                    grab.kickable && grab.kicked)
+                                || grab is IGhostApparition)
+                            {
+                                continue;
+                            }
                             if (VectDistance(Vect(grab.x, grab.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 5f)
                             {
                                 if (grab.initial_rotatedCircle != rotatedCircle)
@@ -779,7 +766,13 @@ namespace CutTheRopeDX.GameMain
                         for (int l = 0; l < bubbles.Count; l++)
                         {
                             Bubble bubble = bubbles[l];
-                            if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && bubble != candyBubble && bubble != candyBubbleR && bubble != candyBubbleL)
+                            // A ghost's bubble belongs to the ghost, not the disc: its morph clouds
+                            // stay at the ghost's spot, so rotating the bubble alone would strand them.
+                            if (bubble is IGhostApparition)
+                            {
+                                continue;
+                            }
+                            if (VectDistance(Vect(bubble.x, bubble.y), Vect(rotatedCircle.x, rotatedCircle.y)) <= rotatedCircle.sizeInPixels + 10f && CandyBodyForBubbleOrNull(bubble) == null)
                             {
                                 if (bubble.initial_rotatedCircle != rotatedCircle)
                                 {
@@ -946,7 +939,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
             // Suppress all gameplay interactions while a win/loss transition is running.
-            if (outcomeTransitionActive)
+            if (gameplayFlow.TransitionActive)
             {
                 return true;
             }

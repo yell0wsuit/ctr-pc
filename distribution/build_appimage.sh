@@ -124,8 +124,9 @@ if [ ! -f "$APPIMAGETOOL" ]; then
     chmod +x "$APPIMAGETOOL"
 fi
 
-# Build the AppImage
-ARCH=x86_64 "$APPIMAGETOOL" "$APPDIR" "$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
+# Build the AppImage. appimagetool is itself an AppImage, so it needs FUSE to
+# self-mount; CI runners have none, hence the extract-and-run fallback.
+ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$APPDIR" "$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
 
 # Cleanup build directory
 rm -rf "$BUILD_DIR"

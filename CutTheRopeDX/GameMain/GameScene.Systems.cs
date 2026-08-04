@@ -189,26 +189,11 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
 
-            // Lift every candy in the steam column in one pass. candies[0] keeps its split-candy
-            // carve-out (starL/starR halves); non-split candies[0] and index 1+ run the generic body.
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Lift every body in the steam column in one pass: whole candies and surviving split
+            // halves alike, since the column pushes on physics points and knows nothing of topology.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Steam))
             {
-                CandyContext ctx = candies[ci];
-                if (ci == 0 && twoParts != 2)
-                {
-                    if (!noCandyL)
-                    {
-                        _ = ApplyImpulse(starL);
-                    }
-                    if (!noCandyR)
-                    {
-                        _ = ApplyImpulse(starR);
-                    }
-                }
-                else if (!CandyGone(ci, ctx))
-                {
-                    _ = ApplyImpulse(ctx.point);
-                }
+                _ = ApplyImpulse(body.Point);
             }
 
         }
@@ -231,26 +216,10 @@ namespace CutTheRopeDX.GameMain
             pumpDirt.y = v.Y;
             pumpDirt.StartSystem(5);
             _ = aniPool.AddChild(pumpDirt);
-            // Pump every candy in the flow in one pass. candies[0] keeps its split-candy carve-out
-            // (starL/starR halves); non-split candies[0] and index 1+ run the generic body.
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Pump every body in the flow in one pass: whole candies and surviving split halves alike.
+            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Pump))
             {
-                CandyContext ctx = candies[ci];
-                if (ci == 0 && twoParts != 2)
-                {
-                    if (!noCandyL)
-                    {
-                        HandlePumpFlowPtSkin(p, starL, candyL);
-                    }
-                    if (!noCandyR)
-                    {
-                        HandlePumpFlowPtSkin(p, starR, candyR);
-                    }
-                }
-                else if (!CandyGone(ci, ctx))
-                {
-                    HandlePumpFlowPtSkin(p, ctx.point, ctx.candy);
-                }
+                HandlePumpFlowPtSkin(p, body.Point, body.Visual);
             }
             foreach (object bungee in bungees)
             {
@@ -263,46 +232,69 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Starts bamboo tube teleport sequence for a specific candy.
+        /// Starts the bamboo teleport for one candy: hides its whole body inside a new
+        /// <see cref="CandyTransportSession"/> and enqueues that exact session for the delayed exit.
         /// </summary>
+        /// <param name="bambooTube">The tube swallowing the candy.</param>
+        /// <param name="ctx">The candy entering the tube.</param>
         public void OperateBambooTube(BambooTube bambooTube, CandyContext ctx)
         {
-            bool isPrimary = ctx == candies[0];
-            if (bambooTube == null || ctx.targetBambooTube != null || (isPrimary && twoParts != PARTS_NONE) || ctx.noCandy)
+            // A split candy has no whole body to swallow, so the lifecycle check below already
+            // refuses it: HasNoWholeBodyInPlay covers removed, hidden, and split alike.
+            if (bambooTube == null || ctx.HasNoWholeBodyInPlay)
             {
                 return;
             }
 
-            ReleaseRopesForPoint(ctx.point);
-            DetachHandsForPoint(ctx.point);
-            ctx.targetBambooTube = bambooTube;
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), ctx.point, 0.15f);
-            ctx.noCandy = true;
-            ctx.point.disableGravity = true;
-            ctx.candy.passTransformationsToChilds = true;
+            // TryHide is the entry gate as well as the transition: it refuses a candy that is already
+            // hidden in another transit, removed, or split.
+            CandyTransportSession session = CandyTransportSession.ForBamboo(ctx, bambooTube);
+            if (!ctx.Lifecycle.TryHide(session))
+            {
+                return;
+            }
+
+            // The tube swallows the whole body; the guard above already refused a split candy.
+            CandyBody body = ctx.WholeBody;
+            GameObject candyVisual = body.Visual;
+            ReleaseRopesForPoint(body.Point);
+            DetachHandsForPoint(body.Point);
+            DropMouseCandyForPoint(body.Point);
+            // Take the candy off the ants too: a lingering antSegment hard-overwrites the point
+            // position all through transit and then yanks/brakes the candy at the exit tube,
+            // killing the teleport throw.
+            DetachCandyFromConveyor(ctx);
+            // The Experiments reference's operateTube: sets the rocket invisible for the transit.
+            if (ctx.HasActiveRocket)
+            {
+                ctx.activeRocket.visible = false;
+            }
+            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.15f);
+            body.Point.disableGravity = true;
+            candyVisual.passTransformationsToChilds = true;
             foreach (BaseElement visual in ctx.TransformChildVisuals())
             {
                 visual.scaleX = visual.scaleY = 1f;
             }
 
-            if (ctx.candy.GetTimeline(1) != null)
+            if (candyVisual.GetTimeline(1) != null)
             {
-                ctx.candy.RemoveTimeline(1);
+                candyVisual.RemoveTimeline(1);
             }
 
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos((int)ctx.candy.x, (int)ctx.candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            float towardTubeX = ctx.candy.x + ((bambooTube.x - ctx.candy.x) * 0.3f);
-            float towardTubeY = ctx.candy.y + ((bambooTube.y - ctx.candy.y) * 0.3f);
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)candyVisual.x, (int)candyVisual.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            float towardTubeX = candyVisual.x + ((bambooTube.x - candyVisual.x) * 0.3f);
+            float towardTubeY = candyVisual.y + ((bambooTube.y - candyVisual.y) * 0.3f);
             timeline.AddKeyFrame(KeyFrame.MakePos((int)towardTubeX, (int)towardTubeY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(ctx.candy.scaleX, ctx.candy.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(candyVisual.scaleX, candyVisual.scaleY, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0f, 0f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            ctx.candy.AddTimelinewithID(timeline, 1);
-            ctx.candy.PlayTimeline(1);
+            candyVisual.AddTimelinewithID(timeline, 1);
+            candyVisual.PlayTimeline(1);
             timeline.delegateTimelineDelegate = aniPool;
-            _ = aniPool.AddChild(ctx.candy);
+            _ = aniPool.AddChild(candyVisual);
         }
 
         /// <summary>
@@ -343,6 +335,12 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (flag)
                         {
+                            // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
+                            // finger/razor never cuts them.
+                            if (rope.cutOnlyByAxe)
+                            {
+                                continue;
+                            }
                             ropesCutCount++;
                             if (grab.hasSpider && grab.spiderActive)
                             {
@@ -372,7 +370,8 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // candiesConnected elastic: not in `bungees`, so test it with the same per-segment cut.
-            if (candyConnector != null && candyConnector.cut == -1)
+            // A chain connector (candiesConnectedBreakable="false") is axe-only, never finger-cut.
+            if (candyConnector != null && candyConnector.cut == -1 && !candyConnector.cutOnlyByAxe)
             {
                 for (int j = 0; j < candyConnector.parts.Count - 1; j++)
                 {
@@ -417,6 +416,75 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return ropesCutCount;
+        }
+
+        /// <summary>
+        /// Cuts axe-only chains when an active Time Travel axe blade overlaps a chain point.
+        /// Mirrors the original <c>cutTheUnbreakable</c> radius check.
+        /// </summary>
+        private void CutAxeOnlyChainsWithAxes()
+        {
+            for (int ci = 0; ci < candies.Count; ci++)
+            {
+                CandyContext axeCtx = candies[ci];
+                if (axeCtx.axe == null || axeCtx.HasNoWholeBodyInPlay)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i < bungees.Count; i++)
+                {
+                    Grab grab = bungees[i];
+                    Bungee rope = grab.rope;
+                    if (rope == null || rope.cut != -1 || !rope.cutOnlyByAxe)
+                    {
+                        continue;
+                    }
+
+                    if (TryCutAxeOnlyChain(axeCtx, rope))
+                    {
+                        break;
+                    }
+                }
+
+                // candiesConnected elastic: not in `bungees`. The axe also severs a chain connector
+                // (candiesConnectedBreakable="false"), matching the original cutTheUnbreakable's
+                // separate candyConnector block.
+                if (candyConnector != null && candyConnector.cut == -1 && candyConnector.cutOnlyByAxe)
+                {
+                    _ = TryCutAxeOnlyChain(axeCtx, candyConnector);
+                }
+            }
+        }
+
+        private bool TryCutAxeOnlyChain(CandyContext axeCtx, Bungee rope)
+        {
+            ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+            for (int i = 0; i < rope.parts.Count; i++)
+            {
+                ConstraintedPoint part = rope.parts[i];
+                if (part == null || ReferenceEquals(part, bladePoint))
+                {
+                    continue;
+                }
+
+                if (VectDistance(part.pos, bladePoint.pos) > AxeDefinition.ChainCutRadius)
+                {
+                    continue;
+                }
+
+                int cutPart = MIN(i, rope.parts.Count - 2);
+                if (cutPart < 0)
+                {
+                    return false;
+                }
+
+                rope.SetCut(cutPart);
+                SpawnChainCutEffectAtXY(part.pos.X, part.pos.Y, GetChainCutSwingAngleDegrees(bladePoint));
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -495,22 +563,16 @@ namespace CutTheRopeDX.GameMain
             }
             sg.hasSpider = false;
             // spiderTookCandy = true;
-            GameObject capturedCandy;
-            if (capturedStar == starL)
+            // The spider takes whichever body its rope ends on - a whole candy or one split half. A
+            // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
+            CandyBody capturedBody = CandyBodyForPointOrNull(capturedStar);
+            if (capturedBody == null)
             {
-                noCandyL = true;
-                capturedCandy = candyL;
+                return;
             }
-            else if (capturedStar == starR)
-            {
-                noCandyR = true;
-                capturedCandy = candyR;
-            }
-            else
-            {
-                noCandy = true;
-                capturedCandy = candy;
-            }
+
+            _ = TryRemoveBody(capturedBody, CandyRemovalReason.Spider);
+            GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();
             capturedCandy.anchor = capturedCandy.parentAnchor = 18;
@@ -537,9 +599,9 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
-            ExhaustRocketForCandy(candies[0]);
+            ExhaustRocketForCandy(capturedBody.Owner);
             DetachSnailsForPoint(capturedStar);
-            if (restartState != 0)
+            if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(2);
             }

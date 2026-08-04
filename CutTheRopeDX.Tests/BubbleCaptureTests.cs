@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Tests
     public class BubbleCaptureTests
     {
         [Fact]
-        public void Captures_TrueWhenCandyCenterInsideSquare()
+        public void CapturesTrueWhenCandyCenterInsideSquare()
         {
             // bubble at (100,100), radius 40 -> square [60,140) x [60,140)
             Assert.True(BubbleCapture.Captures(new Vector(100, 100), new Vector(100, 100), 40f));
@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Captures_MatchesPointInRectAsymmetricBounds()
+        public void CapturesMatchesPointInRectAsymmetricBounds()
         {
             // low edge inclusive (>=), high edge exclusive (<), per PointInRect.
             Assert.True(BubbleCapture.Captures(new Vector(60f, 100f), new Vector(100, 100), 40f));   // x == cx (>=)
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Captures_FalseWhenOutside()
+        public void CapturesFalseWhenOutside()
         {
             Assert.False(BubbleCapture.Captures(new Vector(200, 100), new Vector(100, 100), 40f));
             Assert.False(BubbleCapture.Captures(new Vector(100, 200), new Vector(100, 100), 40f));

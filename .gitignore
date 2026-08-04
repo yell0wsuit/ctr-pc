@@ -79,3 +79,4 @@ content/**/*.wmv
 content/**/*.webp
 
 *.zip
+*.pyc

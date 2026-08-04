@@ -4,8 +4,10 @@ namespace CutTheRopeDX.GameMain
     /// Pure weight bookkeeping for snails riding a candy point. Each attached snail adds
     /// <see cref="PerSnailWeight"/> to the point so the candy is dragged down; force-detaching a snail
     /// (hand grab, capture, etc.) must remove that exact amount, otherwise the candy keeps falling as if
-    /// the snail were still attached. The result never drops below <see cref="MinWeight"/>, so a base
-    /// candy weight (including a heavier rocket candy) is preserved rather than clobbered to a flat value.
+    /// the snail were still attached. iOS instead assigns a flat 1.0 at its two reset sites (boarding the
+    /// ant conveyor and tapping the candy); subtracting reaches the same number here, because every candy
+    /// point is created at <see cref="MinWeight"/> and a snail is the only thing that ever adds to it -
+    /// a rocket carries its own point, not a heavier candy. The floor keeps that true if it ever changes.
     /// </summary>
     internal static class SnailWeight
     {

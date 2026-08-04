@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -9,28 +8,35 @@ namespace CutTheRopeDX.GameMain
     {
         /// <summary>
         /// Whether any candy body is still in play. Night-level sleep and lights-out loss must
-        /// continue for split halves, while ignoring the inactive whole-candy slot during a split.
+        /// continue for split halves, and must not end the level while the only candy is briefly
+        /// hidden inside a transporter.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> while any eatable candy still has an active body or is hidden in
+        /// transport; otherwise <see langword="false"/>.
+        /// </returns>
         private bool AnyNightCandyBodyPresent()
         {
-            List<CandyView> candyViews = [];
             for (int ci = 0; ci < candies.Count; ci++)
             {
-                if (ci == 0 && twoParts != 2)
+                CandyContext ctx = candies[ci];
+                if (!ctx.Capabilities.CanBeEaten)
                 {
+                    // A light bulb is a candy-like body that nobody is waiting to eat.
                     continue;
                 }
-                candyViews.Add(candies[ci].ToView());
+
+                // One question per logical candy, however many bodies it has: a present candy and a
+                // split candy with one surviving half both answer yes, and a candy inside a
+                // transporter answers yes too because it is coming back out.
+                if (ctx.Lifecycle.ActiveBodies.Count > 0
+                    || ctx.Lifecycle.Presence == CandyPresence.Hidden)
+                {
+                    return true;
+                }
             }
 
-            List<CandyView> splitCandyViews = [];
-            if (twoParts != 2)
-            {
-                splitCandyViews.Add(new CandyView(starL.pos, noCandyL));
-                splitCandyViews.Add(new CandyView(starR.pos, noCandyR));
-            }
-
-            return CandyDecisions.AnyCandyBodyPresent(candyViews, splitCandyViews);
+            return false;
         }
 
         /// <summary>
@@ -70,19 +76,15 @@ namespace CutTheRopeDX.GameMain
                 ctx.lightBulb?.SyncFromContext(ctx);
             }
 
-            // Split candy halves are still legacy singleton points, so they need explicit
-            // collision with light emitters. Whole-body collisions use ResolveCandyCollisions().
-            if (twoParts != 2)
+            // ResolveCandyCollisions pairs logical candies, so it never sees a split half. Each
+            // surviving half still has to collide with every light emitter.
+            foreach (CandyContext ctx in LightEmitters())
             {
-                foreach (CandyContext ctx in LightEmitters())
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.LightCollision))
                 {
-                    if (!noCandyL)
+                    if (body.Role != CandyBodyRole.Whole)
                     {
-                        HandleCandyIntersection(ctx.point, starL, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
-                    }
-                    if (!noCandyR)
-                    {
-                        HandleCandyIntersection(ctx.point, starR, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
+                        HandleCandyIntersection(ctx.WholeBody.Point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
                 }
             }
@@ -95,24 +97,25 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                if (!ctx.noCandy && PointOutOfScreen(ctx.point))
+                if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.WholeBody.Point))
                 {
-                    ctx.noCandy = true;
+                    _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.OffScreen);
                     // A light emitter leaving the screen is a non-candy object escaping: release its
                     // rope and exhaust its bound rocket, matching C's generic-object off-screen loop.
                     ExhaustRocketForCandy(ctx);
-                    ReleaseRopesForPoint(ctx.point);
+                    ReleaseRopesForPoint(ctx.WholeBody.Point);
                     ctx.lightBulb?.SyncFromContext(ctx);
                 }
-                // A bulb mid-teleport has noCandy == true for the brief transport window but is not
-                // lost: count it as active so a lone emitter in a bamboo tube or hat does not trip the
-                // lights-out loss the instant its light blinks out.
-                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.noCandy || ctx.InTransport;
+                // A bulb mid-teleport is Hidden for the brief transport window but is not lost: count
+                // it as active so a lone emitter in a bamboo tube or hat does not trip the lights-out
+                // loss the instant its light blinks out.
+                hasActiveLightEmitter = hasActiveLightEmitter || !ctx.HasNoWholeBodyInPlay
+                    || ctx.Lifecycle.Presence == CandyPresence.Hidden;
             }
 
-            // Multi-candy/split-aware presence: the primary noCandy flag can be true while another
-            // candy body is still in play.
-            if (nightLevel && !hasActiveLightEmitter && restartState != 0 && AnyNightCandyBodyPresent())
+            // Multi-candy/split-aware presence: the primary can be out of play while another candy
+            // body is still around.
+            if (nightLevel && !hasActiveLightEmitter && gameplayFlow.CanTriggerOutcome && AnyNightCandyBodyPresent())
             {
                 GameLost();
             }
@@ -149,13 +152,13 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                bool canUpdateSleepState = GameOutcomeTransition.CanReactToCandyOrLight(outcomeTransitionActive, t.asleep);
+                bool canUpdateSleepState = gameplayFlow.CanReactToCandy(t.asleep);
 
                 bool isAwake = false;
                 Vector targetPosition = Vect(t.targetObject.x, t.targetObject.y);
                 foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(targetPosition, light.point.pos, light.lightRadius))
+                    if (LightProximity.IsWithinLight(targetPosition, light.WholeBody.Point.pos, light.lightRadius))
                     {
                         isAwake = true;
                         break;
@@ -234,7 +237,7 @@ namespace CutTheRopeDX.GameMain
                 bool lit = false;
                 foreach (CandyContext light in LightEmitters())
                 {
-                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), light.point.pos, light.lightRadius))
+                    if (LightProximity.IsWithinLight(Vect(star.x, star.y), light.WholeBody.Point.pos, light.lightRadius))
                     {
                         lit = true;
                         break;
