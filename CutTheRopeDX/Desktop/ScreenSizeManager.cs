@@ -183,6 +183,12 @@ namespace CutTheRopeDX.Desktop
             }
             ApplyWindowSize(WindowWidth);
             CenterWindow();
+            // Size the canvas to the window that was just established. Without this the backing size keeps
+            // the placeholder GLCanvas.InitWithFrame seeds it with, which is the 2560x1440 master size: a
+            // windowed launch would render the scene at 3.7 megapixels and blit it down, and would go on
+            // doing so until a resize or a fullscreen toggle reshaped it. The software cap lives in Reshape
+            // too, so nothing capped the render size in that state either.
+            Application.SharedCanvas().Reshape();
         }
 
         /// <summary>
