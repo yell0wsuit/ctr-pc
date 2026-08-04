@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
     public sealed class SplitCandyMergeTriggerTests
     {
         [Fact]
-        public void HalvesMovedOntoEachOther_DoNotBeginMergingOnThatSameFrame()
+        public void HalvesMovedOntoEachOtherDoNotBeginMergingOnThatSameFrame()
         {
             (GameScene scene, SplitCandyState split) = SeparatedHalves();
 
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HalvesMovedOntoEachOther_BeginMergingOnTheFollowingFrame()
+        public void HalvesMovedOntoEachOtherBeginMergingOnTheFollowingFrame()
         {
             (GameScene scene, SplitCandyState split) = SeparatedHalves();
 
@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests
         /// matching the reference engine's <c>vectDistance(starL.pos, starR.pos)</c>.
         /// </summary>
         [Fact]
-        public void TheRecordedGap_ComesFromTheLivePointsNotTheStaleVisuals()
+        public void TheRecordedGapComesFromTheLivePointsNotTheStaleVisuals()
         {
             (GameScene scene, SplitCandyState split) = SeparatedHalves();
 

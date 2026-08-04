@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class SnailAttachRowTests
     {
         [Fact]
-        public void SnailAttach_KeepsItsRopes()
+        public void SnailAttachKeepsItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
 
@@ -23,7 +23,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_CoexistsWithTheHandHoldingIt()
+        public void SnailAttachCoexistsWithTheHandHoldingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_KeepsItsRocket()
+        public void SnailAttachKeepsItsRocket()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_PopsItsBubble()
+        public void SnailAttachPopsItsBubble()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             Bubble bubble = Act.CaptureInBubble(scene, candy);
@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_DetachesTheSnailAlreadyOnTheCandy()
+        public void SnailAttachDetachesTheSnailAlreadyOnTheCandy()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(60, 200));
             Snail first = Act.RideSnail(scene, candy, snailIndex: 1);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_CoexistsWithTheAntsCarryingIt()
+        public void SnailAttachCoexistsWithTheAntsCarryingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttach_LeavesTheMouseCarryingIt()
+        public void SnailAttachLeavesTheMouseCarryingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

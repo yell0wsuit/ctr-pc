@@ -12,39 +12,39 @@ namespace CutTheRopeDX.Tests
     public class GrabPlatformBindTests
     {
         [Fact]
-        public void CanBind_TrueForAPlainHook()
+        public void CanBindTrueForAPlainHook()
         {
             Assert.True(GrabPlatformBind.CanBind(hasOwnMover: false, isMoveableRail: false));
         }
 
         [Fact]
-        public void CanBind_FalseForAPathMoverGrab()
+        public void CanBindFalseForAPathMoverGrab()
         {
             // Bee and launcher keep their own movement; the platform must not fight it.
             Assert.False(GrabPlatformBind.CanBind(hasOwnMover: true, isMoveableRail: false));
         }
 
         [Fact]
-        public void CanBind_FalseForAMoveableRailGrab()
+        public void CanBindFalseForAMoveableRailGrab()
         {
             Assert.False(GrabPlatformBind.CanBind(hasOwnMover: false, isMoveableRail: true));
         }
 
         [Fact]
-        public void FollowsPlatform_TrueForABoundStuckGrab()
+        public void FollowsPlatformTrueForABoundStuckGrab()
         {
             Assert.True(GrabPlatformBind.FollowsPlatform(canBind: true, isKickedFree: false));
         }
 
         [Fact]
-        public void FollowsPlatform_FalseWhileKickedFree()
+        public void FollowsPlatformFalseWhileKickedFree()
         {
             // Kicked suction cup falls freely; the platform skips it until it re-sticks.
             Assert.False(GrabPlatformBind.FollowsPlatform(canBind: true, isKickedFree: true));
         }
 
         [Fact]
-        public void FollowsPlatform_FalseWhenNotBindableAtAll()
+        public void FollowsPlatformFalseWhenNotBindableAtAll()
         {
             Assert.False(GrabPlatformBind.FollowsPlatform(canBind: false, isKickedFree: false));
         }

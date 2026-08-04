@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class RocketBindRowTests
     {
         [Fact]
-        public void RocketBind_KeepsItsRopes()
+        public void RocketBindKeepsItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
 
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_CoexistsWithTheHandHoldingIt()
+        public void RocketBindCoexistsWithTheHandHoldingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_ExhaustsTheRocketAlreadyOnTheCandy()
+        public void RocketBindExhaustsTheRocketAlreadyOnTheCandy()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(60, 200, impulse: 0f));
             Rocket first = Act.BindRocket(scene, candy, rocketIndex: 1);
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_PopsItsBubble()
+        public void RocketBindPopsItsBubble()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             Bubble bubble = Act.CaptureInBubble(scene, candy);
@@ -64,7 +64,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_TakesTheSnailAlong()
+        public void RocketBindTakesTheSnailAlong()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_TakesTheCandyOffTheAntsByFlyingItAway()
+        public void RocketBindTakesTheCandyOffTheAntsByFlyingItAway()
         {
             // "Implicit release" is literal here: binding the rocket detaches nothing, and the ant
             // carry keeps overwriting the candy's position (and the rocket's) for a good two
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBind_CoexistsWithTheMouseCarryingIt()
+        public void RocketBindCoexistsWithTheMouseCarryingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

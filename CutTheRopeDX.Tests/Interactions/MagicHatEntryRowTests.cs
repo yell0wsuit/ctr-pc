@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class MagicHatEntryRowTests
     {
         [Fact]
-        public void HatEntry_ReleasesItsRopes()
+        public void HatEntryReleasesItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
             Assert.Equal(1, scene.AttachedRopeCount(candy));
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_DetachesTheHandHoldingIt()
+        public void HatEntryDetachesTheHandHoldingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_CarriesTheRocketThrough_HiddenForTheTransit()
+        public void HatEntryCarriesTheRocketThroughHiddenForTheTransit()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_CarriesTheBubbleThrough()
+        public void HatEntryCarriesTheBubbleThrough()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             Bubble bubble = Act.CaptureInBubble(scene, candy);
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_CarriesTheSnailThrough()
+        public void HatEntryCarriesTheSnailThrough()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_TakesTheCandyOffTheAnts()
+        public void HatEntryTakesTheCandyOffTheAnts()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_MakesTheMouseDropIt()
+        public void HatEntryMakesTheMouseDropIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

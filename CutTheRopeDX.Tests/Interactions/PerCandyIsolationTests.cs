@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class PerCandyIsolationTests
     {
         [Fact]
-        public void EatingOneCandy_LeavesTheOtherCandysRopeAttached()
+        public void EatingOneCandyLeavesTheOtherCandysRopeAttached()
         {
             (GameScene scene, CandyContext eaten, CandyContext kept) = TwoCandies(s => s
                 .Rope(60, 120, length: 40, candyNumber: "1")
@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void EatingOneCandy_LeavesTheOtherCandysSnailRiding()
+        public void EatingOneCandyLeavesTheOtherCandysSnailRiding()
         {
             (GameScene scene, CandyContext eaten, CandyContext kept) = TwoCandies(s => s.Snail(260, 200));
             _ = Act.RideSnail(scene, kept);
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapturingOneCandy_LeavesTheOtherCandysBubble()
+        public void LanternCapturingOneCandyLeavesTheOtherCandysBubble()
         {
             (GameScene scene, CandyContext captured, CandyContext kept) = TwoCandies(s => s
                 .Lantern(20, 40)
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AHandGrabbingOneCandy_LeavesTheOtherCandysSnailAndWeight()
+        public void AHandGrabbingOneCandyLeavesTheOtherCandysSnailAndWeight()
         {
             (GameScene scene, CandyContext grabbed, CandyContext kept) = TwoCandies(s => s
                 .Hand(20, 40, segmentLength: 20, segmentAngle: 90f)
@@ -65,7 +65,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AMouseTakingOneCandy_LeavesTheOtherCandyInItsHand()
+        public void AMouseTakingOneCandyLeavesTheOtherCandyInItsHand()
         {
             (GameScene scene, CandyContext stolen, CandyContext kept) = TwoCandies(s => s
                 .Mouse(20, 40)
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void ATubeSwallowingOneCandy_LeavesTheOtherCandysRocket()
+        public void ATubeSwallowingOneCandyLeavesTheOtherCandysRocket()
         {
             (GameScene scene, CandyContext swallowed, CandyContext kept) = TwoCandies(s => s
                 .BambooTube(20, 40, TubeMouth.CatchesFalling)

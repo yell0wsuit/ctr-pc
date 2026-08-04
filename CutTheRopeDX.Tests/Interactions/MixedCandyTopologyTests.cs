@@ -23,7 +23,7 @@ namespace CutTheRopeDX.Tests.Interactions
         private const float TouchingGap = 8f;
 
         [Fact]
-        public void SplitPlusWhole_ExposesThreePhysicalBodiesAndTwoLogicalCandies()
+        public void SplitPlusWholeExposesThreePhysicalBodiesAndTwoLogicalCandies()
         {
             GameScene scene = Scenario.New()
                 .SplitCandy(100, 200, 140, 200)
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <c>candies[0]</c> would hand the halves to a context that is already somebody else's.
         /// </summary>
         [Fact]
-        public void SplitPlusWhole_KeepsTheSplitCandyPrimaryAndBuildsTheWholeOneBesideIt()
+        public void SplitPlusWholeKeepsTheSplitCandyPrimaryAndBuildsTheWholeOneBesideIt()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
 
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SplitPlusWhole_GivesTheSceneTheTwoHalvesAndTheWholeBodyInOrder()
+        public void SplitPlusWholeGivesTheSceneTheTwoHalvesAndTheWholeBodyInOrder()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
 
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [InlineData((int)CandyInteraction.Bouncer)]
         [InlineData((int)CandyInteraction.Bubble)]
         [InlineData((int)CandyInteraction.OffScreen)]
-        public void SplitPlusWhole_OffersEveryBodyToThePhysicalSystems(int interactionValue)
+        public void SplitPlusWholeOffersEveryBodyToThePhysicalSystems(int interactionValue)
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
 
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [InlineData((int)CandyInteraction.Hand)]
         [InlineData((int)CandyInteraction.Snail)]
         [InlineData((int)CandyInteraction.Eat)]
-        public void SplitPlusWhole_OffersOnlyTheWholeCandyToTheCarrierSystems(int interactionValue)
+        public void SplitPlusWholeOffersOnlyTheWholeCandyToTheCarrierSystems(int interactionValue)
         {
             (GameScene scene, CandyContext _, CandyContext whole) = MixedScene();
 
@@ -103,7 +103,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// carrier systems - candy-to-candy collision included - beside the extra candy.
         /// </summary>
         [Fact]
-        public void MergingTheSplitCandy_LetsItCollideWithTheOtherWholeCandy()
+        public void MergingTheSplitCandyLetsItCollideWithTheOtherWholeCandy()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
             Assert.Equal([whole.WholeBody], scene.ActiveBodies(CandyInteraction.CandyCollision));
@@ -116,7 +116,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void EatingWholeCandy_DoesNotWinWhileSplitCandyRemains()
+        public void EatingWholeCandyDoesNotWinWhileSplitCandyRemains()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
 
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void LosingEitherSplitHalf_LosesEvenWhenWholeCandyRemains(bool loseLeftHalf)
+        public void LosingEitherSplitHalfLosesEvenWhenWholeCandyRemains(bool loseLeftHalf)
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
             SplitCandyState halves = split.Lifecycle.Split;
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LosingBothSplitHalves_RecordsOneLossAndZeroWins()
+        public void LosingBothSplitHalvesRecordsOneLossAndZeroWins()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = MixedScene();
             SplitCandyState halves = split.Lifecycle.Split;
@@ -175,7 +175,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// whole candy has been eaten too.
         /// </summary>
         [Fact]
-        public void MergeThenEatSplitCandy_WinsOnlyAfterOtherWholeCandyWasEaten()
+        public void MergeThenEatSplitCandyWinsOnlyAfterOtherWholeCandyWasEaten()
         {
             (GameScene scene, CandyContext split, CandyContext whole) = TwoOmNomScene();
             MergeHalves(scene, split);

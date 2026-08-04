@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
     public class ConveyorAutoHookWrapTests
     {
         [Fact]
-        public void DidMoveToOtherSide_MovesAutoAttachedRopeWithHook()
+        public void DidMoveToOtherSideMovesAutoAttachedRopeWithHook()
         {
             ConstraintedPoint candy = new()
             {

@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Tests
     public class LanternReleaseTests
     {
         [Fact]
-        public void RestoreReleasedCandy_RestoresOnlyTheReleasedCandy()
+        public void RestoreReleasedCandyRestoresOnlyTheReleasedCandy()
         {
             ConstraintedPoint firstPoint = new();
             ConstraintedPoint secondPoint = new();

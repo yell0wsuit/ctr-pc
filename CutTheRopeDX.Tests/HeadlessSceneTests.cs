@@ -7,22 +7,22 @@ namespace CutTheRopeDX.Tests
     public sealed class HeadlessSceneTests
     {
         [Fact]
-        public void Scene_LoadsAndSteps_WithoutGraphicsDevice()
+        public void SceneLoadsAndStepsWithoutGraphicsDevice()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
+            _ = HeadlessGame.Boot();
 
             // 2-5 has no tutorial text, so it exercises the plain load path.
-            GameScene scene = ctr.LoadLevel(pack: 1, level: 4);
+            GameScene scene = HeadlessGame.LoadLevel(pack: 1, level: 4);
             HeadlessGame.StepFrames(scene, 60);
 
             Assert.NotNull(scene);
         }
 
         [Fact]
-        public void RestartDim_CompletesAndReturnsToPlaying()
+        public void RestartDimCompletesAndReturnsToPlaying()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
-            GameScene scene = ctr.LoadLevel(pack: 1, level: 4);
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(pack: 1, level: 4);
             HeadlessGame.StepFrames(scene, 60);
 
             scene.AnimateLevelRestart();
@@ -34,23 +34,23 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TutorialTextLevel_LoadsAndSteps()
+        public void TutorialTextLevelLoadsAndSteps()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
+            _ = HeadlessGame.Boot();
 
             // 1-1 carries tutorial text, so it drives Text.UpdateDrawerValues through
             // HeadlessFont's single-charmap stub — the one font path the stub could break.
-            GameScene scene = ctr.LoadLevel(pack: 0, level: 0);
+            GameScene scene = HeadlessGame.LoadLevel(pack: 0, level: 0);
             HeadlessGame.StepFrames(scene, 60);
 
             Assert.NotNull(scene);
         }
 
         [Fact]
-        public void Sound_IsSilentAndDoesNotThrow_WithoutContentManager()
+        public void SoundIsSilentAndDoesNotThrowWithoutContentManager()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
-            GameScene scene = ctr.LoadLevel(pack: 1, level: 4);
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(pack: 1, level: 4);
 
             // Gameplay fires PlayOmNomSound/PlaySound constantly; SoundMgr.GetSound swallows
             // the null ContentManager. This pins that assumption rather than trusting it.

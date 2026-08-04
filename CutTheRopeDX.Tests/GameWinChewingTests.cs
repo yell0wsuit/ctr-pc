@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(1, true)]
         [InlineData(2, false)]
         [InlineData(3, false)]
-        public void ShouldPlayPrimaryChewingOnGameWon_OnlyForLegacySingleTargetWin(int targetCount, bool expected)
+        public void ShouldPlayPrimaryChewingOnGameWonOnlyForLegacySingleTargetWin(int targetCount, bool expected)
         {
             Assert.Equal(expected, GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targetCount));
         }
@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(1, false, true, false)]
         [InlineData(2, true, true, false)]
         [InlineData(2, false, false, false)]
-        public void ShouldSchedulePostEatSleep_OnlyForFlashMultiTargetNonNightLevels(
+        public void ShouldSchedulePostEatSleepOnlyForFlashMultiTargetNonNightLevels(
             int targetCount,
             bool isNightLevel,
             bool usesFlashXmlAnimations,

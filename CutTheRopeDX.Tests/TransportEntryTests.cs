@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class TransportEntryTests
     {
         [Fact]
-        public void ShouldEnter_TrueForFreeCandyInRange()
+        public void ShouldEnterTrueForFreeCandyInRange()
         {
             Assert.True(TransportEntry.ShouldEnter(
                 candyPresent: true, alreadyInTransit: false,
@@ -15,20 +15,20 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenAlreadyInTransit()
+        public void ShouldEnterFalseWhenAlreadyInTransit()
         {
             // Sock and bamboo transit are one lifecycle state, so one flag closes the gate for both.
             Assert.False(TransportEntry.ShouldEnter(true, alreadyInTransit: true, false, false, true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenInLantern()
+        public void ShouldEnterFalseWhenInLantern()
         {
             Assert.False(TransportEntry.ShouldEnter(true, false, inLantern: true, splitActive: false, inRange: true));
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenSplitActive()
+        public void ShouldEnterFalseWhenSplitActive()
         {
             // A split candy has no whole body to swallow; its halves have to merge before a
             // transporter can take it, which the body-role table enforces on the scene side.
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldEnter_FalseWhenMissingOrOutOfRange()
+        public void ShouldEnterFalseWhenMissingOrOutOfRange()
         {
             Assert.False(TransportEntry.ShouldEnter(candyPresent: false, false, false, false, true));
             Assert.False(TransportEntry.ShouldEnter(true, false, false, false, inRange: false));

@@ -12,25 +12,25 @@ namespace CutTheRopeDX.Tests
     public class SnailBubblePopTests
     {
         [Fact]
-        public void ShouldPop_TrueWhileAnActiveSnailRidesABubbledCandy()
+        public void ShouldPopTrueWhileAnActiveSnailRidesABubbledCandy()
         {
             Assert.True(SnailBubblePop.ShouldPop(snailActive: true, ridesACandy: true, candyHasBubble: true));
         }
 
         [Fact]
-        public void ShouldPop_FalseWhenTheCandyHasNoBubble()
+        public void ShouldPopFalseWhenTheCandyHasNoBubble()
         {
             Assert.False(SnailBubblePop.ShouldPop(snailActive: true, ridesACandy: true, candyHasBubble: false));
         }
 
         [Fact]
-        public void ShouldPop_FalseForAnInactiveSnail()
+        public void ShouldPopFalseForAnInactiveSnail()
         {
             Assert.False(SnailBubblePop.ShouldPop(snailActive: false, ridesACandy: true, candyHasBubble: true));
         }
 
         [Fact]
-        public void ShouldPop_FalseWhenRidingNothing()
+        public void ShouldPopFalseWhenRidingNothing()
         {
             Assert.False(SnailBubblePop.ShouldPop(snailActive: true, ridesACandy: false, candyHasBubble: true));
         }

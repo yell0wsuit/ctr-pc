@@ -12,14 +12,14 @@ namespace CutTheRopeDX.Tests
     public class HandStealTests
     {
         [Fact]
-        public void ShouldReleaseOtherHand_TrueWhenAnotherHandHoldsThisCandy()
+        public void ShouldReleaseOtherHandTrueWhenAnotherHandHoldsThisCandy()
         {
             Assert.True(HandSteal.ShouldReleaseOtherHand(
                 isDifferentHand: true, otherHandHoldingCandy: true, otherHandHoldsThisCandy: true));
         }
 
         [Fact]
-        public void ShouldReleaseOtherHand_FalseWhenTheOtherHandHoldsADifferentCandy()
+        public void ShouldReleaseOtherHandFalseWhenTheOtherHandHoldsADifferentCandy()
         {
             // Multi-candy isolation: grabbing candy A must not release a hand holding candy B.
             Assert.False(HandSteal.ShouldReleaseOtherHand(
@@ -27,14 +27,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldReleaseOtherHand_FalseForTheGrabbingHandItself()
+        public void ShouldReleaseOtherHandFalseForTheGrabbingHandItself()
         {
             Assert.False(HandSteal.ShouldReleaseOtherHand(
                 isDifferentHand: false, otherHandHoldingCandy: true, otherHandHoldsThisCandy: true));
         }
 
         [Fact]
-        public void ShouldReleaseOtherHand_FalseWhenTheOtherHandHoldsNothing()
+        public void ShouldReleaseOtherHandFalseWhenTheOtherHandHoldsNothing()
         {
             Assert.False(HandSteal.ShouldReleaseOtherHand(
                 isDifferentHand: true, otherHandHoldingCandy: false, otherHandHoldsThisCandy: false));

@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class AttachmentSetupTests
     {
         [Fact]
-        public void RocketBinds_WhenTheCandyTouchesAnIdleRocket()
+        public void RocketBindsWhenTheCandyTouchesAnIdleRocket()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCaptures_WhenTheCandyEntersItsRadius()
+        public void BubbleCapturesWhenTheCandyEntersItsRadius()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SnailAttaches_WhenItReachesTheCandy()
+        public void SnailAttachesWhenItReachesTheCandy()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HandGrabs_WhenTheCandySitsAtTheClaw()
+        public void HandGrabsWhenTheCandySitsAtTheClaw()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrabs_OnceItHasPoppedOutOfItsHole()
+        public void MouseGrabsOnceItHasPoppedOutOfItsHole()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AntsCarry_WhenTheCandyLandsOnASegment()
+        public void AntsCarryWhenTheCandyLandsOnASegment()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -110,7 +110,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCaptures_WhenTheCandyDriftsIntoIt()
+        public void LanternCapturesWhenTheCandyDriftsIntoIt()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -125,7 +125,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MagicHatSwallowsTheCandy_WhenItFallsThroughTheMouth()
+        public void MagicHatSwallowsTheCandyWhenItFallsThroughTheMouth()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BambooTubeSwallowsTheCandy_WhenItFallsIn()
+        public void BambooTubeSwallowsTheCandyWhenItFallsIn()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -156,7 +156,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void OmNomEatsTheCandy_WhenItFallsIntoAnOpenMouth()
+        public void OmNomEatsTheCandyWhenItFallsIntoAnOpenMouth()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -169,7 +169,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SpikesBreakTheCandy_OnContact()
+        public void SpikesBreakTheCandyOnContact()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)

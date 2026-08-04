@@ -13,14 +13,14 @@ namespace CutTheRopeDX.Tests
     public class MouseOwnershipTests
     {
         [Fact]
-        public void CarriesCandy_TrueWhenActiveMouseCarriesThisPoint()
+        public void CarriesCandyTrueWhenActiveMouseCarriesThisPoint()
         {
             ConstraintedPoint candy = new();
             Assert.True(MouseOwnership.CarriesCandy(carriedByActiveMouse: candy, candyPoint: candy));
         }
 
         [Fact]
-        public void CarriesCandy_FalseForADifferentCandyPoint()
+        public void CarriesCandyFalseForADifferentCandyPoint()
         {
             // The mouse carries candy A; candy B must be reported as not-carried so its own
             // rocket bind / rope attach is unaffected. This is the multi-candy isolation invariant.
@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CarriesCandy_FalseWhenMouseCarriesNothing()
+        public void CarriesCandyFalseWhenMouseCarriesNothing()
         {
             ConstraintedPoint candy = new();
             Assert.False(MouseOwnership.CarriesCandy(carriedByActiveMouse: null, candyPoint: candy));

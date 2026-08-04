@@ -1,0 +1,13 @@
+<Project>
+
+  <!-- Repo-wide defaults. Individual projects may override any of these. -->
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

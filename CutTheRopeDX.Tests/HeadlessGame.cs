@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="pack">Zero-based pack index.</param>
         /// <param name="level">Zero-based level index.</param>
         /// <returns>The loaded scene.</returns>
-        public GameScene LoadLevel(int pack, int level)
+        public static GameScene LoadLevel(int pack, int level)
         {
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             root.SetPack(pack);
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="pack">Zero-based pack index.</param>
         /// <param name="level">Zero-based level index.</param>
         /// <returns>An activated controller. Its scene is <c>GetView(0).GetChild(0)</c>.</returns>
-        public GameController LoadLevelWithController(int pack, int level)
+        public static GameController LoadLevelWithController(int pack, int level)
         {
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             root.SetPack(pack);
@@ -81,7 +81,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="pack">Zero-based pack index, for pack-dependent visuals.</param>
         /// <param name="level">Zero-based level index.</param>
         /// <returns>The loaded scene.</returns>
-        public GameScene LoadScenarioMap(XElement map, int pack = 0, int level = 0)
+        public static GameScene LoadScenarioMap(XElement map, int pack = 0, int level = 0)
         {
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             root.SetPack(pack);

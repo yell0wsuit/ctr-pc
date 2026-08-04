@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldOpenMouth_TrueWhenCandyInRange()
+        public void ShouldOpenMouthTrueWhenCandyInRange()
         {
             Vector target = new(100, 100);
             List<CandyView> candies = [Candy(150, 100)]; // 50px away
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldOpenMouth_FalseForCandyLikeObjectThatCannotOpenMouth()
+        public void ShouldOpenMouthFalseForCandyLikeObjectThatCannotOpenMouth()
         {
             Vector target = new(100, 100);
             List<CandyView> candies = [new CandyView(new Vector(150, 100), CandyCapabilities.LightBulb)];
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldOpenMouth_FalseWhenCandyOutOfRange()
+        public void ShouldOpenMouthFalseWhenCandyOutOfRange()
         {
             Vector target = new(100, 100);
             List<CandyView> candies = [Candy(400, 100)]; // 300px away
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(nameof(CandyRemovalReason.Hazard), false)]
         [InlineData(nameof(CandyRemovalReason.Spider), false)]
         [InlineData(nameof(CandyRemovalReason.OffScreen), false)]
-        public void AllEaten_AcceptsOnlyEatenRemoval(string reasonName, bool expected)
+        public void AllEatenAcceptsOnlyEatenRemoval(string reasonName, bool expected)
         {
             CandyRemovalReason reason = Enum.Parse<CandyRemovalReason>(reasonName);
 
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests
         [Theory]
         [InlineData(nameof(CandyPresence.Hidden))]
         [InlineData(nameof(CandyPresence.Split))]
-        public void AllEaten_RejectsIntactNonRemovedLifecycleStates(string presenceName)
+        public void AllEatenRejectsIntactNonRemovedLifecycleStates(string presenceName)
         {
             CandyPresence presence = Enum.Parse<CandyPresence>(presenceName);
 
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(nameof(CandyRemovalReason.Hazard))]
         [InlineData(nameof(CandyRemovalReason.Spider))]
         [InlineData(nameof(CandyRemovalReason.OffScreen))]
-        public void AnyFailedRemoval_AcceptsEveryLossReason(string reasonName)
+        public void AnyFailedRemovalAcceptsEveryLossReason(string reasonName)
         {
             CandyRemovalReason reason = Enum.Parse<CandyRemovalReason>(reasonName);
 
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitHalfFailure_RequestsLossAndNeverWin()
+        public void SplitHalfFailureRequestsLossAndNeverWin()
         {
             CandyOutcomeView candy = new(
                 CandyPresence.Split,
@@ -105,7 +105,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void EatenRemoval_DoesNotRequestLoss()
+        public void EatenRemovalDoesNotRequestLoss()
         {
             CandyOutcomeView candy = new(
                 CandyPresence.Removed,
@@ -122,7 +122,7 @@ namespace CutTheRopeDX.Tests
         /// on its first frame.
         /// </summary>
         [Fact]
-        public void NoCandiesAtAll_NeverWins()
+        public void NoCandiesAtAllNeverWins()
         {
             Assert.False(CandyDecisions.AllEaten([]));
         }
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.Tests
         /// won immediately - exactly what the helper this replaced did with its candy-count guard.
         /// </summary>
         [Fact]
-        public void InedibleBodiesAlone_SatisfyTheWinVacuously()
+        public void InedibleBodiesAloneSatisfyTheWinVacuously()
         {
             CandyOutcomeView bulb = new(
                 CandyPresence.Present,

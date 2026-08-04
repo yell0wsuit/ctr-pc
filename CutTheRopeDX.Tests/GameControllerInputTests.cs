@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class GameControllerInputTests
     {
         [Fact]
-        public void CanPauseFromGameplay_FalseDuringOutcomeTransition()
+        public void CanPauseFromGameplayFalseDuringOutcomeTransition()
         {
             Assert.False(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanPauseFromGameplay_TrueWhenOutcomeTransitionInactive()
+        public void CanPauseFromGameplayTrueWhenOutcomeTransitionInactive()
         {
             Assert.True(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CannotPause_WhileRestartDimIsPlaying()
+        public void CannotPauseWhileRestartDimIsPlaying()
         {
             Assert.False(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanPause_OnceRestartDimHasFinished()
+        public void CanPauseOnceRestartDimHasFinished()
         {
             Assert.True(GameControllerInput.CanPauseFromGameplay(
                 gameplayHudTouchable: true,
@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanExitResultWithBack_FalseDuringOutcomeTransition()
+        public void CanExitResultWithBackFalseDuringOutcomeTransition()
         {
             Assert.False(GameControllerInput.CanExitResultWithBack(
                 resultTouchable: true,
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanExitResultWithBack_TrueAfterTransition()
+        public void CanExitResultWithBackTrueAfterTransition()
         {
             Assert.True(GameControllerInput.CanExitResultWithBack(
                 resultTouchable: true,

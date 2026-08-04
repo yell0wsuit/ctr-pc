@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class LevelProgressPersistenceTests
     {
         [Fact]
-        public void ShouldPersist_TrueWhenImprovedInNormalPlay()
+        public void ShouldPersistTrueWhenImprovedInNormalPlay()
         {
             Assert.True(LevelProgressPersistence.ShouldPersist(
                 customLevelActive: false,
@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldPersist_FalseWhenNotImprovedInNormalPlay()
+        public void ShouldPersistFalseWhenNotImprovedInNormalPlay()
         {
             Assert.False(LevelProgressPersistence.ShouldPersist(
                 customLevelActive: false,
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldPersist_FalseInCustomLevelEvenWhenImproved()
+        public void ShouldPersistFalseInCustomLevelEvenWhenImproved()
         {
             Assert.False(LevelProgressPersistence.ShouldPersist(
                 customLevelActive: true,
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldPersist_FalseInCustomLevelFromZero()
+        public void ShouldPersistFalseInCustomLevelFromZero()
         {
             Assert.False(LevelProgressPersistence.ShouldPersist(
                 customLevelActive: true,

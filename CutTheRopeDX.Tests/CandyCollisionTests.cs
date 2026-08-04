@@ -10,20 +10,20 @@ namespace CutTheRopeDX.Tests
     public class CandyCollisionTests
     {
         [Fact]
-        public void ShouldParticipate_FalseWhenCandyIsInLantern()
+        public void ShouldParticipateFalseWhenCandyIsInLantern()
         {
             Assert.False(CandyCollision.ShouldParticipate(hasNoWholeBodyInPlay: false, inLantern: true));
         }
 
         [Fact]
-        public void ShouldParticipate_TrueForUneatenCandyOutsideLantern()
+        public void ShouldParticipateTrueForUneatenCandyOutsideLantern()
         {
             Assert.True(CandyCollision.ShouldParticipate(hasNoWholeBodyInPlay: false, inLantern: false));
             Assert.False(CandyCollision.ShouldParticipate(hasNoWholeBodyInPlay: true, inLantern: false));
         }
 
         [Fact]
-        public void ShouldParticipate_TrueForBubbledCandy()
+        public void ShouldParticipateTrueForBubbledCandy()
         {
             // A bubbled (or ghost-bubbled) body still collides; bubble state is not an exclusion.
             Assert.True(CandyCollision.ShouldParticipate(hasNoWholeBodyInPlay: false, inLantern: false));
@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldParticipate_FalseForAxeBodyCollision()
+        public void ShouldParticipateFalseForAxeBodyCollision()
         {
             CandyContext axe = Context();
             axe.Capabilities = CandyCapabilities.Axe;
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PairDistance_UsesExplicitAdditiveRadii()
+        public void PairDistanceUsesExplicitAdditiveRadii()
         {
             CandyContext a = Context();
             a.collisionRadius = 32f;
@@ -55,7 +55,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PairDistance_UsesDesktopCandyBodyRatioForNormalCandy()
+        public void PairDistanceUsesDesktopCandyBodyRatioForNormalCandy()
         {
             bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
             try
@@ -73,7 +73,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PairDistance_UsesMobileCandyBodyRatioForNormalCandy()
+        public void PairDistanceUsesMobileCandyBodyRatioForNormalCandy()
         {
             bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
             try
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PairDistance_UsesLargestAbsoluteOverride()
+        public void PairDistanceUsesLargestAbsoluteOverride()
         {
             CandyContext candy = Context();
             candy.collisionRadius = 32f;
@@ -103,7 +103,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldUseHtmlModel_TrueOnlyForDesktopCandyToCandy()
+        public void ShouldUseHtmlModelTrueOnlyForDesktopCandyToCandy()
         {
             CandyContext candy = Context();
             CandyContext other = Context();
@@ -117,28 +117,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldHtmlNudge_TrueWhenWithinNineTenthsBodyWidthAndClosing()
+        public void ShouldHtmlNudgeTrueWhenWithinNineTenthsBodyWidthAndClosing()
         {
             // body width 100 -> trigger threshold 90; distance 80 <= 90 and 80 < previous 100 (closing in)
             Assert.True(CandyCollision.ShouldHtmlNudge(distance: 80f, previousDistance: 100f, candyBodyWidth: 100f));
         }
 
         [Fact]
-        public void ShouldHtmlNudge_FalseWhenSeparating()
+        public void ShouldHtmlNudgeFalseWhenSeparating()
         {
             // within threshold (80 <= 90) but distance grew vs last frame (80 >= 70) -> not closing in
             Assert.False(CandyCollision.ShouldHtmlNudge(distance: 80f, previousDistance: 70f, candyBodyWidth: 100f));
         }
 
         [Fact]
-        public void ShouldHtmlNudge_FalseBeyondTriggerWidth()
+        public void ShouldHtmlNudgeFalseBeyondTriggerWidth()
         {
             // 91 > 0.9 * 100 = 90
             Assert.False(CandyCollision.ShouldHtmlNudge(distance: 91f, previousDistance: 100f, candyBodyWidth: 100f));
         }
 
         [Fact]
-        public void ShouldHtmlNudge_FiresNearSurfaceTouchUsingBodyWidth()
+        public void ShouldHtmlNudgeFiresNearSurfaceTouchUsingBodyWidth()
         {
             // Regression: the HTML trigger is 0.9 × candy bounding-box WIDTH (M.lm.N = 112), i.e. ~the
             // surface-touch distance — NOT 0.9 × radius (~46), which let candies overlap to near-center.
@@ -151,7 +151,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HtmlNudgeImpulse_IsEqualAndOppositeReverseVelocityScaled()
+        public void HtmlNudgeImpulseIsEqualAndOppositeReverseVelocityScaled()
         {
             // a moved +2 in x last frame (prev 98 -> pos 100); b moved -2 in x (prev 122 -> pos 120): closing in.
             ConstraintedPoint a = new()

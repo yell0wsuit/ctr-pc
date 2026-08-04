@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
         private const float SpikeRadius = 15f;
 
         [Fact]
-        public void Hits_TrueWhenCandyBoxOverlapsTopEdge()
+        public void HitsTrueWhenCandyBoxOverlapsTopEdge()
         {
             Assert.True(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -21,7 +21,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Hits_TrueWhenSweptSegmentCrossesBarrier()
+        public void HitsTrueWhenSweptSegmentCrossesBarrier()
         {
             Assert.True(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Hits_FalseWhenFarAway()
+        public void HitsFalseWhenFarAway()
         {
             Assert.False(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Tests
         // A whole candy whose swept path crosses the bouncer barrier registers a hit at the real
         // bouncer collision radius (mirrors the candies[0] inline bouncer formula).
         [Fact]
-        public void Hits_TrueForWholeCandyCrossingBouncer()
+        public void HitsTrueForWholeCandyCrossingBouncer()
         {
             Assert.True(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -48,7 +48,7 @@ namespace CutTheRopeDX.Tests
 
         // The same candy far below the barrier does not register a hit.
         [Fact]
-        public void Hits_FalseForWholeCandyBelowBouncer()
+        public void HitsFalseForWholeCandyBelowBouncer()
         {
             Assert.False(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.Tests
         // A whole candy whose swept path crosses the spike registers a break at the spike radius
         // (mirrors the candies[0] inline spike formula).
         [Fact]
-        public void Hits_TrueForWholeCandyCrossingSpike()
+        public void HitsTrueForWholeCandyCrossingSpike()
         {
             Assert.True(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
 
         // A whole candy resting clear of the spike does not break.
         [Fact]
-        public void Hits_FalseForWholeCandyClearOfSpike()
+        public void HitsFalseForWholeCandyClearOfSpike()
         {
             Assert.False(BarrierCollision.Hits(
                 T1X, T1Y, T2X, T2Y, B1X, B1Y, B2X, B2Y,

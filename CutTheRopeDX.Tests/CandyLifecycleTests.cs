@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PresentCandy_CanBeRemovedAsEaten()
+        public void PresentCandyCanBeRemovedAsEaten()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
 
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)CandyRemovalReason.Hazard)]
         [InlineData((int)CandyRemovalReason.Spider)]
         [InlineData((int)CandyRemovalReason.OffScreen)]
-        public void LossRemoval_NeverCountsAsEaten(int reasonValue)
+        public void LossRemovalNeverCountsAsEaten(int reasonValue)
         {
             CandyRemovalReason reason = (CandyRemovalReason)reasonValue;
             CandyLifecycle lifecycle = PresentLifecycle();
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RemovedCandy_IsTerminal()
+        public void RemovedCandyIsTerminal()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard));
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Split_ExposesBothPresentHalvesInsteadOfWholeBody()
+        public void SplitExposesBothPresentHalvesInsteadOfWholeBody()
         {
             CandyBody whole = Body(CandyBodyRole.Whole);
             CandyHalf left = new(Body(CandyBodyRole.LeftHalf));
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BambooFactory_PreservesTransportPayload()
+        public void BambooFactoryPreservesTransportPayload()
         {
             CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
 
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SockFactory_PreservesTransportPayloadAndExitSpeed()
+        public void SockFactoryPreservesTransportPayloadAndExitSpeed()
         {
             CandyTransportSession session = CandyTransportSession.ForSock(candy: null, sock: null, savedExitSpeed: 123f);
 
@@ -89,7 +89,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HiddenTransport_SuppressesBodyButDoesNotCountAsEaten()
+        public void HiddenTransportSuppressesBodyButDoesNotCountAsEaten()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
@@ -101,7 +101,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void MatchingTransportCompletion_RestoresWholeBody()
+        public void MatchingTransportCompletionRestoresWholeBody()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession session = CandyTransportSession.ForSock(null, null, 123f);
@@ -114,7 +114,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Context_OwnsTheSuppliedWholeBodyAndAPresentLifecycle()
+        public void ContextOwnsTheSuppliedWholeBodyAndAPresentLifecycle()
         {
             CandyBody whole = Body(CandyBodyRole.Whole);
 
@@ -127,7 +127,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ContextOutcome_PreservesCapabilitiesAndRemovalReason()
+        public void ContextOutcomePreservesCapabilitiesAndRemovalReason()
         {
             CandyContext ctx = new(Body(CandyBodyRole.Whole)) { Capabilities = CandyCapabilities.LightBulb };
             Assert.True(ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard));
@@ -141,7 +141,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ContextOutcome_ReportsAnEatableCandyThatIsStillPresent()
+        public void ContextOutcomeReportsAnEatableCandyThatIsStillPresent()
         {
             CandyContext ctx = new(Body(CandyBodyRole.Whole));
 
@@ -154,7 +154,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLifecycle_ReportsAFailedHalfWithoutBeingRemoved()
+        public void SplitLifecycleReportsAFailedHalfWithoutBeingRemoved()
         {
             CandyHalf left = new(Body(CandyBodyRole.LeftHalf));
             CandyHalf right = new(Body(CandyBodyRole.RightHalf));
@@ -170,7 +170,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void StaleCompletion_CannotCompleteNewerSession()
+        public void StaleCompletionCannotCompleteNewerSession()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession oldSession = CandyTransportSession.ForBamboo(null, null);

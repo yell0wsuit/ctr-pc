@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Tests
         private const float Frame = 0.016f;
 
         [Fact]
-        public void FreshState_IsPlayingAndAllowsOutcomes()
+        public void FreshStateIsPlayingAndAllowsOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void FadingOut_BlocksOutcomes()
+        public void FadingOutBlocksOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Advance_FadingOut_RequestsSceneSwapThenCompletes()
+        public void AdvanceFadingOutRequestsSceneSwapThenCompletes()
         {
             LevelFlowState gameplayFlow = new();
             gameplayFlow.BeginRestartDim();
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Advance_AdvancesAsSoonAsDimIsExhausted()
+        public void AdvanceAdvancesAsSoonAsDimIsExhausted()
         {
             // Level-triggered, not edge-triggered: a delta large enough to consume the whole dim
             // must advance the phase in the same call.
@@ -65,7 +65,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Advance_IsIdempotentOncePlaying()
+        public void AdvanceIsIdempotentOncePlaying()
         {
             LevelFlowState gameplayFlow = new();
             gameplayFlow.BeginRestartDim();
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Advance_WhilePlaying_DoesNothing()
+        public void AdvanceWhilePlayingDoesNothing()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -87,7 +87,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void MarkWon_BlocksFurtherTerminalOutcomes()
+        public void MarkWonBlocksFurtherTerminalOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -100,7 +100,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void MarkLost_BlocksFurtherTerminalOutcomes()
+        public void MarkLostBlocksFurtherTerminalOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -113,7 +113,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ScheduledLoss_BlocksCandyReactionsBeforeLossFires()
+        public void ScheduledLossBlocksCandyReactionsBeforeLossFires()
         {
             // Spider and hazard losses wait for their visual animation before MarkLost. The
             // transition gate must close immediately so candy cannot produce a win meanwhile.
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanReactToCandy_False_WhenTargetAlreadyFed()
+        public void CanReactToCandyFalseWhenTargetAlreadyFed()
         {
             LevelFlowState gameplayFlow = new();
 
@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BeginRestartDim_AlwaysSetsANonZeroDim()
+        public void BeginRestartDimAlwaysSetsANonZeroDim()
         {
             // This invariant is what makes a stranded restart unreachable: the phase is never
             // FadingOut with no dim left, so Advance always has something to consume.
@@ -153,7 +153,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Reset_ClearsStrandedRestartPhase()
+        public void ResetClearsStrandedRestartPhase()
         {
             LevelFlowState gameplayFlow = new();
             gameplayFlow.BeginRestartDim();
@@ -168,7 +168,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ResetOutcome_PreservesRestartPhase()
+        public void ResetOutcomePreservesRestartPhase()
         {
             // Show() runs in the middle of a restart, between the two dim phases. Clearing the
             // phase there would wipe the in-flight restart.

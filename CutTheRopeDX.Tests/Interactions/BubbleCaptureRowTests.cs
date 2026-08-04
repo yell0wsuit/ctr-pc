@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class BubbleCaptureRowTests
     {
         [Fact]
-        public void BubbleCapture_KeepsItsRopes()
+        public void BubbleCaptureKeepsItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
 
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapture_PopsAgainstARocketBoundCandy_WithoutCapturingIt()
+        public void BubbleCapturePopsAgainstARocketBoundCandyWithoutCapturingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapture_ReplacesTheBubbleAlreadyCarryingIt()
+        public void BubbleCaptureReplacesTheBubbleAlreadyCarryingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(60, 200));
             Bubble first = Act.CaptureInBubble(scene, candy, bubbleIndex: 1);
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapture_PopsAgainstASnailRiddenCandy()
+        public void BubbleCapturePopsAgainstASnailRiddenCandy()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapture_TakesTheCandyOffTheAntsByFloatingItAway()
+        public void BubbleCaptureTakesTheCandyOffTheAntsByFloatingItAway()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapture_LeavesTheMouseCarryingIt()
+        public void BubbleCaptureLeavesTheMouseCarryingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

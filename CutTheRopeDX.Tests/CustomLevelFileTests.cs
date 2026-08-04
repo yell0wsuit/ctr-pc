@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
     public class CustomLevelFileTests
     {
         [Fact]
-        public void TryLoad_ValidXml_ReturnsRootElement()
+        public void TryLoadValidXmlReturnsRootElement()
         {
             string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xml");
             File.WriteAllText(path, "<level><object name=\"candy\" /></level>");
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryLoad_MissingFile_ReturnsErrorMentioningPath()
+        public void TryLoadMissingFileReturnsErrorMentioningPath()
         {
             string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xml");
 
@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryLoad_MalformedXml_ReturnsError()
+        public void TryLoadMalformedXmlReturnsError()
         {
             string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xml");
             File.WriteAllText(path, "<level><unclosed>");
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryLoad_EmptyPath_ReturnsError()
+        public void TryLoadEmptyPathReturnsError()
         {
             bool loaded = CustomLevelFile.TryLoad("  ", out XElement map, out string error);
 

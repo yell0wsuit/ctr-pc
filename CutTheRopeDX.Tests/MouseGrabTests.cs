@@ -7,20 +7,20 @@ namespace CutTheRopeDX.Tests
     public class MouseGrabTests
     {
         [Fact]
-        public void ShouldGrab_TrueForEmptyMouseAndCandyInRange()
+        public void ShouldGrabTrueForEmptyMouseAndCandyInRange()
         {
             Assert.True(MouseGrab.ShouldGrab(mouseHasCandy: false, candyPresent: true, inRange: true));
         }
 
         [Fact]
-        public void ShouldGrab_FalseWhenMouseAlreadyCarrying()
+        public void ShouldGrabFalseWhenMouseAlreadyCarrying()
         {
             // single-occupancy: a mouse already carrying ignores other candies.
             Assert.False(MouseGrab.ShouldGrab(mouseHasCandy: true, candyPresent: true, inRange: true));
         }
 
         [Fact]
-        public void ShouldGrab_FalseWhenMissingOrOutOfRange()
+        public void ShouldGrabFalseWhenMissingOrOutOfRange()
         {
             Assert.False(MouseGrab.ShouldGrab(false, candyPresent: false, true));
             Assert.False(MouseGrab.ShouldGrab(false, true, inRange: false));

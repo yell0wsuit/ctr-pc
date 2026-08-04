@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class LanternCaptureRowTests
     {
         [Fact]
-        public void LanternCapture_ReleasesItsRopes()
+        public void LanternCaptureReleasesItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
             Assert.Equal(1, scene.AttachedRopeCount(candy));
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_DetachesTheHandHoldingIt()
+        public void LanternCaptureDetachesTheHandHoldingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_ExhaustsItsRocket()
+        public void LanternCaptureExhaustsItsRocket()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -48,7 +48,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_PopsItsBubble()
+        public void LanternCapturePopsItsBubble()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             _ = Act.CaptureInBubble(scene, candy);
@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_DetachesItsSnailAndGivesTheWeightBack()
+        public void LanternCaptureDetachesItsSnailAndGivesTheWeightBack()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_TakesTheCandyOffTheAnts()
+        public void LanternCaptureTakesTheCandyOffTheAnts()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LanternCapture_MakesTheMouseDropIt()
+        public void LanternCaptureMakesTheMouseDropIt()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

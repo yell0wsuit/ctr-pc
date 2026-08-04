@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Manifest_CoversAtlaslessGameplayImages()
+        public void ManifestCoversAtlaslessGameplayImages()
         {
             JsonElement images = LoadManifest();
 
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Manifest_CoversBackgroundsUnderSubdirectory()
+        public void ManifestCoversBackgroundsUnderSubdirectory()
         {
             JsonElement images = LoadManifest();
 
