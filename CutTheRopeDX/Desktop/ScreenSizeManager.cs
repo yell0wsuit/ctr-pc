@@ -148,6 +148,8 @@ namespace CutTheRopeDX.Desktop
             }
             ApplyWindowSize(WindowWidth);
             CenterWindow();
+            // Size the canvas to the window that was just established.
+            Application.SharedCanvas().Reshape();
         }
 
         /// <summary>
