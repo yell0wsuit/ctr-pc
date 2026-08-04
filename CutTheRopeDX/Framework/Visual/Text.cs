@@ -287,7 +287,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Cached render targets for compositing text layers (shadow, stroke, fill) at full
         /// opacity before applying the fade alpha uniformly. Consecutive text draws alternate
-        /// targets so a target is not rewritten immediately after being sampled.
+        /// targets so a target is not rewritten immediately after being sampled. Each is sized to the text
+        /// that needs it rather than to the viewport, and only ever grows; see
+        /// <see cref="AcquireCompositeTarget"/>.
         /// </summary>
         private static readonly RenderTarget2D[] s_textCompositeTargets = new RenderTarget2D[2];
 
@@ -306,6 +308,138 @@ namespace CutTheRopeDX.Framework.Visual
             return (currentIndex + 1) % s_textCompositeTargets.Length;
         }
 
+        /// <summary>One laid-out line: what to draw and where, in logical coordinates.</summary>
+        /// <param name="Line">The formatted line.</param>
+        /// <param name="Position">Top-left corner the line is drawn from.</param>
+        private readonly record struct LineLayout(FormattedString Line, Vector2 Position);
+
+        /// <summary>
+        /// Lines placed by the last <see cref="LayoutLines"/> call. Reused rather than rebuilt, because
+        /// text draws on one thread and this path runs for every string on screen.
+        /// </summary>
+        private static readonly List<LineLayout> s_lineLayout = [];
+
+        /// <summary>
+        /// Places each formatted line, applying alignment, the ping-pong scroll offset and the height
+        /// limit, into <see cref="s_lineLayout"/>.
+        /// </summary>
+        /// <param name="startY">Y coordinate of the first line, in logical coordinates.</param>
+        /// <param name="lineHeight">Distance between line origins, in logical coordinates.</param>
+        /// <param name="isPingPonging">Whether the element is scrolling its text horizontally.</param>
+        /// <returns>Number of lines placed.</returns>
+        /// <remarks>
+        /// Separate from drawing so the composite path can measure the element before it binds and clears a
+        /// target for it. Both passes read the same placements, so they cannot drift apart.
+        /// </remarks>
+        private int LayoutLines(float startY, int lineHeight, bool isPingPonging)
+        {
+            s_lineLayout.Clear();
+            float yPos = startY;
+            foreach (FormattedString formattedString in formattedStrings)
+            {
+                if (maxHeight != -1f && yPos >= drawY + maxHeight)
+                {
+                    break;
+                }
+
+                float xPos = drawX;
+
+                if (align == 2) // Center
+                {
+                    xPos += (wrapWidth - formattedString.width) / 2f;
+                }
+                else if (align == 3) // Right
+                {
+                    xPos += wrapWidth - formattedString.width;
+                }
+
+                // When ping-ponging, left-align the text at the clip area's left edge and scroll
+                if (isPingPonging)
+                {
+                    float clipLeft = HasParent ? parent.drawX + pingPongPadding : drawX;
+                    xPos = clipLeft - pingPongOffset;
+                }
+
+                s_lineLayout.Add(new LineLayout(formattedString, new Vector2(xPos, yPos)));
+                yPos += lineHeight;
+            }
+            return s_lineLayout.Count;
+        }
+
+        /// <summary>
+        /// Returns the union of the placed line boxes, in logical coordinates.
+        /// </summary>
+        /// <param name="lineHeight">Height of one line, in logical coordinates.</param>
+        /// <param name="left">Leftmost edge of any line.</param>
+        /// <param name="top">Topmost edge of any line.</param>
+        /// <param name="right">Rightmost edge of any line.</param>
+        /// <param name="bottom">Bottommost edge of any line.</param>
+        private static void MeasureLayout(int lineHeight, out float left, out float top, out float right, out float bottom)
+        {
+            left = float.MaxValue;
+            top = float.MaxValue;
+            right = float.MinValue;
+            bottom = float.MinValue;
+            foreach (LineLayout laidOutLine in s_lineLayout)
+            {
+                left = MathF.Min(left, laidOutLine.Position.X);
+                top = MathF.Min(top, laidOutLine.Position.Y);
+                right = MathF.Max(right, laidOutLine.Position.X + laidOutLine.Line.width);
+                bottom = MathF.Max(bottom, laidOutLine.Position.Y + lineHeight);
+            }
+        }
+
+        /// <summary>
+        /// Returns a composite target big enough to hold <paramref name="region"/> at its origin.
+        /// </summary>
+        /// <param name="graphicsDevice">Device the target is created on.</param>
+        /// <param name="region">Region of the viewport the text occupies, in viewport pixels.</param>
+        /// <param name="viewport">Current viewport, which bounds how large a target can be needed.</param>
+        /// <returns>A target at least as large as <paramref name="region"/> in both dimensions.</returns>
+        /// <remarks>
+        /// Sized to the text rather than to the viewport, because the clear that follows costs the size of
+        /// the target, and a screenful of it per faded element is most of what this path spends.
+        /// </remarks>
+        private static RenderTarget2D AcquireCompositeTarget(GraphicsDevice graphicsDevice, Rectangle region, Viewport viewport)
+        {
+            int width = Math.Min(CompositeTargetExtent(region.Width), viewport.Width);
+            int height = Math.Min(CompositeTargetExtent(region.Height), viewport.Height);
+
+            s_textCompositeTargetIndex = GetNextCompositeTargetIndex(s_textCompositeTargetIndex);
+            RenderTarget2D target = s_textCompositeTargets[s_textCompositeTargetIndex];
+            bool usable = target != null && !target.IsDisposed;
+            if (usable && target.Width >= width && target.Height >= height)
+            {
+                return target;
+            }
+
+            // Only ever grow. Sizing a slot to each element exactly would rebuild it whenever a screenful
+            // of labels of different widths took turns using it, and building targets every frame costs
+            // more than the oversized clear that keeping one buys.
+            if (usable)
+            {
+                width = Math.Max(width, target.Width);
+                height = Math.Max(height, target.Height);
+                target.Dispose();
+            }
+            target = new RenderTarget2D(graphicsDevice, width, height, false,
+                SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            s_textCompositeTargets[s_textCompositeTargetIndex] = target;
+            return target;
+        }
+
+        /// <summary>
+        /// Rounds a required extent up to the granularity composite targets are allocated at.
+        /// </summary>
+        /// <param name="required">Extent the text needs, in pixels.</param>
+        /// <returns>The extent to allocate, never smaller than <paramref name="required"/>.</returns>
+        internal static int CompositeTargetExtent(int required)
+        {
+            const int granularity = 128;
+            int rounded = (Math.Max(required, 1) + granularity - 1) / granularity * granularity;
+            return rounded;
+        }
+
         /// <summary>
         /// Returns the region of the composite target the finished text actually occupies, in target
         /// pixels, so the blit back to the scene can be bounded by it.
@@ -320,10 +454,11 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="targetBounds">Bounds of the composite target, which the result is clipped to.</param>
         /// <returns>The region to blit, or <see cref="Rectangle.Empty"/> when nothing was drawn.</returns>
         /// <remarks>
-        /// The composite target is the size of the whole viewport, and blitting all of it means alpha
-        /// blending a screenful of transparent pixels per faded text element: a full-resolution pass that
-        /// changes nothing outside the few hundred pixels the text covers. On the software renderer those
-        /// passes are the difference between menus running and menus crawling.
+        /// This region is what the whole composite path is sized against: the target is allocated to hold
+        /// it, cleared over it, and blitted back through it. Sized to the viewport instead, as it once was,
+        /// every faded text element costs a full-resolution clear and a full-resolution alpha blend to
+        /// change the few hundred pixels the text covers. On the software renderer those passes are the
+        /// difference between menus running and menus crawling.
         /// </remarks>
         internal static Rectangle CompositeBlitRectangle(
             float left,
@@ -442,7 +577,6 @@ namespace CutTheRopeDX.Framework.Visual
 
             Color finalColor = MakeColor(textColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
 
-            float yPos = drawY + font.GetTopSpacing();
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
@@ -457,49 +591,18 @@ namespace CutTheRopeDX.Framework.Visual
                 Renderer.GetModelViewMatrix() *
                 Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
 
-            // When fading multi-layer text, composite all layers at full opacity onto a
-            // render target, then blit with the fade alpha so every layer fades uniformly.
-            RenderTargetBinding[] previousTargets = null;
-            RenderTarget2D textCompositeTarget = null;
-            if (needsComposite)
-            {
-                int rtW = viewport.Width;
-                int rtH = viewport.Height;
-                s_textCompositeTargetIndex = GetNextCompositeTargetIndex(s_textCompositeTargetIndex);
-                textCompositeTarget = s_textCompositeTargets[s_textCompositeTargetIndex];
-                if (textCompositeTarget == null || textCompositeTarget.IsDisposed ||
-                    textCompositeTarget.Width != rtW || textCompositeTarget.Height != rtH)
-                {
-                    textCompositeTarget?.Dispose();
-                    textCompositeTarget = new RenderTarget2D(graphicsDevice, rtW, rtH, false,
-                        SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                    s_textCompositeTargets[s_textCompositeTargetIndex] = textCompositeTarget;
-                }
-
-                previousTargets = graphicsDevice.GetRenderTargets();
-                graphicsDevice.SetRenderTarget(textCompositeTarget);
-                graphicsDevice.Clear(Color.Transparent);
-            }
-
-            // Ping-pong clipping: set a scissor rect so overflowing text is clipped
+            // Ping-pong clipping: overflowing text is clipped to a scissor rect
             float pingPongOverflow = pingPongEnabled ? GetPingPongOverflow() : 0f;
             bool isPingPonging = pingPongOverflow > 0f;
+
+            // Place every line before anything is bound. The composite path below has to size and clear its
+            // target before the first glyph is drawn, and the size it needs is a property of the layout.
+            if (LayoutLines(drawY + font.GetTopSpacing(), lineHeight, isPingPonging) == 0)
+            {
+                return;
+            }
+
             Rectangle previousScissor = graphicsDevice.ScissorRectangle;
-
-            // Deferred, not immediate: a stroked and shadowed line is drawn seventeen times over, and
-            // immediate mode turns every glyph of every one of those passes into its own draw call.
-            // Deferred keeps submission order, which is what the layering depends on, and collapses the
-            // whole element into one call per atlas page.
-            spriteBatch.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                SamplerState.LinearClamp,
-                null,
-                ScissorRasterizerState,
-                null,
-                transformMatrix
-            );
-
             Rectangle pingPongScissor = Rectangle.Empty;
             if (isPingPonging)
             {
@@ -516,48 +619,79 @@ namespace CutTheRopeDX.Framework.Visual
                 int sw = (int)(bottomRight.X - topLeft.X);
                 int sh = (int)(bottomRight.Y - topLeft.Y);
                 pingPongScissor = new Rectangle(sx, sy, sw, sh);
+            }
+
+            // When fading multi-layer text, composite all layers at full opacity onto a
+            // render target, then blit with the fade alpha so every layer fades uniformly.
+            RenderTargetBinding[] previousTargets = null;
+            RenderTarget2D textCompositeTarget = null;
+            Rectangle compositeRect = Rectangle.Empty;
+            Matrix drawTransform = transformMatrix;
+            if (needsComposite)
+            {
+                MeasureLayout(lineHeight, out float left, out float top, out float right, out float bottom);
+                compositeRect = CompositeBlitRectangle(
+                    left, top, right, bottom,
+                    effects,
+                    lineHeight,
+                    transformMatrix,
+                    new Rectangle(0, 0, viewport.Width, viewport.Height));
+                if (isPingPonging)
+                {
+                    // Glyphs outside the clip are never drawn, so the target need not cover them.
+                    compositeRect = Rectangle.Intersect(compositeRect, pingPongScissor);
+                }
+                if (compositeRect.IsEmpty)
+                {
+                    return;
+                }
+
+                textCompositeTarget = AcquireCompositeTarget(graphicsDevice, compositeRect, viewport);
+                previousTargets = graphicsDevice.GetRenderTargets();
+                graphicsDevice.SetRenderTarget(textCompositeTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                // The target's origin is the rectangle's top-left corner in viewport space, so everything
+                // drawn into it shifts by that much.
+                drawTransform = transformMatrix * Matrix.CreateTranslation(-compositeRect.X, -compositeRect.Y, 0f);
+            }
+
+            // Deferred, not immediate: a stroked and shadowed line is drawn seventeen times over, and
+            // immediate mode turns every glyph of every one of those passes into its own draw call.
+            // Deferred keeps submission order, which is what the layering depends on, and collapses the
+            // whole element into one call per atlas page.
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.LinearClamp,
+                null,
+                ScissorRasterizerState,
+                null,
+                drawTransform
+            );
+
+            // The scissor is device state in the bound target's coordinates, so compositing has to restate
+            // it rather than inherit it: the scene's rectangle means something else inside a target that
+            // covers a corner of the viewport, and an unclipped element still has to say so explicitly.
+            if (needsComposite)
+            {
+                graphicsDevice.ScissorRectangle = isPingPonging
+                    ? new Rectangle(
+                        pingPongScissor.X - compositeRect.X,
+                        pingPongScissor.Y - compositeRect.Y,
+                        pingPongScissor.Width,
+                        pingPongScissor.Height)
+                    : new Rectangle(0, 0, textCompositeTarget.Width, textCompositeTarget.Height);
+            }
+            else if (isPingPonging)
+            {
                 graphicsDevice.ScissorRectangle = pingPongScissor;
             }
 
-            // Union of the line boxes actually drawn, in logical coordinates. The composite blit below is
-            // bounded by this rather than covering the whole target; see CompositeBlitRectangle.
-            float contentLeft = float.MaxValue;
-            float contentTop = float.MaxValue;
-            float contentRight = float.MinValue;
-            float contentBottom = float.MinValue;
-
-            // Render each formatted line
-            foreach (FormattedString formattedString in formattedStrings)
+            // Render each laid-out line
+            foreach (LineLayout laidOutLine in s_lineLayout)
             {
-                if (maxHeight != -1f && yPos >= drawY + maxHeight)
-                {
-                    break;
-                }
-
-                float xPos = drawX;
-
-                if (align == 2) // Center
-                {
-                    xPos += (wrapWidth - formattedString.width) / 2f;
-                }
-                else if (align == 3) // Right
-                {
-                    xPos += wrapWidth - formattedString.width;
-                }
-
-                // When ping-ponging, left-align the text at the clip area's left edge and scroll
-                if (isPingPonging)
-                {
-                    float clipLeft = HasParent ? parent.drawX + pingPongPadding : drawX;
-                    xPos = clipLeft - pingPongOffset;
-                }
-
-                Vector2 position = new(xPos, yPos);
-
-                contentLeft = MathF.Min(contentLeft, xPos);
-                contentTop = MathF.Min(contentTop, yPos);
-                contentRight = MathF.Max(contentRight, xPos + formattedString.width);
-                contentBottom = MathF.Max(contentBottom, yPos + lineHeight);
+                FormattedString formattedString = laidOutLine.Line;
+                Vector2 position = laidOutLine.Position;
 
                 // Draw shadow if enabled
                 if (effects?.HasShadow == true)
@@ -612,17 +746,10 @@ namespace CutTheRopeDX.Framework.Visual
                     position,
                     finalColor
                 );
-
-                yPos += lineHeight;
             }
 
             spriteBatch.End();
             BlendParams.InvalidateDeviceCache();
-
-            if (isPingPonging)
-            {
-                graphicsDevice.ScissorRectangle = previousScissor;
-            }
 
             // Blit the composite render target to screen with the uniform fade alpha
             if (needsComposite)
@@ -636,42 +763,29 @@ namespace CutTheRopeDX.Framework.Visual
                     graphicsDevice.SetRenderTarget(null);
                 }
 
-                Rectangle blitRect = CompositeBlitRectangle(
-                    contentLeft,
-                    contentTop,
-                    contentRight,
-                    contentBottom,
-                    effects,
-                    lineHeight,
-                    transformMatrix,
-                    new Rectangle(0, 0, textCompositeTarget.Width, textCompositeTarget.Height));
-                if (isPingPonging)
-                {
-                    // Glyphs outside the clip never reached the target, so there is nothing to fetch there.
-                    blitRect = Rectangle.Intersect(blitRect, pingPongScissor);
-                }
-
                 byte fadeByte = (byte)MathHelper.Clamp(inheritedAlpha * 255f, 0f, 255f);
                 Color blitColor = new(fadeByte, fadeByte, fadeByte, fadeByte); // premultiplied tint
 
-                if (!blitRect.IsEmpty)
-                {
-                    spriteBatch.Begin(
-                        SpriteSortMode.Deferred,
-                        BlendState.AlphaBlend,
-                        SamplerState.LinearClamp,
-                        null,
-                        null,
-                        null,
-                        null
-                    );
-                    // Source and destination are the same rectangle: the target is viewport sized and was
-                    // drawn into at 1:1, so this samples the region the text landed in and leaves the rest
-                    // of the surface untouched instead of alpha blending a screenful of transparent pixels.
-                    spriteBatch.Draw(textCompositeTarget, blitRect, blitRect, blitColor);
-                    spriteBatch.End();
-                    BlendParams.InvalidateDeviceCache();
-                }
+                spriteBatch.Begin(
+                    SpriteSortMode.Deferred,
+                    BlendState.AlphaBlend,
+                    SamplerState.LinearClamp,
+                    null,
+                    null,
+                    null,
+                    null
+                );
+                // The target holds the text at its own origin, and goes back to the rectangle it was
+                // measured for. The target can be larger than that rectangle, since its size is rounded up
+                // to keep it reusable, so the source region is taken from the corner rather than the whole
+                // surface.
+                spriteBatch.Draw(
+                    textCompositeTarget,
+                    compositeRect,
+                    new Rectangle(0, 0, compositeRect.Width, compositeRect.Height),
+                    blitColor);
+                spriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
 
                 // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
                 // composite pass cannot retain a sampled binding for a writable target.
@@ -679,6 +793,13 @@ namespace CutTheRopeDX.Framework.Visual
                 {
                     graphicsDevice.Textures[0] = null;
                 }
+            }
+
+            // Put the scene's scissor back, once the scene is what is bound again. Restoring it any earlier
+            // would set a rectangle in the scene's coordinates while the composite target was still bound.
+            if (needsComposite || isPingPonging)
+            {
+                graphicsDevice.ScissorRectangle = previousScissor;
             }
         }
 

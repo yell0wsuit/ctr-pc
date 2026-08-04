@@ -100,6 +100,22 @@ namespace CutTheRopeDX.Tests
             Assert.True(rect.Bottom <= Target.Height);
         }
 
+        [Theory]
+        [InlineData(1, 128)]
+        [InlineData(128, 128)]
+        [InlineData(129, 256)]
+        [InlineData(500, 512)]
+        [InlineData(512, 512)]
+        public void TargetExtentRoundsUpAndNeverUnderCovers(int required, int expected)
+        {
+            // Under-covering would sample outside the target; rounding up is what keeps one target usable
+            // across labels whose width changes by a pixel between frames.
+            int extent = Text.CompositeTargetExtent(required);
+
+            Assert.Equal(expected, extent);
+            Assert.True(extent >= required);
+        }
+
         [Fact]
         public void RotationIsBoundedByTheCornersNotTheAxes()
         {
