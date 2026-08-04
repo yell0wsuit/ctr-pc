@@ -1,7 +1,6 @@
 {
+    "version": 2,
     "files": {
-        "cursor_active_windows.cur": "20aaaf87aecd857f4ea62dcac645644ba60f2409f683d0aeb3d05e573463909a",
-        "cursor_windows.cur": "0c6004b9313ce3ce4ef65349395f3e2d282d409887f70933d0bd6a53221c714e",
         "fonts/Cafe24DongdongRegular.otf": "9768b4c22405d8aea8f84f0f59748f80fa4e78ef32a4b64851a427cd8bbd2bab",
         "fonts/KNMaiyuan-Regular.ttf": "94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f",
         "fonts/MPLUSRounded1c-Medium.ttf": "006e75361e2443996082bdf8890d5a61dafc493e4cabd78d486732e083293d1d",
