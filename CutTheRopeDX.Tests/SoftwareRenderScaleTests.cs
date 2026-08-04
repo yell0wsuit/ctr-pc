@@ -20,10 +20,6 @@ namespace CutTheRopeDX.Tests
             }
         }
 
-        /// <summary>
-        /// Windows a step down needs under a constant slow load: one to act, one spent settling, one to act
-        /// again.
-        /// </summary>
         private const double SlowMs = SoftwareRenderScale.StepDownAboveMs + 5d;
 
         private const double FastMs = SoftwareRenderScale.StepUpBelowMs - 2d;
@@ -31,136 +27,77 @@ namespace CutTheRopeDX.Tests
         private const double BudgetMs = (SoftwareRenderScale.StepDownAboveMs + SoftwareRenderScale.StepUpBelowMs) / 2d;
 
         [Fact]
-        public void StartsAtFullResolution()
+        public void StartsOnTheTallestRung()
         {
-            Assert.Equal(SoftwareRenderScale.MinDivisor, new SoftwareRenderScale().Divisor);
+            SoftwareRenderScale scale = new();
+
+            Assert.Equal(0, scale.Step);
+            Assert.Equal(SoftwareRenderScale.RenderLineLadder[0], scale.TargetLines);
+        }
+
+        [Fact]
+        public void TheLadderRunsFromTallestToShortest()
+        {
+            int[] ladder = SoftwareRenderScale.RenderLineLadder;
+
+            for (int rung = 1; rung < ladder.Length; rung++)
+            {
+                Assert.True(ladder[rung] < ladder[rung - 1]);
+            }
+        }
+
+        [Fact]
+        public void TheFirstRungIsTheSweetSpot()
+        {
+            // 540 lines is the height the picture was judged on; the rungs below it are reserves.
+            Assert.Equal(540, SoftwareRenderScale.RenderLineLadder[0]);
+        }
+
+        [Fact]
+        public void FittingA768LineDisplayGivesTheTargetHeight()
+        {
+            (int width, int height) = SoftwareRenderScale.Apply(1366, 768, 540);
+
+            Assert.Equal(540, height);
+            Assert.Equal(960, width);
+        }
+
+        [Fact]
+        public void FittingKeepsTheAspectRatio()
+        {
+            (int width, int height) = SoftwareRenderScale.Apply(1366, 768, 540);
+
+            // The render target is stretched back over the whole on-screen rect, so a drifted aspect ratio
+            // would show as a distorted picture rather than a smaller one.
+            Assert.Equal(1366d / 768d, width / (double)height, precision: 2);
         }
 
         [Theory]
-        [InlineData(480, 1)]
-        [InlineData(540, 1)]
-        [InlineData(600, 2)]
-        [InlineData(720, 2)]
-        [InlineData(768, 2)]
-        [InlineData(1080, 2)]
-        [InlineData(1440, 3)]
-        [InlineData(2160, 4)]
-        public void TheBaseDivisorBringsTheDisplayToTheTargetOrBelow(int onScreenHeight, int expected)
+        [InlineData(1920, 1080, 960, 540)]
+        [InlineData(3840, 2160, 1920, 1080)]
+        public void DisplaysThatDivideEvenlyKeepAWholeUpscale(int onScreenWidth, int onScreenHeight, int expectedWidth, int expectedHeight)
         {
-            Assert.Equal(expected, SoftwareRenderScale.BaseDivisorFor(onScreenHeight));
-        }
+            // These are the displays where the blit still lands on the point-sampled path for free, so the
+            // fit has to come out exactly rather than a pixel off.
+            (int width, int height) = SoftwareRenderScale.Apply(onScreenWidth, onScreenHeight, onScreenHeight / 2);
 
-        [Theory]
-        [InlineData(768)]
-        [InlineData(1080)]
-        [InlineData(1440)]
-        [InlineData(2160)]
-        public void TheBaseDivisorNeverLeavesTheSceneAboveTheTarget(int onScreenHeight)
-        {
-            int divisor = SoftwareRenderScale.BaseDivisorFor(onScreenHeight);
-
-            Assert.True(onScreenHeight / divisor <= SoftwareRenderScale.TargetRenderLines);
-        }
-
-        [Theory]
-        [InlineData(768)]
-        [InlineData(1080)]
-        [InlineData(1440)]
-        [InlineData(2160)]
-        public void TheBaseDivisorIsTheFinestThatReachesTheTarget(int onScreenHeight)
-        {
-            // Missing low is accepted; missing low by more than a step is waste, because every step costs
-            // real sharpness for fill rate that was already inside the budget.
-            int divisor = SoftwareRenderScale.BaseDivisorFor(onScreenHeight);
-
-            Assert.True(divisor == SoftwareRenderScale.MinDivisor
-                || onScreenHeight / (divisor - 1) > SoftwareRenderScale.TargetRenderLines);
+            Assert.Equal(expectedWidth, width);
+            Assert.Equal(expectedHeight, height);
         }
 
         [Fact]
         public void ADisplayAlreadyUnderTheTargetIsRenderedWhole()
         {
-            Assert.Equal(SoftwareRenderScale.MinDivisor, SoftwareRenderScale.BaseDivisorFor(480));
+            (int width, int height) = SoftwareRenderScale.Apply(854, 480, 540);
+
+            Assert.Equal(854, width);
+            Assert.Equal(480, height);
         }
 
         [Fact]
-        public void TheBaseDivisorIsTheFloorTheAdaptivePolicyReturnsTo()
+        public void FittingNeverProducesADegenerateSize()
         {
-            SoftwareRenderScale scale = new();
-            scale.SetBaseDivisor(2);
-
-            // Quiet enough to undo any number of steps, but the base is not a step and cannot be undone.
-            Feed(scale, FastMs, windows: (SoftwareRenderScale.BaseGoodWindowsForStepUp + 2) * 4);
-
-            Assert.Equal(2, scale.Divisor);
-        }
-
-        [Fact]
-        public void SlowFramesStepDownFromTheBaseAndStopAtTheAdaptiveLimit()
-        {
-            SoftwareRenderScale scale = new();
-            scale.SetBaseDivisor(2);
-
-            Feed(scale, SlowMs, windows: 40);
-
-            Assert.Equal(2 + SoftwareRenderScale.MaxAdaptiveSteps, scale.Divisor);
-            Assert.Equal(scale.MaxDivisor, scale.Divisor);
-        }
-
-        [Fact]
-        public void AResizeKeepsTheStepsAlreadyTakenButRebasesThem()
-        {
-            SoftwareRenderScale scale = new();
-            scale.SetBaseDivisor(2);
-            Feed(scale, SlowMs, windows: 2);
-            Assert.Equal(3, scale.Divisor);
-
-            // Moving to a display that needs a coarser base does not undo what the machine already showed
-            // it needs; the one step stays on top of the new base.
-            scale.SetBaseDivisor(3);
-
-            Assert.Equal(4, scale.Divisor);
-        }
-
-        [Fact]
-        public void ARebaseDiscardsMeasurementsTakenAtTheOldSize()
-        {
-            SoftwareRenderScale scale = new();
-            scale.SetBaseDivisor(2);
-            Feed(scale, SlowMs, windows: 2);
-            Assert.Equal(3, scale.Divisor);
-
-            scale.SetBaseDivisor(4);
-            // The window straight after the change is spent settling, so a slow one cannot act on frames
-            // that were partly drawn at the previous size.
-            Feed(scale, SlowMs);
-
-            Assert.Equal(5, scale.Divisor);
-        }
-
-        [Fact]
-        public void FullDivisorLeavesTheSizeAlone()
-        {
-            (int width, int height) = SoftwareRenderScale.Apply(1366, 768, 1);
-
-            Assert.Equal(1366, width);
-            Assert.Equal(768, height);
-        }
-
-        [Fact]
-        public void HalvingProducesAWholeUpscaleOfTheOnScreenSize()
-        {
-            // 683 doubles back to 1366 and 384 to 768, so the blit stays on the point-sampled path.
-            (int width, int height) = SoftwareRenderScale.Apply(1366, 768, 2);
-
-            Assert.Equal(683, width);
-            Assert.Equal(384, height);
-        }
-
-        [Fact]
-        public void ApplyNeverProducesADegenerateSize()
-        {
-            (int width, int height) = SoftwareRenderScale.Apply(2, 1, 8);
+            (int width, int height) = SoftwareRenderScale.Apply(2, 4000, 1);
 
             Assert.True(width > 0);
             Assert.True(height > 0);
@@ -176,7 +113,7 @@ namespace CutTheRopeDX.Tests
                 scale.RecordFrame(SlowMs);
             }
 
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
@@ -186,7 +123,7 @@ namespace CutTheRopeDX.Tests
 
             Feed(scale, SlowMs);
 
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
         }
 
         [Fact]
@@ -198,17 +135,17 @@ namespace CutTheRopeDX.Tests
             // them: two slow windows are one step down, not two.
             Feed(scale, SlowMs, windows: 2);
 
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
         }
 
         [Fact]
-        public void SustainedSlowLoadWalksToTheCoarsestDivisorAndStops()
+        public void SustainedSlowLoadWalksToTheShortestRungAndStops()
         {
             SoftwareRenderScale scale = new();
 
             Feed(scale, SlowMs, windows: 40);
 
-            Assert.Equal(scale.MaxDivisor, scale.Divisor);
+            Assert.Equal(SoftwareRenderScale.MaxStep, scale.Step);
         }
 
         [Fact]
@@ -224,7 +161,7 @@ namespace CutTheRopeDX.Tests
             }
             scale.RecordFrame(500d);
 
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
@@ -232,12 +169,12 @@ namespace CutTheRopeDX.Tests
         {
             SoftwareRenderScale scale = new();
             Feed(scale, SlowMs);
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
 
             // One window settles the change; the rest are quiet but stop short of the required run.
             Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp);
 
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
         }
 
         [Fact]
@@ -248,7 +185,18 @@ namespace CutTheRopeDX.Tests
 
             Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp + 1);
 
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
+        }
+
+        [Fact]
+        public void TheTallestRungIsTheCeilingTheAdaptivePolicyReturnsTo()
+        {
+            SoftwareRenderScale scale = new();
+
+            // Quiet enough to undo any number of steps, but there is nothing above the first rung.
+            Feed(scale, FastMs, windows: (SoftwareRenderScale.BaseGoodWindowsForStepUp + 2) * 4);
+
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
@@ -257,15 +205,15 @@ namespace CutTheRopeDX.Tests
             SoftwareRenderScale scale = new();
             Feed(scale, SlowMs);
 
-            // Frame times between the two thresholds are the rate the divisor was chosen for. They are not
-            // evidence that a coarser scene has become unnecessary, so the run has to start over.
+            // Frame times between the two thresholds are the rate the step was chosen for. They are not
+            // evidence that a shorter scene has become unnecessary, so the run has to start over.
             for (int repeat = 0; repeat < 5; repeat++)
             {
                 Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp - 1);
                 Feed(scale, BudgetMs);
             }
 
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
         }
 
         [Fact]
@@ -274,19 +222,19 @@ namespace CutTheRopeDX.Tests
             SoftwareRenderScale scale = new();
             Feed(scale, SlowMs);
             Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp + 1);
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
 
             // Stepping up made the frame slow again, which says the quiet windows were measuring a cheaper
             // scene rather than a machine that had caught up.
             Feed(scale, SlowMs, windows: 2);
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
 
             // The run that earned the first step up must now no longer be enough.
             Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp + 1);
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
 
             Feed(scale, FastMs, windows: SoftwareRenderScale.BaseGoodWindowsForStepUp + 1);
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
@@ -301,7 +249,7 @@ namespace CutTheRopeDX.Tests
             scale.Reset();
             scale.RecordFrame(SlowMs);
 
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
@@ -314,7 +262,7 @@ namespace CutTheRopeDX.Tests
             scale.Reset();
             Feed(scale, FastMs);
 
-            Assert.Equal(2, scale.Divisor);
+            Assert.Equal(1, scale.Step);
         }
 
         [Fact]
@@ -328,20 +276,20 @@ namespace CutTheRopeDX.Tests
                 scale.RecordFrame(-1d);
             }
 
-            Assert.Equal(SoftwareRenderScale.MinDivisor, scale.Divisor);
+            Assert.Equal(0, scale.Step);
         }
 
         [Fact]
-        public void TheDivisorStaysInsideTheLadder()
+        public void TheStepStaysOnTheLadder()
         {
             SoftwareRenderScale scale = new();
 
             for (int repeat = 0; repeat < 10; repeat++)
             {
                 Feed(scale, SlowMs, windows: 8);
-                Assert.InRange(scale.Divisor, scale.BaseDivisor, scale.MaxDivisor);
+                Assert.InRange(scale.Step, 0, SoftwareRenderScale.MaxStep);
                 Feed(scale, FastMs, windows: 8);
-                Assert.InRange(scale.Divisor, scale.BaseDivisor, scale.MaxDivisor);
+                Assert.InRange(scale.Step, 0, SoftwareRenderScale.MaxStep);
             }
         }
     }

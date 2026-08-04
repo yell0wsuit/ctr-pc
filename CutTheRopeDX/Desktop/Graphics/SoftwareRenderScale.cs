@@ -3,20 +3,21 @@ using System;
 namespace CutTheRopeDX.Desktop.Graphics
 {
     /// <summary>
-    /// Picks how far below the on-screen size the scene is rendered when the bundled software renderer is
-    /// in use, from how long recent frames took.
+    /// Picks the height the scene is rendered at when the bundled software renderer is in use, from how
+    /// long recent frames took.
     /// </summary>
     /// <remarks>
     /// The scene is drawn into a render target that is then stretched over the on-screen rectangle, so
-    /// dividing that target's size cuts scene fill-rate quadratically without moving anything in game
+    /// lowering that target's height cuts scene fill-rate quadratically without moving anything in game
     /// coordinates. The blit that follows is not affected: it always covers the whole back buffer. Neither
     /// is the per-frame CPU work. Those two are the floor this cannot get under, which is why the overlay
-    /// reports the divisor alongside the frame time rather than only the frame rate.
+    /// reports the step and the render size alongside the frame time rather than only the frame rate.
     /// <para>
-    /// The ladder is whole divisors rather than percentages because
-    /// <c>Renderer.ScreenBlitSamplerFor</c> point samples the blit only when the upscale repeats whole
-    /// pixels. A fractional scale would drop it to bilinear, which costs four texel fetches per back-buffer
-    /// pixel over a surface far larger than the saving, and shimmers on the ropes while they move.
+    /// The ladder is absolute line counts rather than divisors of the display. Whole divisors would keep the
+    /// blit on the point-sampled path in <c>Renderer.ScreenBlitSamplerFor</c>, but on a 768-line display the
+    /// only rungs they offer are 768 and 384, and 384 is visibly coarse. Naming the heights instead lands
+    /// every display on the same picture, and costs point sampling only where the ratio does not come out
+    /// whole: 1080 and 2160-line displays still divide evenly into the first rung and keep it.
     /// </para>
     /// <para>
     /// Timing is fed in rather than measured here so the policy can be tested without a graphics device.
@@ -24,38 +25,28 @@ namespace CutTheRopeDX.Desktop.Graphics
     /// </remarks>
     internal sealed class SoftwareRenderScale
     {
-        /// <summary>Divisor used when the scene renders at its full on-screen size.</summary>
-        public const int MinDivisor = 1;
-
         /// <summary>
-        /// Scene height the base divisor aims at or below, in lines.
+        /// Scene heights the policy may render at, finest first, in lines.
         /// </summary>
         /// <remarks>
-        /// Roughly where the software renderer stops being fill-rate bound on a weak dual-core machine.
-        /// It is a target rather than a size, because the divisor that reaches it has to be a whole number
-        /// and few displays divide evenly into it: a 768-line display gets 384 and a 1440-line one gets 480.
-        /// Missing low is deliberate, since the displays that miss are the ones a fractional blit would cost
-        /// the most on.
+        /// The first rung is where the software renderer stops being fill-rate bound on a weak dual-core
+        /// machine while still looking like the game. The two below it are held back for machines that
+        /// cannot manage even that; each drops fill-rate by roughly a third of what the rung above costs.
         /// </remarks>
-        public const int TargetRenderLines = 540;
+        public static readonly int[] RenderLineLadder = [540, 432, 360];
 
-        /// <summary>
-        /// How much coarser than the base divisor the policy may go when frames still overrun.
-        /// </summary>
-        public const int MaxAdaptiveSteps = 2;
-
-        /// <summary>Frames gathered before the divisor is reconsidered.</summary>
+        /// <summary>Frames gathered before the step is reconsidered.</summary>
         public const int WindowFrames = 30;
 
         /// <summary>
-        /// Frame-time median above which the divisor grows. Under the 16.6ms budget a 60Hz frame has, with
-        /// room left for the present the measurement excludes.
+        /// Frame-time median above which the scene is rendered smaller. Under the 16.6ms budget a 60Hz frame
+        /// has, with room left for the present the measurement excludes.
         /// </summary>
         public const double StepDownAboveMs = 13.0;
 
         /// <summary>
-        /// Frame-time median below which stepping back up is considered. Well under half the budget,
-        /// because undoing a divisor multiplies scene fill by more than two and the frame has to survive it.
+        /// Frame-time median below which returning to a taller scene is considered. Well under half the
+        /// budget, because the rung above costs meaningfully more fill and the frame has to survive it.
         /// </summary>
         public const double StepUpBelowMs = 7.0;
 
@@ -68,84 +59,42 @@ namespace CutTheRopeDX.Desktop.Graphics
         /// </summary>
         public static SoftwareRenderScale Shared { get; } = new();
 
-        /// <summary>Gets the divisor currently applied to the on-screen size.</summary>
-        public int Divisor { get; private set; } = MinDivisor;
+        /// <summary>Coarsest rung on the ladder.</summary>
+        public static int MaxStep => RenderLineLadder.Length - 1;
 
-        /// <summary>
-        /// Gets the divisor the display size alone calls for, which is also the finest the policy may
-        /// return to.
-        /// </summary>
-        public int BaseDivisor { get; private set; } = MinDivisor;
+        /// <summary>Gets the rung currently in use, zero being the tallest scene.</summary>
+        public int Step { get; private set; }
 
-        /// <summary>Coarsest divisor currently allowed.</summary>
-        public int MaxDivisor => BaseDivisor + MaxAdaptiveSteps;
-
-        /// <summary>
-        /// Smallest whole divisor that brings an on-screen height to <see cref="TargetRenderLines"/> or
-        /// below.
-        /// </summary>
-        /// <param name="onScreenHeight">Height the finished frame is shown at, in pixels.</param>
-        /// <returns>The divisor, never below <see cref="MinDivisor"/>.</returns>
-        /// <remarks>
-        /// A whole divisor is what keeps the blit to the back buffer on the point-sampled path in
-        /// <c>Renderer.ScreenBlitSamplerFor</c>, which matters more than hitting the target exactly: the
-        /// blit covers the whole back buffer and never gets cheaper, so paying four texel fetches per pixel
-        /// there can cost more than the scene saved by rendering at a size nearer the target.
-        /// </remarks>
-        public static int BaseDivisorFor(int onScreenHeight)
-        {
-            if (onScreenHeight <= TargetRenderLines)
-            {
-                return MinDivisor;
-            }
-            // Round up, so the result is at or under the target rather than straddling it.
-            return (onScreenHeight + TargetRenderLines - 1) / TargetRenderLines;
-        }
-
-        /// <summary>
-        /// Sets the divisor the current display size calls for, carrying any adaptive steps already taken.
-        /// </summary>
-        /// <param name="baseDivisor">Divisor from <see cref="BaseDivisorFor"/>.</param>
-        /// <remarks>
-        /// Called whenever the view is resized. The steps the policy had taken describe the machine rather
-        /// than the window, so they are kept across the change; the measurements behind them are not, since
-        /// they were taken at a size that no longer applies.
-        /// </remarks>
-        public void SetBaseDivisor(int baseDivisor)
-        {
-            baseDivisor = Math.Max(MinDivisor, baseDivisor);
-            if (baseDivisor == BaseDivisor)
-            {
-                return;
-            }
-            int steps = Math.Clamp(Divisor - BaseDivisor, 0, MaxAdaptiveSteps);
-            BaseDivisor = baseDivisor;
-            Divisor = baseDivisor + steps;
-            Reset();
-            _settling = true;
-        }
+        /// <summary>Gets the scene height currently rendered at, in lines.</summary>
+        public int TargetLines => RenderLineLadder[Step];
 
         /// <summary>Gets the median frame time of the last completed window, in milliseconds.</summary>
         public double LastMedianMs { get; private set; }
 
         /// <summary>
-        /// Divides an on-screen size by <paramref name="divisor"/>, never yielding a degenerate size.
+        /// Fits an on-screen size to <paramref name="targetLines"/>, keeping its aspect ratio.
         /// </summary>
         /// <param name="width">Width the finished frame is shown at.</param>
         /// <param name="height">Height the finished frame is shown at.</param>
-        /// <param name="divisor">Divisor to apply.</param>
-        /// <returns>The size to render the scene at.</returns>
-        public static (int Width, int Height) Apply(int width, int height, int divisor)
+        /// <param name="targetLines">Scene height to render at.</param>
+        /// <returns>The size to render the scene at, never degenerate.</returns>
+        /// <remarks>
+        /// A display already at or under the target is rendered whole. Both dimensions move together,
+        /// because the result is stretched back over the full on-screen rectangle and a changed aspect ratio
+        /// would show as a distorted picture.
+        /// </remarks>
+        public static (int Width, int Height) Apply(int width, int height, int targetLines)
         {
-            if (divisor <= MinDivisor)
+            if (height <= targetLines || height <= 0 || targetLines <= 0)
             {
                 return (width, height);
             }
-            return (Math.Max(1, width / divisor), Math.Max(1, height / divisor));
+            int scaledWidth = ((width * targetLines) + (height / 2)) / height;
+            return (Math.Max(1, scaledWidth), targetLines);
         }
 
         /// <summary>
-        /// Records how long one frame's work took and reconsiders the divisor once a window is full.
+        /// Records how long one frame's work took and reconsiders the step once a window is full.
         /// </summary>
         /// <param name="milliseconds">Wall-clock time the frame spent updating and drawing.</param>
         public void RecordFrame(double milliseconds)
@@ -166,8 +115,8 @@ namespace CutTheRopeDX.Desktop.Graphics
             _sampleCount = 0;
             LastMedianMs = median;
 
-            // The window straddling a divisor change contains frames drawn at both sizes, so it measures
-            // neither. Spend it settling.
+            // The window straddling a change contains frames drawn at both sizes, so it measures neither.
+            // Spend it settling.
             if (_settling)
             {
                 _settling = false;
@@ -185,7 +134,7 @@ namespace CutTheRopeDX.Desktop.Graphics
                 return;
             }
 
-            if (median < StepUpBelowMs && Divisor > BaseDivisor)
+            if (median < StepUpBelowMs && Step > 0)
             {
                 if (++_goodWindows >= RequiredGoodWindows)
                 {
@@ -194,18 +143,18 @@ namespace CutTheRopeDX.Desktop.Graphics
                 return;
             }
 
-            // Anything between the two thresholds is the frame rate the divisor was chosen for. Treat the
-            // quiet streak as broken so a step up needs a fresh run of genuinely cheap windows.
+            // Anything between the two thresholds is the frame rate the step was chosen for. Treat the quiet
+            // streak as broken so a step up needs a fresh run of genuinely cheap windows.
             _goodWindows = 0;
         }
 
         /// <summary>
-        /// Drops the partial window and the quiet streak, keeping the current divisor.
+        /// Drops the partial window and the quiet streak, keeping the current step.
         /// </summary>
         /// <remarks>
         /// For stretches whose frame times describe something other than the scene, such as a movie or a
-        /// level load. Feeding those to the policy would move the divisor for the frames either side of
-        /// them, which are the ones that have to look right.
+        /// level load. Feeding those to the policy would move the step for the frames either side of them,
+        /// which are the ones that have to look right.
         /// </remarks>
         public void Reset()
         {
@@ -218,15 +167,15 @@ namespace CutTheRopeDX.Desktop.Graphics
         /// </summary>
         /// <remarks>
         /// Doubles for each step up that had to be undone shortly afterwards. Without that, a frame time
-        /// sitting near the step-up threshold makes the divisor oscillate, and a resolution that visibly
-        /// pops back and forth is worse to look at than one that settled a step too coarse.
+        /// sitting near the step-up threshold makes the render size oscillate, and a resolution that visibly
+        /// pops back and forth is worse to look at than one that settled a rung too coarse.
         /// </remarks>
         private int RequiredGoodWindows => BaseGoodWindowsForStepUp << Math.Min(_revertedStepUps, MaxGoodWindowShifts);
 
         private void StepDown()
         {
             _goodWindows = 0;
-            if (Divisor >= MaxDivisor)
+            if (Step >= MaxStep)
             {
                 return;
             }
@@ -235,13 +184,13 @@ namespace CutTheRopeDX.Desktop.Graphics
             {
                 _revertedStepUps++;
             }
-            Divisor++;
+            Step++;
             _settling = true;
         }
 
         private void StepUp()
         {
-            Divisor--;
+            Step--;
             _goodWindows = 0;
             _windowsSinceStepUp = 0;
             _settling = true;

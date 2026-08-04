@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Framework.Platform
             fpsText.SetString(RenderDiagnostics.Format(
                 (int)fps,
                 scale.LastMedianMs,
-                scale.Divisor,
+                scale.Step,
                 backingWidth,
                 backingHeight,
                 GraphicsFallback.IsSoftwareRendering));
@@ -158,21 +158,13 @@ namespace CutTheRopeDX.Framework.Platform
         public void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            // One whole divisor of the on-screen size does both jobs: its base brings any display down to
-            // roughly the height the software renderer can afford, and the steps the policy adds answer a
-            // machine that cannot afford even that. Being a whole divisor throughout is what keeps the blit
-            // to the back buffer point sampled. On the hardware path it stays at one and this is the size
-            // it always was.
-            if (GraphicsFallback.IsSoftwareRendering)
-            {
-                SoftwareRenderScale.Shared.SetBaseDivisor(SoftwareRenderScale.BaseDivisorFor(scaledViewRect.Height));
-                _appliedRenderDivisor = SoftwareRenderScale.Shared.Divisor;
-            }
-            else
-            {
-                _appliedRenderDivisor = 1;
-            }
-            (backingWidth, backingHeight) = SoftwareRenderScale.Apply(scaledViewRect.Width, scaledViewRect.Height, _appliedRenderDivisor);
+            // The policy names the scene height directly, which brings every display to the same picture and
+            // lets it back off further on a machine that cannot afford even that. On the hardware path there
+            // is no target and this is the size it always was.
+            _appliedRenderLines = GraphicsFallback.IsSoftwareRendering ? SoftwareRenderScale.Shared.TargetLines : NoRenderLineTarget;
+            (backingWidth, backingHeight) = _appliedRenderLines == NoRenderLineTarget
+                ? (scaledViewRect.Width, scaledViewRect.Height)
+                : SoftwareRenderScale.Apply(scaledViewRect.Width, scaledViewRect.Height, _appliedRenderLines);
             SetDefaultProjection();
         }
 
@@ -276,7 +268,7 @@ namespace CutTheRopeDX.Framework.Platform
             // without one. Recomputing the backing size here is what lets a divisor the policy picked mid-
             // level take effect: Renderer.SetViewport, which SetDefaultProjection calls either way, rebuilds
             // the render target as soon as the size it is handed differs from the target it holds.
-            if (GraphicsFallback.IsSoftwareRendering && _appliedRenderDivisor != SoftwareRenderScale.Shared.Divisor)
+            if (GraphicsFallback.IsSoftwareRendering && _appliedRenderLines != SoftwareRenderScale.Shared.TargetLines)
             {
                 Reshape();
             }
@@ -378,8 +370,14 @@ namespace CutTheRopeDX.Framework.Platform
         public int backingHeight;
 
         /// <summary>
-        /// Divisor the current backing size was computed with, so a change to it can be noticed per frame.
+        /// Sentinel for the hardware path, where the scene is rendered at its full on-screen size.
         /// </summary>
-        private int _appliedRenderDivisor = 1;
+        private const int NoRenderLineTarget = 0;
+
+        /// <summary>
+        /// Render-line target the current backing size was computed with, so a change to it can be noticed
+        /// per frame.
+        /// </summary>
+        private int _appliedRenderLines = NoRenderLineTarget;
     }
 }

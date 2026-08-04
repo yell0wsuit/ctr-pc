@@ -28,21 +28,23 @@ namespace CutTheRopeDX.Desktop.Graphics
         /// </summary>
         /// <param name="fps">Frames per second the runtime measured.</param>
         /// <param name="medianMs">Median per-frame work of the last completed window, in milliseconds.</param>
-        /// <param name="divisor">Divisor the scene is currently rendered at.</param>
+        /// <param name="step">Rung of the render-line ladder currently in use.</param>
         /// <param name="width">Current scene render width.</param>
         /// <param name="height">Current scene render height.</param>
         /// <param name="softwareRendering">Whether rendering goes through the bundled software library.</param>
         /// <returns>A single line short enough to sit in a corner without covering the game.</returns>
         /// <remarks>
-        /// The frame time and divisor are omitted on the hardware path, where nothing measures the one or
-        /// moves the other, rather than shown as zeroes that look like a broken reading.
+        /// The step is reported next to the size it produced, because the size alone does not say whether
+        /// the policy has backed off or is simply on a small display. Both are omitted on the hardware path,
+        /// along with the frame time, where nothing measures the one or moves the other; showing zeroes
+        /// there would look like a broken reading.
         /// </remarks>
-        public static string Format(int fps, double medianMs, int divisor, int width, int height, bool softwareRendering)
+        public static string Format(int fps, double medianMs, int step, int width, int height, bool softwareRendering)
         {
             string size = string.Create(CultureInfo.InvariantCulture, $"{width}x{height}");
             return !softwareRendering
                 ? string.Create(CultureInfo.InvariantCulture, $"{fps}fps {size} hw")
-                : string.Create(CultureInfo.InvariantCulture, $"{fps}fps {medianMs:F1}ms 1/{divisor} {size} sw");
+                : string.Create(CultureInfo.InvariantCulture, $"{fps}fps {medianMs:F1}ms s{step} {size} sw");
         }
     }
 }

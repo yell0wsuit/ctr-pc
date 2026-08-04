@@ -7,13 +7,13 @@ namespace CutTheRopeDX.Tests
     public class RenderDiagnosticsTests
     {
         [Fact]
-        public void TheSoftwareReadoutCarriesTheFrameTimeAndTheDivisor()
+        public void TheSoftwareReadoutCarriesTheFrameTimeAndTheStep()
         {
-            // These two together are what a single run on an unfamiliar machine has to answer: whether the
+            // These together are what a single run on an unfamiliar machine has to answer: whether the
             // scene is where the time goes, and how far the renderer already backed off to get there.
-            string line = RenderDiagnostics.Format(48, 20.44, 2, 683, 384, softwareRendering: true);
+            string line = RenderDiagnostics.Format(48, 20.44, 1, 768, 432, softwareRendering: true);
 
-            Assert.Equal("48fps 20.4ms 1/2 683x384 sw", line);
+            Assert.Equal("48fps 20.4ms s1 768x432 sw", line);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
             try
             {
                 System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("de-DE");
-                string line = RenderDiagnostics.Format(30, 33.5, 3, 455, 256, softwareRendering: true);
+                string line = RenderDiagnostics.Format(30, 33.5, 2, 640, 360, softwareRendering: true);
 
                 Assert.Contains("33.5ms", line);
             }
