@@ -407,19 +407,24 @@ namespace CutTheRopeDX.Framework.Visual
 
             s_textCompositeTargetIndex = GetNextCompositeTargetIndex(s_textCompositeTargetIndex);
             RenderTarget2D target = s_textCompositeTargets[s_textCompositeTargetIndex];
-            bool usable = target != null && !target.IsDisposed;
-            if (usable && target.Width >= width && target.Height >= height)
+            if (target != null && !target.IsDisposed)
             {
-                return target;
-            }
-
-            // Only ever grow. Sizing a slot to each element exactly would rebuild it whenever a screenful
-            // of labels of different widths took turns using it, and building targets every frame costs
-            // more than the oversized clear that keeping one buys.
-            if (usable)
-            {
-                width = Math.Max(width, target.Width);
-                height = Math.Max(height, target.Height);
+                // A target left over from a larger window is rebuilt rather than kept. Growth is the only
+                // thing that ever replaces one, and a target already wider than the viewport can no longer
+                // be outgrown, so it would hold its old size for the rest of the session.
+                bool fitsViewport = target.Width <= viewport.Width && target.Height <= viewport.Height;
+                if (fitsViewport && target.Width >= width && target.Height >= height)
+                {
+                    return target;
+                }
+                if (fitsViewport)
+                {
+                    // Only ever grow. Sizing a slot to each element exactly would rebuild it whenever a
+                    // screenful of labels of different widths took turns using it, and building targets
+                    // every frame costs more than the oversized clear that keeping one buys.
+                    width = Math.Max(width, target.Width);
+                    height = Math.Max(height, target.Height);
+                }
                 target.Dispose();
             }
             target = new RenderTarget2D(graphicsDevice, width, height, false,
