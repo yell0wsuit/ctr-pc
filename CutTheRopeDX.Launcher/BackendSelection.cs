@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 using CutTheRopeDX.Launcher.Graphics;
 
@@ -29,11 +30,17 @@ namespace CutTheRopeDX.Launcher
         /// <summary>Environment variable that forces a backend, overriding the probe.</summary>
         public const string OverrideVariable = "CTRDX_GRAPHICS_BACKEND";
 
-        /// <summary>Subdirectory holding the Vulkan build.</summary>
+        /// <summary>Subdirectory holding the Vulkan build in the non-AOT layout.</summary>
         public const string VulkanDirectory = "vk";
 
-        /// <summary>Subdirectory holding the OpenGL build.</summary>
+        /// <summary>Subdirectory holding the OpenGL build in the non-AOT layout.</summary>
         public const string OpenGlDirectory = "gl";
+
+        /// <summary>Name of the Vulkan build beside the launcher in the ahead-of-time layout.</summary>
+        public const string VulkanExecutable = "CutTheRopeDX.vk";
+
+        /// <summary>Name of the OpenGL build beside the launcher in the ahead-of-time layout.</summary>
+        public const string OpenGlExecutable = "CutTheRopeDX.gl";
 
         /// <summary>
         /// Reads a forced backend from a command line or environment value.
@@ -98,7 +105,7 @@ namespace CutTheRopeDX.Launcher
         }
 
         /// <summary>
-        /// Subdirectory, relative to the launcher, holding the chosen build.
+        /// Subdirectory, relative to the launcher, holding the chosen build in the non-AOT layout.
         /// </summary>
         /// <param name="backend">Backend to run.</param>
         /// <returns>The directory name.</returns>
@@ -106,5 +113,45 @@ namespace CutTheRopeDX.Launcher
         {
             return backend == GraphicsBackend.OpenGl ? OpenGlDirectory : VulkanDirectory;
         }
+
+        /// <summary>
+        /// Name the chosen build carries when it sits beside the launcher, without a file extension.
+        /// </summary>
+        /// <param name="backend">Backend to run.</param>
+        /// <returns>The executable name.</returns>
+        public static string ExecutableFor(GraphicsBackend backend)
+        {
+            return backend == GraphicsBackend.OpenGl ? OpenGlExecutable : VulkanExecutable;
+        }
+
+        /// <summary>
+        /// Paths, in order of preference, at which the chosen build may be found.
+        /// </summary>
+        /// <param name="baseDirectory">Directory the launcher is running from.</param>
+        /// <param name="backend">Backend to run.</param>
+        /// <returns>Candidate paths, relative to <paramref name="baseDirectory"/> where applicable.</returns>
+        /// <remarks>
+        /// Two layouts are possible and the launcher cannot tell them apart from anything but the files.
+        /// An ahead-of-time build compiles its managed assemblies into the executable, so the backends
+        /// share one directory and are told apart by name; a build without it leaves loose assemblies whose
+        /// names are the same for both backends, so those get a directory each. Preferring the flat names
+        /// means a release layout is matched before a development one that happens to sit alongside it.
+        /// </remarks>
+        public static string[] CandidatePaths(string baseDirectory, GraphicsBackend backend)
+        {
+            string flat = ExecutableFor(backend);
+            string directory = DirectoryFor(backend);
+            return
+            [
+                Path.Combine(baseDirectory, flat + ".exe"),
+                Path.Combine(baseDirectory, flat),
+                Path.Combine(baseDirectory, directory, GameAssemblyName + ".exe"),
+                Path.Combine(baseDirectory, directory, GameAssemblyName),
+                Path.Combine(baseDirectory, directory, GameAssemblyName + ".dll"),
+            ];
+        }
+
+        /// <summary>Assembly name the game builds under when it is not renamed per backend.</summary>
+        private const string GameAssemblyName = "CutTheRope-DX";
     }
 }

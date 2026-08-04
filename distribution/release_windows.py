@@ -6,10 +6,22 @@ backend is fixed when the game is compiled: the Vulkan and OpenGL builds referen
 assemblies exporting the same types, so one process cannot hold both. The OpenGL build exists for
 machines whose Vulkan is missing or software-only, which on Intel means anything before Skylake.
 
-    CutTheRope-DX.exe   launcher: probes Vulkan, runs one of the builds below
-    content/            built once, read by whichever build runs
-    vk/                 Vulkan build
-    gl/                 OpenGL build
+Ahead-of-time compilation folds the managed assemblies into each executable, leaving only native
+libraries beside them, and the two backends need disjoint ones: mgruntime for Vulkan, SDL and OpenAL
+for OpenGL. Nothing collides, so both builds share one directory:
+
+    CutTheRope-DX.exe     launcher: probes Vulkan, runs one of the builds below
+    CutTheRopeDX.vk.exe   Vulkan build      + mgruntime.dll
+    CutTheRopeDX.gl.exe   OpenGL build      + SDL2.dll, openal.dll, ...
+    ffmpeg/  content/     one copy, shared
+
+Without ahead-of-time compilation the loose managed assemblies do collide: both builds produce a
+MonoGame.Framework.dll of the same name and different content. That layout gets a directory per
+backend instead, and the launcher accepts either:
+
+    CutTheRope-DX.exe   launcher
+    content/            shared; the game looks one directory up for it
+    vk/  gl/            a build each, assemblies and all
 
 macOS and Linux ship the game executable on its own, with content beside it, and are built by their
 own scripts. Only Windows has hardware old enough to need the fallback.
@@ -34,8 +46,12 @@ LAUNCHER_CSPROJ = PROJECT_ROOT / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launche
 OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "win-x64"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 
-# Directory names the launcher looks in; must match BackendSelection.
+# Directory and executable names the launcher looks for; must match BackendSelection.
 BACKEND_DIRECTORIES = {"VK": "vk", "GL": "gl"}
+BACKEND_EXECUTABLES = {"VK": "CutTheRopeDX.vk", "GL": "CutTheRopeDX.gl"}
+
+# Name the game publishes under before it is renamed per backend.
+GAME_ASSEMBLY = "CutTheRope-DX"
 
 # The launcher builds under its own assembly name so it can sit beside the game at build time without
 # colliding with it. Players start this instead.
@@ -43,6 +59,9 @@ LAUNCHER_ASSEMBLY = "CutTheRopeDX.Launcher"
 LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 
 CONTENT_DIRECTORY = "content"
+
+# Where the game project's MoveFfmpegToSubfolder target leaves the FFmpeg libraries after publish.
+FFMPEG_DIRECTORY = "ffmpeg"
 
 
 def publish(csproj: Path, out_dir: Path, version: str, use_aot: bool, extra: list[str] = None):
@@ -66,29 +85,57 @@ def publish(csproj: Path, out_dir: Path, version: str, use_aot: bool, extra: lis
         sys.exit(result.returncode)
 
 
-def consolidate_content():
-    """Lift the built content out of the backend directories so one copy serves both.
+def take_shared_directory(staged: Path, name: str) -> None:
+    """Move a directory to the output root the first time, and discard later copies.
 
     Both builds produce identical content bar one byte naming the platform it was built for, which
-    MonoGame does not enforce, so shipping it twice would only add several hundred megabytes. The game
-    resolves content beside its own executable first and one directory up second, which is what makes
-    the shared copy reachable from inside vk/ and gl/.
+    MonoGame does not enforce, and identical FFmpeg libraries. Shipping either twice would add several
+    hundred megabytes for nothing.
     """
-    shared = OUTPUT_DIR / CONTENT_DIRECTORY
+    shared = OUTPUT_DIR / name
+    if not staged.is_dir():
+        return
     if shared.exists():
-        shutil.rmtree(shared)
+        shutil.rmtree(staged)
+    else:
+        staged.rename(shared)
 
+
+def flatten(backend: str, staged: Path):
+    """Fold one ahead-of-time build into the output root, renaming its executable.
+
+    Safe to rename because an ahead-of-time executable is an ordinary native binary: unlike the apphost
+    a framework-dependent build produces, nothing inside it refers to its own file name.
+    """
+    for name in (CONTENT_DIRECTORY, FFMPEG_DIRECTORY):
+        take_shared_directory(staged / name, name)
+
+    produced = staged / f"{GAME_ASSEMBLY}.exe"
+    if not produced.is_file():
+        print(f"No {backend} executable at {produced}", file=sys.stderr)
+        sys.exit(1)
+    produced.rename(OUTPUT_DIR / f"{BACKEND_EXECUTABLES[backend]}.exe")
+
+    # Everything left is native libraries, which the two backends do not share names for.
+    for leftover in staged.iterdir():
+        destination = OUTPUT_DIR / leftover.name
+        if destination.exists():
+            leftover.unlink() if leftover.is_file() else shutil.rmtree(leftover)
+        else:
+            leftover.rename(destination)
+    staged.rmdir()
+    print(f"{backend} build placed as {BACKEND_EXECUTABLES[backend]}.exe")
+
+
+def consolidate_directories():
+    """Lift content out of the per-backend directories so one copy serves both."""
     for backend, directory in BACKEND_DIRECTORIES.items():
         produced = OUTPUT_DIR / directory / CONTENT_DIRECTORY
         if not produced.is_dir():
             print(f"No content produced by the {backend} build; expected {produced}", file=sys.stderr)
             sys.exit(1)
-        if shared.exists():
-            shutil.rmtree(produced)
-        else:
-            produced.rename(shared)
-
-    print(f"Content shared at {shared}")
+        take_shared_directory(produced, CONTENT_DIRECTORY)
+    print(f"Content shared at {OUTPUT_DIR / CONTENT_DIRECTORY}")
 
 
 def rename_launcher():
@@ -154,14 +201,21 @@ def main():
     if OUTPUT_DIR.exists():
         shutil.rmtree(OUTPUT_DIR)
 
+    # Ahead-of-time builds carry no loose assemblies, so they can share a directory and be told apart by
+    # name. Builds that keep their assemblies cannot: both would write MonoGame.Framework.dll.
     for backend, directory in BACKEND_DIRECTORIES.items():
         print(f"\n=== {backend} build ===")
-        publish(CSPROJ, OUTPUT_DIR / directory, version, use_aot, [f"-p:GraphicsBackend={backend}"])
+        staged = OUTPUT_DIR / directory
+        publish(CSPROJ, staged, version, use_aot, [f"-p:GraphicsBackend={backend}"])
+        if use_aot:
+            flatten(backend, staged)
+
+    if not use_aot:
+        consolidate_directories()
 
     print("\n=== launcher ===")
     publish(LAUNCHER_CSPROJ, OUTPUT_DIR, version, use_aot)
 
-    consolidate_content()
     rename_launcher()
     package(version)
 

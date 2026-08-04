@@ -23,12 +23,13 @@ VulkanProbeResult probe = isWindows && !forced.HasValue
     : VulkanProbeResult.NoLoader;
 
 GraphicsBackend backend = BackendSelection.Decide(isWindows, probe, forced);
-string directory = BackendSelection.DirectoryFor(backend);
-string executable = LocateGameExecutable(directory);
+string executable = LocateGameExecutable(backend);
 
 if (executable is null)
 {
-    Console.Error.WriteLine($"[launcher] No game build found in '{directory}'.");
+    Console.Error.WriteLine(
+        $"[launcher] No {backend} build found beside the launcher as "
+        + $"'{BackendSelection.ExecutableFor(backend)}' or under '{BackendSelection.DirectoryFor(backend)}/'.");
     return 1;
 }
 
@@ -85,18 +86,11 @@ static VulkanProbeResult RunProbeSafely()
     }
 }
 
-// Prefers the native host next to the build and falls back to the managed assembly, which is what a
-// framework-dependent or non-published layout leaves behind.
-static string LocateGameExecutable(string directory)
+// Takes the first layout that is actually present: the flat ahead-of-time one beside the launcher, then
+// the per-backend directories a build with loose assemblies needs.
+static string LocateGameExecutable(GraphicsBackend backend)
 {
-    string root = Path.Combine(AppContext.BaseDirectory, directory);
-    string[] candidates =
-    [
-        Path.Combine(root, "CutTheRope-DX.exe"),
-        Path.Combine(root, "CutTheRope-DX"),
-        Path.Combine(root, "CutTheRope-DX.dll"),
-    ];
-    foreach (string candidate in candidates)
+    foreach (string candidate in BackendSelection.CandidatePaths(AppContext.BaseDirectory, backend))
     {
         if (File.Exists(candidate))
         {

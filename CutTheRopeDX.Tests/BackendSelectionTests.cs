@@ -110,5 +110,49 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(BackendSelection.OpenGlDirectory, BackendSelection.DirectoryFor(GraphicsBackend.OpenGl));
             Assert.NotEqual(BackendSelection.VulkanDirectory, BackendSelection.OpenGlDirectory);
         }
+
+        [Fact]
+        public void EachBackendHasItsOwnFlatExecutableName()
+        {
+            // The ahead-of-time layout puts both builds in one directory, so the names have to differ.
+            Assert.NotEqual(
+                BackendSelection.ExecutableFor(GraphicsBackend.Vulkan),
+                BackendSelection.ExecutableFor(GraphicsBackend.OpenGl));
+        }
+
+        [Fact]
+        public void TheFlatLayoutIsPreferredOverTheDirectoryLayout()
+        {
+            // A release ships one or the other, but a development tree can hold both. Matching the flat
+            // names first means the ahead-of-time build wins, which is the one a release actually contains.
+            string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.OpenGl);
+
+            int firstFlat = System.Array.FindIndex(candidates, p => p.Contains(BackendSelection.OpenGlExecutable, System.StringComparison.Ordinal));
+            int firstDirectory = System.Array.FindIndex(candidates, p => p.Contains(BackendSelection.OpenGlDirectory + System.IO.Path.DirectorySeparatorChar, System.StringComparison.Ordinal));
+
+            Assert.True(firstFlat >= 0, "no flat candidate offered");
+            Assert.True(firstDirectory >= 0, "no directory candidate offered");
+            Assert.True(firstFlat < firstDirectory, "the directory layout was preferred over the flat one");
+        }
+
+        [Fact]
+        public void CandidatesCoverBothExtensionlessAndWindowsNames()
+        {
+            // One launcher build serves every platform it is shipped on, and only Windows appends .exe.
+            string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.Vulkan);
+
+            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable + ".exe", System.StringComparison.Ordinal));
+            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable, System.StringComparison.Ordinal));
+        }
+
+        [Fact]
+        public void TheManagedAssemblyIsOfferedLastForNonPublishedBuilds()
+        {
+            // A framework-dependent build leaves a .dll with no native host beside it; running it needs
+            // the dotnet muxer, so it is only worth trying once the real executables are ruled out.
+            string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.Vulkan);
+
+            Assert.EndsWith(".dll", candidates[^1], System.StringComparison.Ordinal);
+        }
     }
 }

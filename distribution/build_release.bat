@@ -11,7 +11,12 @@ if "%VERSION%"=="" (
 set WIN_OUT=..\CutTheRopeDX\bin\Publish\win-x64
 
 rem Windows ships both graphics backends plus a launcher that picks between them; the OpenGL build is
-rem for machines whose Vulkan is missing or software-only. See release_windows.py for the layout.
+rem for machines whose Vulkan is missing or software-only.
+rem
+rem These publishes keep their managed assemblies, so both builds would write a MonoGame.Framework.dll
+rem of the same name and different content: they get a directory each, and the launcher accepts that
+rem layout. release_windows.py compiles ahead of time instead, which folds the assemblies into the
+rem executables and lets both share one directory. Use it for anything shipped.
 if exist "%WIN_OUT%" rmdir /s /q "%WIN_OUT%"
 
 dotnet publish ..\CutTheRopeDX\CutTheRopeDX.csproj -c Release -f net10.0 -r win-x64 -p:GraphicsBackend=VK -p:VersionPrefix=%VERSION% -p:VersionSuffix= -o "%WIN_OUT%\vk" || exit /b 1
