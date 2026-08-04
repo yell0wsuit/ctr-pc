@@ -382,6 +382,8 @@ namespace CutTheRopeDX.Framework.Visual
             int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
 
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
+            // Queued sprite quads must render before text draws above them or changes render targets.
+            Renderer.FlushQuads();
             Viewport viewport = graphicsDevice.Viewport;
 
             float viewportScaleX = viewport.Width / SCREEN_WIDTH;
@@ -533,6 +535,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             spriteBatch.End();
+            BlendParams.InvalidateDeviceCache();
 
             if (isPingPonging)
             {
@@ -565,6 +568,7 @@ namespace CutTheRopeDX.Framework.Visual
                 );
                 spriteBatch.Draw(textCompositeTarget, Vector2.Zero, blitColor);
                 spriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
 
                 // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
                 // composite pass cannot retain a sampled binding for a writable target.

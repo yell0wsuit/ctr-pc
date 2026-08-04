@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
     public class LevelMetadataLayerSelectionTests
     {
         [Fact]
-        public void SelectLayers_UsesOnlyFirstCaseInsensitiveSettingsLayer()
+        public void SelectLayersUsesOnlyFirstCaseInsensitiveSettingsLayer()
         {
             XElement map = XElement.Parse("""
                 <map>

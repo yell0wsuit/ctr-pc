@@ -35,7 +35,6 @@ namespace CutTheRopeDX.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             dd = new DelayedDispatcher();
             initialCameraToStarDistance = -1f;
-            restartState = -1;
             aniPool = new AnimationsPool
             {
                 visible = false
@@ -97,6 +96,7 @@ namespace CutTheRopeDX.GameMain
         public void Reload()
         {
             dd.CancelAllDispatches();
+            gameplayFlow.Reset();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
@@ -131,6 +131,7 @@ namespace CutTheRopeDX.GameMain
         public void LoadNextMap()
         {
             dd.CancelAllDispatches();
+            gameplayFlow.Reset();
             initialCameraToStarDistance = -1f;
             animateRestartDim = false;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();

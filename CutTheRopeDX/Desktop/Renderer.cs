@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
@@ -53,6 +54,12 @@ namespace CutTheRopeDX.Desktop
         #region Initialization
 
         /// <summary>
+        /// Gets a value indicating whether a graphics device is present. Headless runs have none,
+        /// so the few render calls that sit outside the draw loop must skip themselves.
+        /// </summary>
+        public static bool IsAvailable => Global.GraphicsDevice != null;
+
+        /// <summary>
         /// Initializes the OpenGL emulation layer. Must be called before any rendering operations.
         /// Sets up BasicEffect shaders and rasterizer states.
         /// </summary>
@@ -78,6 +85,18 @@ namespace CutTheRopeDX.Desktop
                 Alpha = 1f,
                 Texture = null,
                 View = Matrix.Identity
+            };
+            s_indexRing = new IndexBufferRing(IndexRingCapacity);
+            s_quadIndexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, QuadIndexPattern.MaxQuads * 6, BufferUsage.WriteOnly);
+            s_quadIndexBuffer.SetData(QuadIndexPattern.Build(QuadIndexPattern.MaxQuads));
+            s_quadBatchEffect = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true,
+                View = Matrix.Identity,
+                World = Matrix.Identity,
+                Alpha = 1f,
+                DiffuseColor = Vector3.One
             };
         }
 
@@ -148,6 +167,7 @@ namespace CutTheRopeDX.Desktop
             {
                 return;
             }
+            FlushQuads();
 
             s_Viewport.X = x;
             s_Viewport.Y = y;
@@ -170,6 +190,7 @@ namespace CutTheRopeDX.Desktop
         /// <returns>The detached render target, or <see langword="null"/> when no render target is active.</returns>
         public static RenderTarget2D DetachRenderTarget()
         {
+            FlushQuads();
             RenderTarget2D renderTarget2D = s_RenderTarget;
             s_RenderTarget = null;
             return renderTarget2D;
@@ -181,12 +202,14 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         public static void CopyFromRenderTargetToScreen()
         {
+            FlushQuads();
             if (s_RenderTarget != null)
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
                 Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
                 Global.SpriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
             }
         }
 
@@ -363,6 +386,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="_">OpenGL clear mask (ignored, always clears color buffer).</param>
         public static void Clear(int _)
         {
+            FlushQuads();
             BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);
         }
@@ -403,6 +427,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="height">The scissor rectangle height.</param>
         public static void SetScissor(float x, float y, float width, float height)
         {
+            FlushQuads();
             try
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
@@ -436,6 +461,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -469,6 +495,11 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
+            if (TrySubmitQuad(vertices, vertexCount))
+            {
+                return;
+            }
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -502,6 +533,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 3)
             {
                 return;
@@ -525,6 +557,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indices">The index buffer describing triangle order.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
+            FlushQuads();
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
@@ -546,6 +579,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
+            FlushQuads();
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
@@ -567,6 +601,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
+            FlushQuads();
             if (indexCount == 0)
             {
                 return;
@@ -599,6 +634,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
         public static void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
+            FlushQuads();
             if (vertexCount < 2)
             {
                 return;
@@ -755,6 +791,98 @@ namespace CutTheRopeDX.Desktop
 
         #endregion
 
+        #region Quad Batching
+
+        /// <summary>
+        /// Establishes a frame boundary and discards stray queued quads from a faulted previous frame.
+        /// </summary>
+        public static void BeginFrame()
+        {
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Flushes remaining queued quads at the end of the frame.
+        /// </summary>
+        public static void EndFrame()
+        {
+            FlushQuads();
+        }
+
+        /// <summary>
+        /// Draws all queued quads as one indexed draw call, reapplying captured state unconditionally.
+        /// </summary>
+        public static void FlushQuads()
+        {
+            if (s_quadBatch.IsEmpty)
+            {
+                return;
+            }
+            QuadBatchKey key = s_quadBatch.Key;
+            BlendParams.ApplySnapshot(key.Blend);
+            Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
+            Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+            Global.GraphicsDevice.ScissorRectangle = key.Scissor;
+            s_quadBatchEffect.Texture = (Texture2D)key.Texture;
+            s_quadBatchEffect.Projection = key.Projection;
+            int vertexCount = s_quadBatch.QuadCount * 4;
+            VertexBufferRing<VertexPositionColorTexture> ring = GetVertexRing<VertexPositionColorTexture>();
+            int baseVertex = ring.Write(s_quadBatch.StagingArray, vertexCount);
+            // A full batch is MaxQuads * 4 vertices, well under the ring capacity, so the ring
+            // never rejects a batch write. Guard the invariant instead of feeding a negative
+            // base vertex to the GPU should MaxQuads ever be raised past the ring's capacity.
+            if (baseVertex < 0)
+            {
+                Debug.Assert(false, "Quad batch exceeded vertex ring capacity; raise VertexRingCapacity or lower MaxQuads.");
+                s_quadBatch.Clear();
+                return;
+            }
+            Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+            Global.GraphicsDevice.Indices = s_quadIndexBuffer;
+            foreach (EffectPass pass in s_quadBatchEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                Global.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, baseVertex, 0, s_quadBatch.QuadCount * 2);
+            }
+            Global.GraphicsDevice.SetVertexBuffer(null);
+            Global.GraphicsDevice.Indices = null;
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Attempts to queue a four-vertex textured sprite.
+        /// </summary>
+        private static bool TrySubmitQuad(VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount != 4)
+            {
+                return false;
+            }
+            if (s_Texture == null || s_Texture.xnaTexture_ == null || s_Texture.xnaTexture_.IsDisposed)
+            {
+                return false;
+            }
+            if (QuadBaking.IsInvisible(s_Color))
+            {
+                return true;
+            }
+            BlendParams.BlendType blend = s_Blend.Snapshot();
+            if (blend == BlendParams.BlendType.Unknown)
+            {
+                return false;
+            }
+            QuadBatchKey key = new(s_Texture.xnaTexture_, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
+            if (s_quadBatch.IsFull || !s_quadBatch.CanAccept(key))
+            {
+                FlushQuads();
+            }
+            s_quadBatch.Append(vertices, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
+            s_LastVertices_PositionNormalTexture = vertices;
+            return true;
+        }
+
+        #endregion
+
         #region Private Rendering Implementation
 
         /// <summary>
@@ -789,7 +917,8 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Uploads vertex data and issues a non-indexed primitive draw call.
+        /// Uploads vertex data through the shared ring and issues a non-indexed primitive draw call.
+        /// Falls back to the legacy grow-and-discard buffer for writes larger than the ring.
         /// </summary>
         /// <typeparam name="T">The vertex type being uploaded.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
@@ -798,15 +927,26 @@ namespace CutTheRopeDX.Desktop
         /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
         {
-            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertexCount);
-            vertexBuffer.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
-            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-            Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            VertexBufferRing<T> ring = GetVertexRing<T>();
+            int vertexStart = ring.Write(vertices, vertexCount);
+            if (vertexStart < 0)
+            {
+                DynamicVertexBuffer fallback = GetOversizeVertexBuffer<T>(vertexCount);
+                fallback.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallback);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, vertexStart, primitiveCount);
+            }
             Global.GraphicsDevice.SetVertexBuffer(null);
         }
 
         /// <summary>
-        /// Uploads vertex and index data and issues an indexed primitive draw call.
+        /// Uploads vertex and index data through the shared rings and issues an indexed draw call.
+        /// Falls back to the legacy grow-and-discard buffers for writes larger than a ring.
         /// </summary>
         /// <typeparam name="T">The vertex type being uploaded.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
@@ -816,54 +956,95 @@ namespace CutTheRopeDX.Desktop
         /// <param name="primitiveCount">The number of primitives to render.</param>
         private static void DrawIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertices, short[] indices, int indexCount, int primitiveCount) where T : struct, IVertexType
         {
-            DynamicVertexBuffer vertexBuffer = GetVertexBuffer<T>(vertices.Length);
-            vertexBuffer.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
-            IndexBuffer indexBuffer = GetIndexBuffer(indexCount, indices);
-            Global.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-            Global.GraphicsDevice.Indices = indexBuffer;
-            Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            VertexBufferRing<T> ring = GetVertexRing<T>();
+            int baseVertex = ring.Write(vertices, vertices.Length);
+            int startIndex = baseVertex < 0 ? -1 : s_indexRing.Write(indices, indexCount);
+            if (baseVertex < 0 || startIndex < 0)
+            {
+                DynamicVertexBuffer fallbackVertices = GetOversizeVertexBuffer<T>(vertices.Length);
+                fallbackVertices.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+                DynamicIndexBuffer fallbackIndices = GetOversizeIndexBuffer(indexCount);
+                fallbackIndices.SetData(indices, 0, indexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallbackVertices);
+                Global.GraphicsDevice.Indices = fallbackIndices;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.Indices = s_indexRing.Buffer;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+            }
             Global.GraphicsDevice.SetVertexBuffer(null);
             Global.GraphicsDevice.Indices = null;
         }
 
         /// <summary>
-        /// Returns a reusable dynamic vertex buffer sized for the requested vertex type and count.
+        /// Returns the shared vertex ring for the requested vertex type, creating it on first use.
+        /// </summary>
+        /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
+        /// <returns>The shared ring for <typeparamref name="T"/>.</returns>
+        private static VertexBufferRing<T> GetVertexRing<T>() where T : struct, IVertexType
+        {
+            if (!s_vertexRings.TryGetValue(typeof(T), out object ring))
+            {
+                ring = new VertexBufferRing<T>(VertexRingCapacity);
+                s_vertexRings[typeof(T)] = ring;
+            }
+            return (VertexBufferRing<T>)ring;
+        }
+
+        /// <summary>
+        /// Returns a legacy grow-and-discard vertex buffer for writes larger than the ring.
         /// </summary>
         /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
         /// <param name="vertexCount">The minimum vertex capacity required.</param>
         /// <returns>A reusable dynamic vertex buffer for <typeparamref name="T"/>.</returns>
-        private static DynamicVertexBuffer GetVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
+        private static DynamicVertexBuffer GetOversizeVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
         {
             Type vertexType = typeof(T);
-            if (!s_vertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
+            if (!s_oversizeVertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
             {
                 vertexBuffer?.Dispose();
                 vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
-                s_vertexBuffers[vertexType] = vertexBuffer;
+                s_oversizeVertexBuffers[vertexType] = vertexBuffer;
             }
             return vertexBuffer;
         }
 
         /// <summary>
-        /// Returns a reusable index buffer filled with the provided <paramref name="indices"/>.
+        /// Returns a legacy grow-and-discard index buffer for writes larger than the ring.
         /// </summary>
-        /// <param name="indexCount">The number of indices to upload.</param>
-        /// <param name="indices">The source index data.</param>
-        /// <returns>An index buffer containing the requested index data.</returns>
-        private static DynamicIndexBuffer GetIndexBuffer(int indexCount, short[] indices)
+        /// <param name="indexCount">The minimum index capacity required.</param>
+        /// <returns>A reusable dynamic index buffer.</returns>
+        private static DynamicIndexBuffer GetOversizeIndexBuffer(int indexCount)
         {
-            if (s_indexBuffer == null || s_indexBuffer.IndexCount < indexCount)
+            if (s_oversizeIndexBuffer == null || s_oversizeIndexBuffer.IndexCount < indexCount)
             {
-                s_indexBuffer?.Dispose();
-                s_indexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+                s_oversizeIndexBuffer?.Dispose();
+                s_oversizeIndexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
             }
-            s_indexBuffer.SetData(indices, 0, indexCount, SetDataOptions.Discard);
-            return s_indexBuffer;
+            return s_oversizeIndexBuffer;
         }
 
         #endregion
 
         #region Static Fields
+
+        /// <summary>
+        /// The accumulating sprite quad batch.
+        /// </summary>
+        private static readonly QuadBatch s_quadBatch = new();
+
+        /// <summary>
+        /// Immutable index buffer holding the full quad index pattern.
+        /// </summary>
+        private static IndexBuffer s_quadIndexBuffer;
+
+        /// <summary>
+        /// Dedicated effect for batch flushes.
+        /// </summary>
+        private static BasicEffect s_quadBatchEffect;
 
         /// <summary>
         /// Holds the off-screen render target used before the final screen blit.
@@ -941,14 +1122,35 @@ namespace CutTheRopeDX.Desktop
         private static RasterizerState s_rasterizerStateTexture;
 
         /// <summary>
-        /// Reusable dynamic vertex buffers keyed by vertex type.
+        /// Vertex ring capacity per vertex type. 16,384 vertices covers several frames of
+        /// worst-case usage per the pre-implementation baselines; wraps should be rare.
         /// </summary>
-        private static readonly Dictionary<Type, DynamicVertexBuffer> s_vertexBuffers = [];
+        private const int VertexRingCapacity = 16384;
 
         /// <summary>
-        /// Reusable index buffer for indexed draw calls.
+        /// Index ring capacity. 49,152 indices matches three frames of ring capacity in quads.
         /// </summary>
-        private static DynamicIndexBuffer s_indexBuffer;
+        private const int IndexRingCapacity = 49152;
+
+        /// <summary>
+        /// Shared vertex rings keyed by vertex type (values are VertexBufferRing&lt;T&gt;).
+        /// </summary>
+        private static readonly Dictionary<Type, object> s_vertexRings = [];
+
+        /// <summary>
+        /// Shared index ring for all indexed draws.
+        /// </summary>
+        private static IndexBufferRing s_indexRing;
+
+        /// <summary>
+        /// Legacy grow-and-discard vertex buffers, used only for writes larger than a ring.
+        /// </summary>
+        private static readonly Dictionary<Type, DynamicVertexBuffer> s_oversizeVertexBuffers = [];
+
+        /// <summary>
+        /// Legacy grow-and-discard index buffer, used only for writes larger than the ring.
+        /// </summary>
+        private static DynamicIndexBuffer s_oversizeIndexBuffer;
 
         /// <summary>
         /// Captures the last submitted colored vertices for debugging.

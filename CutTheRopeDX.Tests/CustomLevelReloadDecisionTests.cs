@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Tests
     public class CustomLevelReloadDecisionTests
     {
         [Fact]
-        public void Decide_IdenticalResources_IsInstant()
+        public void DecideIdenticalResourcesIsInstant()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 ["spider", "sock"],
@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Decide_SubsetOfLoaded_IsInstant()
+        public void DecideSubsetOfLoadedIsInstant()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 ["spider"],
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Decide_NoRequirements_IsInstant()
+        public void DecideNoRequirementsIsInstant()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 [],
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Decide_OneNewResource_NeedsLoadingScreen()
+        public void DecideOneNewResourceNeedsLoadingScreen()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 ["spider", "rocket"],
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Decide_DisjointResources_NeedsLoadingScreen()
+        public void DecideDisjointResourcesNeedsLoadingScreen()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 ["rocket"],
@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Decide_NullRequirements_IsInstant()
+        public void DecideNullRequirementsIsInstant()
         {
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(
                 null,

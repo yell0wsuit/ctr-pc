@@ -80,6 +80,10 @@ namespace CutTheRopeDX.GameMain
                     case "rocket":
                         _ = resources.Add(Resources.Img.ObjRocket);
                         break;
+                    case "axe":
+                        _ = resources.Add(Resources.Img.ObjAxe);
+                        _ = resources.Add(Resources.Img.FxCutChain);
+                        break;
                     case "load":
                         _ = resources.Add(Resources.Img.ObjSnail);
                         break;
@@ -220,11 +224,15 @@ namespace CutTheRopeDX.GameMain
         /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)
         {
-            _ = resources.Add(Resources.Img.ObjHook);
-
             bool gun = ParseBool(node.Attribute("gun")?.Value);
             bool kickable = ParseBool(node.Attribute("kickable")?.Value);
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
+            bool chain = node.Attribute("breakable") is XAttribute breakableAttr && !ParseBool(breakableAttr.Value);
+            bool autoHook = node.Attribute("radius")?.Value is string radius && radius != "-1" && !gun;
+
+            _ = resources.Add(chain
+                ? autoHook ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHookChain
+                : Resources.Img.ObjHook);
 
             if (bee)
             {
@@ -238,8 +246,11 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = resources.Add(Resources.Img.ObjSticker);
             }
+            if (chain)
+            {
+                _ = resources.Add(Resources.Img.ObjExpChain);
+            }
         }
-
 
         /// <summary>
         /// Adds Om Nom animation resources for a single target, using its resolved skin.

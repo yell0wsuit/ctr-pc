@@ -10,7 +10,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Ghost-transformed grab variant with ambient cloud visuals and a tinted grab radius.
     /// </summary>
-    internal sealed class GhostGrab : Grab
+    internal sealed class GhostGrab : Grab, IGhostApparition
     {
         /// <summary>
         /// Initializes the ghost grab at a level position and creates its supporting cloud visuals.

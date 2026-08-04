@@ -15,17 +15,18 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (releasedPoint != null && ctx.point != releasedPoint)
+                CandyBody body = ctx.WholeBody;
+                if (releasedPoint != null && body.Point != releasedPoint)
                 {
                     continue;
                 }
 
                 ctx.inLantern = false;
-                ctx.candy.color = RGBAColor.solidOpaqueRGBA;
-                ctx.candy.passTransformationsToChilds = false;
-                ctx.candy.scaleX = ctx.candy.scaleY = 0.71f;
-                ctx.candyMain.scaleX = ctx.candyMain.scaleY = 0.71f;
-                ctx.candyTop.scaleX = ctx.candyTop.scaleY = 0.71f;
+                body.Visual.color = RGBAColor.solidOpaqueRGBA;
+                body.Visual.passTransformationsToChilds = false;
+                body.Visual.scaleX = body.Visual.scaleY = 0.71f;
+                body.Main.scaleX = body.Main.scaleY = 0.71f;
+                body.Top.scaleX = body.Top.scaleY = 0.71f;
 
                 return ci;
             }

@@ -35,7 +35,7 @@ namespace CutTheRopeDX.GameMain
             TargetContext target = request.Target;
             if (target == null
                 || !target.asleep
-                || outcomeTransitionActive
+                || gameplayFlow.TransitionActive
                 || !GameWinChewing.ShouldSchedulePostEatSleep(
                     targets.Count,
                     nightLevel,

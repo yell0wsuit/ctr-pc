@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
     public class CandyCapabilitiesTests
     {
         [Fact]
-        public void Candy_DefaultCapabilitiesMatchCurrentCandyBehavior()
+        public void CandyDefaultCapabilitiesMatchCurrentCandyBehavior()
         {
             CandyCapabilities candy = CandyCapabilities.Candy;
 
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void LightBulb_IsPhysicalButNotCandyConsumable()
+        public void LightBulbIsPhysicalButNotCandyConsumable()
         {
             CandyCapabilities bulb = CandyCapabilities.LightBulb;
 
@@ -52,31 +52,34 @@ namespace CutTheRopeDX.Tests
             Assert.False(bulb.CanRotateWithRopes);
         }
 
+        private static CandyContext Context(
+            GameObject visual = null,
+            GameObject main = null,
+            GameObject top = null,
+            ConstraintedPoint point = null)
+        {
+            return new CandyContext(
+                new CandyBody(point ?? new ConstraintedPoint(), CandyBodyRole.Whole, visual, main, top));
+        }
+
         [Fact]
-        public void BoundsTopY_UsesSpecificObjectBoundingBox()
+        public void BoundsTopYUsesSpecificObjectBoundingBox()
         {
             GameObject body = new()
             {
                 drawY = 200f,
                 bb = new CTRRectangle(10f, 25f, 30f, 40f)
             };
-            CandyContext ctx = new()
-            {
-                candy = body
-            };
+            CandyContext ctx = Context(visual: body);
 
-            Assert.Equal(225f, GameObject.BoundsTopY(ctx.candy));
+            Assert.Equal(225f, GameObject.BoundsTopY(ctx.WholeBody.Visual));
         }
 
         [Fact]
-        public void HandCatchVisuals_UsesSingleRootForGenericCandyLikeObject()
+        public void HandCatchVisualsUsesSingleRootForGenericCandyLikeObject()
         {
             GameObject body = new();
-            CandyContext ctx = new()
-            {
-                candy = body,
-                candyMain = body
-            };
+            CandyContext ctx = Context(visual: body, main: body);
 
             List<BaseElement> visuals = ctx.HandCatchVisuals();
 
@@ -86,17 +89,12 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HandCatchVisuals_UsesAllDistinctCandyParts()
+        public void HandCatchVisualsUsesAllDistinctCandyParts()
         {
             GameObject root = new();
             GameObject main = new();
             GameObject top = new();
-            CandyContext ctx = new()
-            {
-                candy = root,
-                candyMain = main,
-                candyTop = top
-            };
+            CandyContext ctx = Context(visual: root, main: main, top: top);
 
             List<BaseElement> visuals = ctx.HandCatchVisuals();
 
@@ -108,30 +106,21 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TransformChildVisuals_IsEmptyForGenericCandyLikeObject()
+        public void TransformChildVisualsIsEmptyForGenericCandyLikeObject()
         {
             GameObject body = new();
-            CandyContext ctx = new()
-            {
-                candy = body,
-                candyMain = body
-            };
+            CandyContext ctx = Context(visual: body, main: body);
 
             Assert.Empty(ctx.TransformChildVisuals());
         }
 
         [Fact]
-        public void TransformChildVisuals_UsesDistinctCandyChildParts()
+        public void TransformChildVisualsUsesDistinctCandyChildParts()
         {
             GameObject root = new();
             GameObject main = new();
             GameObject top = new();
-            CandyContext ctx = new()
-            {
-                candy = root,
-                candyMain = main,
-                candyTop = top
-            };
+            CandyContext ctx = Context(visual: root, main: main, top: top);
 
             List<BaseElement> visuals = ctx.TransformChildVisuals();
 
@@ -141,70 +130,64 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CandyContext_ToView_PreservesCapabilities()
+        public void AxeIsPhysicalHazardButNotCandyConsumable()
         {
-            CandyContext ctx = new()
-            {
-                point = new ConstraintedPoint
-                {
-                    pos = new Vector(1f, 2f)
-                },
-                Capabilities = CandyCapabilities.LightBulb
-            };
+            CandyCapabilities axe = CandyCapabilities.Axe;
 
-            CandyView view = ctx.ToView();
+            Assert.False(axe.CanCollectStars);
+            Assert.False(axe.CanOpenMouth);
+            Assert.False(axe.CanBeEaten);
+            Assert.False(axe.CanLoseLevelWhenOffScreen);
+            Assert.False(axe.CanBeGrabbedBySpider);
+            Assert.False(axe.CanBeGrabbedByMouse);
+            Assert.False(axe.CanBeGrabbedByHand);
+            Assert.False(axe.CanEnterLantern);
+            Assert.True(axe.CanEnterTransport);
+            Assert.True(axe.CanBindRocket);
+            Assert.False(axe.CanAttachAnts);
+            Assert.False(axe.CanCollideWithCandyBodies);
+            Assert.False(axe.CanBeBrokenByHazards);
+            Assert.False(axe.CanFloatInWater);
+            Assert.False(axe.CanBeDraggedBySnail);
+        }
+
+        [Fact]
+        public void CandyBodyToViewPreservesItsOwnersCapabilities()
+        {
+            CandyContext ctx = Context(point: new ConstraintedPoint { pos = new Vector(1f, 2f) });
+            ctx.Capabilities = CandyCapabilities.LightBulb;
+
+            CandyView view = ctx.WholeBody.ToView();
 
             Assert.False(view.Capabilities.CanBeEaten);
             Assert.False(view.Capabilities.CanCollectStars);
         }
 
         [Fact]
-        public void InteractionRotation_UsesCandyMainWhenAvailable()
+        public void InteractionRotationUsesCandyMainWhenAvailable()
         {
-            CandyContext ctx = new()
-            {
-                candy = new GameObject
-                {
-                    rotation = 15f
-                },
-                candyMain = new GameObject
-                {
-                    rotation = 45f
-                }
-            };
+            CandyContext ctx = Context(
+                visual: new GameObject { rotation = 15f },
+                main: new GameObject { rotation = 45f });
 
             Assert.Equal(45f, ctx.InteractionRotation);
         }
 
         [Fact]
-        public void InteractionRotation_FallsBackToRootObjectRotation()
+        public void InteractionRotationFallsBackToRootObjectRotation()
         {
-            CandyContext ctx = new()
-            {
-                candy = new GameObject
-                {
-                    rotation = 30f
-                }
-            };
+            CandyContext ctx = Context(visual: new GameObject { rotation = 30f });
 
             Assert.Equal(30f, ctx.InteractionRotation);
         }
 
         [Fact]
-        public void InteractionRotation_IsZeroForNonRotatingBodies()
+        public void InteractionRotationIsZeroForNonRotatingBodies()
         {
-            CandyContext ctx = new()
-            {
-                Capabilities = CandyCapabilities.LightBulb,
-                candy = new GameObject
-                {
-                    rotation = 30f
-                },
-                candyMain = new GameObject
-                {
-                    rotation = 45f
-                }
-            };
+            CandyContext ctx = Context(
+                visual: new GameObject { rotation = 30f },
+                main: new GameObject { rotation = 45f });
+            ctx.Capabilities = CandyCapabilities.LightBulb;
 
             Assert.Equal(0f, ctx.InteractionRotation);
         }

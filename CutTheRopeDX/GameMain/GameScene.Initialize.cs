@@ -29,14 +29,13 @@ namespace CutTheRopeDX.GameMain
             }
             waterLevel = 0f;
             waterSpeed = 0f;
-            twoParts = 2;
-            partsDist = 0f;
             CTRSoundMgr.StopLoopedSounds();
 
             // Initialize object collections
             bungees = [];
             candyConnector = null;
             candiesConnected = false;
+            candiesConnectedBreakable = true;
             razors = [];
             spikes = [];
             stars = [];
@@ -76,16 +75,11 @@ namespace CutTheRopeDX.GameMain
             miceManager = null;
             earthAnims = null;
             pollenDrawer = new PollenDrawer();
-            isCandyInGhostBubbleAnimationLoaded = false;
-            isCandyInGhostBubbleAnimationLeftLoaded = false;
-            isCandyInGhostBubbleAnimationRightLoaded = false;
-            shouldRestoreSecondGhost = false;
+            pendingSecondGhostBubble = null;
             targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
-            gameLostTriggered = false;
-            gameWonTriggered = false;
-            outcomeTransitionActive = false;
+            gameplayFlow.ResetOutcome();
             levelName = null;
         }
 
@@ -168,37 +162,103 @@ namespace CutTheRopeDX.GameMain
             // Initialize constraint points for ropes
             ConstraintedPoint starPoint = new();
             starPoint.SetWeight(1f);
-            starL = new ConstraintedPoint();
-            starL.SetWeight(1f);
-            starR = new ConstraintedPoint();
-            starR.SetWeight(1f);
 
             (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim, Animation primaryBubble, CandyInGhostBubbleAnimation primaryGhostBubble) = CreateCandyVisual();
-
-            // The primary candy routes its bubble/ghost-bubble through the scene singletons (the
-            // ci==0 path in Update/GameLogic). The ghost bubble is now created eagerly here instead of
-            // lazily in EnsureCandyGhostBubbleAnimations, matching how additional candies are built.
-            candyBubbleAnimation = primaryBubble;
-            candyGhostBubbleAnimation = primaryGhostBubble;
-            isCandyInGhostBubbleAnimationLoaded = true;
 
             // Register the primary candy as candies[0] so multi-candy logic and legacy
             // single-candy code share the same objects. Its candyNumber is unassigned here;
             // the first <candy> element claims it and takes the key from XML.
             candies.Clear();
             primaryCandyClaimed = false;
-            candies.Add(new CandyContext
+
+            CandyBody primaryBody = new(
+                starPoint,
+                CandyBodyRole.Whole,
+                candyObj,
+                candyMainObj,
+                candyTopObj,
+                candyBlinkAnim,
+                primaryBubble,
+                primaryGhostBubble);
+
+            candies.Add(new CandyContext(primaryBody)
             {
                 candyNumber = null,
-                point = starPoint,
-                candy = candyObj,
-                candyMain = candyMainObj,
-                candyTop = candyTopObj,
-                candyBlink = candyBlinkAnim,
-                candyBubbleAnimation = candyBubbleAnimation,
                 Capabilities = CandyCapabilities.Candy,
-                noCandy = false,
             });
+        }
+
+        /// <summary>
+        /// Builds one authored split half: its physics point, the visual that follows it, and the
+        /// (hidden) normal + ghost bubble overlays that visual carries. Called as
+        /// <c>&lt;candyL&gt;</c>/<c>&lt;candyR&gt;</c> parse, before the halves are handed to the
+        /// primary candy's lifecycle. Each half owns its own overlays, exactly like a whole candy,
+        /// so bubble capture never has to know which half it is holding.
+        /// </summary>
+        /// <param name="role">Which half this is.</param>
+        /// <param name="x">World X of the half.</param>
+        /// <param name="y">World Y of the half.</param>
+        /// <returns>The new half body.</returns>
+        private static CandyBody CreateSplitHalfBody(CandyBodyRole role, float x, float y)
+        {
+            ConstraintedPoint point = new();
+            point.SetWeight(1f);
+            point.pos.X = x;
+            point.pos.Y = y;
+            point.prevPos = point.pos;
+
+            int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
+            GameObject visual = GameObject.GameObject_createWithResIDQuad(
+                candyResource,
+                role == CandyBodyRole.LeftHalf ? SplitCandyLeftQuad : SplitCandyRightQuad);
+            visual.scaleX = visual.scaleY = 0.71f;
+            visual.passTransformationsToChilds = false;
+            visual.DoRestoreCutTransparency();
+            visual.anchor = 18;
+            visual.x = x;
+            visual.y = y;
+            visual.bb = GetSplitCandyBoundingBox();
+
+            // Seed the draw position from the authored one. The merge test reads where a half was
+            // last drawn, which is a frame behind its point, so on the very first frame it has to
+            // read the half's authored spot - not the origin.
+            CalculateTopLeft(visual);
+
+            // Normal bubble first, then the ghost-form bubble, matching the child order the whole
+            // candy's visual stack uses.
+            Animation bubbleAnim = BubbleAnimationFactory.CreateBubble();
+            _ = visual.AddChild(bubbleAnim);
+            CandyInGhostBubbleAnimation ghostBubbleAnim = BubbleAnimationFactory.CreateGhostBubble();
+            _ = visual.AddChild(ghostBubbleAnim);
+
+            return new CandyBody(point, role, visual, bubbleAnimation: bubbleAnim, ghostBubbleAnimation: ghostBubbleAnim);
+        }
+
+        /// <summary>
+        /// Hands the primary candy its two authored halves once metadata has built them. A split level
+        /// is one logical candy with two bodies, so the halves become a <see cref="SplitCandyState"/>
+        /// owned by <c>candies[0]</c>'s lifecycle rather than a second scene-level candy. A map that
+        /// declares <c>twoParts</c> but authors only one half is left whole, matching the old
+        /// behavior of a null <c>candyL</c>/<c>candyR</c> pair; because reading <c>twoParts</c>
+        /// already reserved the primary, such a map keeps an unplaced whole primary and turns its
+        /// <c>&lt;candy&gt;</c> elements into extra candies. No shipped map authors that.
+        /// </summary>
+        private void InstallSplitCandyState()
+        {
+            if (!levelAuthorsSplitCandy || pendingLeftHalf == null || pendingRightHalf == null)
+            {
+                return;
+            }
+
+            CandyHalf left = new(pendingLeftHalf);
+            CandyHalf right = new(pendingRightHalf);
+            pendingLeftHalf = null;
+            pendingRightHalf = null;
+
+            // candies[0] was already reserved for the split candy when the level's twoParts flag was
+            // read, so no <candy> element parsed in between can have taken it.
+            _ = candies[0].TryBeginSplit(new SplitCandyState(left, right));
         }
 
         /// <summary>
@@ -217,18 +277,12 @@ namespace CutTheRopeDX.GameMain
             c.x = px;
             c.y = py;
 
-            CandyContext ctx = new()
+            CandyBody body = new(p, CandyBodyRole.Whole, c, cMain, cTop, blink, bubbleAnim, ghostBubbleAnim);
+
+            CandyContext ctx = new(body)
             {
                 candyNumber = candyNumber,
-                point = p,
-                candy = c,
-                candyMain = cMain,
-                candyTop = cTop,
-                candyBlink = blink,
-                candyBubbleAnimation = bubbleAnim,
-                candyGhostBubbleAnimation = ghostBubbleAnim,
                 Capabilities = CandyCapabilities.Candy,
-                noCandy = false,
             };
             candies.Add(ctx);
             return ctx;
@@ -249,25 +303,5 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
-        /// <summary>
-        /// Ensures the split-half ghost-bubble overlays exist once <c>candyL</c>/<c>candyR</c> are
-        /// loaded. The whole candy's ghost bubble is built eagerly in <see cref="CreateCandyVisual"/>;
-        /// the halves stay lazy because they are created later, during metadata parsing.
-        /// </summary>
-        private void EnsureCandyGhostBubbleAnimations()
-        {
-            if (!isCandyInGhostBubbleAnimationLeftLoaded && candyL != null)
-            {
-                candyGhostBubbleAnimationL = BubbleAnimationFactory.CreateGhostBubble();
-                _ = candyL.AddChild(candyGhostBubbleAnimationL);
-                isCandyInGhostBubbleAnimationLeftLoaded = true;
-            }
-            if (!isCandyInGhostBubbleAnimationRightLoaded && candyR != null)
-            {
-                candyGhostBubbleAnimationR = BubbleAnimationFactory.CreateGhostBubble();
-                _ = candyR.AddChild(candyGhostBubbleAnimationR);
-                isCandyInGhostBubbleAnimationRightLoaded = true;
-            }
-        }
     }
 }

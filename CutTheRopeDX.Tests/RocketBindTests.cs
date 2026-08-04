@@ -7,37 +7,31 @@ namespace CutTheRopeDX.Tests
     public class RocketBindTests
     {
         [Fact]
-        public void ShouldBind_TrueForIdleRocketAndFreeCandyIntersecting()
+        public void ShouldBindTrueForIdleRocketOnPresentFreeCandy()
         {
             Assert.True(RocketBind.ShouldBind(
                 rocketIdle: true, candyPresent: true, candyInLantern: false,
-                mouseHasCandy: false, intersects: true));
+                intersects: true));
         }
 
         [Fact]
-        public void ShouldBind_FalseWhenRocketNotIdle()
+        public void ShouldBindFalseWhenRocketNotIdle()
         {
             // one-time use: a rocket that has left idle (flying/exhausted) never binds again.
-            Assert.False(RocketBind.ShouldBind(rocketIdle: false, true, false, false, true));
+            Assert.False(RocketBind.ShouldBind(rocketIdle: false, true, false, true));
         }
 
         [Fact]
-        public void ShouldBind_FalseWhenCandyInLantern()
+        public void ShouldBindFalseWhenCandyInLantern()
         {
-            Assert.False(RocketBind.ShouldBind(true, true, candyInLantern: true, false, true));
+            Assert.False(RocketBind.ShouldBind(true, true, candyInLantern: true, true));
         }
 
         [Fact]
-        public void ShouldBind_FalseWhenMouseHasCandy()
+        public void ShouldBindFalseWhenMissingOrNoIntersection()
         {
-            Assert.False(RocketBind.ShouldBind(true, true, false, mouseHasCandy: true, true));
-        }
-
-        [Fact]
-        public void ShouldBind_FalseWhenMissingOrNoIntersection()
-        {
-            Assert.False(RocketBind.ShouldBind(true, candyPresent: false, false, false, true));
-            Assert.False(RocketBind.ShouldBind(true, true, false, false, intersects: false));
+            Assert.False(RocketBind.ShouldBind(true, candyPresent: false, false, true));
+            Assert.False(RocketBind.ShouldBind(true, true, false, intersects: false));
         }
     }
 }
