@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Bubble bubble = Act.PushBubbleAgainst(scene, candy);
 
             Assert.True(bubble.popped);
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
             Assert.Same(rocket, candy.activeRocket);
         }
 
@@ -44,8 +44,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Bubble second = Act.CaptureInBubble(scene, candy, bubbleIndex: 0);
 
-            Assert.Same(second, candy.bubble);
-            Assert.NotSame(first, candy.bubble);
+            Assert.Same(second, candy.WholeBody.Bubble);
+            Assert.NotSame(first, candy.WholeBody.Bubble);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Bubble bubble = Act.PushBubbleAgainst(scene, candy);
 
             Assert.True(bubble.popped);
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
             Assert.Equal(1, scene.SnailCount(candy));
         }
 
@@ -73,7 +73,7 @@ namespace CutTheRopeDX.Tests.Interactions
             // "Implicit release": capture detaches nothing by itself, and the ant carry keeps
             // overwriting the candy's position, but the bubble's lift eventually pulls it clear of
             // the segment and the lane lets go.
-            Assert.Same(bubble, candy.bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
             Assert.Null(candy.antSegment);
         }
 
@@ -85,7 +85,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Bubble bubble = Act.CaptureInBubble(scene, candy);
 
-            Assert.Same(bubble, candy.bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
             Assert.True(candy.carriedByMouse);
         }
 

@@ -25,27 +25,27 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(1, restoredIndex);
             Assert.True(first.inLantern);
             Assert.False(second.inLantern);
-            Assert.True(RGBAColor.RGBAEqual(RGBAColor.transparentRGBA, first.candy.color));
-            Assert.True(RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, second.candy.color));
-            Assert.False(second.candy.passTransformationsToChilds);
-            Assert.Equal(0.71f, second.candy.scaleX);
-            Assert.Equal(0.71f, second.candy.scaleY);
-            Assert.Equal(0.71f, second.candyMain.scaleX);
-            Assert.Equal(0.71f, second.candyMain.scaleY);
-            Assert.Equal(0.71f, second.candyTop.scaleX);
-            Assert.Equal(0.71f, second.candyTop.scaleY);
+            Assert.True(RGBAColor.RGBAEqual(RGBAColor.transparentRGBA, first.WholeBody.Visual.color));
+            Assert.True(RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, second.WholeBody.Visual.color));
+            Assert.False(second.WholeBody.Visual.passTransformationsToChilds);
+            Assert.Equal(0.71f, second.WholeBody.Visual.scaleX);
+            Assert.Equal(0.71f, second.WholeBody.Visual.scaleY);
+            Assert.Equal(0.71f, second.WholeBody.Main.scaleX);
+            Assert.Equal(0.71f, second.WholeBody.Main.scaleY);
+            Assert.Equal(0.71f, second.WholeBody.Top.scaleX);
+            Assert.Equal(0.71f, second.WholeBody.Top.scaleY);
         }
 
         private static CandyContext CapturedCandy(ConstraintedPoint point)
         {
-            return new CandyContext
-            {
-                point = point,
-                candy = CapturedVisual(),
-                candyMain = CapturedVisual(),
-                candyTop = CapturedVisual(),
-                inLantern = true
-            };
+            CandyBody body = new(
+                point,
+                CandyBodyRole.Whole,
+                CapturedVisual(),
+                CapturedVisual(),
+                CapturedVisual());
+
+            return new CandyContext(body) { inLantern = true };
         }
 
         private static GameObject CapturedVisual()

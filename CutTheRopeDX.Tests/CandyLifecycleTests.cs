@@ -1,0 +1,187 @@
+using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.GameMain;
+
+using Xunit;
+
+namespace CutTheRopeDX.Tests
+{
+    public class CandyLifecycleTests
+    {
+        private static CandyBody Body(CandyBodyRole role)
+        {
+            return new CandyBody(new ConstraintedPoint(), role);
+        }
+
+        private static CandyLifecycle PresentLifecycle()
+        {
+            return CandyLifecycle.CreatePresent(Body(CandyBodyRole.Whole));
+        }
+
+        [Fact]
+        public void PresentCandy_CanBeRemovedAsEaten()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+
+            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Eaten));
+            Assert.Equal(CandyPresence.Removed, lifecycle.Presence);
+            Assert.Equal(CandyRemovalReason.Eaten, lifecycle.RemovalReason);
+            Assert.True(lifecycle.WasEaten);
+            Assert.False(lifecycle.HasFailedRemoval);
+        }
+
+        [Theory]
+        [InlineData((int)CandyRemovalReason.Hazard)]
+        [InlineData((int)CandyRemovalReason.Spider)]
+        [InlineData((int)CandyRemovalReason.OffScreen)]
+        public void LossRemoval_NeverCountsAsEaten(int reasonValue)
+        {
+            CandyRemovalReason reason = (CandyRemovalReason)reasonValue;
+            CandyLifecycle lifecycle = PresentLifecycle();
+
+            Assert.True(lifecycle.TryRemove(reason));
+            Assert.False(lifecycle.WasEaten);
+            Assert.True(lifecycle.HasFailedRemoval);
+        }
+
+        [Fact]
+        public void RemovedCandy_IsTerminal()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard));
+
+            Assert.False(lifecycle.TryRemove(CandyRemovalReason.Eaten));
+            Assert.Equal(CandyRemovalReason.Hazard, lifecycle.RemovalReason);
+        }
+
+        [Fact]
+        public void Split_ExposesBothPresentHalvesInsteadOfWholeBody()
+        {
+            CandyBody whole = Body(CandyBodyRole.Whole);
+            CandyHalf left = new(Body(CandyBodyRole.LeftHalf));
+            CandyHalf right = new(Body(CandyBodyRole.RightHalf));
+            CandyLifecycle lifecycle = CandyLifecycle.CreateSplit(whole, new SplitCandyState(left, right));
+
+            Assert.Equal(CandyPresence.Split, lifecycle.Presence);
+            Assert.Equal([left.Body, right.Body], lifecycle.ActiveBodies);
+        }
+
+        [Fact]
+        public void BambooFactory_PreservesTransportPayload()
+        {
+            CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
+
+            Assert.Equal(CandyTransportKind.Bamboo, session.Kind);
+            Assert.Null(session.Candy);
+            Assert.Null(session.BambooTube);
+            Assert.Null(session.Sock);
+        }
+
+        [Fact]
+        public void SockFactory_PreservesTransportPayloadAndExitSpeed()
+        {
+            CandyTransportSession session = CandyTransportSession.ForSock(candy: null, sock: null, savedExitSpeed: 123f);
+
+            Assert.Equal(CandyTransportKind.Sock, session.Kind);
+            Assert.Null(session.Candy);
+            Assert.Null(session.BambooTube);
+            Assert.Null(session.Sock);
+            Assert.Equal(123f, session.SavedExitSpeed);
+        }
+
+        [Fact]
+        public void HiddenTransport_SuppressesBodyButDoesNotCountAsEaten()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
+
+            Assert.True(lifecycle.TryHide(session));
+            Assert.Equal(CandyPresence.Hidden, lifecycle.Presence);
+            Assert.Empty(lifecycle.ActiveBodies);
+            Assert.False(lifecycle.WasEaten);
+        }
+
+        [Fact]
+        public void MatchingTransportCompletion_RestoresWholeBody()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession session = CandyTransportSession.ForSock(null, null, 123f);
+            Assert.True(lifecycle.TryHide(session));
+
+            Assert.True(lifecycle.TryCompleteTransport(session));
+            Assert.Equal(CandyPresence.Present, lifecycle.Presence);
+            Assert.Null(lifecycle.Transport);
+            Assert.Equal([lifecycle.WholeBody], lifecycle.ActiveBodies);
+        }
+
+        [Fact]
+        public void Context_OwnsTheSuppliedWholeBodyAndAPresentLifecycle()
+        {
+            CandyBody whole = Body(CandyBodyRole.Whole);
+
+            CandyContext ctx = new(whole);
+
+            Assert.Same(whole, ctx.WholeBody);
+            Assert.Same(whole, ctx.Lifecycle.WholeBody);
+            Assert.Equal(CandyPresence.Present, ctx.Lifecycle.Presence);
+            Assert.Equal([whole], ctx.Lifecycle.ActiveBodies);
+        }
+
+        [Fact]
+        public void ContextOutcome_PreservesCapabilitiesAndRemovalReason()
+        {
+            CandyContext ctx = new(Body(CandyBodyRole.Whole)) { Capabilities = CandyCapabilities.LightBulb };
+            Assert.True(ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard));
+
+            CandyOutcomeView outcome = ctx.ToOutcomeView();
+
+            Assert.Equal(CandyPresence.Removed, outcome.Presence);
+            Assert.Equal(CandyRemovalReason.Hazard, outcome.RemovalReason);
+            Assert.False(outcome.CanBeEaten);
+            Assert.False(outcome.HasFailedSplitHalf);
+        }
+
+        [Fact]
+        public void ContextOutcome_ReportsAnEatableCandyThatIsStillPresent()
+        {
+            CandyContext ctx = new(Body(CandyBodyRole.Whole));
+
+            CandyOutcomeView outcome = ctx.ToOutcomeView();
+
+            Assert.Equal(CandyPresence.Present, outcome.Presence);
+            Assert.Null(outcome.RemovalReason);
+            Assert.True(outcome.CanBeEaten);
+            Assert.False(outcome.HasFailedSplitHalf);
+        }
+
+        [Fact]
+        public void SplitLifecycle_ReportsAFailedHalfWithoutBeingRemoved()
+        {
+            CandyHalf left = new(Body(CandyBodyRole.LeftHalf));
+            CandyHalf right = new(Body(CandyBodyRole.RightHalf));
+            CandyLifecycle lifecycle =
+                CandyLifecycle.CreateSplit(Body(CandyBodyRole.Whole), new SplitCandyState(left, right));
+
+            Assert.False(lifecycle.HasFailedSplitHalf);
+            Assert.True(left.TryRemove(CandyRemovalReason.OffScreen));
+
+            Assert.True(lifecycle.HasFailedSplitHalf);
+            Assert.Equal(CandyPresence.Split, lifecycle.Presence);
+            Assert.Null(lifecycle.RemovalReason);
+        }
+
+        [Fact]
+        public void StaleCompletion_CannotCompleteNewerSession()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            CandyTransportSession oldSession = CandyTransportSession.ForBamboo(null, null);
+            CandyTransportSession newSession = CandyTransportSession.ForSock(null, null, 123f);
+            _ = lifecycle.TryHide(oldSession);
+            Assert.True(lifecycle.TryCompleteTransport(oldSession));
+            _ = lifecycle.TryHide(newSession);
+
+            Assert.False(lifecycle.TryCompleteTransport(oldSession));
+            Assert.Same(newSession, lifecycle.Transport);
+            Assert.Equal(CandyPresence.Hidden, lifecycle.Presence);
+        }
+    }
+}

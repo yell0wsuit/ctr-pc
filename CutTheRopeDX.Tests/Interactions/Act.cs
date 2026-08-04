@@ -53,7 +53,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Bubble CaptureInBubble(GameScene scene, CandyContext candy, int bubbleIndex = 0)
         {
             Bubble bubble = scene.Bubbles()[bubbleIndex];
-            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.bubble == bubble, "the bubble never captured the candy");
+            Chase(scene, candy, position => MoveTo(bubble, position), () => candy.WholeBody.Bubble == bubble, "the bubble never captured the candy");
             return bubble;
         }
 
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 scene,
                 candy,
                 position => MoveTo(snail, position),
-                () => snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == candy.point,
+                () => snail.state == Snail.SNAIL_STATE_ACTIVE && snail.AttachedPoint() == candy.WholeBody.Point,
                 "the snail never attached to the candy");
             return snail;
         }
@@ -141,12 +141,17 @@ namespace CutTheRopeDX.Tests.Interactions
                 "the ants never picked up the candy");
         }
 
-        /// <summary>Feeds the candy to the nearest Om Nom.</summary>
+        /// <summary>
+        /// Feeds the candy to one of the scene's Om Noms. An Om Nom falls asleep once it has been
+        /// fed and never reacts again, so a scenario that feeds two candies needs two of them and
+        /// must name which one eats this time.
+        /// </summary>
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to feed.</param>
-        public static void Eat(GameScene scene, CandyContext candy)
+        /// <param name="targetIndex">Index of the Om Nom in the scene.</param>
+        public static void Eat(GameScene scene, CandyContext candy, int targetIndex = 0)
         {
-            TargetContext target = scene.Targets()[0];
+            TargetContext target = scene.Targets()[targetIndex];
             Chase(
                 scene,
                 candy,
@@ -156,6 +161,40 @@ namespace CutTheRopeDX.Tests.Interactions
                 () => target.asleep,
                 "Om Nom never ate the candy");
         }
+
+        /// <summary>
+        /// Cuts a grab's rope by swiping across it, the way a player does. The swipe crosses the
+        /// rope's first segment square-on, so it lands whatever angle the rope is hanging at.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="grab">Grab whose rope to cut.</param>
+        public static void CutRope(GameScene scene, Grab grab)
+        {
+            Bungee rope = grab.rope;
+            Assert.NotNull(rope);
+            Assert.Equal(-1, rope.cut);
+
+            Vector from = rope.parts[0].pos;
+            Vector to = rope.parts[1].pos;
+            Vector midpoint = new((from.X + to.X) / 2f, (from.Y + to.Y) / 2f);
+            float dx = to.X - from.X;
+            float dy = to.Y - from.Y;
+            float length = MathF.Sqrt((dx * dx) + (dy * dy));
+            Assert.True(length > 0f, "the rope segment being cut has no length");
+
+            // Unit normal to the segment, so the swipe crosses it rather than running along it.
+            float nx = -dy / length;
+            float ny = dx / length;
+            Vector swipeStart = new(midpoint.X - (nx * SwipeReach), midpoint.Y - (ny * SwipeReach));
+            Vector swipeEnd = new(midpoint.X + (nx * SwipeReach), midpoint.Y + (ny * SwipeReach));
+
+            int cuts = scene.CutWithRazorOrLine1Line2Immediate(null, swipeStart, swipeEnd, true);
+            Assert.True(cuts > 0, "the swipe cut no rope");
+            HeadlessGame.StepFrames(scene, 1);
+        }
+
+        /// <summary>How far to either side of a rope a cutting swipe extends, in world units.</summary>
+        private const float SwipeReach = 40f;
 
         /// <summary>Destroys the candy on the scene's spikes.</summary>
         /// <param name="scene">Scene under test.</param>
@@ -172,7 +211,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     spikes.y = position.Y;
                     spikes.UpdateRotation();
                 },
-                () => candy.noCandy || scene.PrimaryCandyGone(),
+                () => candy.HasNoWholeBodyInPlay,
                 "the spikes never broke the candy");
 
             // Losing is a two-stage event: the break tears the candy down, and the scheduled
@@ -192,7 +231,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static void LoseOffScreen(GameScene scene, CandyContext candy)
         {
             Interaction.Drop(candy);
-            Vector belowTheMap = new(candy.point.pos.X, OffScreenY);
+            Vector belowTheMap = new(candy.WholeBody.Point.pos.X, OffScreenY);
             Interaction.PlaceCandyAt(candy, belowTheMap);
 
             Assert.True(
@@ -226,10 +265,10 @@ namespace CutTheRopeDX.Tests.Interactions
                 position =>
                 {
                     MoveTo(hat, position);
-                    hat.rotation = MouthAngleFacing(candy.point.posDelta, hat.rotation);
+                    hat.rotation = MouthAngleFacing(candy.WholeBody.Point.posDelta, hat.rotation);
                     hat.UpdateRotation();
                 },
-                () => candy.targetSock != null,
+                () => candy.Lifecycle.Transport?.Sock != null,
                 "the magic hat never took the candy");
         }
 
@@ -253,7 +292,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     MoveTo(tube, new Vector(position.X + (toCentre.X * halfBody), position.Y + (toCentre.Y * halfBody)));
                     RefreshTubeHoles(tube);
                 },
-                () => candy.targetBambooTube != null,
+                () => candy.Lifecycle.Transport?.BambooTube != null,
                 "the bamboo tube never took the candy");
         }
 
@@ -338,9 +377,9 @@ namespace CutTheRopeDX.Tests.Interactions
 
         private static void Chase(GameScene scene, CandyContext candy, Action<Vector> place, Func<bool> done, string message)
         {
-            place(candy.point.pos);
+            place(candy.WholeBody.Point.pos);
             Assert.True(
-                Interaction.StepUntil(scene, () => place(candy.point.pos), done),
+                Interaction.StepUntil(scene, () => place(candy.WholeBody.Point.pos), done),
                 message);
 
             // The matrix describes the settled state, not the state mid-frame: several teardowns

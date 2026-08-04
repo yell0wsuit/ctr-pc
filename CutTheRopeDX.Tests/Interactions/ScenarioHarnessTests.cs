@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests.Interactions
             CandyContext candy = scene.Candy();
             _ = Assert.Single(scene.Grabs());
             Assert.Equal(1, scene.AttachedRopeCount(candy));
-            Assert.False(candy.noCandy);
+            Assert.False(candy.HasNoWholeBodyInPlay);
         }
 
         [Fact]
@@ -35,11 +35,11 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Build();
 
             CandyContext candy = scene.Candy();
-            float startY = candy.point.pos.Y;
+            float startY = candy.WholeBody.Point.pos.Y;
             HeadlessGame.StepFrames(scene, 30);
 
             // A roped candy swings; the point must actually have been integrated.
-            Assert.NotEqual(startY, candy.point.pos.Y);
+            Assert.NotEqual(startY, candy.WholeBody.Point.pos.Y);
         }
 
         [Fact]

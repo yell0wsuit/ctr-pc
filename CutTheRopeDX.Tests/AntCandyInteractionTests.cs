@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void CanAttach_FalseWhenCandyIsInSockOrBambooTransit()
         {
-            // Sock transit keeps the candy "present" (noCandy stays false), so ants need an
+            // Sock transit keeps the candy attachable on exit, so ants need an
             // explicit transit gate just like the hand gate.
             Assert.False(AntCandyInteraction.CanAttach(
                 true, true, false, false, true, candyHeldByHand: false, candyInLantern: false,

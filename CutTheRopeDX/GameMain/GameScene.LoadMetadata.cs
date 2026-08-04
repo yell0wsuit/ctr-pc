@@ -4,7 +4,6 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
@@ -110,7 +109,17 @@ namespace CutTheRopeDX.GameMain
                             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
-                            twoParts = twoPartsBool ? 0 : 2;
+                            levelAuthorsSplitCandy = twoPartsBool;
+                            if (levelAuthorsSplitCandy)
+                            {
+                                // A split level's primary candy is the split one, so candies[0] is
+                                // reserved for the halves this pass is about to parse. Claiming it
+                                // here - the settings layer is read before the object layers - is
+                                // what lets a level author a split candy and ordinary candies at the
+                                // same time: every <candy> element then builds its own whole context
+                                // instead of the first one taking the split candy's place.
+                                primaryCandyClaimed = true;
+                            }
                             waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {
@@ -147,36 +156,16 @@ namespace CutTheRopeDX.GameMain
                             candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
                             break;
                         case "candyL":
-                            starL.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starL.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-                            {
-                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                                candyL = GameObject.GameObject_createWithResIDQuad(candyResource, 8);
-                            }
-                            candyL.scaleX = candyL.scaleY = 0.71f;
-                            candyL.passTransformationsToChilds = false;
-                            candyL.DoRestoreCutTransparency();
-                            candyL.anchor = 18;
-                            candyL.x = starL.pos.X;
-                            candyL.y = starL.pos.Y;
-                            candyL.bb = GetSplitCandyBoundingBox();
+                            pendingLeftHalf = CreateSplitHalfBody(
+                                CandyBodyRole.LeftHalf,
+                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candyR":
-                            starR.pos.X = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                            starR.pos.Y = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-                            {
-                                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                                string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-                                candyR = GameObject.GameObject_createWithResIDQuad(candyResource, 9);
-                            }
-                            candyR.scaleX = candyR.scaleY = 0.71f;
-                            candyR.passTransformationsToChilds = false;
-                            candyR.DoRestoreCutTransparency();
-                            candyR.anchor = 18;
-                            candyR.x = starR.pos.X;
-                            candyR.y = starR.pos.Y;
-                            candyR.bb = GetSplitCandyBoundingBox();
+                            pendingRightHalf = CreateSplitHalfBody(
+                                CandyBodyRole.RightHalf,
+                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candy":
                             {
@@ -209,18 +198,25 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
+            InstallSplitCandyState();
+
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
             candy.bb = GetCandyBoundingBox();
-            _ = (candyL?.bb = GetSplitCandyBoundingBox());
-            _ = (candyR?.bb = GetSplitCandyBoundingBox());
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Role != CandyBodyRole.Whole)
+                {
+                    body.Visual.bb = GetSplitCandyBoundingBox();
+                }
+            }
 
             // candiesConnected: join the two candies with a mutual elastic. Both candy points are
             // passed directly as head/tail; Bungee preserves their weights and skips integrating
             // non-owned endpoints.
             if (candiesConnected && candies.Count >= 2)
             {
-                ConstraintedPoint connectorHead = candies[0].point;
-                ConstraintedPoint connectorTail = candies[1].point;
+                ConstraintedPoint connectorHead = candies[0].WholeBody.Point;
+                ConstraintedPoint connectorTail = candies[1].WholeBody.Point;
                 candyConnector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                     connectorHead, connectorHead.pos.X, connectorHead.pos.Y,
                     connectorTail, connectorTail.pos.X, connectorTail.pos.Y,

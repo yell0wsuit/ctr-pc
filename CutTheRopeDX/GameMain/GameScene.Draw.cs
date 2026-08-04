@@ -263,7 +263,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (rocket == ctx.activeRocket && ctx.InTransport)
+                        if (rocket == ctx.activeRocket && ctx.Lifecycle.Presence == CandyPresence.Hidden)
                         {
                             hiddenForTransit = true;
                             break;
@@ -275,31 +275,24 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            // Draw every candy + its blink in one pass. candies[0] reads the same objects the
-            // old primary-candy aliases exposed. candies[0].candyBlink is always non-null.
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Draw every whole candy body + its blink in one pass. A body only exists while it is
+            // active, so the old removed/mid-transport guards are the enumerator's job now. Light
+            // emitters draw themselves later, and a candy inside a lantern is drawn by the lantern.
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                CandyContext ctx = candies[ci];
-                if (ctx.emitsLight)
+                CandyContext ctx = body.Owner;
+                if (body.Role != CandyBodyRole.Whole || ctx.emitsLight || ctx.inLantern)
                 {
                     continue;
                 }
-                bool gone = CandyGone(ci, ctx);
-                Sock sock = ctx.targetSock;
-                if (!gone && sock == null)
+                body.Visual.x = body.Point.pos.X;
+                body.Visual.y = body.Point.pos.Y;
+                body.Visual.Draw();
+                if (body.BlinkAnimation?.GetCurrentTimeline() != null)
                 {
-                    if (!ctx.inLantern)
-                    {
-                        ctx.candy.x = ctx.point.pos.X;
-                        ctx.candy.y = ctx.point.pos.Y;
-                        ctx.candy.Draw();
-                    }
-                    if (ctx.candyBlink != null && ctx.candyBlink.GetCurrentTimeline() != null && !ctx.inLantern)
-                    {
-                        Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                        ctx.candyBlink.Draw();
-                        Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                    }
+                    Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
+                    body.BlinkAnimation.Draw();
+                    Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
             if (hands != null)
@@ -319,19 +312,12 @@ namespace CutTheRopeDX.GameMain
                     snail?.Draw();
                 }
             }
-            if (twoParts != 2)
+            // Split halves draw on top of the hands and snails, the z-order the split levels ship with.
+            foreach (CandyBody body in ActiveCandyBodies())
             {
-                if (!noCandyL)
+                if (body.Role != CandyBodyRole.Whole)
                 {
-                    candyL.x = starL.pos.X;
-                    candyL.y = starL.pos.Y;
-                    candyL.Draw();
-                }
-                if (!noCandyR)
-                {
-                    candyR.x = starR.pos.X;
-                    candyR.y = starR.pos.Y;
-                    candyR.Draw();
+                    body.Visual.Draw();
                 }
             }
             waterLayer?.DrawFront(camera.pos.Y);

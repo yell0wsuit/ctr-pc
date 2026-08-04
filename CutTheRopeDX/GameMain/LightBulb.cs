@@ -213,13 +213,16 @@ namespace CutTheRopeDX.GameMain
             CalculateTopLeft(this);
         }
 
+        /// <summary>Mirrors one candy context's carrier and presence state onto this bulb's visuals.</summary>
+        /// <param name="ctx">The logical candy context whose whole body this bulb represents.</param>
         public void SyncFromContext(CandyContext ctx)
         {
-            visible = !ctx.noCandy && ctx.targetSock == null;
-            capturingBubble = ctx.bubble as Bubble;
-            capturingGhostBubble = ctx.bubbleHasGhost;
-            sockSpeed = ctx.savedSockSpeed;
-            attachedSock = ctx.targetSock;
+            CandyTransportSession transport = ctx.Lifecycle.Transport;
+            visible = !ctx.HasNoWholeBodyInPlay && transport?.Sock == null;
+            capturingBubble = ctx.WholeBody.Bubble as Bubble;
+            capturingGhostBubble = ctx.WholeBody.BubbleHasGhost;
+            sockSpeed = transport?.SavedExitSpeed ?? 0f;
+            attachedSock = transport?.Sock;
             SyncToConstraint();
         }
 

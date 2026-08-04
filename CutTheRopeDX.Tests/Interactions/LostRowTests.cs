@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.BreakOnSpikes(scene, candy);
 
-            Assert.Null(candy.bubble);
+            Assert.Null(candy.WholeBody.Bubble);
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Equal(0, scene.SnailCount(candy));
 
-            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.point.weight);
+            Assert.Equal(1 + SnailWeight.PerSnailWeight, candy.WholeBody.Point.weight);
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace CutTheRopeDX.Tests.Interactions
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
 
             Interaction.Drop(candy);
-            Interaction.PlaceCandyAt(candy, new Vector(candy.point.pos.X, BelowTheWorld));
+            Interaction.PlaceCandyAt(candy, new Vector(candy.WholeBody.Point.pos.X, BelowTheWorld));
             HeadlessGame.StepFrames(scene, 60);
 
             // The claw pins the candy back every frame, ahead of the off-screen check, so a held
@@ -161,7 +161,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.CarryByMouse(scene, candy);
 
             Interaction.Drop(candy);
-            Interaction.PlaceCandyAt(candy, new Vector(candy.point.pos.X, BelowTheWorld));
+            Interaction.PlaceCandyAt(candy, new Vector(candy.WholeBody.Point.pos.X, BelowTheWorld));
             HeadlessGame.StepFrames(scene, 60);
 
             Assert.Equal(0, scene.Outcomes().LostCount);

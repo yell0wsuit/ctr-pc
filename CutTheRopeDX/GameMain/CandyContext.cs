@@ -2,16 +2,28 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
-using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// All per-candy state for one independent candy. One per <c>&lt;candy&gt;</c> element.
+    /// One logical candy, created per <c>&lt;candy&gt;</c> element. It owns the carrier and capability
+    /// state that answers "what is happening to this candy", while its physics, visuals, and transient
+    /// presentation state live on the <see cref="CandyBody"/> instances owned by its
+    /// <see cref="CandyLifecycle"/>. The lifecycle decides which bodies exist; win/loss decisions read
+    /// <see cref="ToOutcomeView"/> once per context regardless of how many bodies that is.
     /// </summary>
     internal sealed class CandyContext
     {
+        /// <summary>Gets the whole physical body owned by this logical candy.</summary>
+        internal CandyBody WholeBody { get; }
+
+        /// <summary>
+        /// Gets the lifecycle that owns this candy's presence, removal, split,
+        /// and transport state.
+        /// </summary>
+        internal CandyLifecycle Lifecycle { get; }
+
         // Cut the Rope: Time Travel's candy bounding box is 70x70 with a
         // candy↔candy collision radius of 32. Preserve that radius-to-body ratio by scaling it
         // against DX's candy bounding-box width, which already resolves the correct desktop/mobile
@@ -25,56 +37,16 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Rope-binding key from XML (<c>"first"</c>/<c>"second"</c>); see <see cref="CandyMatch"/>.</summary>
         public string candyNumber;
 
-        /// <summary>Physics point (the engine's "star") that ropes attach to and that gravity acts on.</summary>
-        public ConstraintedPoint point;
-
-        /// <summary>Visual container and its layers.</summary>
-        public GameObject candy;
-
-        public GameObject candyMain;
-
-        public GameObject candyTop;
-
-        public Animation candyBlink;
-
-        public Animation candyBubbleAnimation;
-
-        public CandyInGhostBubbleAnimation candyGhostBubbleAnimation;
-
-        /// <summary>True once this candy has been eaten/removed.</summary>
-        public bool noCandy;
-
         /// <summary>
-        /// Residual rope-swing rotation for this candy, decayed each frame so the candy
-        /// coasts to a stop when no rope is actively steering it. candies[0] uses the
-        /// singleton <c>lastCandyRotateDelta</c> instead; index 1+ use this field.
+        /// True when this candy has no whole body in play right now, because it was permanently
+        /// removed, hidden inside a transport session, or replaced by its split halves. The lifecycle
+        /// is the only answer: the scene no longer keeps a second, separately maintained flag for the
+        /// primary candy.
         /// </summary>
-        public float lastCandyRotateDelta;
-
-        /// <summary>The bubble currently carrying this candy, if any.</summary>
-        public GameObject bubble;
-
-        /// <summary>True when <see cref="bubble"/> belongs to a ghost-transformed bubble.</summary>
-        public bool bubbleHasGhost;
+        public bool HasNoWholeBodyInPlay => Lifecycle.Presence != CandyPresence.Present;
 
         /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
         public bool inLantern;
-
-        /// <summary>The sock currently teleporting this candy, if any (was the singleton <c>targetSock</c>).</summary>
-        public Sock targetSock;
-
-        /// <summary>Cached exit speed for the in-progress sock teleport (was the singleton <c>savedSockSpeed</c>).</summary>
-        public float savedSockSpeed;
-
-        /// <summary>The bamboo tube currently teleporting this candy, if any (was the singleton <c>targetBambooTube</c>).</summary>
-        public BambooTube targetBambooTube;
-
-        /// <summary>
-        /// True while this candy is mid-teleport through a transporter (bamboo tube or hat/sock).
-        /// Bamboo transit also flips <see cref="noCandy"/>, but hat transit does not, so any
-        /// "is it teleporting" decision must consult both targets — this is the single source of truth.
-        /// </summary>
-        public bool InTransport => targetBambooTube != null || targetSock != null;
 
         /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
         public Rocket activeRocket;
@@ -87,10 +59,10 @@ namespace CutTheRopeDX.GameMain
         /// capabilities permit it. The <c>Is*</c> form folds in presence; <see cref="CandyCapabilities"/>
         /// flags (e.g. <c>Capabilities.CanBeGrabbedByHand</c>) are the static capability alone.
         /// </summary>
-        public bool IsHandGrabbable => !noCandy && Capabilities.CanBeGrabbedByHand;
+        public bool IsHandGrabbable => !HasNoWholeBodyInPlay && Capabilities.CanBeGrabbedByHand;
 
         /// <summary>True when this candy can attach to an ant conveyor right now: present and capable.</summary>
-        public bool IsAntAttachable => !noCandy && Capabilities.CanAttachAnts;
+        public bool IsAntAttachable => !HasNoWholeBodyInPlay && Capabilities.CanAttachAnts;
 
         /// <summary>Ant-conveyor segment currently carrying this candy (null if not carried).</summary>
         public AntsPathSegment antSegment;
@@ -144,7 +116,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Rotation used by interactions that follow this body's visual orientation.
         /// </summary>
-        public float InteractionRotation => Capabilities.CanRotateWithRopes ? (candyMain ?? candy)?.rotation ?? 0f : 0f;
+        public float InteractionRotation => Capabilities.CanRotateWithRopes
+            ? (WholeBody.Main ?? WholeBody.Visual)?.rotation ?? 0f
+            : 0f;
 
         /// <summary>
         /// Distinct visual elements that should receive mechanical-hand catch/restoration effects.
@@ -152,17 +126,25 @@ namespace CutTheRopeDX.GameMain
         public List<BaseElement> HandCatchVisuals()
         {
             List<BaseElement> visuals = [];
-            AddDistinctVisual(visuals, candy);
-            AddDistinctVisual(visuals, candyMain);
-            AddDistinctVisual(visuals, candyTop);
+            AddDistinctVisual(visuals, WholeBody.Visual);
+            AddDistinctVisual(visuals, WholeBody.Main);
+            AddDistinctVisual(visuals, WholeBody.Top);
             return visuals;
         }
 
         /// <summary>
         /// Base scale for mechanical-hand catch/restoration effects.
         /// </summary>
-        public float HandCatchScale =>
-            candyMain != null && candyTop != null && candyMain != candy && candyTop != candy ? 0.71f : 0.9f;
+        public float HandCatchScale
+        {
+            get
+            {
+                GameObject root = WholeBody.Visual;
+                GameObject main = WholeBody.Main;
+                GameObject top = WholeBody.Top;
+                return main != null && top != null && main != root && top != root ? 0.71f : 0.9f;
+            }
+        }
 
         /// <summary>
         /// Distinct child visual parts that should be normalized when the root carries transformations.
@@ -170,14 +152,14 @@ namespace CutTheRopeDX.GameMain
         public List<BaseElement> TransformChildVisuals()
         {
             List<BaseElement> visuals = [];
-            AddDistinctChildVisual(visuals, candyMain);
-            AddDistinctChildVisual(visuals, candyTop);
+            AddDistinctChildVisual(visuals, WholeBody.Main);
+            AddDistinctChildVisual(visuals, WholeBody.Top);
             return visuals;
         }
 
         private void AddDistinctChildVisual(List<BaseElement> visuals, BaseElement visual)
         {
-            if (visual != null && visual != candy && !visuals.Contains(visual))
+            if (visual != null && visual != WholeBody.Visual && !visuals.Contains(visual))
             {
                 visuals.Add(visual);
             }
@@ -194,16 +176,53 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Optional absolute collision distance used for pairs involving this context.</summary>
         public float? collisionDistanceOverride;
 
-        /// <summary>Edge-detect flag: candy is breaking the water surface (splash played once).</summary>
-        public bool splashes;
-
-        /// <summary>Edge-detect flag: candy is fully below the water surface.</summary>
-        public bool underwater;
-
-        /// <summary>Snapshot for the pure decision helpers.</summary>
-        public CandyView ToView()
+        /// <summary>
+        /// Takes a logical outcome snapshot of this candy for the win/loss decisions, independent
+        /// of how many physical bodies it currently has.
+        /// </summary>
+        /// <returns>
+        /// The candy's lifecycle presence and removal reason paired with the capability that decides
+        /// whether it counts toward the win condition.
+        /// </returns>
+        public CandyOutcomeView ToOutcomeView()
         {
-            return new CandyView(point.pos, noCandy, InTransport, Capabilities);
+            return new CandyOutcomeView(
+                Lifecycle.Presence,
+                Lifecycle.RemovalReason,
+                Capabilities.CanBeEaten,
+                Lifecycle.HasFailedSplitHalf);
+        }
+
+        /// <summary>
+        /// Initializes logical state for a candy that owns the supplied whole physical body.
+        /// </summary>
+        /// <param name="wholeBody">The whole physical body owned by this candy.</param>
+        internal CandyContext(CandyBody wholeBody)
+        {
+            WholeBody = wholeBody;
+            wholeBody.AttachTo(this);
+            Lifecycle = CandyLifecycle.CreatePresent(wholeBody);
+        }
+
+        /// <summary>
+        /// Replaces this candy's whole body with the two authored halves and takes ownership of their
+        /// bodies, so a scene system holding a half can still reach this logical candy.
+        /// </summary>
+        /// <param name="split">The owned split-half state built from the map's halves.</param>
+        /// <returns>
+        /// <see langword="true"/> when the lifecycle accepted the split; otherwise,
+        /// <see langword="false"/> and no body changes owner.
+        /// </returns>
+        internal bool TryBeginSplit(SplitCandyState split)
+        {
+            if (!Lifecycle.TryBeginSplit(split))
+            {
+                return false;
+            }
+
+            split.Left.Body.AttachTo(this);
+            split.Right.Body.AttachTo(this);
+            return true;
         }
     }
 }

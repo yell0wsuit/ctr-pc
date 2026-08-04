@@ -58,12 +58,34 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="position">World position.</param>
         public static void PlaceCandyAt(CandyContext candy, Vector position)
         {
-            candy.point.pos = position;
-            candy.point.prevPos = position;
-            candy.point.v = new Vector(0f, 0f);
-            candy.point.posDelta = new Vector(0f, 0f);
-            candy.candy.x = position.X;
-            candy.candy.y = position.Y;
+            PlaceBodyAt(candy.WholeBody, position);
+        }
+
+        /// <summary>
+        /// Teleports one physical body to a world position and kills its velocity. The
+        /// <see cref="CandyContext"/> overload only ever reaches a whole body, so this is how a split
+        /// half - which its logical candy has no single point for - is parked where a test wants it.
+        /// </summary>
+        /// <param name="body">Body to move.</param>
+        /// <param name="position">World position.</param>
+        public static void PlaceBodyAt(CandyBody body, Vector position)
+        {
+            body.Point.pos = position;
+            body.Point.prevPos = position;
+            body.Point.v = new Vector(0f, 0f);
+            body.Point.posDelta = new Vector(0f, 0f);
+            if (body.Visual != null)
+            {
+                body.Visual.x = position.X;
+                body.Visual.y = position.Y;
+            }
+        }
+
+        /// <summary>Holds one body in place so a slow interaction is not outrun by gravity.</summary>
+        /// <param name="body">Body to hold.</param>
+        public static void Hover(CandyBody body)
+        {
+            body.Point.disableGravity = true;
         }
 
         /// <summary>World position of a scene object that carries x/y (rocket, hat, disc, ...).</summary>
@@ -79,14 +101,14 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="candy">Candy to hold.</param>
         public static void Hover(CandyContext candy)
         {
-            candy.point.disableGravity = true;
+            Hover(candy.WholeBody);
         }
 
         /// <summary>Lets a held candy fall again.</summary>
         /// <param name="candy">Candy to release.</param>
         public static void Drop(CandyContext candy)
         {
-            candy.point.disableGravity = false;
+            candy.WholeBody.Point.disableGravity = false;
         }
     }
 }

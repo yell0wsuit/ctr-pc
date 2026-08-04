@@ -84,33 +84,32 @@ namespace CutTheRopeDX.GameMain
                 {
                     // Multi-candy: bind to the candy named by candyNumber.
                     grab.candyNumber = 0;
-                    constraintedPoint = targetCandy.point;
+                    constraintedPoint = targetCandy.WholeBody.Point;
                 }
                 else
                 {
-                    // Single-candy / split-candy behavior.
-                    grab.candyNumber = twoParts == 2 ? 0 : flag ? 1 : 2;
+                    // Single-candy / split-candy behavior: the primary candy's split state, built
+                    // from the same metadata pass, says which half a part="L"/"R" grab binds to.
+                    SplitCandyState split = candies[0].Lifecycle.Split;
+                    ConstraintedPoint authoredHalf = split == null ? null
+                        : flag ? split.Left.Body.Point : split.Right.Body.Point;
+                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
                     constraintedPoint = star;
                     if (bindBulb)
                     {
                         CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
-                        if (bulb != null)
-                        {
-                            constraintedPoint = bulb.point;
-                        }
-                        else if (twoParts != 2)
-                        {
-                            constraintedPoint = flag ? starL : starR;
-                        }
+                        constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
                     }
-                    else if (twoParts != 2)
+                    else if (authoredHalf != null)
                     {
-                        constraintedPoint = flag ? starL : starR;
+                        constraintedPoint = authoredHalf;
                     }
                 }
 
-                CandyContext ropeTarget = CandyForPoint(constraintedPoint);
-                if (NormalRopeLoad.ShouldCreate(ropeTarget.inLantern))
+                // A part="L"/"R" grab binds to a half, so the owner lookup has to resolve halves too;
+                // an unowned point (no candy at all) simply carries no lantern state.
+                CandyContext ropeTarget = CandyForPointOrNull(constraintedPoint);
+                if (NormalRopeLoad.ShouldCreate(ropeTarget?.inLantern == true))
                 {
                     Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
@@ -128,11 +127,9 @@ namespace CutTheRopeDX.GameMain
             grab.SetMoveLengthVerticalOffset(grab.mover != null ? 0f : k, v, o);
             if (grab.gun && grab.gunArrow != null)
             {
-                ConstraintedPoint constraintedPoint = star;
-                if (twoParts != 2)
-                {
-                    constraintedPoint = flag ? starL : starR;
-                }
+                SplitCandyState split = candies[0].Lifecycle.Split;
+                ConstraintedPoint constraintedPoint = split == null ? star
+                    : flag ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
                 grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
             }

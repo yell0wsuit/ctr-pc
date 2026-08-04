@@ -26,14 +26,14 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < count; i++)
             {
                 CandyContext ca = candies[i];
-                if (!CandyCollision.ShouldParticipate(ca.noCandy, ca.inLantern))
+                if (!CandyCollision.ShouldParticipate(ca.HasNoWholeBodyInPlay, ca.inLantern))
                 {
                     continue;
                 }
                 for (int j = i + 1; j < count; j++)
                 {
                     CandyContext cb = candies[j];
-                    if (!CandyCollision.ShouldParticipate(cb.noCandy, cb.inLantern))
+                    if (!CandyCollision.ShouldParticipate(cb.HasNoWholeBodyInPlay, cb.inLantern))
                     {
                         continue;
                     }
@@ -42,26 +42,29 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
+                    // Only whole bodies collide, so each candy contributes exactly one point here.
+                    ConstraintedPoint pa = ca.WholeBody.Point;
+                    ConstraintedPoint pb = cb.WholeBody.Point;
                     if (!CandyCollision.ShouldUseHtmlModel(ca, cb, ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
                         // Mobile-style: radius-sum trigger + de-penetration.
                         float collisionDist = CandyCollision.PairDistance(ca, cb);
-                        float dx = ca.point.pos.X - cb.point.pos.X;
-                        float dy = ca.point.pos.Y - cb.point.pos.Y;
+                        float dx = pa.pos.X - pb.pos.X;
+                        float dy = pa.pos.Y - pb.pos.Y;
                         if (((dx * dx) + (dy * dy)) < (collisionDist * collisionDist))
                         {
-                            HandleCandyIntersection(ca.point, cb.point, collisionDist);
+                            HandleCandyIntersection(pa, pb, collisionDist);
                         }
                     }
                     else
                     {
                         // PC: 0.9 * candy body width trigger (≈ surface touch, + closing-in guard + velocity-only nudge.
                         (int, int) key = (i, j);
-                        float distance = VectDistance(ca.point.pos, cb.point.pos);
+                        float distance = VectDistance(pa.pos, pb.pos);
                         float previousDistance = candyPairPrevDistance.GetValueOrDefault(key);
                         if (CandyCollision.ShouldHtmlNudge(distance, previousDistance, GetCandyBoundingBox().w))
                         {
-                            ResolveCandyPairHtml(ca.point, cb.point, delta);
+                            ResolveCandyPairHtml(pa, pb, delta);
                         }
                         candyPairPrevDistance[key] = distance;
                     }

@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesRising);
 
-            Assert.Same(bubble, candy.bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
         }
 
         [Fact]

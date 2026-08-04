@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
@@ -137,12 +138,90 @@ namespace CutTheRopeDX.Tests.Interactions
             return (RecordingSceneDelegate)scene.gameSceneDelegate;
         }
 
-        /// <summary>Whether the scene considers the primary candy consumed.</summary>
+        /// <summary>Every physical candy body the scene currently offers to its systems.</summary>
         /// <param name="scene">Scene to read.</param>
-        /// <returns><see langword="true"/> when the primary candy is gone.</returns>
+        /// <returns>The active bodies, in scene enumeration order.</returns>
+        public static List<CandyBody> ActiveBodies(this GameScene scene)
+        {
+            return [.. scene.ActiveCandyBodies()];
+        }
+
+        /// <summary>
+        /// The active bodies one scene system is allowed to act on. Reads the scene's own filtered
+        /// enumerator, so a system that stopped consulting <see cref="CandyBodyEligibility"/> fails
+        /// here rather than being re-derived by the test.
+        /// </summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="interaction">The scene system asking for candidates.</param>
+        /// <returns>The eligible active bodies, in scene enumeration order.</returns>
+        public static List<CandyBody> ActiveBodies(this GameScene scene, CandyInteraction interaction)
+        {
+            return [.. scene.ActiveCandyBodies(interaction)];
+        }
+
+        /// <summary>The active body standing on a physics point, or null when no body owns it.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="point">Physics point to resolve.</param>
+        /// <returns>The owning body, or <see langword="null"/>.</returns>
+        public static CandyBody BodyForPoint(this GameScene scene, ConstraintedPoint point)
+        {
+            return scene.CandyBodyForPointOrNull(point);
+        }
+
+        /// <summary>
+        /// The rest length of the leash a rocket created when it bound a candy - the reach it will
+        /// reel in. It has to be measured to the candy the rocket actually bound; a rocket that took
+        /// its reach from whichever candy was primary gets a leash that is slack or snaps.
+        /// </summary>
+        /// <param name="rocket">Rocket to inspect.</param>
+        /// <param name="candy">Candy the rocket is expected to have bound.</param>
+        /// <returns>The rest length, or <see langword="null"/> when the rocket holds no leash on it.</returns>
+        public static float? BindReach(this Rocket rocket, CandyContext candy)
+        {
+            foreach (Constraint constraint in rocket.point.constraints)
+            {
+                if (constraint.cp == candy.WholeBody.Point)
+                {
+                    return constraint.restLength;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// The grab whose hook sits closest to a world position. Shipped levels are addressed by
+        /// where their hooks are authored, so a test names the rope it cuts the way a player sees it
+        /// rather than by an index into load order.
+        /// </summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="world">World position to search near.</param>
+        /// <returns>The nearest grab.</returns>
+        public static Grab GrabNearestTo(this GameScene scene, Vector world)
+        {
+            Grab nearest = null;
+            float best = float.MaxValue;
+            foreach (Grab grab in scene.Grabs())
+            {
+                float dx = grab.x - world.X;
+                float dy = grab.y - world.Y;
+                float distance = (dx * dx) + (dy * dy);
+                if (distance < best)
+                {
+                    best = distance;
+                    nearest = grab;
+                }
+            }
+
+            return nearest;
+        }
+
+        /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns><see langword="true"/> when the primary candy is removed, hidden, or split.</returns>
         public static bool PrimaryCandyGone(this GameScene scene)
         {
-            return Field<bool>(scene, "noCandy");
+            return scene.Candies()[0].HasNoWholeBodyInPlay;
         }
 
         /// <summary>Ropes still attached (uncut) to the given candy.</summary>
@@ -154,7 +233,7 @@ namespace CutTheRopeDX.Tests.Interactions
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.rope != null && grab.rope.tail == candy.point && grab.rope.cut == -1)
+                if (grab.rope != null && grab.rope.tail == candy.WholeBody.Point && grab.rope.cut == -1)
                 {
                     count++;
                 }
@@ -169,7 +248,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The count of active snails on this candy.</returns>
         public static int SnailCount(this GameScene scene, CandyContext candy)
         {
-            return scene.ActiveSnailCountForPoint(candy.point);
+            return scene.ActiveSnailCountForPoint(candy.WholeBody.Point);
         }
 
         /// <summary>Whether the mouse system currently carries the given candy.</summary>
@@ -180,7 +259,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             MiceObject mice = Field<MiceObject>(scene, "miceManager");
             ConstraintedPoint carried = mice?.ActiveMouseCarriedStar();
-            return carried != null && carried == candy.point;
+            return carried != null && carried == candy.WholeBody.Point;
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>
