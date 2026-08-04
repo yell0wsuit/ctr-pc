@@ -647,18 +647,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indices">The index buffer describing triangle order.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
-            FlushQuads();
-            BasicEffect effect = GetEffect(true, false);
-            if (effect.Alpha == 0f)
-            {
-                return;
-            }
-            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
-            {
-                effectPass.Apply();
-                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indices.Length, indices.Length / 3);
-            }
-            s_LastVertices_PositionNormalTexture = vertices;
+            DrawTriangleList(vertices, indices, indices.Length);
         }
 
         /// <summary>
@@ -669,6 +658,10 @@ namespace CutTheRopeDX.Desktop
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
         public static void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
+            if (TrySubmitQuadList(vertices, indices, indexCount))
+            {
+                return;
+            }
             FlushQuads();
             BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
@@ -940,11 +933,67 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Attempts to queue a four-vertex textured sprite.
+        /// Attempts to queue a textured triangle strip, which stages as one quad per pair of vertices past
+        /// the first pair. A four-vertex strip is the single-sprite case of that.
         /// </summary>
         private static bool TrySubmitQuad(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
-            if (vertexCount != 4)
+            int quadCount = QuadBatch.StripQuadCount(vertexCount);
+            if (quadCount == 0 || vertices.Length < vertexCount)
+            {
+                return false;
+            }
+            if (!TryOpenBatchSlot(quadCount, out QuadBatchKey key, out bool skip))
+            {
+                return skip;
+            }
+            s_quadBatch.AppendStrip(vertices, vertexCount, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
+            s_LastVertices_PositionNormalTexture = vertices;
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to queue an indexed textured triangle list whose indices describe independent quads,
+        /// which is what the multi-drawers and every particle system submit.
+        /// </summary>
+        private static bool TrySubmitQuadList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
+        {
+            if (indexCount <= 0 || indexCount % 6 != 0)
+            {
+                return false;
+            }
+            int quadCount = indexCount / 6;
+            if (vertices.Length < quadCount * 4 || !QuadIndexPattern.Matches(indices, quadCount))
+            {
+                return false;
+            }
+            if (!TryOpenBatchSlot(quadCount, out QuadBatchKey key, out bool skip))
+            {
+                return skip;
+            }
+            s_quadBatch.AppendQuads(vertices, quadCount, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
+            s_LastVertices_PositionNormalTexture = vertices;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks the renderer state a batched submission needs and makes room for
+        /// <paramref name="quadCount"/> quads, flushing first when the pending batch cannot take them.
+        /// </summary>
+        /// <param name="quadCount">Number of quads about to be staged.</param>
+        /// <param name="key">The compatibility key the caller should stage under.</param>
+        /// <param name="skip">
+        /// What the caller should report when this returns <see langword="false"/>: <see langword="true"/>
+        /// when the draw is invisible and has been handled by dropping it, <see langword="false"/> when it
+        /// has to go down the unbatched path.
+        /// </param>
+        /// <returns><see langword="true"/> when the caller may stage its quads.</returns>
+        private static bool TryOpenBatchSlot(int quadCount, out QuadBatchKey key, out bool skip)
+        {
+            key = default;
+            skip = false;
+            // Larger than the batch will ever hold: no amount of flushing makes room.
+            if (quadCount > QuadBatch.Capacity)
             {
                 return false;
             }
@@ -954,20 +1003,19 @@ namespace CutTheRopeDX.Desktop
             }
             if (QuadBaking.IsInvisible(s_Color))
             {
-                return true;
+                skip = true;
+                return false;
             }
             BlendParams.BlendType blend = s_Blend.Snapshot();
             if (blend == BlendParams.BlendType.Unknown)
             {
                 return false;
             }
-            QuadBatchKey key = new(s_Texture.xnaTexture_, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
-            if (s_quadBatch.IsFull || !s_quadBatch.CanAccept(key))
+            key = new QuadBatchKey(s_Texture.xnaTexture_, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
+            if (s_quadBatch.RemainingCapacity < quadCount || !s_quadBatch.CanAccept(key))
             {
                 FlushQuads();
             }
-            s_quadBatch.Append(vertices, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
-            s_LastVertices_PositionNormalTexture = vertices;
             return true;
         }
 

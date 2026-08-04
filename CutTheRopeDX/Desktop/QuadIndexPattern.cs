@@ -35,5 +35,51 @@ namespace CutTheRopeDX.Desktop
             }
             return indices;
         }
+
+        /// <summary>
+        /// Whether <paramref name="indices"/> describes <paramref name="quadCount"/> independent quads in
+        /// the layout this batch draws, so the caller's vertices can be staged and drawn through the shared
+        /// index buffer instead of getting a draw call of their own.
+        /// </summary>
+        /// <param name="indices">Index data submitted by the caller.</param>
+        /// <param name="quadCount">Number of quads the caller is drawing.</param>
+        /// <returns><see langword="true"/> when the vertices can be staged as batched quads.</returns>
+        /// <remarks>
+        /// Two windings of the second triangle are accepted, because both occur in the game: the one
+        /// <see cref="Build"/> emits, and the mirrored one <c>ImageMultiDrawer</c> builds for the particle
+        /// drawers. They cover the same three vertices, and cull mode is None, so they rasterize alike.
+        /// Anything else is rejected rather than guessed at: a quad split along its other diagonal covers
+        /// the same area but interpolates across it differently, which is not a substitution to make
+        /// silently.
+        /// </remarks>
+        public static bool Matches(short[] indices, int quadCount)
+        {
+            if (indices == null || quadCount < 0 || indices.Length < quadCount * 6)
+            {
+                return false;
+            }
+            for (int quad = 0; quad < quadCount; quad++)
+            {
+                int index = quad * 6;
+                int vertex = quad * 4;
+                if (indices[index] != vertex
+                    || indices[index + 1] != vertex + 1
+                    || indices[index + 2] != vertex + 2)
+                {
+                    return false;
+                }
+                bool batchWinding = indices[index + 3] == vertex + 2
+                    && indices[index + 4] == vertex + 1
+                    && indices[index + 5] == vertex + 3;
+                bool drawerWinding = indices[index + 3] == vertex + 3
+                    && indices[index + 4] == vertex + 2
+                    && indices[index + 5] == vertex + 1;
+                if (!batchWinding && !drawerWinding)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
