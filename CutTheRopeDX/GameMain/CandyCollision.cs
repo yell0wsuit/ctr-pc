@@ -34,6 +34,18 @@ namespace CutTheRopeDX.GameMain
             return !hasNoWholeBodyInPlay && !inLantern;
         }
 
+        /// <summary>
+        /// Whether a candy-like body takes part in candy-to-candy collision: its lifecycle must leave
+        /// a whole body in play, no lantern may hold it, and its capabilities must allow body collision
+        /// (an axe, for instance, is a physical hazard that does not push candies around).
+        /// </summary>
+        public static bool ShouldParticipate(CandyContext ctx)
+        {
+            return ctx != null
+                && ShouldParticipate(ctx.HasNoWholeBodyInPlay, ctx.inLantern)
+                && ctx.Capabilities.CanCollideWithCandyBodies;
+        }
+
         public static float PairDistance(CandyContext a, CandyContext b)
         {
             return a.collisionDistanceOverride.HasValue || b.collisionDistanceOverride.HasValue

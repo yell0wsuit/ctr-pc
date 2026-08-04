@@ -413,6 +413,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Returns the hook texture atlas for this grab's attached rope.
+        /// </summary>
+        /// <returns>The chain hook atlas for chain bungees; otherwise the default hook atlas.</returns>
+        internal string GetHookTextureResource()
+        {
+            return rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
+        }
+
+        /// <summary>
         /// Configures this grab as a launcher that oscillates along a circular path.
         /// </summary>
         public void SetLauncher()
@@ -500,11 +509,12 @@ namespace CutTheRopeDX.GameMain
             }
             else if (radius == -1f)
             {
-                int hookBaseQuad = RandomHookBaseQuad();
-                back = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad);
+                string hookTexture = GetHookTextureResource();
+                int hookBaseQuad = hookTexture == Resources.Img.ObjHookChain ? Hook01BackQuad : RandomHookBaseQuad();
+                back = Image_createWithResIDQuad(hookTexture, hookBaseQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(Resources.Img.ObjHook, hookBaseQuad + 1);
+                front = Image_createWithResIDQuad(hookTexture, hookBaseQuad + 1);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
@@ -513,10 +523,14 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                back = Image_createWithResIDQuad(Resources.Img.ObjHook, HookAutoBackQuad);
+                // A chain auto-hook (breakable="false") uses the dedicated chain auto-hook atlas.
+                string autoTexture = cutOnlyByAxe ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHook;
+                int autoBackQuad = cutOnlyByAxe ? HookAutoChainBackQuad : HookAutoBackQuad;
+                int autoFrontQuad = cutOnlyByAxe ? HookAutoChainFrontQuad : HookAutoFrontQuad;
+                back = Image_createWithResIDQuad(autoTexture, autoBackQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(Resources.Img.ObjHook, HookAutoFrontQuad);
+                front = Image_createWithResIDQuad(autoTexture, autoFrontQuad);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
@@ -823,6 +837,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Grab radius used for rope creation and radius visualization.</summary>
         public float radius;
 
+        /// <summary>
+        /// Whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain hook
+        /// sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs (those
+        /// with a <see cref="radius"/>) this drives the <see cref="Resources.Img.ObjHookAutoChain"/>
+        /// variant and is applied to the rope created on attach.
+        /// </summary>
+        public bool cutOnlyByAxe;
+
         /// <summary>Alpha multiplier for the grab-radius visualization.</summary>
         public float radiusAlpha;
 
@@ -998,6 +1020,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Automatic-radius hook front quad.</summary>
         private const int HookAutoFrontQuad = 5;
+
+        /// <summary>Automatic-radius chain hook back quad (in the <see cref="Resources.Img.ObjHookAutoChain"/> atlas).</summary>
+        private const int HookAutoChainBackQuad = 0;
+
+        /// <summary>Automatic-radius chain hook front quad (in the <see cref="Resources.Img.ObjHookAutoChain"/> atlas).</summary>
+        private const int HookAutoChainFrontQuad = 1;
 
         /// <summary>Movable rail left cap quad.</summary>
         private const int MovableRailLeftQuad = 6;

@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
@@ -38,7 +39,16 @@ namespace CutTheRopeDX.GameMain
             _ = bool.TryParse(xmlNode.Attribute("bindBulb")?.Value, out bool bindBulb);
             string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
             _ = bool.TryParse(xmlNode.Attribute("gun")?.Value, out bool gun);
+            // `breakable` defaults to true (a normal, finger-cuttable rope). Only an explicit
+            // breakable="false" marks a chain, matching the original (it calls setUnBreakable when
+            // the attribute is not "true").
+            bool breakable = GetBoolAttribute(xmlNode, "breakable", defaultValue: true);
+            bool axed = HasTrueAttribute(xmlNode, "axed");
             string grabCandyNumber = xmlNode.Attribute("candyNumber")?.Value;
+            string grabAxeNumber = AxeGrabBinding.ResolveAxeNumber(
+                grabCandyNumber,
+                xmlNode.Attribute("axeNumber")?.Value,
+                axed);
             Grab grab = new();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
@@ -50,6 +60,7 @@ namespace CutTheRopeDX.GameMain
             grab.kickable = kickable;
             grab.kicked = kicked;
             grab.invisible = invisible;
+            grab.cutOnlyByAxe = !breakable;
             grab.SetSpider(spider);
             grab.ParseMover(xmlNode);
             if (grab.mover != null)
@@ -79,8 +90,25 @@ namespace CutTheRopeDX.GameMain
             if (grabRadius == -1f && !gun)
             {
                 ConstraintedPoint constraintedPoint;
-                CandyContext targetCandy = grabCandyNumber != null ? FindCandyByNumber(grabCandyNumber) : null;
-                if (targetCandy != null)
+                CandyContext targetAxe = grabAxeNumber != null ? FindAxeByNumber(grabAxeNumber) : null;
+                CandyContext targetCandy = targetAxe == null && grabCandyNumber != null ? FindCandyByNumber(grabCandyNumber) : null;
+                // Single-candy / split-candy behavior: the primary candy's split state, built
+                // from the same metadata pass, says which half a part="L"/"R" grab binds to.
+                SplitCandyState split = candies[0].Lifecycle.Split;
+                ConstraintedPoint authoredHalf = split == null ? null
+                    : flag ? split.Left.Body.Point : split.Right.Body.Point;
+                if (bindBulb)
+                {
+                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
+                    CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
+                    constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
+                }
+                else if (targetAxe != null)
+                {
+                    grab.candyNumber = 0;
+                    constraintedPoint = targetAxe.WholeBody.Point;
+                }
+                else if (targetCandy != null)
                 {
                     // Multi-candy: bind to the candy named by candyNumber.
                     grab.candyNumber = 0;
@@ -88,22 +116,8 @@ namespace CutTheRopeDX.GameMain
                 }
                 else
                 {
-                    // Single-candy / split-candy behavior: the primary candy's split state, built
-                    // from the same metadata pass, says which half a part="L"/"R" grab binds to.
-                    SplitCandyState split = candies[0].Lifecycle.Split;
-                    ConstraintedPoint authoredHalf = split == null ? null
-                        : flag ? split.Left.Body.Point : split.Right.Body.Point;
                     grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
-                    constraintedPoint = star;
-                    if (bindBulb)
-                    {
-                        CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
-                        constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
-                    }
-                    else if (authoredHalf != null)
-                    {
-                        constraintedPoint = authoredHalf;
-                    }
+                    constraintedPoint = authoredHalf ?? star;
                 }
 
                 // A part="L"/"R" grab binds to a half, so the owner lookup has to resolve halves too;
@@ -113,6 +127,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+                    if (!breakable)
+                    {
+                        // breakable="false" is a chain: it renders as a chain and can only be cut by the
+                        // axe (the original's single `isUnBreakable` flag). `axed`/axeNumber is purely a
+                        // bind target and does not make the rope axe-only.
+                        bungee.SetCutOnlyByAxe();
+                    }
                     grab.SetRope(bungee);
                     if (grab.kicked)
                     {
@@ -147,6 +168,60 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return null;
+        }
+
+        /// <summary>Finds the axe whose <c>axeNumber</c> matches, or null. See <see cref="CandyMatch"/>.</summary>
+        private CandyContext FindAxeByNumber(string number)
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (CandyMatch.Matches(candies[i].axeNumber, number))
+                {
+                    return candies[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Reads a boolean attribute by local name, allowing older imported Time Travel names as aliases.
+        /// </summary>
+        /// <param name="node">XML node to inspect.</param>
+        /// <param name="name">Attribute local name.</param>
+        /// <returns><see langword="true"/> when the attribute exists and parses true.</returns>
+        private static bool HasTrueAttribute(XElement node, string name)
+        {
+            return GetBoolAttribute(node, name, defaultValue: false);
+        }
+
+        /// <summary>
+        /// Reads a boolean attribute by local name, returning <paramref name="defaultValue"/> when the
+        /// attribute is absent. Allows imported Time Travel names as aliases.
+        /// </summary>
+        /// <param name="node">XML node to inspect.</param>
+        /// <param name="name">Attribute local name.</param>
+        /// <param name="defaultValue">Value returned when the attribute is not present.</param>
+        /// <returns>The parsed boolean, or <paramref name="defaultValue"/> when absent.</returns>
+        private static bool GetBoolAttribute(XElement node, string name, bool defaultValue)
+        {
+            foreach (XAttribute attribute in node.Attributes())
+            {
+                if (attribute.Name.LocalName == name)
+                {
+                    return IsTruthy(attribute.Value);
+                }
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Parses imported boolean-like values used by level XML.
+        /// </summary>
+        /// <param name="value">Attribute value.</param>
+        /// <returns><see langword="true"/> for <c>true</c> or <c>1</c>.</returns>
+        private static bool IsTruthy(string value)
+        {
+            return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) || value == "1";
         }
 
     }

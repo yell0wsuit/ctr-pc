@@ -23,10 +23,15 @@ from pathlib import Path
 
 BINARY_EXTS = {".png", ".wav", ".ogg", ".mp4", ".ttf", ".otf", ".cur", ".xnb", ".wmv"}
 INCLUDE_DIRS = ("fonts", "images", "sounds", "video_hd")
-INCLUDE_FILES = ("cursor_windows.cur", "cursor_active_windows.cur")
 EXCLUDE_NAMES = {".DS_Store"}
 MANIFEST_NAME = "file_manifest.json"
 CHUNK = 1 << 20  # 1 MiB
+
+# Content revision recorded in the manifest. Bump it whenever a rebuild adds or changes
+# binary assets a new game build depends on, in the same change that publishes the
+# bundle - never before, or clients would be told they are behind a release that
+# doesn't exist yet.
+CONTENT_VERSION = 2
 
 
 def _sha256(path: Path) -> str:
@@ -45,26 +50,31 @@ def collect(content: Path) -> list[Path]:
         if not root.is_dir():
             print(f"warning: missing folder {root}", file=sys.stderr)
             continue
-        found += [p for p in root.rglob("*") if p.is_file() and p.name not in EXCLUDE_NAMES]
-    for name in INCLUDE_FILES:
-        f = content / name
-        if f.is_file():
-            found.append(f)
-        else:
-            print(f"warning: missing file {f}", file=sys.stderr)
+        found += [
+            p for p in root.rglob("*") if p.is_file() and p.name not in EXCLUDE_NAMES
+        ]
     return found
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("content_dir", type=Path, help="path to the content/ tree")
     parser.add_argument(
-        "-o", "--output", type=Path, default=Path("ctrdx-assets-vk.zip"),
-        help="output zip path (default: ./ctrdx-assets-vk.zip)")
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("ctrdx-assets-vk.zip"),
+        help="output zip path (default: ./ctrdx-assets-vk.zip)",
+    )
     parser.add_argument(
-        "-m", "--manifest", type=Path, default=None,
-        help=f"manifest path (default: <content_dir>/{MANIFEST_NAME})")
+        "-m",
+        "--manifest",
+        type=Path,
+        default=None,
+        help=f"manifest path (default: <content_dir>/{MANIFEST_NAME})",
+    )
     args = parser.parse_args()
 
     content = args.content_dir.resolve()
@@ -80,11 +90,17 @@ def main() -> int:
     # Manifest covers only the binary assets the build fetches.
     manifest = {
         p.relative_to(content).as_posix(): _sha256(p)
-        for p in files if p.suffix.lower() in BINARY_EXTS
+        for p in files
+        if p.suffix.lower() in BINARY_EXTS
     }
     manifest_path = args.manifest or (content / MANIFEST_NAME)
-    manifest_path.write_text(json.dumps({"files": manifest}, indent=4) + "\n", encoding="utf-8")
-    print(f"Wrote {len(manifest)} binary entries to {manifest_path}")
+    manifest_path.write_text(
+        json.dumps({"version": CONTENT_VERSION, "files": manifest}, indent=4) + "\n",
+        encoding="utf-8",
+    )
+    print(
+        f"Wrote {len(manifest)} binary entries (version {CONTENT_VERSION}) to {manifest_path}"
+    )
 
     # Zip the full snapshot (max deflate), with the manifest at the root.
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -94,7 +110,9 @@ def main() -> int:
         zf.write(manifest_path, MANIFEST_NAME)
 
     size_mb = args.output.stat().st_size / (1 << 20)
-    print(f"Zipped {len(files)} files + {MANIFEST_NAME} to {args.output} ({size_mb:.1f} MiB)")
+    print(
+        f"Zipped {len(files)} files + {MANIFEST_NAME} to {args.output} ({size_mb:.1f} MiB)"
+    )
     return 0
 
 

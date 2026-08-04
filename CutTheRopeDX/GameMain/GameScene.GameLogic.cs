@@ -679,6 +679,128 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Lazily-parsed chain-cut burst effect, shared across all spawns.
+        /// </summary>
+        private static FlashXmlOneShotEffect s_chainCutEffect;
+
+        /// <summary>
+        /// Calculates the chain break debris angle from the candy motion, matching the original
+        /// <c>ChainBreak::initWith(atan2(current - previous))</c> call site.
+        /// </summary>
+        /// <param name="point">Candy physics point whose motion cut the chain.</param>
+        /// <returns>Motion angle in degrees, or -90 when no previous position is available.</returns>
+        internal static float GetChainCutSwingAngleDegrees(ConstraintedPoint point)
+        {
+            return point == null || point.prevPos.X == UNDEFINED_COORDINATE
+                ? -90f
+                : RADIANS_TO_DEGREES(MathF.Atan2(
+                    point.pos.Y - point.prevPos.Y,
+                    point.pos.X - point.prevPos.X));
+        }
+
+        /// <summary>
+        /// Spawns the chain-cut burst animation at a world position and plays the chain-cut sound.
+        /// Reusable hook: called wherever a breakable (chain) rope is cut, including the future axe path.
+        /// </summary>
+        /// <param name="x">World-space X for the burst.</param>
+        /// <param name="y">World-space Y for the burst.</param>
+        /// <param name="swingAngleDegrees">Direction the debris is flung (the cutter's swing direction in the original); defaults to upward.</param>
+        public void SpawnChainCutEffectAtXY(float x, float y, float swingAngleDegrees = -90f)
+        {
+            s_chainCutEffect ??= new FlashXmlOneShotEffect("fx_cut_chain.xml", Resources.Img.FxCutChain);
+            s_chainCutEffect.SpawnInto(aniPool, x, y, 0);
+            SpawnChainCutDebris(x, y, swingAngleDegrees);
+            SpawnChainFlashLight(x, y, swingAngleDegrees);
+            CTRSoundMgr.PlaySound(Resources.Snd.ChainCut);
+        }
+
+        /// <summary>
+        /// Breaks candy bodies that touch a Time Travel axe blade. Mirrors the spike pass: one
+        /// sweep over every hazard-eligible body (whole candies and split halves alike), breaking
+        /// the first one the blade reaches.
+        /// </summary>
+        /// <returns><see langword="true"/> when a body was broken and update should stop.</returns>
+        private bool BreakCandyTouchedByAxes()
+        {
+            for (int ai = 0; ai < candies.Count; ai++)
+            {
+                CandyContext axeCtx = candies[ai];
+                if (axeCtx.axe == null || axeCtx.HasNoWholeBodyInPlay)
+                {
+                    continue;
+                }
+
+                ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+                foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
+                {
+                    CandyContext ctx = body.Owner;
+                    if (!ctx.Capabilities.CanBeBrokenByHazards || ctx.inLantern)
+                    {
+                        continue;
+                    }
+
+                    if (VectDistance(body.Point.pos, bladePoint.pos) > AxeDefinition.HazardCollisionDistance)
+                    {
+                        continue;
+                    }
+
+                    BreakCandyBody(body);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Spawns the additive spark burst at a world position.
+        /// </summary>
+        /// <param name="x">World-space X for the sparks.</param>
+        /// <param name="y">World-space Y for the sparks.</param>
+        /// <param name="swingAngleDegrees">Direction the sparks are flung (the cutter's swing direction in the original).</param>
+        private void SpawnChainFlashLight(float x, float y, float swingAngleDegrees)
+        {
+            Image grid = Image.Image_createWithResID(Resources.Img.FxCutChain);
+            grid.DoRestoreCutTransparency();
+            ChainFlashLight sparks = (ChainFlashLight)new ChainFlashLight().InitWithTotalParticlesandImageGrid(10, grid);
+            sparks.angle = swingAngleDegrees;
+            if (gravityButton != null && !gravityNormal)
+            {
+                sparks.gravity.Y = -sparks.gravity.Y;
+                sparks.angle = -swingAngleDegrees;
+            }
+            sparks.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+            sparks.x = x;
+            sparks.y = y;
+            sparks.StartSystem(10);
+            _ = aniPool.AddChild(sparks);
+        }
+
+        /// <summary>
+        /// Spawns the two chain-link debris fragments at a world position.
+        /// </summary>
+        /// <param name="x">World-space X for the debris.</param>
+        /// <param name="y">World-space Y for the debris.</param>
+        /// <param name="swingAngleDegrees">Direction the fragments are flung (the cutter's swing direction in the original).</param>
+        private void SpawnChainCutDebris(float x, float y, float swingAngleDegrees)
+        {
+            Image grid = Image.Image_createWithResID(Resources.Img.FxCutChain);
+            grid.DoRestoreCutTransparency();
+            ChainCutDebris debris = (ChainCutDebris)new ChainCutDebris().InitWithTotalParticlesandImageGrid(2, grid);
+            debris.angle = swingAngleDegrees;
+            if (gravityButton != null && !gravityNormal)
+            {
+                debris.gravity.Y = -debris.gravity.Y;
+                debris.angle = -swingAngleDegrees;
+            }
+            debris.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
+            debris.x = x;
+            debris.y = y;
+            debris.StartSystem(2);
+            _ = aniPool.AddChild(debris);
+        }
+
+        /// <summary>
         /// Spawns the candy-break particle burst at a world position and plays the break sound.
         /// </summary>
         /// <param name="bx">World-space X for the burst.</param>

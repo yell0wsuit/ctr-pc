@@ -769,6 +769,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether the level joins its two candies with the connecting elastic.</summary>
         private bool candiesConnected;
 
+        /// <summary>
+        /// Whether the connecting elastic is finger-cuttable. Defaults to <see langword="true"/>
+        /// (a normal rope); only an explicit <c>candiesConnectedBreakable="false"</c> makes it a
+        /// chain, mirroring grab <c>breakable</c>. (The original defaulted the connector to a chain;
+        /// this default is chosen for consistency with <c>breakable</c>.)
+        /// </summary>
+        private bool candiesConnectedBreakable;
+
         /// <summary>Rest/limit length of the connecting elastic, already scaled.</summary>
         private float candiesConnectedLength;
 

@@ -1210,6 +1210,11 @@ namespace CutTheRopeDX.GameMain
                 razor.Update(delta);
                 _ = CutWithRazorOrLine1Line2Immediate(razor, vectZero, vectZero, false);
             }
+            CutAxeOnlyChainsWithAxes();
+            if (BreakCandyTouchedByAxes())
+            {
+                return;
+            }
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
@@ -1676,6 +1681,10 @@ namespace CutTheRopeDX.GameMain
             CandyContext ctx = body.Owner;
             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+            if (grab.cutOnlyByAxe)
+            {
+                bungee.SetCutOnlyByAxe();
+            }
             grab.hideRadius = true;
             grab.SetRope(bungee);
             if (ctx.HasActiveRocket)

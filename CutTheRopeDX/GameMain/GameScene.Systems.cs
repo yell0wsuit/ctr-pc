@@ -335,6 +335,12 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (flag)
                         {
+                            // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
+                            // finger/razor never cuts them.
+                            if (rope.cutOnlyByAxe)
+                            {
+                                continue;
+                            }
                             ropesCutCount++;
                             if (grab.hasSpider && grab.spiderActive)
                             {
@@ -364,7 +370,8 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // candiesConnected elastic: not in `bungees`, so test it with the same per-segment cut.
-            if (candyConnector != null && candyConnector.cut == -1)
+            // A chain connector (candiesConnectedBreakable="false") is axe-only, never finger-cut.
+            if (candyConnector != null && candyConnector.cut == -1 && !candyConnector.cutOnlyByAxe)
             {
                 for (int j = 0; j < candyConnector.parts.Count - 1; j++)
                 {
@@ -409,6 +416,75 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return ropesCutCount;
+        }
+
+        /// <summary>
+        /// Cuts axe-only chains when an active Time Travel axe blade overlaps a chain point.
+        /// Mirrors the original <c>cutTheUnbreakable</c> radius check.
+        /// </summary>
+        private void CutAxeOnlyChainsWithAxes()
+        {
+            for (int ci = 0; ci < candies.Count; ci++)
+            {
+                CandyContext axeCtx = candies[ci];
+                if (axeCtx.axe == null || axeCtx.HasNoWholeBodyInPlay)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i < bungees.Count; i++)
+                {
+                    Grab grab = bungees[i];
+                    Bungee rope = grab.rope;
+                    if (rope == null || rope.cut != -1 || !rope.cutOnlyByAxe)
+                    {
+                        continue;
+                    }
+
+                    if (TryCutAxeOnlyChain(axeCtx, rope))
+                    {
+                        break;
+                    }
+                }
+
+                // candiesConnected elastic: not in `bungees`. The axe also severs a chain connector
+                // (candiesConnectedBreakable="false"), matching the original cutTheUnbreakable's
+                // separate candyConnector block.
+                if (candyConnector != null && candyConnector.cut == -1 && candyConnector.cutOnlyByAxe)
+                {
+                    _ = TryCutAxeOnlyChain(axeCtx, candyConnector);
+                }
+            }
+        }
+
+        private bool TryCutAxeOnlyChain(CandyContext axeCtx, Bungee rope)
+        {
+            ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+            for (int i = 0; i < rope.parts.Count; i++)
+            {
+                ConstraintedPoint part = rope.parts[i];
+                if (part == null || ReferenceEquals(part, bladePoint))
+                {
+                    continue;
+                }
+
+                if (VectDistance(part.pos, bladePoint.pos) > AxeDefinition.ChainCutRadius)
+                {
+                    continue;
+                }
+
+                int cutPart = MIN(i, rope.parts.Count - 2);
+                if (cutPart < 0)
+                {
+                    return false;
+                }
+
+                rope.SetCut(cutPart);
+                SpawnChainCutEffectAtXY(part.pos.X, part.pos.Y, GetChainCutSwingAngleDegrees(bladePoint));
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
