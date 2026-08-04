@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
 
@@ -184,6 +185,29 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
+        /// Binds the scene render target for the frame about to be drawn, without clearing it.
+        /// </summary>
+        /// <remarks>
+        /// The engine clears at the top of its scene draw, before <see cref="SetViewport"/> has bound
+        /// anything, so that clear used to land on the back buffer: a full-resolution write of a surface
+        /// nothing reads, on top of the one <see cref="SetViewport"/> then does on the render target.
+        /// Binding here first makes it clear the surface it means to clear. No clear of its own, because
+        /// the two that already run per frame are exactly the ones that should define the contents.
+        /// <para>
+        /// Does nothing before the first <see cref="SetViewport"/> creates the target, and after
+        /// <see cref="DetachRenderTarget"/> hands it away; the back buffer stays bound in both cases,
+        /// which is what those frames draw to anyway.
+        /// </para>
+        /// </remarks>
+        public static void BindSceneTarget()
+        {
+            if (s_RenderTarget != null)
+            {
+                Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
+            }
+        }
+
+        /// <summary>
         /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
         /// Used for screen capture operations.
         /// </summary>
@@ -200,17 +224,47 @@ namespace CutTheRopeDX.Desktop
         /// Copies the render target contents to the screen.
         /// Applies scaling to fit the display in both windowed and fullscreen modes.
         /// </summary>
+        /// <remarks>
+        /// This is the one pass that runs at the full back-buffer resolution, so on the software renderer
+        /// it costs more than everything drawn into the render target put together whenever that target is
+        /// capped. It is written to touch each back-buffer pixel once: opaque rather than alpha blended, so
+        /// no pixel is read back before being written, and the clear is skipped unless there are letterbox
+        /// bars for it to fill.
+        /// </remarks>
         public static void CopyFromRenderTargetToScreen()
         {
             FlushQuads();
-            if (s_RenderTarget != null)
+            if (s_RenderTarget == null)
+            {
+                return;
+            }
+            Rectangle destination = Global.ScreenSizeManager.ScaledViewRect;
+            if (!CoversBackBuffer(destination))
             {
                 Global.GraphicsDevice.Clear(Color.Black);
-                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
-                Global.SpriteBatch.End();
-                BlendParams.InvalidateDeviceCache();
             }
+            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, ScreenBlitSampler, null, null, null, null);
+            Global.SpriteBatch.Draw(s_RenderTarget, destination, Color.White);
+            Global.SpriteBatch.End();
+            BlendParams.InvalidateDeviceCache();
+        }
+
+        /// <summary>
+        /// Returns whether <paramref name="destination"/> spans the whole back buffer, leaving no
+        /// letterbox or pillarbox bars that a clear would have to fill.
+        /// </summary>
+        /// <param name="destination">Rectangle the finished frame is drawn into, in back-buffer pixels.</param>
+        /// <returns><see langword="true"/> when every back-buffer pixel is covered.</returns>
+        private static bool CoversBackBuffer(Rectangle destination)
+        {
+            // Read the presentation parameters rather than the viewport: the frame is presented with the
+            // back buffer bound and its viewport reset to full size, and the bars are a property of the
+            // back buffer either way.
+            PresentationParameters presentation = Global.GraphicsDevice.PresentationParameters;
+            return destination.X <= 0
+                && destination.Y <= 0
+                && destination.Right >= presentation.BackBufferWidth
+                && destination.Bottom >= presentation.BackBufferHeight;
         }
 
         #endregion
@@ -1030,6 +1084,29 @@ namespace CutTheRopeDX.Desktop
         #endregion
 
         #region Static Fields
+
+        /// <summary>
+        /// Whether the upscale to the back buffer should use point sampling while rendering in software.
+        /// </summary>
+        /// <remarks>
+        /// Bilinear costs four texel fetches and the filtering per output pixel where point costs one, over
+        /// the full back buffer, so this is a real saving on the software renderer. It is off because the
+        /// saving is paid for in looks: the software render size is capped to a fraction of the output that
+        /// is not a whole number, and point sampling a non-integer upscale duplicates rows and columns
+        /// unevenly, which the game's ropes and outlines show as shimmer while they move. Turn it on if a
+        /// run on the target machine says the frame time is worth that.
+        /// </remarks>
+        private const bool PointSampleSoftwareUpscale = false;
+
+        /// <summary>
+        /// Filtering for the render-target-to-back-buffer blit. Only ever differs from linear while
+        /// rendering in software; with a GPU the render size matches the destination and the blit is 1:1,
+        /// where the two filters give the same pixels.
+        /// </summary>
+        private static SamplerState ScreenBlitSampler =>
+            PointSampleSoftwareUpscale && GraphicsFallback.IsSoftwareRendering
+                ? SamplerState.PointClamp
+                : SamplerState.LinearClamp;
 
         /// <summary>
         /// The accumulating sprite quad batch.

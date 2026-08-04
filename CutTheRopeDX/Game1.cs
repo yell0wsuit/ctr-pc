@@ -307,6 +307,11 @@ namespace CutTheRopeDX
         {
             Renderer.FlushQuads();
             _DrawMovie = true;
+            // A movie frame replaces the scene, so the render target is discarded for this frame and the
+            // back buffer is drawn to directly. Bind and clear it up front: that leaves the early returns
+            // below showing black instead of whatever the swapchain hands back, and costs one clear rather
+            // than the two this used to do on the frames that reach the draw.
+            Global.GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
             if (!Application.SharedMovieMgr().IsTextureReady())
             {
@@ -329,8 +334,6 @@ namespace CutTheRopeDX
                     Application.SharedMovieMgr().Stop();
                 }
             }
-            Global.GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
             Global.ScreenSizeManager.FullScreenCropWidth = false;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             Rectangle destinationRectangle = new(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -344,11 +347,15 @@ namespace CutTheRopeDX
         protected override void Draw(GameTime gameTime)
         {
             frameCounter++;
-            GraphicsDevice.Clear(Color.Black);
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
             Renderer.BeginFrame();
+            // Bind the scene target before the frame draws, so the engine's own clear lands on it rather
+            // than on the back buffer. Nothing clears the back buffer here any more: every path below
+            // paints all of it, either the opaque blit in CopyFromRenderTargetToScreen, the first-frame
+            // clear, or DrawMovie.
+            Renderer.BindSceneTarget();
             try
             {
                 CtrRenderer.OnDrawFrame();
