@@ -23,6 +23,16 @@ namespace CutTheRopeDX.Desktop.Graphics
         private const string SwiftShaderRelativePath = "swiftshader/vulkan-1.dll";
 
         /// <summary>
+        /// Gets a value indicating whether rendering is going through the bundled software library.
+        /// </summary>
+        /// <remarks>
+        /// Set only once the library has actually loaded, so a failed load still reports hardware. Window
+        /// sizing reads this to cap the back buffer, because SwiftShader is fill-rate bound and full
+        /// desktop resolutions are not playable on it.
+        /// </remarks>
+        public static bool IsSoftwareRendering { get; private set; }
+
+        /// <summary>
         /// Sequences the backend decision against injected effects.
         /// </summary>
         /// <param name="readMode">Reads the stored mode; returns an empty string when unset.</param>
@@ -121,7 +131,7 @@ namespace CutTheRopeDX.Desktop.Graphics
                 return;
             }
 
-            _ = SoftwareVulkanLoader.TryLoad(path);
+            IsSoftwareRendering = SoftwareVulkanLoader.TryLoad(path);
         }
     }
 }

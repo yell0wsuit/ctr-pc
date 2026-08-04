@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework.Core;
 
 using Microsoft.Xna.Framework;
@@ -16,9 +17,29 @@ namespace CutTheRopeDX.Desktop
     internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {
         /// <summary>
-        /// Maximum allowed window width for the active graphics profile.
+        /// Widest window allowed while rendering in software. SwiftShader is fill-rate bound, so 1080p is
+        /// not playable; this keeps the back buffer at roughly 1366x768, the largest size that still is.
         /// </summary>
-        public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
+        public const int MAX_SOFTWARE_WINDOW_WIDTH = 1366;
+
+        /// <summary>
+        /// Maximum allowed window width for the active graphics profile, or the software cap when the
+        /// bundled software renderer is in use.
+        /// </summary>
+        public static int MAX_WINDOW_WIDTH => GraphicsFallback.IsSoftwareRendering
+            ? MAX_SOFTWARE_WINDOW_WIDTH
+            : Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
+
+        /// <summary>
+        /// Applies the software rendering width cap.
+        /// </summary>
+        /// <param name="width">Requested window width.</param>
+        /// <param name="softwareRendering">Whether rendering goes through the bundled software library.</param>
+        /// <returns>The width, reduced to <see cref="MAX_SOFTWARE_WINDOW_WIDTH"/> when rendering in software.</returns>
+        public static int CapWidthForSoftwareRendering(int width, bool softwareRendering)
+        {
+            return softwareRendering ? Math.Min(width, MAX_SOFTWARE_WINDOW_WIDTH) : width;
+        }
 
         /// <summary>
         /// Gets the current window back-buffer width.
