@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class CandyLifecycleOutcomeTests
     {
         [Fact]
-        public void SpikesBreakingThePrimary_RecordHazardAndLoseOnce()
+        public void SpikesBreakingThePrimaryRecordHazardAndLoseOnce()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void ThePrimaryLeavingTheScreen_RecordsOffScreenAndLosesOnce()
+        public void ThePrimaryLeavingTheScreenRecordsOffScreenAndLosesOnce()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void OmNomEatingThePrimary_RecordsEatenAndWins()
+        public void OmNomEatingThePrimaryRecordsEatenAndWins()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// because only the scene singleton was raised. The dead body must leave play for all of them.
         /// </summary>
         [Fact]
-        public void ABrokenPrimary_LeavesPlayForEveryPerCandySystem()
+        public void ABrokenPrimaryLeavesPlayForEveryPerCandySystem()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -104,7 +104,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// draw-path dependency; this test is about which state the capture writes.
         /// </remarks>
         [Fact]
-        public void ASpiderStealingThePrimary_RecordsSpiderRemoval()
+        public void ASpiderStealingThePrimaryRecordsSpiderRemoval()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -129,7 +129,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// instead - a loss the player never caused.
         /// </summary>
         [Fact]
-        public void ASpiderOnAnAlreadyLostCandy_StealsNothing()
+        public void ASpiderOnAnAlreadyLostCandyStealsNothing()
         {
             GameScene scene = Scenario.New()
                 .Candy(60, 200, number: "1")
@@ -157,7 +157,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// clear - so an invisible candy inside a tube still integrated and still met the scene.
         /// </summary>
         [Fact]
-        public void ThePrimaryInsideABambooTube_HasNoWholeBodyInPlay()
+        public void ThePrimaryInsideABambooTubeHasNoWholeBodyInPlay()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -176,7 +176,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
         /// <summary>Transport is not removal: leaving the tube restores the whole body.</summary>
         [Fact]
-        public void ThePrimaryLeavingABambooTube_HasItsWholeBodyBack()
+        public void ThePrimaryLeavingABambooTubeHasItsWholeBodyBack()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)

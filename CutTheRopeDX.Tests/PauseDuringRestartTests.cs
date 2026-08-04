@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Pause_IsRefused_DuringRestartDim()
+        public void PauseIsRefusedDuringRestartDim()
         {
             (GameController controller, GameScene scene) = Load();
 
@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Pause_IsAllowed_OnceRestartDimFinishes()
+        public void PauseIsAllowedOnceRestartDimFinishes()
         {
             (GameController controller, GameScene scene) = Load();
 
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Pause_IsAllowed_DuringNormalPlay()
+        public void PauseIsAllowedDuringNormalPlay()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PauseAndRestart_SameFrame_PauseDispatchedFirstKeepsGamePaused()
+        public void PauseAndRestartSameFramePauseDispatchedFirstKeepsGamePaused()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
@@ -64,7 +64,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PauseAndRestart_SameFrame_RestartDispatchedFirstKeepsRestartRunning()
+        public void PauseAndRestartSameFrameRestartDispatchedFirstKeepsRestartRunning()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BackInput_DuringRestartFadeOut_IsIgnored()
+        public void BackInputDuringRestartFadeOutIsIgnored()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BackInput_DuringRestartFadeIn_IsIgnored()
+        public void BackInputDuringRestartFadeInIsIgnored()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);

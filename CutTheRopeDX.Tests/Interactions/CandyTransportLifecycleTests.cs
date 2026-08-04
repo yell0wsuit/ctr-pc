@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class CandyTransportLifecycleTests
     {
         [Fact]
-        public void BambooEntry_HidesTheWholeBodyInABambooSession()
+        public void BambooEntryHidesTheWholeBodyInABambooSession()
         {
             (GameScene scene, CandyContext candy) = TubeRig();
             BambooTube tube = scene.BambooTubes()[0];
@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BambooEntry_LeavesNoActiveBodyForTheTransit()
+        public void BambooEntryLeavesNoActiveBodyForTheTransit()
         {
             (GameScene scene, CandyContext candy) = TubeRig();
 
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BambooExit_RestoresThePresentWholeBody()
+        public void BambooExitRestoresThePresentWholeBody()
         {
             (GameScene scene, CandyContext candy) = TubeRig();
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatEntry_HidesTheWholeBodyInASockSessionCarryingItsExitSpeed()
+        public void HatEntryHidesTheWholeBodyInASockSessionCarryingItsExitSpeed()
         {
             (GameScene scene, CandyContext candy) = HatRig();
             // Act.EnterHat drives the candy into the first hat; a hat throws to its partner, so the
@@ -81,7 +81,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void HatExit_RestoresThePresentWholeBody()
+        public void HatExitRestoresThePresentWholeBody()
         {
             (GameScene scene, CandyContext candy) = HatRig();
             Act.EnterHat(scene, candy);
@@ -96,7 +96,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void ATubeSwallowingOneCandy_LeavesTheOtherPresentWithItsCarrier()
+        public void ATubeSwallowingOneCandyLeavesTheOtherPresentWithItsCarrier()
         {
             GameScene scene = Scenario.New()
                 .Candy(60, 200, number: "1")
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AStaleTransportCallback_CannotCompleteTheSessionThatReplacedIt()
+        public void AStaleTransportCallbackCannotCompleteTheSessionThatReplacedIt()
         {
             (GameScene scene, CandyContext candy) = TubeRig();
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);

@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)CandyInteraction.Snail)]
         [InlineData((int)CandyInteraction.Eat)]
         [InlineData((int)CandyInteraction.CandyCollision)]
-        public void CarrierAndOutcomeInteractions_AcceptOnlyWholeBodies(int interactionValue)
+        public void CarrierAndOutcomeInteractionsAcceptOnlyWholeBodies(int interactionValue)
         {
             CandyInteraction interaction = (CandyInteraction)interactionValue;
 
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)CandyInteraction.Spider)]
         [InlineData((int)CandyInteraction.OffScreen)]
         [InlineData((int)CandyInteraction.LightCollision)]
-        public void PhysicalInteractions_AcceptEveryBodyRole(int interactionValue)
+        public void PhysicalInteractionsAcceptEveryBodyRole(int interactionValue)
         {
             CandyInteraction interaction = (CandyInteraction)interactionValue;
 
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)CandyBodyRole.Whole, (int)CandyInteraction.Mouse, true)]
         [InlineData((int)CandyBodyRole.LeftHalf, (int)CandyInteraction.Mouse, false)]
         [InlineData((int)CandyBodyRole.RightHalf, (int)CandyInteraction.Hazard, true)]
-        public void BodyRole_PreservesLegacyEligibility(int roleValue, int interactionValue, bool expected)
+        public void BodyRolePreservesLegacyEligibility(int roleValue, int interactionValue, bool expected)
         {
             bool allowed = CandyBodyEligibility.Allows(
                 (CandyBodyRole)roleValue,

@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Tests
     public sealed class SongLoopWorkaroundTests
     {
         [Fact]
-        public void Scheduler_WaitsForDecodedTailToFinishPlaying()
+        public void SchedulerWaitsForDecodedTailToFinishPlaying()
         {
             SongLoopScheduler scheduler = new();
             scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Scheduler_DoesNotAdvanceWhileMusicIsPaused()
+        public void SchedulerDoesNotAdvanceWhileMusicIsPaused()
         {
             SongLoopScheduler scheduler = new();
             scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Scheduler_UsesSameDecoderTailAcrossLoops()
+        public void SchedulerUsesSameDecoderTailAcrossLoops()
         {
             SongLoopScheduler scheduler = new();
             scheduler.Schedule(duration: TimeSpan.FromSeconds(64));
@@ -46,7 +46,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Scheduler_UsesDecoderTailForCachedMenuSong()
+        public void SchedulerUsesDecoderTailForCachedMenuSong()
         {
             SongLoopScheduler scheduler = new();
 
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Installer_ReplacesMonoGameCompletionHandler()
+        public void InstallerReplacesMonoGameCompletionHandler()
         {
             using Song song = Song.FromUri(
                 "missing",

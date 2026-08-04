@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)CandyRemovalReason.Hazard)]
         [InlineData((int)CandyRemovalReason.Spider)]
         [InlineData((int)CandyRemovalReason.OffScreen)]
-        public void RemovingEitherHalf_MarksFailedRemovalAndCancelsMerge(int reasonValue)
+        public void RemovingEitherHalfMarksFailedRemovalAndCancelsMerge(int reasonValue)
         {
             CandyRemovalReason reason = (CandyRemovalReason)reasonValue;
             CandyLifecycle lifecycle = SplitLifecycle();
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RemovingBothHalves_NeverCountsAsEatenOrCompletesMerge()
+        public void RemovingBothHalvesNeverCountsAsEatenOrCompletesMerge()
         {
             CandyLifecycle lifecycle = SplitLifecycle();
             _ = lifecycle.Split.Left.TryRemove(CandyRemovalReason.OffScreen);
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitHalf_CannotBeRemovedAsEaten()
+        public void SplitHalfCannotBeRemovedAsEaten()
         {
             CandyLifecycle lifecycle = SplitLifecycle();
 
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void IntactMergingHalves_AtomicallyRestoreWholeCandy()
+        public void IntactMergingHalvesAtomicallyRestoreWholeCandy()
         {
             CandyLifecycle lifecycle = SplitLifecycle();
             Assert.True(lifecycle.Split.TryBeginMerge(25f));

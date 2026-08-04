@@ -13,19 +13,19 @@ namespace CutTheRopeDX.Tests
     public class RocketBindPathTests
     {
         [Fact]
-        public void UsesDirectFlyPath_TrueWhenAHandHoldsThisCandy()
+        public void UsesDirectFlyPathTrueWhenAHandHoldsThisCandy()
         {
             Assert.True(RocketBindPath.UsesDirectFlyPath(handHoldsThisCandy: true, mouseCarriesThisCandy: false));
         }
 
         [Fact]
-        public void UsesDirectFlyPath_TrueWhenTheMouseCarriesThisCandy()
+        public void UsesDirectFlyPathTrueWhenTheMouseCarriesThisCandy()
         {
             Assert.True(RocketBindPath.UsesDirectFlyPath(handHoldsThisCandy: false, mouseCarriesThisCandy: true));
         }
 
         [Fact]
-        public void UsesDirectFlyPath_FalseForAFreeCandy()
+        public void UsesDirectFlyPathFalseForAFreeCandy()
         {
             // Free candy uses the classic DIST reel-in path.
             Assert.False(RocketBindPath.UsesDirectFlyPath(handHoldsThisCandy: false, mouseCarriesThisCandy: false));

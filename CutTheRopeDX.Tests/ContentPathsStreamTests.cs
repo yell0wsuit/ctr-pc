@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests
     public sealed class ContentPathsStreamTests
     {
         [Fact]
-        public void OpenStream_PreservesRawFileBytes()
+        public void OpenStreamPreservesRawFileBytes()
         {
             string relativePath = Path.Combine("test-data", $"{Guid.NewGuid():N}.json");
             string fullPath = Path.Combine(ContentPaths.GetContentRootAbsolute(), relativePath);

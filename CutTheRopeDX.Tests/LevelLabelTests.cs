@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class LevelLabelTests
     {
         [Fact]
-        public void Resolve_NormalLevelWithoutName_ShowsNumbersOverLevelWord()
+        public void ResolveNormalLevelWithoutNameShowsNumbersOverLevelWord()
         {
             LevelLabelText label = LevelLabel.Resolve(false, null, "Level", "1 - 1");
 
@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Resolve_NormalLevelWithName_ShowsNameOverLevelWordAndNumbers()
+        public void ResolveNormalLevelWithNameShowsNameOverLevelWordAndNumbers()
         {
             LevelLabelText label = LevelLabel.Resolve(false, "Sugar Rush", "Level", "1 - 1");
 
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Resolve_CustomLevelWithName_ShowsNameWithoutNumbers()
+        public void ResolveCustomLevelWithNameShowsNameWithoutNumbers()
         {
             LevelLabelText label = LevelLabel.Resolve(true, "My Test Level", "Level", "1 - 1");
 
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Resolve_CustomLevelWithoutName_ShowsNoLabel()
+        public void ResolveCustomLevelWithoutNameShowsNoLabel()
         {
             LevelLabelText label = LevelLabel.Resolve(true, null, "Level", "1 - 1");
 
@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Resolve_CustomLevelWithBlankName_ShowsNoLabel()
+        public void ResolveCustomLevelWithBlankNameShowsNoLabel()
         {
             LevelLabelText label = LevelLabel.Resolve(true, "   ", "Level", "1 - 1");
 

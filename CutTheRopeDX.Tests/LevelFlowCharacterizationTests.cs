@@ -23,7 +23,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SpikeContact_SchedulesThenTriggersLoss()
+        public void SpikeContactSchedulesThenTriggersLoss()
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CandyLeavesScreen_TriggersLoss()
+        public void CandyLeavesScreenTriggersLoss()
         {
             // Level 2-1 has no hazards and the target is outside the candy's fall line.
             (GameScene scene, RecordingSceneDelegate recorder) = Load(level: 0);
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HazardLoss_FiresExactlyOnce_WhenSteppedFurther()
+        public void HazardLossFiresExactlyOnceWhenSteppedFurther()
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
@@ -81,7 +81,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Win_FiresExactlyOnce_WhenTriggeredAgain()
+        public void WinFiresExactlyOnceWhenTriggeredAgain()
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RestartDim_WalksThroughBothPhasesBackToPlaying()
+        public void RestartDimWalksThroughBothPhasesBackToPlaying()
         {
             (GameScene scene, _) = Load();
             HeadlessGame.StepFrames(scene, 30);
@@ -110,7 +110,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void NoOutcome_FiresDuringNormalPlay()
+        public void NoOutcomeFiresDuringNormalPlay()
         {
             (GameScene scene, RecordingSceneDelegate recorder) = Load();
 
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void OutcomeTransition_IsInactiveDuringNormalPlay()
+        public void OutcomeTransitionIsInactiveDuringNormalPlay()
         {
             (GameScene scene, _) = Load();
 

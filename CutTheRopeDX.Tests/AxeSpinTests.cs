@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Tests
     public class AxeSpinTests
     {
         [Fact]
-        public void RotationStep_UsesVelocityLengthDividedByTwenty()
+        public void RotationStepUsesVelocityLengthDividedByTwenty()
         {
             Vector velocity = new(60f, 80f);
 
@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RotationStep_ClampsToForty()
+        public void RotationStepClampsToForty()
         {
             Vector velocity = new(1000f, 0f);
 

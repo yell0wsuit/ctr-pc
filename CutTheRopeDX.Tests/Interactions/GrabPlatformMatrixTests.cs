@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests.Interactions
         private const int RideFrames = 30;
 
         [Fact]
-        public void Conveyor_DoesNotBindABee()
+        public void ConveyorDoesNotBindABee()
         {
             (GameScene scene, Grab bee) = OnConveyor(s => s.Grab(PlatformX, PlatformY, path: "60,0", moveSpeed: 30f));
 
@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_DoesNotCaptureABee()
+        public void DiscDoesNotCaptureABee()
         {
             (GameScene scene, Grab bee) = OnDisc(s => s.Grab(PlatformX, PlatformY, path: "60,0", moveSpeed: 30f));
             HeadlessGame.StepFrames(scene, 1);
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_DoesNotRebindAGrabThatBecomesALauncher()
+        public void ConveyorDoesNotRebindAGrabThatBecomesALauncher()
         {
             // No level authors a launcher, so one is made the way the engine makes it. The belt's
             // bind pass is then re-run over it: a launcher moves itself, so it is refused for the
@@ -53,7 +53,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_ReleasesAGrabThatBecomesALauncher()
+        public void DiscReleasesAGrabThatBecomesALauncher()
         {
             (GameScene scene, Grab launcher) = OnDisc(s => s.Grab(PlatformX, PlatformY));
             HeadlessGame.StepFrames(scene, 1);
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_DoesNotBindAMoveableRail()
+        public void ConveyorDoesNotBindAMoveableRail()
         {
             (GameScene scene, Grab rail) = OnConveyor(s => s.Grab(PlatformX, PlatformY, moveLength: 60f));
 
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_DoesNotCaptureAMoveableRail()
+        public void DiscDoesNotCaptureAMoveableRail()
         {
             (GameScene scene, Grab rail) = OnDisc(s => s.Grab(PlatformX, PlatformY, moveLength: 60f));
             HeadlessGame.StepFrames(scene, 1);
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_CarriesAGun()
+        public void ConveyorCarriesAGun()
         {
             (GameScene scene, Grab gun) = OnConveyor(s => s.Grab(PlatformX, PlatformY, gun: true));
 
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesAGun()
+        public void DiscCapturesAGun()
         {
             (GameScene scene, Grab gun) = OnDisc(s => s.Grab(PlatformX, PlatformY, gun: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -101,7 +101,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_CarriesAWheel()
+        public void ConveyorCarriesAWheel()
         {
             (GameScene scene, Grab wheel) = OnConveyor(s => s.Grab(PlatformX, PlatformY, wheel: true));
 
@@ -109,7 +109,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesAWheel()
+        public void DiscCapturesAWheel()
         {
             (GameScene scene, Grab wheel) = OnDisc(s => s.Grab(PlatformX, PlatformY, wheel: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -118,7 +118,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_CarriesAStuckSuctionCup()
+        public void ConveyorCarriesAStuckSuctionCup()
         {
             (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true));
 
@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesAStuckSuctionCup()
+        public void DiscCapturesAStuckSuctionCup()
         {
             (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -135,7 +135,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_StopsDrivingAKickedSuctionCup()
+        public void ConveyorStopsDrivingAKickedSuctionCup()
         {
             // A kicked cup stays bound - the belt just stops advancing it, so it resumes on its own
             // once it re-sticks. Its own position keeps changing as it falls, so the belt's
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_ResumesDrivingASuctionCupThatReSticks()
+        public void ConveyorResumesDrivingASuctionCupThatReSticks()
         {
             (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
             HeadlessGame.StepFrames(scene, RideFrames);
@@ -163,7 +163,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_DoesNotCaptureAKickedSuctionCup()
+        public void DiscDoesNotCaptureAKickedSuctionCup()
         {
             (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -172,7 +172,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesASuctionCupThatReSticks()
+        public void DiscCapturesASuctionCupThatReSticks()
         {
             (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -185,7 +185,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_CarriesASpiderHook()
+        public void ConveyorCarriesASpiderHook()
         {
             (GameScene scene, Grab spider) = OnConveyor(s => s.Grab(PlatformX, PlatformY, spider: true));
 
@@ -193,7 +193,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesASpiderHook()
+        public void DiscCapturesASpiderHook()
         {
             (GameScene scene, Grab spider) = OnDisc(s => s.Grab(PlatformX, PlatformY, spider: true));
             HeadlessGame.StepFrames(scene, 1);
@@ -202,7 +202,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Conveyor_CarriesAnAutoAttachHook()
+        public void ConveyorCarriesAnAutoAttachHook()
         {
             (GameScene scene, Grab autoHook) = OnConveyor(s => s.Grab(PlatformX, PlatformY, radius: 40f));
 
@@ -210,7 +210,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void Disc_CapturesAnAutoAttachHook()
+        public void DiscCapturesAnAutoAttachHook()
         {
             (GameScene scene, Grab autoHook) = OnDisc(s => s.Grab(PlatformX, PlatformY, radius: 40f));
             HeadlessGame.StepFrames(scene, 1);

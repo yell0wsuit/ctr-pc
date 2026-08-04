@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public sealed class HeadlessAssetPlatformTests
     {
         [Fact]
-        public void ImageDimensions_ResolvesAtlaslessImage()
+        public void ImageDimensionsResolvesAtlaslessImage()
         {
             HeadlessAssetPlatform platform = new();
 
@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ImageDimensions_ResolvesImageInSubdirectory()
+        public void ImageDimensionsResolvesImageInSubdirectory()
         {
             HeadlessAssetPlatform platform = new();
 
@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ImageDimensions_ReturnsNull_ForMissingAsset()
+        public void ImageDimensionsReturnsNullForMissingAsset()
         {
             HeadlessAssetPlatform platform = new();
 
@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ImageTexture_IsNull()
+        public void ImageTextureIsNull()
         {
             Assert.Null(new HeadlessAssetPlatform().ImageTexture("images/obj_axe"));
         }

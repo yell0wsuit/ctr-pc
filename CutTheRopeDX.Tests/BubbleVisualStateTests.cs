@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public sealed class BubbleVisualStateTests
     {
         [Fact]
-        public void ForCapture_ShowsGhostVisualWhenGhostBubbleAndAnimationExists()
+        public void ForCaptureShowsGhostVisualWhenGhostBubbleAndAnimationExists()
         {
             BubbleVisualState state = BubbleVisualState.ForCapture(capturedGhostBubble: true, hasGhostAnimation: true);
 
@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ForCapture_FallsBackToNormalVisualWhenGhostAnimationMissing()
+        public void ForCaptureFallsBackToNormalVisualWhenGhostAnimationMissing()
         {
             BubbleVisualState state = BubbleVisualState.ForCapture(capturedGhostBubble: true, hasGhostAnimation: false);
 
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ForCapture_ShowsNormalVisualForNormalBubble()
+        public void ForCaptureShowsNormalVisualForNormalBubble()
         {
             BubbleVisualState state = BubbleVisualState.ForCapture(capturedGhostBubble: false, hasGhostAnimation: true);
 

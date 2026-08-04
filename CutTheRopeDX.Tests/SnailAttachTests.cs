@@ -11,14 +11,14 @@ namespace CutTheRopeDX.Tests
     public class SnailAttachTests
     {
         [Fact]
-        public void ShouldAttach_TrueForAPresentDraggableCandyItTouches()
+        public void ShouldAttachTrueForAPresentDraggableCandyItTouches()
         {
             Assert.True(SnailAttach.ShouldAttach(
                 candyGone: false, canBeDraggedBySnail: true, snailIntersectsCandy: true));
         }
 
         [Fact]
-        public void ShouldAttach_FalseForAGoneCandy()
+        public void ShouldAttachFalseForAGoneCandy()
         {
             // Multi-candy: candy A already eaten/off-screen is skipped so the snail can ride candy B instead.
             Assert.False(SnailAttach.ShouldAttach(
@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldAttach_FalseForABodyThatCannotBeDragged()
+        public void ShouldAttachFalseForABodyThatCannotBeDragged()
         {
             // A light bulb and other non-candy bodies opt out via CanBeDraggedBySnail.
             Assert.False(SnailAttach.ShouldAttach(
@@ -34,14 +34,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldAttach_FalseWhenNotTouching()
+        public void ShouldAttachFalseWhenNotTouching()
         {
             Assert.False(SnailAttach.ShouldAttach(
                 candyGone: false, canBeDraggedBySnail: true, snailIntersectsCandy: false));
         }
 
         [Fact]
-        public void ShouldAttach_HasNoHandParameterByDesign()
+        public void ShouldAttachHasNoHandParameterByDesign()
         {
             // Coexist ruling (the Experiments reference has no hand gate): a snail attaches to a
             // hand-held candy and rides until the candy leaves play. Grab-time stripping is the

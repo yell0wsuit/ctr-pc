@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class AntCandyInteractionTests
     {
         [Fact]
-        public void CanAttach_TrueForInteractableSegmentAndCandyInsideBounds()
+        public void CanAttachTrueForInteractableSegmentAndCandyInsideBounds()
         {
             Assert.True(AntCandyInteraction.CanAttach(
                 candyPresent: true,
@@ -22,14 +22,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanAttach_TrueEvenWhenSegmentAlreadyCarriesAnotherCandy()
+        public void CanAttachTrueEvenWhenSegmentAlreadyCarriesAnotherCandy()
         {
             // A lane carries multiple candies at once; an occupied segment must not block a new one.
             Assert.True(AntCandyInteraction.CanAttach(true, true, false, false, true, false, false, false, false));
         }
 
         [Fact]
-        public void CanAttach_FalseWhenCandyOrSegmentStateBlocksInteraction()
+        public void CanAttachFalseWhenCandyOrSegmentStateBlocksInteraction()
         {
             Assert.False(AntCandyInteraction.CanAttach(false, true, false, false, true, false, false, false, false));
             Assert.False(AntCandyInteraction.CanAttach(true, segmentCanInteract: false, false, false, true, false, false, false, false));
@@ -39,14 +39,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanAttach_FalseWhenCandyHeldByHand()
+        public void CanAttachFalseWhenCandyHeldByHand()
         {
             // A mechanical hand owns the candy; ants must not steal it back onto the conveyor.
             Assert.False(AntCandyInteraction.CanAttach(true, true, false, false, true, candyHeldByHand: true, candyInLantern: false, candyInTransport: false, candyCarriedByMouse: false));
         }
 
         [Fact]
-        public void CanAttach_FalseWhenCandyIsInALantern()
+        public void CanAttachFalseWhenCandyIsInALantern()
         {
             // A lantern parks the candy point at the lantern position; if that spot lies inside an
             // ant lane, ungated ants re-grab it in a loop (attach sfx -> can't ride -> detach ->
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanAttach_FalseWhenCandyIsInSockOrBambooTransit()
+        public void CanAttachFalseWhenCandyIsInSockOrBambooTransit()
         {
             // Sock transit keeps the candy attachable on exit, so ants need an
             // explicit transit gate just like the hand gate.
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CanAttach_FalseWhenTheMouseCarriesTheCandy()
+        public void CanAttachFalseWhenTheMouseCarriesTheCandy()
         {
             // Same rule as the hand: a holder owns the candy; ants must not grab it mid-steal.
             Assert.False(AntCandyInteraction.CanAttach(
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldDetach_TrueOnlyAfterSnapTimeWhenCarriedCandyLeavesInternalBounds()
+        public void ShouldDetachTrueOnlyAfterSnapTimeWhenCarriedCandyLeavesInternalBounds()
         {
             Assert.True(AntCandyInteraction.ShouldDetach(
                 candyCarriedBySegment: true,
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldSlowStopAfterDetach_FalseWhenAnotherSegmentContainsCandyExternally()
+        public void ShouldSlowStopAfterDetachFalseWhenAnotherSegmentContainsCandyExternally()
         {
             Assert.False(AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally: true));
             Assert.True(AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally: false));

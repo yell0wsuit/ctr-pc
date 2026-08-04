@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class ScenarioHarnessTests
     {
         [Fact]
-        public void CodeBuiltScenario_LoadsCandyRopeAndOmNom()
+        public void CodeBuiltScenarioLoadsCandyRopeAndOmNom()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void StepFrames_RunsTheRealUpdateLoop()
+        public void StepFramesRunsTheRealUpdateLoop()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void ObjectsAreBuiltFromTheScenario_NotFromAShippingLevel()
+        public void ObjectsAreBuiltFromTheScenarioNotFromAShippingLevel()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)

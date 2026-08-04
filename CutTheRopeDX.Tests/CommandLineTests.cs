@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Tests
     public class CommandLineTests
     {
         [Fact]
-        public void Parse_NoArguments_IsNotCustomLevel()
+        public void ParseNoArgumentsIsNotCustomLevel()
         {
             CommandLineResult result = CommandLine.Parse([]);
 
@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_UnrelatedArguments_IsNotCustomLevel()
+        public void ParseUnrelatedArgumentsIsNotCustomLevel()
         {
             CommandLineResult result = CommandLine.Parse(["--windowed"]);
 
@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_LevelWithPath_ReturnsAbsolutePath()
+        public void ParseLevelWithPathReturnsAbsolutePath()
         {
             CommandLineResult result = CommandLine.Parse(["--level", "/maps/test.xml"]);
 
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_LevelWithoutValue_ReturnsError()
+        public void ParseLevelWithoutValueReturnsError()
         {
             CommandLineResult result = CommandLine.Parse(["--level"]);
 
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_LevelWithEmptyValue_ReturnsError()
+        public void ParseLevelWithEmptyValueReturnsError()
         {
             CommandLineResult result = CommandLine.Parse(["--level", "   "]);
 
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_BareXmlPath_IsTreatedAsCustomLevel()
+        public void ParseBareXmlPathIsTreatedAsCustomLevel()
         {
             CommandLineResult result = CommandLine.Parse([@"C:\maps\dropped.xml"]);
 
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_BareXmlPath_IgnoresCase()
+        public void ParseBareXmlPathIgnoresCase()
         {
             CommandLineResult result = CommandLine.Parse(["level.XML"]);
 
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_BareNonXmlPath_IsNotCustomLevel()
+        public void ParseBareNonXmlPathIsNotCustomLevel()
         {
             CommandLineResult result = CommandLine.Parse(["notes.txt"]);
 
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_LevelSwitchTakesPrecedenceOverBarePath()
+        public void ParseLevelSwitchTakesPrecedenceOverBarePath()
         {
             CommandLineResult result = CommandLine.Parse(["bare.xml", "--level", "chosen.xml"]);
 
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_RelativePath_IsResolvedAgainstWorkingDirectory()
+        public void ParseRelativePathIsResolvedAgainstWorkingDirectory()
         {
             CommandLineResult result = CommandLine.Parse(["--level", "level.xml"]);
 
@@ -104,7 +104,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_SetsIsHeadless_WhenFlagPresent()
+        public void ParseSetsIsHeadlessWhenFlagPresent()
         {
             CommandLineResult result = CommandLine.Parse(["--headless"]);
 
@@ -112,7 +112,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_IsHeadlessFalse_WhenFlagAbsent()
+        public void ParseIsHeadlessFalseWhenFlagAbsent()
         {
             CommandLineResult result = CommandLine.Parse([]);
 
@@ -120,7 +120,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Parse_CombinesHeadlessWithLevel()
+        public void ParseCombinesHeadlessWithLevel()
         {
             CommandLineResult result = CommandLine.Parse(["--headless", "--level", "/tmp/a.xml"]);
 

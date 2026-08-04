@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class HandGrabTests
     {
         [Fact]
-        public void ShouldGrab_TrueForIdleHandNearFreeCandy()
+        public void ShouldGrabTrueForIdleHandNearFreeCandy()
         {
             Assert.True(HandGrab.ShouldGrab(
                 handIdle: true, candyPresent: true, candyInLantern: false,
@@ -15,27 +15,27 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldGrab_FalseWhenHandBusy()
+        public void ShouldGrabFalseWhenHandBusy()
         {
             Assert.False(HandGrab.ShouldGrab(handIdle: false, true, false, false, true));
         }
 
         [Fact]
-        public void ShouldGrab_FalseWhenCandyInLanternOrSock()
+        public void ShouldGrabFalseWhenCandyInLanternOrSock()
         {
             Assert.False(HandGrab.ShouldGrab(true, true, candyInLantern: true, false, true));
             Assert.False(HandGrab.ShouldGrab(true, true, false, candyInSock: true, true));
         }
 
         [Fact]
-        public void ShouldGrab_FalseWhenMissingOrOutOfRange()
+        public void ShouldGrabFalseWhenMissingOrOutOfRange()
         {
             Assert.False(HandGrab.ShouldGrab(true, candyPresent: false, false, false, true));
             Assert.False(HandGrab.ShouldGrab(true, true, false, false, inRange: false));
         }
 
         [Fact]
-        public void ShouldGrab_FalseForACandyInSockTransit()
+        public void ShouldGrabFalseForACandyInSockTransit()
         {
             // The explicit sock parameter alone refuses the grab, independently of how the caller
             // computes candyPresent.
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldGrab_FalseForACandyInBambooTransit()
+        public void ShouldGrabFalseForACandyInBambooTransit()
         {
             // Bamboo transit hides the whole body, so the caller passes candyPresent: false. If
             // bamboo ever stops hiding it, this pin documents that the hand gate must gain a

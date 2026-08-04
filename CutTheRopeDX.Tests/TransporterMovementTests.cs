@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Tests
         [Theory]
         [InlineData(30f, 500f, 58f, 2)]
         [InlineData(270f, -500f, 242f, -2)]
-        public void Move_NormalizesDeltasSpanningMultipleWraps(
+        public void MoveNormalizesDeltasSpanningMultipleWraps(
             float position,
             float delta,
             float expectedPosition,
@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
         [Theory]
         [InlineData(30f, 20f, 274f, 1)]
         [InlineData(270f, -20f, 26f, -1)]
-        public void Move_PreservesIosSingleWrapMapping(
+        public void MovePreservesIosSingleWrapMapping(
             float position,
             float delta,
             float expectedPosition,

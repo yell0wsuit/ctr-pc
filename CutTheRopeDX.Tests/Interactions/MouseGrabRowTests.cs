@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class MouseGrabRowTests
     {
         [Fact]
-        public void MouseGrab_ReleasesItsRopes()
+        public void MouseGrabReleasesItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rope(160, 120, length: 40));
             Assert.Equal(1, scene.AttachedRopeCount(candy));
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrab_SnatchesTheCandyFromTheHand()
+        public void MouseGrabSnatchesTheCandyFromTheHand()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrab_KeepsTheRocketOnTheStolenCandy()
+        public void MouseGrabKeepsTheRocketOnTheStolenCandy()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrab_KeepsTheBubble()
+        public void MouseGrabKeepsTheBubble()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             Bubble bubble = Act.CaptureInBubble(scene, candy);
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrab_TakesTheSnailAlong()
+        public void MouseGrabTakesTheSnailAlong()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void MouseGrab_TakesTheCandyOffTheAntsByDraggingItAway()
+        public void MouseGrabTakesTheCandyOffTheAntsByDraggingItAway()
         {
             // The hole stays put above the lane: the ants only let go because the mouse pulls the
             // candy out of the segment, which is what "implicit release" means for this cell.

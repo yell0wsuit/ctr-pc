@@ -9,14 +9,14 @@ namespace CutTheRopeDX.Tests
     public class NormalRopeLoadTests
     {
         [Fact]
-        public void ShouldCreate_FalseWhenTargetCandyIsInLantern()
+        public void ShouldCreateFalseWhenTargetCandyIsInLantern()
         {
             Assert.False(NormalRopeLoad.ShouldCreate(targetCandyInLantern: true));
             Assert.True(NormalRopeLoad.ShouldCreate(targetCandyInLantern: false));
         }
 
         [Fact]
-        public void CandyStartsInLantern_TrueRegardlessOfObjectOrder()
+        public void CandyStartsInLanternTrueRegardlessOfObjectOrder()
         {
             XElement map = XElement.Parse("""
                 <level>

@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
     public class ConveyorRopeCutTests
     {
         [Fact]
-        public void ShouldCut_TrueForAnotherUncutRopeOnTheSameCandy()
+        public void ShouldCutTrueForAnotherUncutRopeOnTheSameCandy()
         {
             ConstraintedPoint candy = new();
             Assert.True(ConveyorRopeCut.ShouldCut(
@@ -21,7 +21,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldCut_FalseForARopeOnADifferentCandy()
+        public void ShouldCutFalseForARopeOnADifferentCandy()
         {
             // The multi-candy isolation invariant: wrapping a grab on candy A must not cut candy B's rope.
             ConstraintedPoint candyA = new();
@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldCut_FalseForTheWrappedGrabItself()
+        public void ShouldCutFalseForTheWrappedGrabItself()
         {
             // The wrapped grab keeps its own rope; only its siblings are cut.
             ConstraintedPoint candy = new();
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldCut_FalseWhenRopeAlreadyCut()
+        public void ShouldCutFalseWhenRopeAlreadyCut()
         {
             ConstraintedPoint candy = new();
             Assert.False(ConveyorRopeCut.ShouldCut(
@@ -48,7 +48,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldCut_FalseWhenGrabHasNoRope()
+        public void ShouldCutFalseWhenGrabHasNoRope()
         {
             ConstraintedPoint candy = new();
             Assert.False(ConveyorRopeCut.ShouldCut(

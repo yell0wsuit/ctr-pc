@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void GetChild_ReturnsNull_WhenChildNotRegistered()
+        public void GetChildReturnsNullWhenChildNotRegistered()
         {
             TestController controller = new();
 

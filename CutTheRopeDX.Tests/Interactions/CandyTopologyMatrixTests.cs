@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests.Interactions
         // ---------- one whole candy ----------
 
         [Fact]
-        public void SingleCandy_OffersExactlyOneBodyToTheScene()
+        public void SingleCandyOffersExactlyOneBodyToTheScene()
         {
             GameScene scene = Scenario.New().Candy(160, 200).OmNom(30, 440).Build();
 
@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// below: the same assertion has to hold whichever topology the level uses.
         /// </summary>
         [Fact]
-        public void SingleCandy_RocketLeashesTheCandyAtItsOwnReach()
+        public void SingleCandyRocketLeashesTheCandyAtItsOwnReach()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 140)
@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// count against the gap catches both a changed rate and a merge advanced more than once a frame.
         /// </summary>
         [Fact]
-        public void SplitCandy_MergeClosesAtTheReferenceRate()
+        public void SplitCandyMergeClosesAtTheReferenceRate()
         {
             (GameScene scene, SplitCandyState split) = SplitScene();
             BringHalvesTogether(scene, split, MeetingGap);
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [InlineData(8f)]
         [InlineData(24f)]
         [InlineData(48f)]
-        public void SplitCandy_MergeTakesTheGapDividedByTheRate(float gap)
+        public void SplitCandyMergeTakesTheGapDividedByTheRate(float gap)
         {
             int expectedFrames = (int)MathF.Ceiling(gap / (MergeSpeed * FrameDelta));
 
@@ -112,7 +112,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// sees rather than one a test pinned into place.
         /// </summary>
         [Fact]
-        public void SplitCandy_MergesAtTheReferenceRateOnShippedLevel5_1()
+        public void SplitCandyMergesAtTheReferenceRateOnShippedLevel51()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
             GameScene scene = ctr.LoadLevel(pack: 4, level: 0);
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SplitCandy_NeverOffersAHalfToTheRocket()
+        public void SplitCandyNeverOffersAHalfToTheRocket()
         {
             (GameScene scene, SplitCandyState split) = SplitScene(withRocket: true);
 
@@ -161,7 +161,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void SplitCandy_LosingOneHalfLosesTheLevelOnce()
+        public void SplitCandyLosingOneHalfLosesTheLevelOnce()
         {
             (GameScene scene, SplitCandyState split) = SplitScene();
 
@@ -183,7 +183,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// a real two-rocket level uses.
         /// </summary>
         [Fact]
-        public void TwoCandies_EachRocketBindsItsOwnCandy()
+        public void TwoCandiesEachRocketBindsItsOwnCandy()
         {
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
 
@@ -201,7 +201,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// whichever candy the rocket actually caught - a leash sized off a candy across the map.
         /// </summary>
         [Fact]
-        public void TwoCandies_EachRocketLeashesItsOwnCandyNotThePrimary()
+        public void TwoCandiesEachRocketLeashesItsOwnCandyNotThePrimary()
         {
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
             Assert.True(
@@ -213,7 +213,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TwoCandies_ARocketHoldsNoLeashOnTheCandyItDidNotBind()
+        public void TwoCandiesARocketHoldsNoLeashOnTheCandyItDidNotBind()
         {
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
             Assert.True(
@@ -225,7 +225,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TwoCandies_EatingOneDoesNotWinWhileTheOtherRemains()
+        public void TwoCandiesEatingOneDoesNotWinWhileTheOtherRemains()
         {
             (GameScene scene, CandyContext first, CandyContext second) = TwoCandyScene();
 
@@ -239,7 +239,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TwoCandies_EatingBothWinsOnce()
+        public void TwoCandiesEatingBothWinsOnce()
         {
             (GameScene scene, CandyContext first, CandyContext second) = TwoCandyScene();
 
@@ -254,7 +254,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TwoCandies_LosingOneLosesEvenWhileTheOtherIsFine()
+        public void TwoCandiesLosingOneLosesEvenWhileTheOtherIsFine()
         {
             (GameScene scene, CandyContext first, CandyContext second) = TwoCandyScene();
 

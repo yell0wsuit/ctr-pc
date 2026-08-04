@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Tests
     {
         // baseline: inactive lantern, group free, candy present & not already in, in range -> capture
         [Fact]
-        public void ShouldCapture_TrueForEligibleCandyInRange()
+        public void ShouldCaptureTrueForEligibleCandyInRange()
         {
             Assert.True(LanternCapture.ShouldCapture(
                 lanternInactive: true, groupOccupied: false, candyPresent: true,
@@ -16,27 +16,27 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ShouldCapture_FalseWhenGroupAlreadyOccupied()
+        public void ShouldCaptureFalseWhenGroupAlreadyOccupied()
         {
             // single-occupancy: a candy already captured blocks a second.
             Assert.False(LanternCapture.ShouldCapture(true, groupOccupied: true, true, false, true));
         }
 
         [Fact]
-        public void ShouldCapture_FalseWhenLanternActive()
+        public void ShouldCaptureFalseWhenLanternActive()
         {
             Assert.False(LanternCapture.ShouldCapture(lanternInactive: false, false, true, false, true));
         }
 
         [Fact]
-        public void ShouldCapture_FalseWhenCandyMissingOrAlreadyIn()
+        public void ShouldCaptureFalseWhenCandyMissingOrAlreadyIn()
         {
             Assert.False(LanternCapture.ShouldCapture(true, false, candyPresent: false, false, true));
             Assert.False(LanternCapture.ShouldCapture(true, false, true, candyAlreadyInLantern: true, true));
         }
 
         [Fact]
-        public void ShouldCapture_FalseWhenOutOfRange()
+        public void ShouldCaptureFalseWhenOutOfRange()
         {
             Assert.False(LanternCapture.ShouldCapture(true, false, true, false, inRange: false));
         }

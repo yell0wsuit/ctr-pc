@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Init_PreservesHeadWeight_WhenHeadPassedIn()
+        public void InitPreservesHeadWeightWhenHeadPassedIn()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 160f, 1f);
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Init_SetsAnchorWeight_WhenHeadAutoCreated()
+        public void InitSetsAnchorWeightWhenHeadAutoCreated()
         {
             ConstraintedPoint tail = PointAt(100f, 160f, 1f);
 
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Update_SkipsBothCandyEnds_WhenHeadNotOwned()
+        public void UpdateSkipsBothCandyEndsWhenHeadNotOwned()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
@@ -71,7 +71,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Update_IntegratesHead_WhenOwned()
+        public void UpdateIntegratesHeadWhenOwned()
         {
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
             Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ReleaseRopesForPoint_CutsConnectorAtTailEnd_WhenTailCandyReleased()
+        public void ReleaseRopesForPointCutsConnectorAtTailEndWhenTailCandyReleased()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
@@ -97,7 +97,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ReleaseRopesForPoint_CutsConnectorAtHeadEnd_WhenHeadCandyReleased()
+        public void ReleaseRopesForPointCutsConnectorAtHeadEndWhenHeadCandyReleased()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
@@ -111,7 +111,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ReleaseRopesForPoint_HidesConnectorTailParts_WhenConnectorAlreadyCut()
+        public void ReleaseRopesForPointHidesConnectorTailPartsWhenConnectorAlreadyCut()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RemovePart_PreservesEndpointWeights_WhenEndpointsNotOwned()
+        public void RemovePartPreservesEndpointWeightsWhenEndpointsNotOwned()
         {
             ConstraintedPoint head = PointAt(100f, 100f, 1f);
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
@@ -141,7 +141,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RemovePart_WeakensOwnedAnchor()
+        public void RemovePartWeakensOwnedAnchor()
         {
             ConstraintedPoint tail = PointAt(100f, 220f, 1f);
             Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
@@ -154,7 +154,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BuildChainSpritePlan_UsesSeparatePointAndMidpointSprites()
+        public void BuildChainSpritePlanUsesSeparatePointAndMidpointSprites()
         {
             Vector[] points =
             [
@@ -178,7 +178,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void GetCutFadeAlpha_MatchesRopeFadeTiming()
+        public void GetCutFadeAlphaMatchesRopeFadeTiming()
         {
             Bungee bungee = new()
             {
@@ -198,7 +198,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void GetChainFadeBlendFactors_UsesStraightAlphaBlend()
+        public void GetChainFadeBlendFactorsUsesStraightAlphaBlend()
         {
             (BlendingFactor source, BlendingFactor destination) = Bungee.GetChainFadeBlendFactors();
 
@@ -207,7 +207,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SetCutOnlyByAxe_MarksChainAndBlocksFingerCut()
+        public void SetCutOnlyByAxeMarksChainAndBlocksFingerCut()
         {
             Bungee bungee = new();
 
@@ -218,7 +218,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BuildChainSpriteColors_AppliesFadeAlphaAndPerLinkMasking()
+        public void BuildChainSpriteColorsAppliesFadeAlphaAndPerLinkMasking()
         {
             RGBAColor[] colors = Bungee.BuildChainSpriteColors(2, 0.5f, seed: 12345);
 
@@ -245,7 +245,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BuildChainSpriteColors_IsStableForSameSeed()
+        public void BuildChainSpriteColorsIsStableForSameSeed()
         {
             RGBAColor[] first = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);
             RGBAColor[] second = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);

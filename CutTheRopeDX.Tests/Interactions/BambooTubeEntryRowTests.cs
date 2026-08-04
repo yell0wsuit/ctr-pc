@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class BambooTubeEntryRowTests
     {
         [Fact]
-        public void TubeEntry_ReleasesItsRopes()
+        public void TubeEntryReleasesItsRopes()
         {
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesFalling, s => s.Rope(160, 120, length: 40));
             Assert.Equal(1, scene.AttachedRopeCount(candy));
@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_DetachesTheHandHoldingIt()
+        public void TubeEntryDetachesTheHandHoldingIt()
         {
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesFalling, s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_CarriesTheRocketThrough_HiddenForTheTransit()
+        public void TubeEntryCarriesTheRocketThroughHiddenForTheTransit()
         {
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesFalling, s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_KeepsItsBubble()
+        public void TubeEntryKeepsItsBubble()
         {
             // A bubbled candy rises, so the tube has to face down to catch it.
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesRising, s => s.Bubble(160, 200));
@@ -63,7 +63,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_CarriesTheSnailThrough()
+        public void TubeEntryCarriesTheSnailThrough()
         {
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesFalling, s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_TakesTheCandyOffTheAnts()
+        public void TubeEntryTakesTheCandyOffTheAnts()
         {
             // The lane runs left to right, so the tube faces left to meet the candy head on.
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesRightward, s => s.Ants(120, 200, path: "80,0"));
@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void TubeEntry_MakesTheMouseDropIt()
+        public void TubeEntryMakesTheMouseDropIt()
         {
             (GameScene scene, CandyContext candy) = Rig(TubeMouth.CatchesFalling, s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);

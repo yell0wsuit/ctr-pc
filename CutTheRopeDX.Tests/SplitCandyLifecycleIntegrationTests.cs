@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         private const float BelowTheWorld = 4000f;
 
         [Fact]
-        public void SplitLevel_LoadsOneLogicalCandyThatIsSplitAndSeparate()
+        public void SplitLevelLoadsOneLogicalCandyThatIsSplitAndSeparate()
         {
             (GameScene _, CandyContext primary) = SplitLevel();
 
@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_GivesEachHalfItsOwnBody()
+        public void SplitLevelGivesEachHalfItsOwnBody()
         {
             (GameScene _, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_DoesNotOfferTheDormantWholeBodyWhileSplit()
+        public void SplitLevelDoesNotOfferTheDormantWholeBodyWhileSplit()
         {
             (GameScene _, CandyContext primary) = SplitLevel();
 
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TouchingIntactHalves_MergeBackIntoOnePresentWholeCandy()
+        public void TouchingIntactHalvesMergeBackIntoOnePresentWholeCandy()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
 
@@ -63,7 +63,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TouchingIntactHalves_EnterMergingBeforeTheyMerge()
+        public void TouchingIntactHalvesEnterMergingBeforeTheyMerge()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
 
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void AHalfLostOffScreen_RecordsTheReasonOnThatHalfOnly()
+        public void AHalfLostOffScreenRecordsTheReasonOnThatHalfOnly()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void AHalfLostOffScreen_LeavesOnlyTheSurvivingBodyActive()
+        public void AHalfLostOffScreenLeavesOnlyTheSurvivingBodyActive()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -103,7 +103,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ALostHalf_BlocksTheMerge()
+        public void ALostHalfBlocksTheMerge()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -115,7 +115,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BothHalvesLost_LoseTheLevelOnceAndNeverWin()
+        public void BothHalvesLostLoseTheLevelOnceAndNeverWin()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_OffersBothHalfBodiesToSceneSystems()
+        public void SplitLevelOffersBothHalfBodiesToSceneSystems()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -141,7 +141,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_ResolvesEachHalfPointBackToItsOwnBodyAndLogicalCandy()
+        public void SplitLevelResolvesEachHalfPointBackToItsOwnBodyAndLogicalCandy()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -156,7 +156,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_NeverOffersTheDormantWholeBodyToSceneSystems()
+        public void SplitLevelNeverOffersTheDormantWholeBodyToSceneSystems()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
 
@@ -165,7 +165,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ALostHalf_LeavesOnlyTheSurvivorInTheSceneBodyEnumerator()
+        public void ALostHalfLeavesOnlyTheSurvivorInTheSceneBodyEnumerator()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -182,7 +182,7 @@ namespace CutTheRopeDX.Tests
         /// system that reads bodies.
         /// </summary>
         [Fact]
-        public void ABubbleOverAHalf_IsStoredOnThatHalfsOwnBody()
+        public void ABubbleOverAHalfIsStoredOnThatHalfsOwnBody()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;
@@ -196,7 +196,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SplitLevel_KeepsEachHalfsVisualOnItsOwnBody()
+        public void SplitLevelKeepsEachHalfsVisualOnItsOwnBody()
         {
             (GameScene _, CandyContext primary) = SplitLevel();
             SplitCandyState split = primary.Lifecycle.Split;

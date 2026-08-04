@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
     public class CandyCapabilitiesTests
     {
         [Fact]
-        public void Candy_DefaultCapabilitiesMatchCurrentCandyBehavior()
+        public void CandyDefaultCapabilitiesMatchCurrentCandyBehavior()
         {
             CandyCapabilities candy = CandyCapabilities.Candy;
 
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void LightBulb_IsPhysicalButNotCandyConsumable()
+        public void LightBulbIsPhysicalButNotCandyConsumable()
         {
             CandyCapabilities bulb = CandyCapabilities.LightBulb;
 
@@ -63,7 +63,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BoundsTopY_UsesSpecificObjectBoundingBox()
+        public void BoundsTopYUsesSpecificObjectBoundingBox()
         {
             GameObject body = new()
             {
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HandCatchVisuals_UsesSingleRootForGenericCandyLikeObject()
+        public void HandCatchVisualsUsesSingleRootForGenericCandyLikeObject()
         {
             GameObject body = new();
             CandyContext ctx = Context(visual: body, main: body);
@@ -89,7 +89,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void HandCatchVisuals_UsesAllDistinctCandyParts()
+        public void HandCatchVisualsUsesAllDistinctCandyParts()
         {
             GameObject root = new();
             GameObject main = new();
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TransformChildVisuals_IsEmptyForGenericCandyLikeObject()
+        public void TransformChildVisualsIsEmptyForGenericCandyLikeObject()
         {
             GameObject body = new();
             CandyContext ctx = Context(visual: body, main: body);
@@ -115,7 +115,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TransformChildVisuals_UsesDistinctCandyChildParts()
+        public void TransformChildVisualsUsesDistinctCandyChildParts()
         {
             GameObject root = new();
             GameObject main = new();
@@ -130,7 +130,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Axe_IsPhysicalHazardButNotCandyConsumable()
+        public void AxeIsPhysicalHazardButNotCandyConsumable()
         {
             CandyCapabilities axe = CandyCapabilities.Axe;
 
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CandyBody_ToView_PreservesItsOwnersCapabilities()
+        public void CandyBodyToViewPreservesItsOwnersCapabilities()
         {
             CandyContext ctx = Context(point: new ConstraintedPoint { pos = new Vector(1f, 2f) });
             ctx.Capabilities = CandyCapabilities.LightBulb;
@@ -164,7 +164,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void InteractionRotation_UsesCandyMainWhenAvailable()
+        public void InteractionRotationUsesCandyMainWhenAvailable()
         {
             CandyContext ctx = Context(
                 visual: new GameObject { rotation = 15f },
@@ -174,7 +174,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void InteractionRotation_FallsBackToRootObjectRotation()
+        public void InteractionRotationFallsBackToRootObjectRotation()
         {
             CandyContext ctx = Context(visual: new GameObject { rotation = 30f });
 
@@ -182,7 +182,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void InteractionRotation_IsZeroForNonRotatingBodies()
+        public void InteractionRotationIsZeroForNonRotatingBodies()
         {
             CandyContext ctx = Context(
                 visual: new GameObject { rotation = 30f },

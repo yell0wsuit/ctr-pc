@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public sealed class HeadlessSceneTests
     {
         [Fact]
-        public void Scene_LoadsAndSteps_WithoutGraphicsDevice()
+        public void SceneLoadsAndStepsWithoutGraphicsDevice()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
 
@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RestartDim_CompletesAndReturnsToPlaying()
+        public void RestartDimCompletesAndReturnsToPlaying()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
             GameScene scene = ctr.LoadLevel(pack: 1, level: 4);
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TutorialTextLevel_LoadsAndSteps()
+        public void TutorialTextLevelLoadsAndSteps()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
 
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Sound_IsSilentAndDoesNotThrow_WithoutContentManager()
+        public void SoundIsSilentAndDoesNotThrowWithoutContentManager()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
             GameScene scene = ctr.LoadLevel(pack: 1, level: 4);

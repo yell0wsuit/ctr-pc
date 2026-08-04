@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryConsume_NoChange_ReturnsFalse()
+        public void TryConsumeNoChangeReturnsFalse()
         {
             PendingChangeGate gate = CreateGate();
 
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryConsume_BeforeQuietPeriodElapses_ReturnsFalse()
+        public void TryConsumeBeforeQuietPeriodElapsesReturnsFalse()
         {
             PendingChangeGate gate = CreateGate();
             gate.NotifyChanged(Start);
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryConsume_AfterQuietPeriodElapses_ReturnsTrue()
+        public void TryConsumeAfterQuietPeriodElapsesReturnsTrue()
         {
             PendingChangeGate gate = CreateGate();
             gate.NotifyChanged(Start);
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryConsume_BurstOfChanges_YieldsSingleReload()
+        public void TryConsumeBurstOfChangesYieldsSingleReload()
         {
             PendingChangeGate gate = CreateGate();
             gate.NotifyChanged(Start);
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TryConsume_SecondChangeAfterConsume_ReturnsTrueAgain()
+        public void TryConsumeSecondChangeAfterConsumeReturnsTrueAgain()
         {
             PendingChangeGate gate = CreateGate();
             gate.NotifyChanged(Start);
