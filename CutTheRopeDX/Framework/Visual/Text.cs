@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -306,6 +307,69 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Returns the region of the composite target the finished text actually occupies, in target
+        /// pixels, so the blit back to the scene can be bounded by it.
+        /// </summary>
+        /// <param name="left">Left edge of the union of drawn line boxes, in logical coordinates.</param>
+        /// <param name="top">Top edge of the union of drawn line boxes, in logical coordinates.</param>
+        /// <param name="right">Right edge of the union of drawn line boxes, in logical coordinates.</param>
+        /// <param name="bottom">Bottom edge of the union of drawn line boxes, in logical coordinates.</param>
+        /// <param name="effects">Stroke and shadow settings, which widen the region past the line boxes.</param>
+        /// <param name="lineHeight">Line height in logical coordinates, used to size the safety margin.</param>
+        /// <param name="transformMatrix">Model-view and viewport scale the text was drawn through.</param>
+        /// <param name="targetBounds">Bounds of the composite target, which the result is clipped to.</param>
+        /// <returns>The region to blit, or <see cref="Rectangle.Empty"/> when nothing was drawn.</returns>
+        /// <remarks>
+        /// The composite target is the size of the whole viewport, and blitting all of it means alpha
+        /// blending a screenful of transparent pixels per faded text element: a full-resolution pass that
+        /// changes nothing outside the few hundred pixels the text covers. On the software renderer those
+        /// passes are the difference between menus running and menus crawling.
+        /// </remarks>
+        internal static Rectangle CompositeBlitRectangle(
+            float left,
+            float top,
+            float right,
+            float bottom,
+            FontEffectSettings effects,
+            int lineHeight,
+            Matrix transformMatrix,
+            Rectangle targetBounds)
+        {
+            if (right <= left || bottom <= top)
+            {
+                return Rectangle.Empty;
+            }
+
+            // Stroke and shadow are drawn as offset copies, so ink reaches past the line boxes.
+            float strokePad = effects?.HasStroke == true ? effects.StrokeAmount : 0f;
+            float shadowPad = effects?.HasShadow != true ? 0f : effects.HasStroke ? effects.StrokeAmount : 1f;
+            float shadowX = effects?.HasShadow == true ? effects.ShadowOffsetX : 0f;
+            float shadowY = effects?.HasShadow == true ? effects.ShadowOffsetY : 0f;
+
+            // Half a line of slack on top of that absorbs what the line box does not describe: descenders,
+            // side bearings, the antialiased edge. Being a little generous costs a few pixels of blit and
+            // guards against clipping text, which the old whole-target blit could not do by construction.
+            float slack = (MathF.Max(lineHeight, 0) * 0.5f) + MathF.Max(strokePad, shadowPad);
+            left += MathF.Min(shadowX, 0f) - slack;
+            top += MathF.Min(shadowY, 0f) - slack;
+            right += MathF.Max(shadowX, 0f) + slack;
+            bottom += MathF.Max(shadowY, 0f) + slack;
+
+            // The model-view matrix can rotate and skew, so map all four corners, not just two.
+            Vector2 topLeft = Vector2.Transform(new Vector2(left, top), transformMatrix);
+            Vector2 topRight = Vector2.Transform(new Vector2(right, top), transformMatrix);
+            Vector2 bottomLeft = Vector2.Transform(new Vector2(left, bottom), transformMatrix);
+            Vector2 bottomRight = Vector2.Transform(new Vector2(right, bottom), transformMatrix);
+
+            int x0 = (int)MathF.Floor(MathF.Min(MathF.Min(topLeft.X, topRight.X), MathF.Min(bottomLeft.X, bottomRight.X)));
+            int y0 = (int)MathF.Floor(MathF.Min(MathF.Min(topLeft.Y, topRight.Y), MathF.Min(bottomLeft.Y, bottomRight.Y)));
+            int x1 = (int)MathF.Ceiling(MathF.Max(MathF.Max(topLeft.X, topRight.X), MathF.Max(bottomLeft.X, bottomRight.X)));
+            int y1 = (int)MathF.Ceiling(MathF.Max(MathF.Max(topLeft.Y, topRight.Y), MathF.Max(bottomLeft.Y, bottomRight.Y)));
+
+            return Rectangle.Intersect(new Rectangle(x0, y0, x1 - x0, y1 - y0), targetBounds);
+        }
+
+        /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
         /// When fading, all layers are first composited at full opacity onto a render target,
         /// then drawn to screen with the fade alpha so shadow/stroke/fill fade in sync.
@@ -422,8 +486,12 @@ namespace CutTheRopeDX.Framework.Visual
             bool isPingPonging = pingPongOverflow > 0f;
             Rectangle previousScissor = graphicsDevice.ScissorRectangle;
 
+            // Deferred, not immediate: a stroked and shadowed line is drawn seventeen times over, and
+            // immediate mode turns every glyph of every one of those passes into its own draw call.
+            // Deferred keeps submission order, which is what the layering depends on, and collapses the
+            // whole element into one call per atlas page.
             spriteBatch.Begin(
-                SpriteSortMode.Immediate,
+                SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
                 SamplerState.LinearClamp,
                 null,
@@ -432,6 +500,7 @@ namespace CutTheRopeDX.Framework.Visual
                 transformMatrix
             );
 
+            Rectangle pingPongScissor = Rectangle.Empty;
             if (isPingPonging)
             {
                 float clipW = EffectivePingPongClipWidth;
@@ -446,8 +515,16 @@ namespace CutTheRopeDX.Framework.Visual
                 int sy = (int)topLeft.Y;
                 int sw = (int)(bottomRight.X - topLeft.X);
                 int sh = (int)(bottomRight.Y - topLeft.Y);
-                graphicsDevice.ScissorRectangle = new Rectangle(sx, sy, sw, sh);
+                pingPongScissor = new Rectangle(sx, sy, sw, sh);
+                graphicsDevice.ScissorRectangle = pingPongScissor;
             }
+
+            // Union of the line boxes actually drawn, in logical coordinates. The composite blit below is
+            // bounded by this rather than covering the whole target; see CompositeBlitRectangle.
+            float contentLeft = float.MaxValue;
+            float contentTop = float.MaxValue;
+            float contentRight = float.MinValue;
+            float contentBottom = float.MinValue;
 
             // Render each formatted line
             foreach (FormattedString formattedString in formattedStrings)
@@ -476,6 +553,11 @@ namespace CutTheRopeDX.Framework.Visual
                 }
 
                 Vector2 position = new(xPos, yPos);
+
+                contentLeft = MathF.Min(contentLeft, xPos);
+                contentTop = MathF.Min(contentTop, yPos);
+                contentRight = MathF.Max(contentRight, xPos + formattedString.width);
+                contentBottom = MathF.Max(contentBottom, yPos + lineHeight);
 
                 // Draw shadow if enabled
                 if (effects?.HasShadow == true)
@@ -554,21 +636,42 @@ namespace CutTheRopeDX.Framework.Visual
                     graphicsDevice.SetRenderTarget(null);
                 }
 
+                Rectangle blitRect = CompositeBlitRectangle(
+                    contentLeft,
+                    contentTop,
+                    contentRight,
+                    contentBottom,
+                    effects,
+                    lineHeight,
+                    transformMatrix,
+                    new Rectangle(0, 0, textCompositeTarget.Width, textCompositeTarget.Height));
+                if (isPingPonging)
+                {
+                    // Glyphs outside the clip never reached the target, so there is nothing to fetch there.
+                    blitRect = Rectangle.Intersect(blitRect, pingPongScissor);
+                }
+
                 byte fadeByte = (byte)MathHelper.Clamp(inheritedAlpha * 255f, 0f, 255f);
                 Color blitColor = new(fadeByte, fadeByte, fadeByte, fadeByte); // premultiplied tint
 
-                spriteBatch.Begin(
-                    SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
-                    SamplerState.LinearClamp,
-                    null,
-                    null,
-                    null,
-                    null
-                );
-                spriteBatch.Draw(textCompositeTarget, Vector2.Zero, blitColor);
-                spriteBatch.End();
-                BlendParams.InvalidateDeviceCache();
+                if (!blitRect.IsEmpty)
+                {
+                    spriteBatch.Begin(
+                        SpriteSortMode.Deferred,
+                        BlendState.AlphaBlend,
+                        SamplerState.LinearClamp,
+                        null,
+                        null,
+                        null,
+                        null
+                    );
+                    // Source and destination are the same rectangle: the target is viewport sized and was
+                    // drawn into at 1:1, so this samples the region the text landed in and leaves the rest
+                    // of the surface untouched instead of alpha blending a screenful of transparent pixels.
+                    spriteBatch.Draw(textCompositeTarget, blitRect, blitRect, blitColor);
+                    spriteBatch.End();
+                    BlendParams.InvalidateDeviceCache();
+                }
 
                 // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
                 // composite pass cannot retain a sampled binding for a writable target.
