@@ -11,7 +11,6 @@
          Set ExcludeMacOSTarget=true to drop it (used by the test project, which
          only needs the portable target and must not require the macos workload). -->
     <TargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX')) AND '$(ExcludeMacOSTarget)' != 'true'">net10.0;net10.0-macos</TargetFrameworks>
-    <LangVersion>preview</LangVersion>
 
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <WindowsDistributionIcon>../distribution/icons/CutTheRopeDXIcon.ico</WindowsDistributionIcon>
@@ -23,10 +22,6 @@
     <Description>Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope.</Description>
     <Copyright>Copyright © 2012</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>Recommended</AnalysisMode>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <IsAotCompatible>true</IsAotCompatible>
     <TieredCompilation>false</TieredCompilation>
     <IncludeSourceRevisionInInformationalVersion Condition="'$(VersionSuffix)' != ''">true</IncludeSourceRevisionInInformationalVersion>
@@ -86,11 +81,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.6" />
-    <PackageReference Include="MonoGame.Framework.Native" Version="3.8.5" />
-    <PackageReference Include="MonoGame.Runtime.Windows.Vulkan" Version="3.8.5" />
-    <PackageReference Include="MonoGame.Runtime.Mac.Vulkan" Version="3.8.5" />
-    <PackageReference Include="MonoGame.Runtime.Linux.Vulkan" Version="3.8.5" />
+    <PackageReference Include="FontStashSharp.MonoGame" />
+    <PackageReference Include="MonoGame.Framework.Native" />
+    <PackageReference Include="MonoGame.Runtime.Windows.Vulkan" />
+    <PackageReference Include="MonoGame.Runtime.Mac.Vulkan" />
+    <PackageReference Include="MonoGame.Runtime.Linux.Vulkan" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,12 +93,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <PackageReference Include="FFmpeg.AutoGen" Version="8.1.0" />
+    <PackageReference Include="FFmpeg.AutoGen" />
   </ItemGroup>
 
   <!-- Windows: bundled native FFmpeg libraries -->
   <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
-    <PackageReference Include="FFmpeg.LGPL" Version="20260210.1.0" />
+    <PackageReference Include="FFmpeg.LGPL" />
   </ItemGroup>
 
   <PropertyGroup>
