@@ -101,6 +101,14 @@
     <PackageReference Include="FFmpeg.LGPL" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win-x64')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
+    <None Include="../distribution/swiftshader/vk_swiftshader.dll">
+      <Link>swiftshader/vk_swiftshader.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup>
     <MonoGamePlatform>DesktopVK</MonoGamePlatform>
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPVK</DefineConstants>
