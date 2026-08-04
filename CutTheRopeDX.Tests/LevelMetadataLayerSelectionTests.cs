@@ -7,12 +7,12 @@ using Xunit;
 
 namespace CutTheRopeDX.Tests
 {
-  public class LevelMetadataLayerSelectionTests
-  {
-    [Fact]
-    public void SelectLayersUsesOnlyFirstCaseInsensitiveSettingsLayer()
+    public class LevelMetadataLayerSelectionTests
     {
-      XElement map = XElement.Parse("""
+        [Fact]
+        public void SelectLayersUsesOnlyFirstCaseInsensitiveSettingsLayer()
+        {
+            XElement map = XElement.Parse("""
                 <map>
                   <layer name="settings">
                     <map width="320" height="480" />
@@ -33,12 +33,12 @@ namespace CutTheRopeDX.Tests
                 </map>
                 """);
 
-      XElement[] selected = [.. LevelMetadataLayerSelection.SelectLayers(map)];
+            XElement[] selected = [.. LevelMetadataLayerSelection.SelectLayers(map)];
 
-      Assert.Equal(["settings", "Objects"],
-          selected.Select(layer => layer.Attribute("name")?.Value));
-      Assert.Equal("320", selected[0].Element("map")?.Attribute("width")?.Value);
-      Assert.Equal("10", selected[1].Element("candy")?.Attribute("x")?.Value);
+            Assert.Equal(["settings", "Objects"],
+                selected.Select(layer => layer.Attribute("name")?.Value));
+            Assert.Equal("320", selected[0].Element("map")?.Attribute("width")?.Value);
+            Assert.Equal("10", selected[1].Element("candy")?.Attribute("x")?.Value);
+        }
     }
-  }
 }
