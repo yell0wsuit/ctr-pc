@@ -2,6 +2,7 @@ using System;
 using System.Xml.Linq;
 
 using CutTheRopeDX;
+using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.GameMain;
 
@@ -43,6 +44,9 @@ if (cli.IsHeadless)
     Console.WriteLine($"[headless] ran 600 frames, active controller = {HeadlessHost.ActiveControllerName()}");
     return CustomLevelSession.IsActive && !HeadlessHost.IsInGameplay() ? 1 : 0;
 }
+
+// Chooses hardware or software Vulkan. Must happen before the graphics device is created.
+GraphicsFallback.Configure();
 
 using Game1 game = new();
 game.Run();
