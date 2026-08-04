@@ -34,6 +34,24 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(720, height);
         }
 
+        [Theory]
+        [InlineData(1367, 769)]
+        [InlineData(1600, 900)]
+        [InlineData(1920, 1080)]
+        [InlineData(2560, 1440)]
+        [InlineData(3440, 1440)]
+        [InlineData(3840, 2160)]
+        [InlineData(5120, 2880)]
+        [InlineData(7680, 4320)]
+        public void SoftwareRenderingTakesTheCapExactlyOnEveryDisplayAboveIt(int onScreenWidth, int onScreenHeight)
+        {
+            // The cap is a fixed point, not a budget: every display wider than it renders at the same size,
+            // so the picture does not get coarser as the display gets bigger.
+            (int width, _) = ScreenSizeManager.CapRenderSize(onScreenWidth, onScreenHeight, softwareRendering: true);
+
+            Assert.Equal(ScreenSizeManager.MAX_SOFTWARE_RENDER_WIDTH, width);
+        }
+
         [Fact]
         public void SoftwareRenderingPreservesAspectRatioWhenCapping()
         {

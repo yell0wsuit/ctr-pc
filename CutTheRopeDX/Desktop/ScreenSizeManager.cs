@@ -37,6 +37,13 @@ namespace CutTheRopeDX.Desktop
         /// The size to render at. Both dimensions are scaled by the same factor, because the result is
         /// stretched back over the full on-screen rectangle and a changed aspect ratio would distort it.
         /// </returns>
+        /// <remarks>
+        /// The cap is taken exactly, so the render size is the same on every display wider than it and the
+        /// picture is as sharp as the cap allows. The upscale factor that follows from that is a fraction
+        /// rather than a whole number on most displays, which decides how the blit to the back buffer is
+        /// filtered: see <c>Renderer.ScreenBlitSamplerFor</c>, which point samples only where the ratio does
+        /// come out whole.
+        /// </remarks>
         public static (int Width, int Height) CapRenderSize(int width, int height, bool softwareRendering)
         {
             if (!softwareRendering || width <= MAX_SOFTWARE_RENDER_WIDTH || width <= 0)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
 
@@ -243,10 +242,47 @@ namespace CutTheRopeDX.Desktop
             {
                 Global.GraphicsDevice.Clear(Color.Black);
             }
-            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, ScreenBlitSampler, null, null, null, null);
+            SamplerState sampler = ScreenBlitSamplerFor(s_RenderTarget, destination);
+            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, sampler, null, null, null, null);
             Global.SpriteBatch.Draw(s_RenderTarget, destination, Color.White);
             Global.SpriteBatch.End();
             BlendParams.InvalidateDeviceCache();
+        }
+
+        /// <summary>
+        /// Chooses the filtering for the render-target-to-back-buffer blit.
+        /// </summary>
+        /// <param name="source">The finished frame, at whatever size it was rendered.</param>
+        /// <param name="destination">Rectangle it is drawn into, in back-buffer pixels.</param>
+        /// <returns>Point sampling when the upscale repeats whole pixels; otherwise bilinear.</returns>
+        /// <remarks>
+        /// Bilinear costs four texel fetches and the filtering per output pixel where point costs one, over
+        /// the whole back buffer, so this is the cheapest large saving on the software renderer. What it
+        /// costs in looks depends entirely on the ratio: at a whole-number upscale point sampling repeats
+        /// each rendered pixel evenly and the two filters differ only in sharpness, while at a fractional
+        /// ratio it repeats rows and columns unevenly, which the game's ropes and outlines show as shimmer
+        /// while they move. <see cref="ScreenSizeManager.CapRenderSize"/> picks a whole divisor so that the
+        /// software path normally lands on the first case; every other case falls through to bilinear.
+        /// <para>
+        /// The tolerance absorbs the odd pixel lost to integer division when the on-screen rectangle has an
+        /// odd dimension. That leaves a single repeated row or column over the whole surface rather than
+        /// the regular pattern a genuinely fractional ratio produces, which is not what shimmers.
+        /// </para>
+        /// </remarks>
+        private static SamplerState ScreenBlitSamplerFor(Texture2D source, Rectangle destination)
+        {
+            if (source.Width <= 0 || source.Height <= 0)
+            {
+                return SamplerState.LinearClamp;
+            }
+            int scale = (destination.Width + (source.Width / 2)) / source.Width;
+            if (scale < 1)
+            {
+                return SamplerState.LinearClamp;
+            }
+            bool wholePixels = Math.Abs(destination.Width - (scale * source.Width)) <= scale
+                && Math.Abs(destination.Height - (scale * source.Height)) <= scale;
+            return wholePixels ? SamplerState.PointClamp : SamplerState.LinearClamp;
         }
 
         /// <summary>
@@ -1084,29 +1120,6 @@ namespace CutTheRopeDX.Desktop
         #endregion
 
         #region Static Fields
-
-        /// <summary>
-        /// Whether the upscale to the back buffer should use point sampling while rendering in software.
-        /// </summary>
-        /// <remarks>
-        /// Bilinear costs four texel fetches and the filtering per output pixel where point costs one, over
-        /// the full back buffer, so this is a real saving on the software renderer. It is off because the
-        /// saving is paid for in looks: the software render size is capped to a fraction of the output that
-        /// is not a whole number, and point sampling a non-integer upscale duplicates rows and columns
-        /// unevenly, which the game's ropes and outlines show as shimmer while they move. Turn it on if a
-        /// run on the target machine says the frame time is worth that.
-        /// </remarks>
-        private const bool PointSampleSoftwareUpscale = false;
-
-        /// <summary>
-        /// Filtering for the render-target-to-back-buffer blit. Only ever differs from linear while
-        /// rendering in software; with a GPU the render size matches the destination and the blit is 1:1,
-        /// where the two filters give the same pixels.
-        /// </summary>
-        private static SamplerState ScreenBlitSampler =>
-            PointSampleSoftwareUpscale && GraphicsFallback.IsSoftwareRendering
-                ? SamplerState.PointClamp
-                : SamplerState.LinearClamp;
 
         /// <summary>
         /// The accumulating sprite quad batch.
