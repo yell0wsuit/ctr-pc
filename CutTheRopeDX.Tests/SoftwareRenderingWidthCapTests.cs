@@ -7,31 +7,51 @@ namespace CutTheRopeDX.Tests
     public class SoftwareRenderingWidthCapTests
     {
         [Fact]
-        public void HardwareRenderingLeavesTheWidthAlone()
+        public void HardwareRenderingLeavesTheRenderSizeAlone()
         {
-            Assert.Equal(1920, ScreenSizeManager.CapWidthForSoftwareRendering(1920, softwareRendering: false));
+            (int width, int height) = ScreenSizeManager.CapRenderSize(1920, 1080, softwareRendering: false);
+
+            Assert.Equal(1920, width);
+            Assert.Equal(1080, height);
         }
 
         [Fact]
-        public void SoftwareRenderingCapsAWidthAboveTheLimit()
+        public void SoftwareRenderingCapsASizeAboveTheLimit()
         {
             // 1080p is where SwiftShader stops being playable, so it must come down to the cap.
-            Assert.Equal(
-                ScreenSizeManager.MAX_SOFTWARE_WINDOW_WIDTH,
-                ScreenSizeManager.CapWidthForSoftwareRendering(1920, softwareRendering: true));
+            (int width, int height) = ScreenSizeManager.CapRenderSize(1920, 1080, softwareRendering: true);
+
+            Assert.Equal(ScreenSizeManager.MAX_SOFTWARE_RENDER_WIDTH, width);
+            Assert.Equal(768, height);
         }
 
         [Fact]
-        public void SoftwareRenderingLeavesAWidthAlreadyUnderTheLimitAlone()
+        public void SoftwareRenderingLeavesASizeAlreadyUnderTheLimitAlone()
         {
-            Assert.Equal(1280, ScreenSizeManager.CapWidthForSoftwareRendering(1280, softwareRendering: true));
+            (int width, int height) = ScreenSizeManager.CapRenderSize(1280, 720, softwareRendering: true);
+
+            Assert.Equal(1280, width);
+            Assert.Equal(720, height);
         }
 
         [Fact]
-        public void SoftwareRenderingNeverCapsBelowTheMinimumWindowWidth()
+        public void SoftwareRenderingPreservesAspectRatioWhenCapping()
         {
-            // The cap must not fight the floor the rest of the sizing code relies on.
-            Assert.True(ScreenSizeManager.MAX_SOFTWARE_WINDOW_WIDTH >= ScreenSizeManager.MIN_WINDOW_WIDTH);
+            // The capped target is stretched back over the full on-screen rect, so a changed
+            // aspect ratio here would show up as a distorted picture.
+            (int width, int height) = ScreenSizeManager.CapRenderSize(2560, 1440, softwareRendering: true);
+
+            Assert.Equal(ScreenSizeManager.MAX_SOFTWARE_RENDER_WIDTH, width);
+            Assert.Equal(2560d / 1440d, width / (double)height, precision: 2);
+        }
+
+        [Fact]
+        public void SoftwareRenderingNeverProducesADegenerateSize()
+        {
+            (int width, int height) = ScreenSizeManager.CapRenderSize(4000, 1, softwareRendering: true);
+
+            Assert.True(width > 0);
+            Assert.True(height > 0);
         }
     }
 }

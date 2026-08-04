@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;
@@ -138,11 +139,20 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Recomputes backing dimensions from the scaled view rectangle and reapplies projection state.
         /// </summary>
+        /// <remarks>
+        /// These dimensions size the render target the frame is drawn into, and nothing else: the
+        /// projection below is built from the logical game size, and the finished target is stretched back
+        /// over the full on-screen rectangle. Capping them therefore lowers the rendering resolution
+        /// without shrinking the window or moving anything in game coordinates, which is what makes the
+        /// software renderer affordable at desktop resolutions.
+        /// </remarks>
         public void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            backingWidth = scaledViewRect.Width;
-            backingHeight = scaledViewRect.Height;
+            (backingWidth, backingHeight) = ScreenSizeManager.CapRenderSize(
+                scaledViewRect.Width,
+                scaledViewRect.Height,
+                GraphicsFallback.IsSoftwareRendering);
             SetDefaultProjection();
         }
 

@@ -1,6 +1,5 @@
 using System;
 
-using CutTheRopeDX.Desktop.Graphics;
 using CutTheRopeDX.Framework.Core;
 
 using Microsoft.Xna.Framework;
@@ -17,28 +16,36 @@ namespace CutTheRopeDX.Desktop
     internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {
         /// <summary>
-        /// Widest window allowed while rendering in software. SwiftShader is fill-rate bound, so 1080p is
-        /// not playable; this keeps the back buffer at roughly 1366x768, the largest size that still is.
+        /// Widest render target used while rendering in software. SwiftShader is fill-rate bound, so 1080p
+        /// is not playable; rendering at roughly 1366x768 and letting the result be scaled up keeps the
+        /// window and fullscreen at their real size while the cost stays fixed.
         /// </summary>
-        public const int MAX_SOFTWARE_WINDOW_WIDTH = 1366;
+        public const int MAX_SOFTWARE_RENDER_WIDTH = 1366;
 
         /// <summary>
-        /// Maximum allowed window width for the active graphics profile, or the software cap when the
-        /// bundled software renderer is in use.
+        /// Maximum allowed window width for the active graphics profile.
         /// </summary>
-        public static int MAX_WINDOW_WIDTH => GraphicsFallback.IsSoftwareRendering
-            ? MAX_SOFTWARE_WINDOW_WIDTH
-            : Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
+        public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
 
         /// <summary>
-        /// Applies the software rendering width cap.
+        /// Caps the size rendering is done at when the bundled software renderer is in use.
         /// </summary>
-        /// <param name="width">Requested window width.</param>
+        /// <param name="width">On-screen width the frame will be shown at.</param>
+        /// <param name="height">On-screen height the frame will be shown at.</param>
         /// <param name="softwareRendering">Whether rendering goes through the bundled software library.</param>
-        /// <returns>The width, reduced to <see cref="MAX_SOFTWARE_WINDOW_WIDTH"/> when rendering in software.</returns>
-        public static int CapWidthForSoftwareRendering(int width, bool softwareRendering)
+        /// <returns>
+        /// The size to render at. Both dimensions are scaled by the same factor, because the result is
+        /// stretched back over the full on-screen rectangle and a changed aspect ratio would distort it.
+        /// </returns>
+        public static (int Width, int Height) CapRenderSize(int width, int height, bool softwareRendering)
         {
-            return softwareRendering ? Math.Min(width, MAX_SOFTWARE_WINDOW_WIDTH) : width;
+            if (!softwareRendering || width <= MAX_SOFTWARE_RENDER_WIDTH || width <= 0)
+            {
+                return (width, height);
+            }
+
+            int cappedHeight = (int)Math.Round(height * (MAX_SOFTWARE_RENDER_WIDTH / (double)width));
+            return (MAX_SOFTWARE_RENDER_WIDTH, Math.Max(1, cappedHeight));
         }
 
         /// <summary>
