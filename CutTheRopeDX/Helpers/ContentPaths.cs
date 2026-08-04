@@ -177,9 +177,45 @@ namespace CutTheRopeDX.Helpers
                 dir = dir.Parent;
             }
 
-            return Path.Combine(basePath, RootDirectory);
+            return ResolveContentRootBeside(basePath);
 #endif
         }
+
+#if !MACOS_AVFOUNDATION
+        /// <summary>
+        /// Resolves the content root next to the running assembly, falling back to the directory above it.
+        /// </summary>
+        /// <param name="basePath">Directory the assembly is running from.</param>
+        /// <returns>The content root path.</returns>
+        /// <remarks>
+        /// A graphics-backend build lives one level down from the launcher, in <c>vk/</c> or <c>gl/</c>,
+        /// while the content it reads is shared and sits beside the launcher. Looking one level up when
+        /// there is no content alongside is what lets both builds read one copy rather than shipping the
+        /// tree twice. The parent is only used when it actually holds content, so a normal single-directory
+        /// layout, a development build, and the headless runner all keep resolving exactly as before, and a
+        /// genuinely missing content directory still reports the path the caller expects.
+        /// </remarks>
+        private static string ResolveContentRootBeside(string basePath)
+        {
+            string alongside = Path.Combine(basePath, RootDirectory);
+            if (Directory.Exists(alongside))
+            {
+                return alongside;
+            }
+
+            DirectoryInfo parent = Directory.GetParent(Path.TrimEndingDirectorySeparator(basePath));
+            if (parent != null)
+            {
+                string aboveBackendDirectory = Path.Combine(parent.FullName, RootDirectory);
+                if (Directory.Exists(aboveBackendDirectory))
+                {
+                    return aboveBackendDirectory;
+                }
+            }
+
+            return alongside;
+        }
+#endif
 
         /// <summary>
         /// Opens a raw content file from the deployed content directory.
