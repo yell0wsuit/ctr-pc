@@ -102,8 +102,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win-x64')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
+    <!-- Copied as vulkan-1.dll on purpose: the renderer resolves Vulkan by that name, and loading our
+         copy first is what redirects it. See CutTheRopeDX/Desktop/Graphics/SoftwareVulkanLoader.cs. -->
     <None Include="../distribution/swiftshader/vk_swiftshader.dll">
-      <Link>swiftshader/vk_swiftshader.dll</Link>
+      <Link>swiftshader/vulkan-1.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.Versioning;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -10,16 +11,16 @@ namespace CutTheRopeDX.Desktop.Graphics
     /// has no usable GPU driver.
     /// </summary>
     /// <remarks>
-    /// Must run before the graphics device is created, because the backend is chosen through an environment
-    /// variable that SDL reads when it loads Vulkan.
+    /// Must run before the graphics device is created, because switching backends means getting our copy of
+    /// Vulkan into the process ahead of the one the renderer would otherwise resolve.
     /// </remarks>
     internal static class GraphicsFallback
     {
-        /// <summary>Environment variable SDL reads to load an alternative Vulkan library.</summary>
-        private const string SdlVulkanLibraryVariable = "SDL_VULKAN_LIBRARY";
-
-        /// <summary>Path of the bundled SwiftShader library, relative to the executable.</summary>
-        private const string SwiftShaderRelativePath = "swiftshader/vk_swiftshader.dll";
+        /// <summary>
+        /// Path of the bundled SwiftShader library, relative to the executable. It ships under the name the
+        /// renderer looks for; see <see cref="SoftwareVulkanLoader"/> for why.
+        /// </summary>
+        private const string SwiftShaderRelativePath = "swiftshader/vulkan-1.dll";
 
         /// <summary>
         /// Sequences the backend decision against injected effects.
@@ -107,8 +108,9 @@ namespace CutTheRopeDX.Desktop.Graphics
         }
 
         /// <summary>
-        /// Points SDL at the bundled SwiftShader library.
+        /// Loads the bundled SwiftShader library so the renderer resolves Vulkan to it.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         private static void ApplySoftwareRendering()
         {
             string path = Path.Combine(AppContext.BaseDirectory, SwiftShaderRelativePath);
@@ -119,7 +121,7 @@ namespace CutTheRopeDX.Desktop.Graphics
                 return;
             }
 
-            Environment.SetEnvironmentVariable(SdlVulkanLibraryVariable, path);
+            _ = SoftwareVulkanLoader.TryLoad(path);
         }
     }
 }
