@@ -16,44 +16,9 @@ namespace CutTheRopeDX.Desktop
     internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {
         /// <summary>
-        /// Widest render target used while rendering in software. SwiftShader is fill-rate bound, so 1080p
-        /// is not playable; rendering at roughly 1366x768 and letting the result be scaled up keeps the
-        /// window and fullscreen at their real size while the cost stays fixed.
-        /// </summary>
-        public const int MAX_SOFTWARE_RENDER_WIDTH = 1366;
-
-        /// <summary>
         /// Maximum allowed window width for the active graphics profile.
         /// </summary>
         public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
-
-        /// <summary>
-        /// Caps the size rendering is done at when the bundled software renderer is in use.
-        /// </summary>
-        /// <param name="width">On-screen width the frame will be shown at.</param>
-        /// <param name="height">On-screen height the frame will be shown at.</param>
-        /// <param name="softwareRendering">Whether rendering goes through the bundled software library.</param>
-        /// <returns>
-        /// The size to render at. Both dimensions are scaled by the same factor, because the result is
-        /// stretched back over the full on-screen rectangle and a changed aspect ratio would distort it.
-        /// </returns>
-        /// <remarks>
-        /// The cap is taken exactly, so the render size is the same on every display wider than it and the
-        /// picture is as sharp as the cap allows. The upscale factor that follows from that is a fraction
-        /// rather than a whole number on most displays, which decides how the blit to the back buffer is
-        /// filtered: see <c>Renderer.ScreenBlitSamplerFor</c>, which point samples only where the ratio does
-        /// come out whole.
-        /// </remarks>
-        public static (int Width, int Height) CapRenderSize(int width, int height, bool softwareRendering)
-        {
-            if (!softwareRendering || width <= MAX_SOFTWARE_RENDER_WIDTH || width <= 0)
-            {
-                return (width, height);
-            }
-
-            int cappedHeight = (int)Math.Round(height * (MAX_SOFTWARE_RENDER_WIDTH / (double)width));
-            return (MAX_SOFTWARE_RENDER_WIDTH, Math.Max(1, cappedHeight));
-        }
 
         /// <summary>
         /// Gets the current window back-buffer width.

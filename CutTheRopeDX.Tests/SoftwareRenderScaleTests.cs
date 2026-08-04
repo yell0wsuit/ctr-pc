@@ -36,6 +36,108 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(SoftwareRenderScale.MinDivisor, new SoftwareRenderScale().Divisor);
         }
 
+        [Theory]
+        [InlineData(480, 1)]
+        [InlineData(540, 1)]
+        [InlineData(600, 2)]
+        [InlineData(720, 2)]
+        [InlineData(768, 2)]
+        [InlineData(1080, 2)]
+        [InlineData(1440, 3)]
+        [InlineData(2160, 4)]
+        public void TheBaseDivisorBringsTheDisplayToTheTargetOrBelow(int onScreenHeight, int expected)
+        {
+            Assert.Equal(expected, SoftwareRenderScale.BaseDivisorFor(onScreenHeight));
+        }
+
+        [Theory]
+        [InlineData(768)]
+        [InlineData(1080)]
+        [InlineData(1440)]
+        [InlineData(2160)]
+        public void TheBaseDivisorNeverLeavesTheSceneAboveTheTarget(int onScreenHeight)
+        {
+            int divisor = SoftwareRenderScale.BaseDivisorFor(onScreenHeight);
+
+            Assert.True(onScreenHeight / divisor <= SoftwareRenderScale.TargetRenderLines);
+        }
+
+        [Theory]
+        [InlineData(768)]
+        [InlineData(1080)]
+        [InlineData(1440)]
+        [InlineData(2160)]
+        public void TheBaseDivisorIsTheFinestThatReachesTheTarget(int onScreenHeight)
+        {
+            // Missing low is accepted; missing low by more than a step is waste, because every step costs
+            // real sharpness for fill rate that was already inside the budget.
+            int divisor = SoftwareRenderScale.BaseDivisorFor(onScreenHeight);
+
+            Assert.True(divisor == SoftwareRenderScale.MinDivisor
+                || onScreenHeight / (divisor - 1) > SoftwareRenderScale.TargetRenderLines);
+        }
+
+        [Fact]
+        public void ADisplayAlreadyUnderTheTargetIsRenderedWhole()
+        {
+            Assert.Equal(SoftwareRenderScale.MinDivisor, SoftwareRenderScale.BaseDivisorFor(480));
+        }
+
+        [Fact]
+        public void TheBaseDivisorIsTheFloorTheAdaptivePolicyReturnsTo()
+        {
+            SoftwareRenderScale scale = new();
+            scale.SetBaseDivisor(2);
+
+            // Quiet enough to undo any number of steps, but the base is not a step and cannot be undone.
+            Feed(scale, FastMs, windows: (SoftwareRenderScale.BaseGoodWindowsForStepUp + 2) * 4);
+
+            Assert.Equal(2, scale.Divisor);
+        }
+
+        [Fact]
+        public void SlowFramesStepDownFromTheBaseAndStopAtTheAdaptiveLimit()
+        {
+            SoftwareRenderScale scale = new();
+            scale.SetBaseDivisor(2);
+
+            Feed(scale, SlowMs, windows: 40);
+
+            Assert.Equal(2 + SoftwareRenderScale.MaxAdaptiveSteps, scale.Divisor);
+            Assert.Equal(scale.MaxDivisor, scale.Divisor);
+        }
+
+        [Fact]
+        public void AResizeKeepsTheStepsAlreadyTakenButRebasesThem()
+        {
+            SoftwareRenderScale scale = new();
+            scale.SetBaseDivisor(2);
+            Feed(scale, SlowMs, windows: 2);
+            Assert.Equal(3, scale.Divisor);
+
+            // Moving to a display that needs a coarser base does not undo what the machine already showed
+            // it needs; the one step stays on top of the new base.
+            scale.SetBaseDivisor(3);
+
+            Assert.Equal(4, scale.Divisor);
+        }
+
+        [Fact]
+        public void ARebaseDiscardsMeasurementsTakenAtTheOldSize()
+        {
+            SoftwareRenderScale scale = new();
+            scale.SetBaseDivisor(2);
+            Feed(scale, SlowMs, windows: 2);
+            Assert.Equal(3, scale.Divisor);
+
+            scale.SetBaseDivisor(4);
+            // The window straight after the change is spent settling, so a slow one cannot act on frames
+            // that were partly drawn at the previous size.
+            Feed(scale, SlowMs);
+
+            Assert.Equal(5, scale.Divisor);
+        }
+
         [Fact]
         public void FullDivisorLeavesTheSizeAlone()
         {
@@ -58,7 +160,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ApplyNeverProducesADegenerateSize()
         {
-            (int width, int height) = SoftwareRenderScale.Apply(2, 1, SoftwareRenderScale.MaxDivisor);
+            (int width, int height) = SoftwareRenderScale.Apply(2, 1, 8);
 
             Assert.True(width > 0);
             Assert.True(height > 0);
@@ -106,7 +208,7 @@ namespace CutTheRopeDX.Tests
 
             Feed(scale, SlowMs, windows: 40);
 
-            Assert.Equal(SoftwareRenderScale.MaxDivisor, scale.Divisor);
+            Assert.Equal(scale.MaxDivisor, scale.Divisor);
         }
 
         [Fact]
@@ -237,9 +339,9 @@ namespace CutTheRopeDX.Tests
             for (int repeat = 0; repeat < 10; repeat++)
             {
                 Feed(scale, SlowMs, windows: 8);
-                Assert.InRange(scale.Divisor, SoftwareRenderScale.MinDivisor, SoftwareRenderScale.MaxDivisor);
+                Assert.InRange(scale.Divisor, scale.BaseDivisor, scale.MaxDivisor);
                 Feed(scale, FastMs, windows: 8);
-                Assert.InRange(scale.Divisor, SoftwareRenderScale.MinDivisor, SoftwareRenderScale.MaxDivisor);
+                Assert.InRange(scale.Divisor, scale.BaseDivisor, scale.MaxDivisor);
             }
         }
     }

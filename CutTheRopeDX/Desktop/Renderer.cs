@@ -261,8 +261,9 @@ namespace CutTheRopeDX.Desktop
         /// costs in looks depends entirely on the ratio: at a whole-number upscale point sampling repeats
         /// each rendered pixel evenly and the two filters differ only in sharpness, while at a fractional
         /// ratio it repeats rows and columns unevenly, which the game's ropes and outlines show as shimmer
-        /// while they move. <see cref="ScreenSizeManager.CapRenderSize"/> picks a whole divisor so that the
-        /// software path normally lands on the first case; every other case falls through to bilinear.
+        /// while they move. <see cref="Graphics.SoftwareRenderScale"/> only ever divides the on-screen size
+        /// by a whole number, so the software path always lands on the first case; every other case falls
+        /// through to bilinear.
         /// <para>
         /// The tolerance absorbs the odd pixel lost to integer division when the on-screen rectangle has an
         /// odd dimension. That leaves a single repeated row or column over the whole surface rather than

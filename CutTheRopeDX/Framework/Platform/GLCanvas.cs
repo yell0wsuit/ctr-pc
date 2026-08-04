@@ -158,15 +158,21 @@ namespace CutTheRopeDX.Framework.Platform
         public void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            (int cappedWidth, int cappedHeight) = ScreenSizeManager.CapRenderSize(
-                scaledViewRect.Width,
-                scaledViewRect.Height,
-                GraphicsFallback.IsSoftwareRendering);
-            // The fixed cap keeps a large display from costing more than a small one; the divisor on top of
-            // it is what answers a machine that cannot afford even the capped size. On the hardware path the
-            // divisor stays at one, so both are identities and this is the size it always was.
-            _appliedRenderDivisor = GraphicsFallback.IsSoftwareRendering ? SoftwareRenderScale.Shared.Divisor : 1;
-            (backingWidth, backingHeight) = SoftwareRenderScale.Apply(cappedWidth, cappedHeight, _appliedRenderDivisor);
+            // One whole divisor of the on-screen size does both jobs: its base brings any display down to
+            // roughly the height the software renderer can afford, and the steps the policy adds answer a
+            // machine that cannot afford even that. Being a whole divisor throughout is what keeps the blit
+            // to the back buffer point sampled. On the hardware path it stays at one and this is the size
+            // it always was.
+            if (GraphicsFallback.IsSoftwareRendering)
+            {
+                SoftwareRenderScale.Shared.SetBaseDivisor(SoftwareRenderScale.BaseDivisorFor(scaledViewRect.Height));
+                _appliedRenderDivisor = SoftwareRenderScale.Shared.Divisor;
+            }
+            else
+            {
+                _appliedRenderDivisor = 1;
+            }
+            (backingWidth, backingHeight) = SoftwareRenderScale.Apply(scaledViewRect.Width, scaledViewRect.Height, _appliedRenderDivisor);
             SetDefaultProjection();
         }
 
