@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_StoredHardware_DoesNothingAtAll()
+        public void RunStoredHardwareDoesNothingAtAll()
         {
             Recorder recorder = new() { StoredMode = GraphicsMode.Hardware };
 
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_StoredSoftware_AppliesSoftwareWithoutProbingOrWarning()
+        public void RunStoredSoftwareAppliesSoftwareWithoutProbingOrWarning()
         {
             Recorder recorder = new() { StoredMode = GraphicsMode.Software };
 
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_NoStoredMode_WritesMarkerBeforeProbing()
+        public void RunNoStoredModeWritesMarkerBeforeProbing()
         {
             // This ordering is the entire point of the marker: if the probe kills the process,
             // "probing" must already be on disk.
@@ -61,7 +61,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_ProbeFindsNoDevice_PersistsWarnsThenApplies()
+        public void RunProbeFindsNoDevicePersistsWarnsThenApplies()
         {
             Recorder recorder = new() { StoredMode = "", ProbeResult = VulkanProbeResult.NoDevice };
 
@@ -73,7 +73,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_StoredProbing_RecoversToSoftwareWithoutProbingAgain()
+        public void RunStoredProbingRecoversToSoftwareWithoutProbingAgain()
         {
             Recorder recorder = new() { StoredMode = GraphicsMode.Probing };
 
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void Run_SecondLaunchAfterSoftwareWasStored_IsSilent()
+        public void RunSecondLaunchAfterSoftwareWasStoredIsSilent()
         {
             // First launch probes, warns, and stores "software".
             Recorder recorder = new() { StoredMode = "", ProbeResult = VulkanProbeResult.NoLoader };

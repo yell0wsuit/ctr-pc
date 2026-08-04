@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
     public class GraphicsBackendSelectorTests
     {
         [Fact]
-        public void DecideFromStored_Hardware_UsesHardwareAndStaysSilent()
+        public void DecideFromStoredHardwareUsesHardwareAndStaysSilent()
         {
             GraphicsDecision decision = GraphicsBackendSelector.DecideFromStored(GraphicsMode.Hardware);
 
@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void DecideFromStored_Software_UsesSoftwareWithoutRepeatingTheNotice()
+        public void DecideFromStoredSoftwareUsesSoftwareWithoutRepeatingTheNotice()
         {
             GraphicsDecision decision = GraphicsBackendSelector.DecideFromStored(GraphicsMode.Software);
 
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void DecideFromStored_Probing_RecoversToSoftwareAndWarns()
+        public void DecideFromStoredProbingRecoversToSoftwareAndWarns()
         {
             // A stored "probing" means the previous launch died inside the probe.
             GraphicsDecision decision = GraphicsBackendSelector.DecideFromStored(GraphicsMode.Probing);
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(null)]
         [InlineData("HARDWARE")]
         [InlineData("banana")]
-        public void DecideFromStored_AbsentOrUnrecognised_RequestsProbe(string stored)
+        public void DecideFromStoredAbsentOrUnrecognisedRequestsProbe(string stored)
         {
             GraphicsDecision decision = GraphicsBackendSelector.DecideFromStored(stored);
 
@@ -55,7 +55,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void DecideFromProbe_Hardware_PersistsHardwareAndStaysSilent()
+        public void DecideFromProbeHardwarePersistsHardwareAndStaysSilent()
         {
             GraphicsDecision decision = GraphicsBackendSelector.DecideFromProbe(VulkanProbeResult.Hardware);
 
@@ -66,13 +66,13 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void DecideFromProbe_NoDevice_PersistsSoftwareAndWarns()
+        public void DecideFromProbeNoDevicePersistsSoftwareAndWarns()
         {
             AssertFallsBackToSoftware(VulkanProbeResult.NoDevice);
         }
 
         [Fact]
-        public void DecideFromProbe_NoLoader_PersistsSoftwareAndWarns()
+        public void DecideFromProbeNoLoaderPersistsSoftwareAndWarns()
         {
             AssertFallsBackToSoftware(VulkanProbeResult.NoLoader);
         }
