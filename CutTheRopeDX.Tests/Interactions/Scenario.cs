@@ -385,7 +385,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The loaded scene, ready to be stepped.</returns>
         public GameScene Build()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
+            _ = HeadlessGame.Boot();
 
             XElement settings = new(
                 "layer",
@@ -407,7 +407,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 settings,
                 new XElement("layer", new XAttribute("name", "Objects"), objects));
 
-            GameScene scene = ctr.LoadScenarioMap(map);
+            GameScene scene = HeadlessGame.LoadScenarioMap(map);
 
             // Win/loss both call straight into the delegate; a scenario that ends must not die on a
             // null one. Tests read the counts back through SceneProbe.Outcomes.

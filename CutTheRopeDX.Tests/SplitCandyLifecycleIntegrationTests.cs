@@ -254,8 +254,8 @@ namespace CutTheRopeDX.Tests
 
         private static (GameScene Scene, CandyContext Primary) SplitLevel()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
-            GameScene scene = ctr.LoadLevel(pack: 4, level: 9);
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(pack: 4, level: 9);
             scene.gameSceneDelegate = new RecordingSceneDelegate();
             return (scene, scene.Candies()[0]);
         }

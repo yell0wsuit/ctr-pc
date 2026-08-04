@@ -115,7 +115,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public void SplitCandyMergesAtTheReferenceRateOnShippedLevel51()
         {
             HeadlessGame ctr = HeadlessGame.Boot();
-            GameScene scene = ctr.LoadLevel(pack: 4, level: 0);
+            GameScene scene = HeadlessGame.LoadLevel(pack: 4, level: 0);
             scene.gameSceneDelegate = new RecordingSceneDelegate();
             CandyContext primary = scene.Candies()[0];
             SplitCandyState split = primary.Lifecycle.Split;

@@ -8,8 +8,8 @@ namespace CutTheRopeDX.Tests
     {
         private static (GameController Controller, GameScene Scene) Load()
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
-            GameController controller = ctr.LoadLevelWithController(pack: 1, level: 4);
+            _ = HeadlessGame.Boot();
+            GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
             return (controller, (GameScene)controller.GetView(0).GetChild(0));
         }
 

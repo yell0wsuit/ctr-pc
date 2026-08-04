@@ -15,8 +15,8 @@ namespace CutTheRopeDX.Tests
 
         private static (GameScene Scene, RecordingSceneDelegate Delegate) Load(int level = 4)
         {
-            HeadlessGame ctr = HeadlessGame.Boot();
-            GameScene scene = ctr.LoadLevel(pack: 1, level);
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(pack: 1, level);
             RecordingSceneDelegate recorder = new();
             scene.gameSceneDelegate = recorder;
             return (scene, recorder);
