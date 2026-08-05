@@ -88,8 +88,8 @@ def publish(csproj: Path, out_dir: Path, version: str, use_aot: bool, extra: lis
 def take_shared_directory(staged: Path, name: str) -> None:
     """Move a directory to the output root the first time, and discard later copies.
 
-    Both builds produce identical content bar one byte naming the platform it was built for, which
-    MonoGame does not enforce, and identical FFmpeg libraries. Shipping either twice would add several
+    Content is built once, for one platform, and both backends copy that same tree into their own
+    publish output; the FFmpeg libraries are identical too. Shipping either twice would add several
     hundred megabytes for nothing.
     """
     shared = OUTPUT_DIR / name

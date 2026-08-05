@@ -2,8 +2,24 @@
   <PropertyGroup>
     <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
     <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
-    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(MonoGamePlatform)/content</ContentBuildOutput>
-    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(MonoGamePlatform)</ContentBuildTemp>
+
+    <!--
+      Content is built for one platform and read by every graphics backend, rather than once per
+      backend. Building it per backend would double a build of over a thousand assets, and the audio
+      re-encoding in it is the slowest part of the whole build, to produce two trees that differ in a
+      single byte: the platform identifier in each XNB header, which MonoGame does not enforce.
+
+      DesktopVK is the one built because it is what macOS, Linux, and the default Windows build already
+      use, so those keep byte-identical content and only the Windows OpenGL build reads a header naming
+      another platform. Both directions were checked against the real game before this was relied on.
+
+      Kept separate from MonoGamePlatform, which still follows the backend and selects the framework the
+      game itself compiles against.
+    -->
+    <ContentPlatform Condition="'$(ContentPlatform)' == ''">DesktopVK</ContentPlatform>
+
+    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(ContentPlatform)/content</ContentBuildOutput>
+    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(ContentPlatform)</ContentBuildTemp>
     <CompressContent Condition="'$(CompressContent)' == ''">true</CompressContent>
     <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
   </PropertyGroup>
@@ -24,7 +40,7 @@
     <Exec Condition="'$(RunMGCB)' == 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
     <Exec Condition="'$(RunMGCB)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(ContentPlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
           CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
   </Target>
 
