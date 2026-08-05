@@ -23,6 +23,21 @@ VulkanProbeResult probe = isWindows && !forced.HasValue
     : VulkanProbeResult.NoLoader;
 
 GraphicsBackend backend = BackendSelection.Decide(isWindows, probe, forced);
+
+// Say something before handing over, but only when the answer changed. Windows only: it is the sole
+// platform that ships both builds, so it is the only one where falling back means anything.
+if (isWindows && BackendNotice.ShouldWarn(backend, BackendNotice.ReadLastSeen(), forced.HasValue))
+{
+    ShowVulkanNotice();
+}
+
+if (isWindows && !forced.HasValue)
+{
+    // Recorded after the probe rather than the launch, so a game that fails to start does not suppress
+    // the warning for a machine that has not been told yet.
+    BackendNotice.WriteLastSeen(backend);
+}
+
 string executable = LocateGameExecutable(backend);
 
 if (executable is null)
@@ -70,6 +85,16 @@ catch (Exception exception)
 {
     Console.Error.WriteLine($"[launcher] Could not start '{executable}': {exception.Message}");
     return 1;
+}
+
+// Kept behind a guard so the Windows-only P/Invoke is never reached on another platform, which the
+// analyzer checks and a published single-platform build would otherwise trip over.
+static void ShowVulkanNotice()
+{
+    if (OperatingSystem.IsWindows())
+    {
+        VulkanUnavailableNotice.Show();
+    }
 }
 
 // Never let a faulting driver inside the probe stop the game from starting; an unusable Vulkan loader and
