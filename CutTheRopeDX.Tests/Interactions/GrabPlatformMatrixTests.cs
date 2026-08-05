@@ -120,7 +120,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void ConveyorCarriesAStuckSuctionCup()
         {
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, moveLength: -1f));
 
             AssertCarriedByBelt(scene, cup);
         }
@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Tests.Interactions
             // A kicked cup stays bound - the belt just stops advancing it, so it resumes on its own
             // once it re-sticks. Its own position keeps changing as it falls, so the belt's
             // coordinate is what has to hold still.
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1f));
             Assert.True(scene.BeltHolds(cup));
 
             float startOffset = cup.PositionOnTransporter;
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void ConveyorResumesDrivingASuctionCupThatReSticks()
         {
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1f));
             HeadlessGame.StepFrames(scene, RideFrames);
 
             cup.kicked = false;
@@ -165,7 +165,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void DiscDoesNotCaptureAKickedSuctionCup()
         {
-            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1));
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.False(scene.DiscHolds(cup));
@@ -174,7 +174,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void DiscCapturesASuctionCupThatReSticks()
         {
-            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1));
             HeadlessGame.StepFrames(scene, 1);
             Assert.False(scene.DiscHolds(cup));
 

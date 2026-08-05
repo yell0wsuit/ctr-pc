@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
         private readonly int height = DefaultHeight;
         private bool splitCandy;
 
-        private Scenario()
+        internal Scenario()
         {
         }
 
@@ -147,7 +147,7 @@ namespace CutTheRopeDX.Tests.Interactions
             bool wheel = false,
             bool gun = false,
             bool spider = false,
-            float moveLength = -1f,
+            float moveLength = float.NaN,
             bool moveVertical = false,
             bool kickable = false,
             bool kicked = false,
@@ -161,7 +161,10 @@ namespace CutTheRopeDX.Tests.Interactions
             grab.SetAttributeValue("wheel", Flag(wheel));
             grab.SetAttributeValue("gun", Flag(gun));
             grab.SetAttributeValue("spider", Flag(spider));
-            grab.SetAttributeValue("moveLength", Num(moveLength));
+            if (!float.IsNaN(moveLength))
+            {
+                grab.SetAttributeValue("moveLength", Num(moveLength));
+            }
             grab.SetAttributeValue("moveVertical", Flag(moveVertical));
             grab.SetAttributeValue("moveOffset", Num(0));
             grab.SetAttributeValue("part", "L");
