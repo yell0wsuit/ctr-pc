@@ -6,6 +6,15 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
+  <!--
+    Mirrors the constant the game project defines, so a test that depends on which MonoGame is behind it
+    can say so at compile time. Deriving that from the framework at run time instead would mean a test
+    detecting the absence of the very thing it exists to guard, and passing because of it.
+  -->
+  <PropertyGroup Condition="'$(GraphicsBackend)' == 'GL'">
+    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.v3" />
@@ -14,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CutTheRopeDX\CutTheRopeDX.csproj" />
+    <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,10 +2,28 @@
   <PropertyGroup>
     <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
     <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
-    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(MonoGamePlatform)/content</ContentBuildOutput>
-    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(MonoGamePlatform)</ContentBuildTemp>
+
+    <!--
+      Content is built for one platform and read by every graphics backend, rather than once per
+      backend. Building it per backend would double a build of over a thousand assets, and the audio
+      re-encoding in it is the slowest part of the whole build, to produce two trees that differ in a
+      single byte: the platform identifier in each XNB header, which MonoGame does not enforce.
+    -->
+    <ContentPlatform Condition="'$(ContentPlatform)' == ''">DesktopVK</ContentPlatform>
+
+    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(ContentPlatform)/content</ContentBuildOutput>
+    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(ContentPlatform)</ContentBuildTemp>
     <CompressContent Condition="'$(CompressContent)' == ''">true</CompressContent>
     <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
+
+    <!--
+      Whether this build carries a copy of the content to its output. Normally it must: a build has to be
+      runnable on its own. The Windows release is the exception, where two backends are published into one
+      directory and share a single copy, so the second is told to skip both the content build and the
+      deploy. That saves copying roughly 350MB of it twice, once into the build output and again into the
+      publish directory, only to delete it while assembling the package.
+    -->
+    <DeployContent Condition="'$(DeployContent)' == ''">true</DeployContent>
   </PropertyGroup>
 
   <!--
@@ -24,11 +42,12 @@
     <Exec Condition="'$(RunMGCB)' == 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
     <Exec Condition="'$(RunMGCB)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(MonoGamePlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(ContentPlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
           CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
   </Target>
 
-  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent" Condition="Exists('$(ContentBuildOutput)')">
+  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent"
+          Condition="Exists('$(ContentBuildOutput)') AND '$(DeployContent)' == 'true'">
     <ItemGroup>
       <_BuiltContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
       <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
@@ -53,7 +72,7 @@
   </PropertyGroup>
 
   <Target Name="AddMacOSBundleContent" DependsOnTargets="BuildGameContent"
-          Condition="'$(TargetFramework)' == 'net10.0-macos'">
+          Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(DeployContent)' == 'true'">
     <ItemGroup>
       <_MacBundleContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
       <BundleResource Include="@(_MacBundleContent)">

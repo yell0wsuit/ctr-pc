@@ -1,6 +1,21 @@
 <Project>
+  <PropertyGroup>
+    <GraphicsBackend Condition="'$(GraphicsBackend)' == ''">VK</GraphicsBackend>
+  </PropertyGroup>
 
-  <!-- Repo-wide defaults. Individual projects may override any of these. -->
+  <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX'">
+    <BaseOutputPath>bin/$(GraphicsBackend)/</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj/$(GraphicsBackend)/</BaseIntermediateOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <StripSymbols>true</StripSymbols>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
 
