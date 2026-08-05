@@ -30,8 +30,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Grab hook = scene.Grabs()[0];
 
-            Assert.NotNull(hook.rope);
-            Assert.Equal(-1, hook.rope.cut);
+            Assert.NotNull(hook.Rope);
+            Assert.Equal(-1, hook.Rope.cut);
         }
 
         /// <summary>160 grabs: no rope until the candy enters the radius, then exactly one.</summary>
@@ -43,13 +43,13 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(GrabX, GrabY, radius: 200f, moveLength: -1f));
 
             Grab hook = scene.Grabs()[0];
-            Assert.Null(hook.rope);
+            Assert.Null(hook.Rope);
 
-            Assert.True(Interaction.StepUntil(scene, () => hook.rope != null));
-            Bungee first = hook.rope;
+            Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
+            Bungee first = hook.Rope;
 
             HeadlessGame.StepFrames(scene, 30);
-            Assert.Same(first, hook.rope);
+            Assert.Same(first, hook.Rope);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = scene.TouchUpXYIndex(hookX + 100, hookY, 0);
 
             // And the radius still attaches.
-            Assert.True(Interaction.StepUntil(scene, () => hook.rope != null));
+            Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
         }
 
         /// <summary>28 grabs: a bee-path hook that also auto-attaches. The path wins over any rail.</summary>
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             HeadlessGame.StepFrames(scene, 30);
             Assert.NotEqual(startX, hook.x);
-            Assert.True(Interaction.StepUntil(scene, () => hook.rope != null));
+            Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
         }
 
         /// <summary>2 grabs: a wheel that rolls an auto-attached rope.</summary>
@@ -104,11 +104,11 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(GrabX, GrabY, radius: 200f, wheel: true, moveLength: -1f));
 
             Grab hook = scene.Grabs()[0];
-            Assert.True(Interaction.StepUntil(scene, () => hook.rope != null));
+            Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
 
             int hookX = (int)hook.x;
             int hookY = (int)hook.y;
-            int lengthBefore = hook.rope.GetLength();
+            int lengthBefore = hook.Rope.GetLength();
 
             // Start on the right side of the wheel.
             Assert.True(scene.TouchDownXYIndex(hookX + 80, hookY, 0));
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = scene.TouchUpXYIndex(hookX - 80, hookY, 0);
 
-            Assert.NotEqual(lengthBefore, hook.rope.GetLength());
+            Assert.NotEqual(lengthBefore, hook.Rope.GetLength());
         }
 
         /// <summary>34 grabs: a radius hook carrying a spider that walks once a rope exists.</summary>
@@ -135,7 +135,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Grab hook = scene.Grabs()[0];
             Assert.False(hook.spiderActive);
 
-            Assert.True(Interaction.StepUntil(scene, () => hook.rope != null));
+            Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
             Assert.True(Interaction.StepUntil(scene, () => hook.spiderActive));
         }
 
@@ -160,7 +160,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = scene.TouchUpXYIndex(cupX, cupY, 0);
 
             Assert.True(cup.kicked);
-            Assert.Equal(-1f, cup.rope.bungeeAnchor.pin.X);
+            Assert.Equal(-1f, cup.Rope.bungeeAnchor.pin.X);
         }
 
         /// <summary>6 Experiments maps author kicked="true", so a cup can start detached.</summary>
@@ -174,7 +174,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Grab cup = scene.Grabs()[0];
 
             Assert.True(cup.kicked);
-            Assert.Equal(-1f, cup.rope.bungeeAnchor.pin.X);
+            Assert.Equal(-1f, cup.Rope.bungeeAnchor.pin.X);
         }
 
         /// <summary>73 grabs across 38 Experiments maps: an unfired gun makes a rope on tap.</summary>
@@ -186,7 +186,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(GrabX, GrabY, gun: true, moveLength: -1f));
 
             Grab gun = scene.Grabs()[0];
-            Assert.Null(gun.rope);
+            Assert.Null(gun.Rope);
             Assert.False(gun.gunFired);
 
             int gunX = (int)gun.x;
@@ -195,12 +195,12 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(scene.TouchDownXYIndex(gunX, gunY, 0));
 
             Assert.True(gun.gunFired);
-            Assert.NotNull(gun.rope);
+            Assert.NotNull(gun.Rope);
 
-            Bungee fired = gun.rope;
+            Bungee fired = gun.Rope;
 
             _ = scene.TouchDownXYIndex(gunX, gunY, 0);
-            Assert.Same(fired, gun.rope);
+            Assert.Same(fired, gun.Rope);
         }
 
         /// <summary>

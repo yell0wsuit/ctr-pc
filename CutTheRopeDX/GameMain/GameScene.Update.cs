@@ -167,13 +167,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab grab = bungees[k];
                     grab.Update(delta);
-                    Bungee rope = grab.rope;
+                    Bungee rope = grab.Rope;
                     if (grab.mover != null)
                     {
-                        if (grab.rope != null)
+                        if (grab.Rope != null)
                         {
-                            grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                            grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
+                            grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
+                            grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
                         }
                         if (grab.radius != -1f)
                         {
@@ -219,7 +219,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (rope != null)
                     {
-                        if (rope.cut == -1 || rope.cutTime != 0)
+                        if (grab.Attachment.IsSimulated)
                         {
                             UpdateRopeWithAntCarryOverride(rope, delta);
                             if (grab.hasSpider)
@@ -252,7 +252,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (shouldProcessGrabRadius)
                     {
-                        if (grab.radius != -1f && grab.rope == null)
+                        if (grab.radius != -1f && grab.Rope == null)
                         {
                             // One pass over every hookable body: whole candies and split halves alike
                             // attach to a radius hook the moment they come inside it.
@@ -447,7 +447,7 @@ namespace CutTheRopeDX.GameMain
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
-                            Bungee rope2 = bungees[m].rope;
+                            Bungee rope2 = bungees[m].Rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == mergedLeft || rope2.tail == mergedRight))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
@@ -1053,7 +1053,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 if (bungee != null)
                                 {
-                                    Bungee rope = bungee.rope;
+                                    Bungee rope = bungee.Rope;
                                     if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.capturingHand == null)
                                     {
                                         ropeRelaxed = true;
@@ -1310,10 +1310,10 @@ namespace CutTheRopeDX.GameMain
             {
                 foreach (Grab grab in bungees)
                 {
-                    if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
+                    if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.Rope != null)
                     {
                         float damping = ActivePhysicsConstants.WaterDamping;
-                        ConstraintedPoint anchor = grab.rope.bungeeAnchor;
+                        ConstraintedPoint anchor = grab.Rope.bungeeAnchor;
                         anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + ActivePhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
@@ -1673,7 +1673,7 @@ namespace CutTheRopeDX.GameMain
         private bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
         {
             bool inRange = VectDistance(Vect(grab.x, grab.y), body.Point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
-            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, candyPresent: true, inRange))
+            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.Rope == null, candyPresent: true, inRange))
             {
                 return false;
             }

@@ -224,9 +224,9 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungee in bungees)
             {
                 Grab grab = (Grab)bungee;
-                if (grab?.rope != null && grab.kickable && grab.kicked)
+                if (grab?.Rope != null && grab.kickable && grab.kicked)
                 {
-                    HandlePumpFlowPtSkin(p, grab.rope.bungeeAnchor, grab);
+                    HandlePumpFlowPtSkin(p, grab.Rope.bungeeAnchor, grab);
                 }
             }
         }
@@ -311,8 +311,8 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees[i];
-                Bungee rope = grab.rope;
-                if (rope != null && rope.cut == -1)
+                Bungee rope = grab.Rope;
+                if (grab.Attachment.IsIntact)
                 {
                     for (int j = 0; j < rope.parts.Count - 1; j++)
                     {
@@ -435,7 +435,7 @@ namespace CutTheRopeDX.GameMain
                 for (int i = 0; i < bungees.Count; i++)
                 {
                     Grab grab = bungees[i];
-                    Bungee rope = grab.rope;
+                    Bungee rope = grab.Rope;
                     if (rope == null || rope.cut != -1 || !rope.cutOnlyByAxe)
                     {
                         continue;
@@ -538,12 +538,12 @@ namespace CutTheRopeDX.GameMain
         public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
-            ConstraintedPoint capturedStar = sg.rope?.tail;
+            ConstraintedPoint capturedStar = sg.Rope?.tail;
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees[i];
-                Bungee rope = grab.rope;
+                Bungee rope = grab.Rope;
                 if (rope != null && rope.tail == capturedStar)
                 {
                     if (rope.cut == -1)
@@ -624,7 +624,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab2 = bungees[i];
-                Bungee rope = grab2.rope;
+                Bungee rope = grab2.Rope;
                 if (rope != null)
                 {
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
@@ -656,7 +656,7 @@ namespace CutTheRopeDX.GameMain
             Bungee result = null;
             float closestDistance = initialDistance;
             Vector v = s;
-            Bungee rope = g.rope;
+            Bungee rope = g.Rope;
             if (rope == null || rope.cut != -1)
             {
                 return null;

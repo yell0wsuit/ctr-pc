@@ -50,7 +50,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public Grab()
         {
-            rope = null;
             wheelOperating = -1;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
@@ -111,22 +110,22 @@ namespace CutTheRopeDX.GameMain
             float minWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMin;
             rotateDelta = rotateDelta > 0f ? MIN(MAX(minWheelDelta, rotateDelta), maxWheelDelta) : MAX(MIN(0f - minWheelDelta, rotateDelta), 0f - maxWheelDelta);
             float ropeLength = 0f;
-            if (rope != null)
+            if (Rope != null)
             {
-                ropeLength = rope.GetLength();
+                ropeLength = Rope.GetLength();
             }
-            if (rope != null)
+            if (Rope != null)
             {
                 if (rotateDelta > 0f)
                 {
                     if (ropeLength < ActivePhysicsConstants.GrabRopeRollMaxLength)
                     {
-                        rope.Roll(rotateDelta);
+                        Rope.Roll(rotateDelta);
                     }
                 }
-                else if (rotateDelta != 0f && rope.parts.Count > 3)
+                else if (rotateDelta != 0f && Rope.parts.Count > 3)
                 {
-                    _ = rope.RollBack(0f - rotateDelta);
+                    _ = Rope.RollBack(0f - rotateDelta);
                 }
                 wheelDirty = true;
             }
@@ -143,15 +142,15 @@ namespace CutTheRopeDX.GameMain
             }
             // Transported grabs keep their rope anchor pinned to grab position
             // regardless of launcher state.
-            if (IsDrawnByTransporter && rope != null)
+            if (IsDrawnByTransporter && Rope != null)
             {
-                rope.bungeeAnchor.pos = Vect(x, y);
-                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
+                Rope.bungeeAnchor.pos = Vect(x, y);
+                Rope.bungeeAnchor.pin = Rope.bungeeAnchor.pos;
             }
-            if (launcher && rope != null)
+            if (launcher && Rope != null)
             {
-                rope.bungeeAnchor.pos = Vect(x, y);
-                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
+                Rope.bungeeAnchor.pos = Vect(x, y);
+                Rope.bungeeAnchor.pin = Rope.bungeeAnchor.pos;
                 if (launcherIncreaseSpeed)
                 {
                     if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
@@ -189,7 +188,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (wheel && wheelDirty)
             {
-                float wheelScaleLength = rope == null ? 0f : rope.GetLength() * 0.7f;
+                float wheelScaleLength = Rope == null ? 0f : Rope.GetLength() * 0.7f;
                 if (wheelScaleLength == 0f)
                 {
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
@@ -222,22 +221,22 @@ namespace CutTheRopeDX.GameMain
             }
             float traversedLength = 0f;
             bool flag = false;
-            if (rope != null)
+            if (Rope != null)
             {
                 int i = 0;
-                while (i < rope.drawPtsCount)
+                while (i < Rope.drawPtsCount)
                 {
-                    Vector vector = Vect(rope.drawPts[i], rope.drawPts[i + 1]);
-                    Vector vector2 = Vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
+                    Vector vector = Vect(Rope.drawPts[i], Rope.drawPts[i + 1]);
+                    Vector vector2 = Vect(Rope.drawPts[i + 2], Rope.drawPts[i + 3]);
                     float segmentLength = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
-                    if (spiderPos >= traversedLength && (spiderPos < traversedLength + segmentLength || i > rope.drawPtsCount - 3))
+                    if (spiderPos >= traversedLength && (spiderPos < traversedLength + segmentLength || i > Rope.drawPtsCount - 3))
                     {
                         float segmentProgress = spiderPos - traversedLength;
                         Vector v = VectSub(vector2, vector);
                         v = VectMult(v, segmentProgress / segmentLength);
                         spider.x = vector.X + v.X;
                         spider.y = vector.Y + v.Y;
-                        if (i > rope.drawPtsCount - 3)
+                        if (i > Rope.drawPtsCount - 3)
                         {
                             flag = true;
                         }
@@ -270,10 +269,10 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (kickable && kicked && rope != null)
+            if (kickable && kicked && Rope != null)
             {
-                x = (rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
-                y = (rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
+                x = (Rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
+                y = (Rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
             }
             if (gun)
             {
@@ -302,7 +301,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DrawBungee()
         {
-            Bungee bungee = rope;
+            Bungee bungee = Rope;
             bungee?.Draw();
         }
 
@@ -313,14 +312,14 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (kickable && kicked && rope != null)
+            if (kickable && kicked && Rope != null)
             {
-                x = rope.bungeeAnchor.pos.X;
-                y = rope.bungeeAnchor.pos.Y;
+                x = Rope.bungeeAnchor.pos.X;
+                y = Rope.bungeeAnchor.pos.Y;
             }
             PreDraw();
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Bungee bungee = rope;
+            Bungee bungee = Rope;
 
             if (wheel)
             {
@@ -404,7 +403,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="r">Rope to attach.</param>
         public void SetRope(Bungee r)
         {
-            rope = r;
+            _ = Attachment.TryAttach(r);
             radius = -1f;
             if (hasSpider)
             {
@@ -418,7 +417,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The chain hook atlas for chain bungees; otherwise the default hook atlas.</returns>
         internal string GetHookTextureResource()
         {
-            return rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
+            return Rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
         }
 
         /// <summary>
@@ -683,8 +682,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DestroyRope()
         {
-            rope?.Dispose();
-            rope = null;
+            Attachment.Release();
         }
 
         /// <summary>
@@ -702,10 +700,10 @@ namespace CutTheRopeDX.GameMain
                 back?.SetDrawQuad(3);
                 front?.SetDrawQuad(4);
             }
-            if (rope != null)
+            if (Rope != null)
             {
-                x = rope.bungeeAnchor.pos.X;
-                y = rope.bungeeAnchor.pos.Y;
+                x = Rope.bungeeAnchor.pos.X;
+                y = Rope.bungeeAnchor.pos.Y;
             }
         }
 
@@ -792,9 +790,9 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void DidMoveToOtherSide()
         {
-            if (rope != null && rope.cut == -1)
+            if (Rope != null && Rope.cut == -1)
             {
-                rope.MoveAnchor(Vect(x, y));
+                Rope.MoveAnchor(Vect(x, y));
             }
         }
 
@@ -828,8 +826,11 @@ namespace CutTheRopeDX.GameMain
 
         // public Image dot;
 
-        /// <summary>Rope attached to this grab.</summary>
-        public Bungee rope;
+        /// <summary>Gets the authority for this grab's rope and its condition.</summary>
+        public RopeAttachment Attachment { get; } = new();
+
+        /// <summary>Gets the rope attached to this grab, or <see langword="null"/> when there is none.</summary>
+        public Bungee Rope => Attachment.Rope;
 
         /// <summary>Index of the candy attached to this grab, or -1 when no candy is attached.</summary>
         public int candyNumber = -1;

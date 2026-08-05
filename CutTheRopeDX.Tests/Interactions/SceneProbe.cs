@@ -233,7 +233,7 @@ namespace CutTheRopeDX.Tests.Interactions
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.rope != null && grab.rope.tail == candy.WholeBody.Point && grab.rope.cut == -1)
+                if (grab.Rope != null && grab.Rope.tail == candy.WholeBody.Point && grab.Rope.cut == -1)
                 {
                     count++;
                 }

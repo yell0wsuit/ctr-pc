@@ -574,7 +574,7 @@ namespace CutTheRopeDX.GameMain
                 // Side-switch callbacks
                 if (wrapped)
                 {
-                    if (item is Grab grab && grab.rope != null && grab.candyNumber != -1)
+                    if (item is Grab grab && grab.Rope != null && grab.candyNumber != -1)
                     {
                         OnDestroyRopesForCandy?.Invoke(grab);
                     }

@@ -277,7 +277,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees[i];
-                Bungee rope = grab.rope;
+                Bungee rope = grab.Rope;
                 if (rope != null && rope.tail == candyPoint)
                 {
                     if (rope.cut == -1)
@@ -918,7 +918,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="except">Grab whose candy is targeted and whose own rope is preserved.</param>
         private void DestroyRopesForCandy(Grab except)
         {
-            ConstraintedPoint candyPoint = except?.rope?.tail;
+            ConstraintedPoint candyPoint = except?.Rope?.tail;
             if (candyPoint == null)
             {
                 return;
@@ -927,10 +927,10 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees[i];
-                bool ropeUncut = grab.rope != null && grab.rope.cut == -1;
-                if (ConveyorRopeCut.ShouldCut(grab.rope?.tail, candyPoint, grab == except, ropeUncut))
+                bool ropeUncut = grab.Attachment.IsIntact;
+                if (ConveyorRopeCut.ShouldCut(grab.Rope?.tail, candyPoint, grab == except, ropeUncut))
                 {
-                    grab.rope.SetCut(grab.rope.parts.Count - 2);
+                    grab.Rope.SetCut(grab.Rope.parts.Count - 2);
                 }
             }
         }
@@ -942,8 +942,8 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < bungees.Count; i++)
             {
-                Bungee rope = bungees[i].rope;
-                if (rope != null && rope.cut == -1)
+                Bungee rope = bungees[i].Rope;
+                if (bungees[i].Attachment.IsIntact)
                 {
                     rope.highlighted = false;
                 }

@@ -176,7 +176,7 @@ namespace CutTheRopeDX.GameMain
                         candyPresent: primaryInPlay,
                         candyInLantern: candies[0].inLantern,
                         gunFired: grab.gunFired,
-                        ropeAbsent: grab.rope == null))
+                        ropeAbsent: grab.Rope == null))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
@@ -401,7 +401,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.kickable && bungee.rope != null && !touchedNonKickedKickable && bungee.kicked)
+                if (bungee.kickable && bungee.Rope != null && !touchedNonKickedKickable && bungee.kicked)
                 {
                     bungee.stickTimer = 0f;
                 }
@@ -566,25 +566,25 @@ namespace CutTheRopeDX.GameMain
                 {
                     bungee.moverDragging = -1;
                 }
-                if (bungee.kickable && bungee.rope != null)
+                if (bungee.kickable && bungee.Rope != null)
                 {
                     float tapRadius = Grab.KICK_TAP_RADIUS;
-                    if (!bungee.kickActive && !bungee.kicked && bungee.rope.cut == -1 &&
+                    if (!bungee.kickActive && !bungee.kicked && bungee.Rope.cut == -1 &&
                         PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                     {
                         if (bungee.stainCounter > 0)
                         {
                             Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
                             stain.DoRestoreCutTransparency();
-                            stain.x = bungee.rope.bungeeAnchor.pos.X;
-                            stain.y = bungee.rope.bungeeAnchor.pos.Y;
+                            stain.x = bungee.Rope.bungeeAnchor.pos.X;
+                            stain.y = bungee.Rope.bungeeAnchor.pos.Y;
                             stain.anchor = 18;
                             stain.color.AlphaChannel = bungee.stainCounter / 10f;
                             _ = decalsLayer.AddChild(stain);
                             bungee.stainCounter--;
                         }
-                        bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);
-                        bungee.rope.bungeeAnchor.SetWeight(0.1f);
+                        bungee.Rope.bungeeAnchor.pin = Vect(-1f, -1f);
+                        bungee.Rope.bungeeAnchor.SetWeight(0.1f);
                         bungee.kicked = true;
                         bungee.stickTimer = -1f;
                         bungee.UpdateKickState();
@@ -731,10 +731,10 @@ namespace CutTheRopeDX.GameMain
                                 Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.X;
                                 grab.y = vector3.Y;
-                                if (grab.rope != null)
+                                if (grab.Rope != null)
                                 {
-                                    grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                                    grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
+                                    grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
+                                    grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
                                 }
                                 if (grab.radius != -1f)
                                 {
@@ -824,10 +824,10 @@ namespace CutTheRopeDX.GameMain
                         {
                             grab2.x = FIT_TO_BOUNDARIES(tx + camera.pos.X, grab2.minMoveValue, grab2.maxMoveValue);
                         }
-                        if (grab2.rope != null)
+                        if (grab2.Rope != null)
                         {
-                            grab2.rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
-                            grab2.rope.bungeeAnchor.pin = grab2.rope.bungeeAnchor.pos;
+                            grab2.Rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
+                            grab2.Rope.bungeeAnchor.pin = grab2.Rope.bungeeAnchor.pos;
                         }
                         if (grab2.radius != -1f)
                         {
@@ -836,7 +836,7 @@ namespace CutTheRopeDX.GameMain
                         return true;
                     }
                     // Cancel stick timer if moved too much (kickable grabs)
-                    if (grab2.kickable && grab2.kicked && grab2.rope != null &&
+                    if (grab2.kickable && grab2.kicked && grab2.Rope != null &&
                         VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
                     {
                         grab2.stickTimer = -1f;

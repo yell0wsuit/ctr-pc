@@ -118,7 +118,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            rope?.Draw();
+            Rope?.Draw();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

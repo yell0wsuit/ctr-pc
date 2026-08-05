@@ -135,7 +135,7 @@ namespace CutTheRopeDX.GameMain
                 grab = null;
             }
             base.Update(delta);
-            if (grab != null && grab.rope != null && grab.rope.cut != -1 && grab.GetCurrentTimelineIndex() == 10)
+            if (grab != null && grab.Rope != null && grab.Rope.cut != -1 && grab.GetCurrentTimelineIndex() == 10)
             {
                 cyclingEnabled = true;
                 ResetToState(1);
@@ -173,10 +173,10 @@ namespace CutTheRopeDX.GameMain
             }
             if (grab != null)
             {
-                Bungee rope = grab.rope;
+                Bungee rope = grab.Rope;
                 if (rope != null)
                 {
-                    grab.rope.forceWhite = true;
+                    grab.Rope.forceWhite = true;
                     rope.cutTime = GHOST_MORPHING_APPEAR_TIME;
                     if (rope.cut == -1)
                     {
