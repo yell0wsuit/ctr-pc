@@ -12,8 +12,8 @@ time; what stays loose is native and named differently per backend. So the only 
 have fought over is the executable's, and each is renamed as it is folded in:
 
     CutTheRope-DX.exe     launcher: probes Vulkan, runs one of the builds below
-    CutTheRopeDX.vk.exe   Vulkan build      + mgruntime.dll
-    CutTheRopeDX.gl.exe   OpenGL build      + SDL2.dll, openal.dll, ...
+    ctrdx-vk.exe   Vulkan build      + mgruntime.dll
+    ctrdx-gl.exe   OpenGL build      + SDL2.dll, openal.dll, ...
     ffmpeg/  content/     one copy, shared
 
 macOS and Linux ship the game executable on its own, with content beside it, and are built by their
@@ -42,7 +42,7 @@ OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "win-x64"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 
 # Executable names the launcher looks for; must match BackendSelection.
-BACKEND_EXECUTABLES = {"VK": "CutTheRopeDX.vk", "GL": "CutTheRopeDX.gl"}
+BACKEND_EXECUTABLES = {"VK": "ctrdx-vk", "GL": "ctrdx-gl"}
 
 # Name the game publishes under before it is renamed per backend.
 GAME_ASSEMBLY = "CutTheRope-DX"
