@@ -49,13 +49,9 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <!-- Publish defaults -->
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
-    <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishReadyToRun>false</PublishReadyToRun>
-    <StripSymbols>true</StripSymbols>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <!-- macOS app bundle doesn't support single-file publishing -->

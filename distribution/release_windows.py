@@ -60,6 +60,11 @@ LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 
 CONTENT_DIRECTORY = "content"
 
+# Developer artifacts that publish emits beside the binaries and no player has a use for. Excluded when
+# the archive is built rather than switched off in the build: NativeAOT's StripSymbols does not suppress
+# a symbol file, it moves symbols out of the executable into one, so there is always something to drop.
+UNSHIPPED_SUFFIXES = (".pdb", ".xml", ".dSYM")
+
 # Where the game project's MoveFfmpegToSubfolder target leaves the FFmpeg libraries after publish.
 FFMPEG_DIRECTORY = "ffmpeg"
 
@@ -152,13 +157,23 @@ def rename_launcher():
     print(f"Launcher published as {LAUNCHER_EXECUTABLE}.exe")
 
 
+def is_shipped(path: Path) -> bool:
+    """Whether a published file belongs in the archive players download."""
+    return not any(
+        part.endswith(UNSHIPPED_SUFFIXES) for part in (path.name, *path.relative_to(OUTPUT_DIR).parts)
+    )
+
+
 def package(version: str):
     """Compress the build output into a .7z archive."""
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     archive_name = f"CutTheRopeDX-v{version}-Windows-x64.7z"
     archive_path = RELEASE_DIR / archive_name
 
-    files = sorted(f for f in OUTPUT_DIR.rglob("*") if f.is_file())
+    files = sorted(f for f in OUTPUT_DIR.rglob("*") if f.is_file() and is_shipped(f))
+    dropped = sum(1 for f in OUTPUT_DIR.rglob("*") if f.is_file() and not is_shipped(f))
+    if dropped:
+        print(f"Excluding {dropped} debug/documentation file(s) from the archive")
     total_size = sum(f.stat().st_size for f in files)
 
     print(f"\nPackaging {archive_name}...")

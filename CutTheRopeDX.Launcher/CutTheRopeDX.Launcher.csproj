@@ -2,12 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>CutTheRopeDX.Launcher</RootNamespace>
-    <!--
-      Distinct from the game's CutTheRope-DX so the two can sit in one directory at build time; the test
-      project references both and would otherwise be handed two assemblies of the same name. The shipped
-      layout keeps them apart anyway, the launcher at the root and each backend build below it, and
-      distribution renames the published apphost to the name players start.
-    -->
     <AssemblyName>CutTheRopeDX.Launcher</AssemblyName>
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>

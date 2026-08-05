@@ -1,38 +1,21 @@
 <Project>
-
-  <!--
-    Graphics backend the game is built against: VK (MonoGame.Framework.Native on Vulkan, the default)
-    or GL (MonoGame.Framework.DesktopGL). The two ship different assemblies exporting the same
-    Microsoft.Xna.Framework types, so a build commits to one of them and the launcher picks between the
-    finished builds at run time.
-
-    Output and intermediate paths are separated here rather than in the project file because
-    BaseIntermediateOutputPath has to be set before the SDK props are imported to take effect. Without
-    that separation the two backends overwrite each other's obj/ and every alternation is a full rebuild
-    against whichever MonoGame happened to be restored last.
-  -->
   <PropertyGroup>
     <GraphicsBackend Condition="'$(GraphicsBackend)' == ''">VK</GraphicsBackend>
   </PropertyGroup>
 
-  <!--
-    Scoped to the game project alone. The content builder globs **/*.cs, so giving it a second obj tree
-    makes it compile two sets of generated assembly attributes and fail on the duplicates; the test
-    project has no backend of its own to separate either.
-  -->
   <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX'">
     <BaseOutputPath>bin/$(GraphicsBackend)/</BaseOutputPath>
     <BaseIntermediateOutputPath>obj/$(GraphicsBackend)/</BaseIntermediateOutputPath>
-    <!--
-      The SDK derives its default source-glob exclusions from the two paths above, so redirecting them
-      leaves a plain bin/ and obj/ from a previous default-backend build inside the glob. The generated
-      assembly attributes there would then be compiled alongside this build's own copy. Excluding both
-      by name costs nothing: everything the compiler needs out of obj/ is added as an explicit item.
-    -->
     <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
   </PropertyGroup>
 
-  <!-- Repo-wide defaults. Individual projects may override any of these. -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <StripSymbols>true</StripSymbols>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
 
