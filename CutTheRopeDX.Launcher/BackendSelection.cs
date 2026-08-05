@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 using CutTheRopeDX.Launcher.Graphics;
@@ -47,16 +46,14 @@ namespace CutTheRopeDX.Launcher
         /// </remarks>
         public static GraphicsBackend? ParseOverride(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
-            return value.Trim().TrimStart('-', '/').ToLowerInvariant() switch
-            {
-                "gl" or "opengl" => GraphicsBackend.OpenGl,
-                "vk" or "vulkan" => GraphicsBackend.Vulkan,
-                _ => null,
-            };
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : value.Trim().TrimStart('-', '/').ToLowerInvariant() switch
+                {
+                    "gl" or "opengl" => GraphicsBackend.OpenGl,
+                    "vk" or "vulkan" => GraphicsBackend.Vulkan,
+                    _ => null,
+                };
         }
 
         /// <summary>

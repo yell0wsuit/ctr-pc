@@ -203,10 +203,16 @@ def main():
 
     # Published one at a time into a staging directory, then folded into the root, so that the second
     # build cannot overwrite the first's executable before it has been renamed.
-    for backend in BACKEND_EXECUTABLES:
+    #
+    # Only the first carries content. Both backends read the same tree, and the package holds one copy, so
+    # building and copying it again for the second would move some 350MB twice over to be deleted here.
+    for position, backend in enumerate(BACKEND_EXECUTABLES):
         print(f"\n=== {backend} build ===")
         staged = OUTPUT_DIR / f"staging-{backend}"
-        publish(CSPROJ, staged, version, use_aot, [f"-p:GraphicsBackend={backend}"])
+        options = [f"-p:GraphicsBackend={backend}"]
+        if position > 0:
+            options += ["-p:DeployContent=false", "-p:RunMGCB=false"]
+        publish(CSPROJ, staged, version, use_aot, options)
         fold_in(backend, staged)
 
     print("\n=== launcher ===")
