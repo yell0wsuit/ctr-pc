@@ -16,26 +16,48 @@ GraphicsBackend? forced =
     BackendSelection.ParseOverride(args)
     ?? BackendSelection.ParseOverride(Environment.GetEnvironmentVariable(BackendSelection.OverrideVariable));
 
+string recorded = isWindows ? LauncherState.Read() : null;
+
+// A marker left from last time means that launch never came back from the probe. Assume the driver is at
+// fault and skip it, rather than repeat a call that has already proved fatal once on this machine.
+bool probeIsUnsafe = LauncherState.ProbeWasFatal(recorded);
+
 // The probe loads and unloads vulkan-1.dll itself, so it is only worth running when the answer can change
 // the outcome. Skipping it when a backend was named also gives a way past a driver that crashes on probe.
-VulkanProbeResult probe = isWindows && !forced.HasValue
-    ? RunProbeSafely()
-    : VulkanProbeResult.NoLoader;
+bool shouldProbe = isWindows && !forced.HasValue && !probeIsUnsafe;
+
+if (shouldProbe)
+{
+    // Must reach disk before the probe runs. A driver that faults inside vkCreateInstance takes the whole
+    // process with it, and this file is the only trace the next launch has to go on.
+    LauncherState.WriteProbing();
+}
+
+VulkanProbeResult probe = shouldProbe ? RunProbeSafely() : VulkanProbeResult.NoLoader;
 
 GraphicsBackend backend = BackendSelection.Decide(isWindows, probe, forced);
 
-// Say something before handing over, but only when the answer changed. Windows only: it is the sole
-// platform that ships both builds, so it is the only one where falling back means anything.
-if (isWindows && BackendNotice.ShouldWarn(backend, BackendNotice.ReadLastSeen(), forced.HasValue))
+if (isWindows)
 {
-    ShowVulkanNotice();
+    if (forced.HasValue)
+    {
+        // An explicitly chosen backend says nothing about what this machine manages on its own, so it must
+        // leave no record behind, least of all one that would read as a fatal probe.
+        LauncherState.Clear();
+    }
+    else
+    {
+        // Replaces the probing marker before the game starts. Writing it later would leave the marker in
+        // place whenever the game itself failed to launch, and cost the next launch its probe for nothing.
+        LauncherState.WriteBackend(backend);
+    }
 }
 
-if (isWindows && !forced.HasValue)
+// Say something before handing over, but only when the answer changed. Windows only: it is the sole
+// platform that ships both builds, so it is the only one where falling back means anything.
+if (isWindows && BackendNotice.ShouldWarn(backend, LauncherState.LastBackend(recorded), forced.HasValue))
 {
-    // Recorded after the probe rather than the launch, so a game that fails to start does not suppress
-    // the warning for a machine that has not been told yet.
-    BackendNotice.WriteLastSeen(backend);
+    ShowVulkanNotice();
 }
 
 string executable = LocateGameExecutable(backend);

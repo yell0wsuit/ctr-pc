@@ -45,27 +45,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ReadingTheRecordNeverThrows()
+        public void TheLaunchRecoveringFromAFatalProbeIsWarned()
         {
-            // Called on every launch before anything else; a missing or unreadable profile directory must
-            // not be the reason the game fails to start.
-            _ = BackendNotice.ReadLastSeen();
-        }
-
-        [Fact]
-        public void WritingTheRecordNeverThrows()
-        {
-            BackendNotice.WriteLastSeen(GraphicsBackend.Vulkan);
-        }
-
-        [Fact]
-        public void AWrittenRecordReadsBack()
-        {
-            BackendNotice.WriteLastSeen(GraphicsBackend.OpenGl);
-            Assert.Equal(GraphicsBackend.OpenGl, BackendNotice.ReadLastSeen());
-
-            BackendNotice.WriteLastSeen(GraphicsBackend.Vulkan);
-            Assert.Equal(GraphicsBackend.Vulkan, BackendNotice.ReadLastSeen());
+            // That launch left the probing marker behind, which does not parse as a backend, so it arrives
+            // here as no last-seen value. The player has not been told anything yet and should be.
+            Assert.True(BackendNotice.ShouldWarn(
+                GraphicsBackend.OpenGl,
+                LauncherState.LastBackend(LauncherState.ProbingMarker),
+                wasForced: false));
         }
     }
 }
