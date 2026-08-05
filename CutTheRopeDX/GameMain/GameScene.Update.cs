@@ -175,10 +175,7 @@ namespace CutTheRopeDX.GameMain
                             grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
                             grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
                         }
-                        if (grab.radius != -1f)
-                        {
-                            grab.ReCalcCircle();
-                        }
+                        grab.ReCalcCircle();
                     }
 
                     // Process stickTimer for kickable grabs
@@ -252,7 +249,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (shouldProcessGrabRadius)
                     {
-                        if (grab.radius != -1f && grab.Rope == null)
+                        if (grab.Source.CanAttach && grab.Attachment.State == RopeAttachmentState.Idle)
                         {
                             // One pass over every hookable body: whole candies and split halves alike
                             // attach to a radius hook the moment they come inside it.
@@ -1670,37 +1667,25 @@ namespace CutTheRopeDX.GameMain
         /// <param name="grab">The radius grab looking for a body.</param>
         /// <param name="body">The candidate body.</param>
         /// <returns><see langword="true"/> when a rope was created.</returns>
-        private bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
+        private static bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
         {
-            bool inRange = VectDistance(Vect(grab.x, grab.y), body.Point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
-            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.Rope == null, candyPresent: true, inRange))
+            AutoRadiusSource source = grab.RadiusSource;
+            if (source == null || !source.CanAttach || !source.InRange(Vect(grab.x, grab.y), body.Point.pos))
             {
                 return false;
             }
 
-            CandyContext ctx = body.Owner;
-            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
-            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
+            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y,
+                source.Radius + ActivePhysicsConstants.CandyGrabPadding);
+
             if (grab.cutOnlyByAxe)
             {
                 bungee.SetCutOnlyByAxe();
             }
-            grab.hideRadius = true;
-            grab.SetRope(bungee);
-            if (ctx.HasActiveRocket)
-            {
-                ctx.activeRocket.anglePercent = 0f;
-                ctx.activeRocket.perpSetted = false;
-                ctx.activeRocket.startRotation += ctx.activeRocket.additionalAngle;
-                ctx.activeRocket.additionalAngle = 0f;
-            }
 
-            // If the mouse already has THIS body, immediately cut the rope. Per-candy: a mouse
-            // holding another candy must not cut a rope just auto-attached to this one.
-            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), body.Point))
-            {
-                bungee.SetCut(bungee.parts.Count - 2);
-            }
+            source.BeginFade();
+            grab.SetRope(bungee);
 
             CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
             if (grab.mover != null)

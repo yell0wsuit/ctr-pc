@@ -23,22 +23,29 @@ namespace CutTheRopeDX.GameMain
         /// <param name="color">Color used for the radius outline.</param>
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
-            int segmentCount = s.vertexCount / 2;
+            AutoRadiusSource source = s.RadiusSource;
+            if (source == null)
+            {
+                return;
+            }
+
+            int segmentCount = source.VertexCount / 2;
             int totalVertices = segmentCount * 8;
             VertexPositionColor[] vertices = GetGrabCircleVertexCache(totalVertices);
             int writeIndex = 0;
-            for (int i = 0; i < s.vertexCount; i += 2)
+            for (int i = 0; i < source.VertexCount; i += 2)
             {
                 VertexPositionColor[] lineVertices = DrawHelper.BuildAntialiasedLineVertices(
-                    s.vertices[i * 2],
-                    s.vertices[(i * 2) + 1],
-                    s.vertices[(i * 2) + 2],
-                    s.vertices[(i * 2) + 3],
+                    source.Vertices[i * 2],
+                    source.Vertices[(i * 2) + 1],
+                    source.Vertices[(i * 2) + 2],
+                    source.Vertices[(i * 2) + 3],
                     3f,
                     color);
                 Array.Copy(lineVertices, 0, vertices, writeIndex, 8);
                 writeIndex += 8;
             }
+
             if (writeIndex > 0)
             {
                 Renderer.DrawTriangleStrip(vertices, writeIndex);
@@ -164,15 +171,9 @@ namespace CutTheRopeDX.GameMain
                 }
                 mover.SetMoveSpeed(launcherSpeed);
             }
-            if (hideRadius)
-            {
-                radiusAlpha -= 1.5f * delta;
-                if (radiusAlpha <= 0)
-                {
-                    radius = -1f;
-                    hideRadius = false;
-                }
-            }
+
+            Source.Update(delta);
+
             if (bee != null)
             {
                 Vector vector2 = mover.path[mover.targetPoint];
@@ -287,9 +288,9 @@ namespace CutTheRopeDX.GameMain
                 back.Draw();
             }
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            if (radius != -1f || hideRadius)
+            if (RadiusSource?.ShouldDrawCircle == true)
             {
-                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, RadiusSource.RadiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
             Renderer.SetColor(Color.White);
@@ -404,7 +405,6 @@ namespace CutTheRopeDX.GameMain
         public void SetRope(Bungee r)
         {
             _ = Attachment.TryAttach(r);
-            radius = -1f;
             if (hasSpider)
             {
                 shouldActivate = true;
@@ -439,7 +439,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ReCalcCircle()
         {
-            DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
+            Source.OnAnchorMoved(Vect(x, y));
         }
 
         /// <summary>
@@ -448,7 +448,6 @@ namespace CutTheRopeDX.GameMain
         /// <param name="r">Grab radius, or -1 for a fixed hook without a visible radius.</param>
         public void SetRadius(float r)
         {
-            radius = r;
             if (gun)
             {
                 gunBack = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
@@ -506,20 +505,6 @@ namespace CutTheRopeDX.GameMain
                 front.visible = false;
                 UpdateKickState();
             }
-            else if (radius == -1f)
-            {
-                string hookTexture = GetHookTextureResource();
-                int hookBaseQuad = hookTexture == Resources.Img.ObjHookChain ? Hook01BackQuad : RandomHookBaseQuad();
-                back = Image_createWithResIDQuad(hookTexture, hookBaseQuad);
-                back.DoRestoreCutTransparency();
-                back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(hookTexture, hookBaseQuad + 1);
-                front.anchor = front.parentAnchor = 18;
-                _ = AddChild(back);
-                _ = AddChild(front);
-                back.visible = false;
-                front.visible = false;
-            }
             else
             {
                 // A chain auto-hook (breakable="false") uses the dedicated chain auto-hook atlas.
@@ -535,17 +520,9 @@ namespace CutTheRopeDX.GameMain
                 _ = AddChild(front);
                 back.visible = false;
                 front.visible = false;
-                radiusAlpha = 1f;
-                hideRadius = false;
-                vertexCount = (int)MAX(16f, radius);
-                vertexCount /= 2;
-                if (vertexCount % 2 != 0)
-                {
-                    vertexCount++;
-                }
-                vertices = new float[vertexCount * 2];
-                DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
+                Source = new AutoRadiusSource(r, Vect(x, y));
             }
+
             if (wheel)
             {
                 wheelImage = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
@@ -741,10 +718,6 @@ namespace CutTheRopeDX.GameMain
         {
             if (disposing)
             {
-                if (vertices != null)
-                {
-                    vertices = null;
-                }
                 DestroyRope();
                 bee?.Dispose();
                 bee = null;
@@ -835,28 +808,19 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Index of the candy attached to this grab, or -1 when no candy is attached.</summary>
         public int candyNumber = -1;
 
-        /// <summary>Grab radius used for rope creation and radius visualization.</summary>
-        public float radius;
+        /// <summary>Gets the object that decides whether this grab can produce a rope.</summary>
+        public RopeSource Source { get; internal set; } = new PreAttachedSource();
+
+        /// <summary>Gets this grab's radius source, or <see langword="null"/> when it has none.</summary>
+        public AutoRadiusSource RadiusSource => Source as AutoRadiusSource;
 
         /// <summary>
         /// Whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain hook
         /// sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs (those
-        /// with a <see cref="radius"/>) this drives the <see cref="Resources.Img.ObjHookAutoChain"/>
+        /// with a radius) this drives the <see cref="Resources.Img.ObjHookAutoChain"/>
         /// variant and is applied to the rope created on attach.
         /// </summary>
         public bool cutOnlyByAxe;
-
-        /// <summary>Alpha multiplier for the grab-radius visualization.</summary>
-        public float radiusAlpha;
-
-        /// <summary>Whether the grab-radius visualization is fading out.</summary>
-        public bool hideRadius;
-
-        /// <summary>Cached radius circle vertex positions.</summary>
-        public float[] vertices;
-
-        /// <summary>Number of radius circle vertices stored in <see cref="vertices"/>.</summary>
-        public int vertexCount;
 
         /// <summary>Reusable vertex buffer used when drawing grab radius circles.</summary>
         private static VertexPositionColor[] s_grabCircleVerticesCache;
@@ -1010,12 +974,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;
 
-        /// <summary>First random fixed hook back quad.</summary>
-        private const int Hook01BackQuad = 0;
-
-        /// <summary>Second random fixed hook back quad.</summary>
-        private const int Hook02BackQuad = 2;
-
         /// <summary>Automatic-radius hook back quad.</summary>
         private const int HookAutoBackQuad = 4;
 
@@ -1069,15 +1027,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gun hook front quad used after firing and while disabled.</summary>
         private const int GunDisabledFrontQuad = 3;
-
-        /// <summary>
-        /// Selects one of the fixed hook back quad variants.
-        /// </summary>
-        /// <returns>The selected fixed hook back quad index.</returns>
-        private static int RandomHookBaseQuad()
-        {
-            return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;
-        }
 
         /// <summary>
         /// Spider animation identifiers.

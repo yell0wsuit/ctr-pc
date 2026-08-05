@@ -736,10 +736,7 @@ namespace CutTheRopeDX.GameMain
                                     grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
                                     grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
                                 }
-                                if (grab.radius != -1f)
-                                {
-                                    grab.ReCalcCircle();
-                                }
+                                grab.ReCalcCircle();
                             }
                         }
                         for (int k = 0; k < pumps.Count; k++)
@@ -829,10 +826,7 @@ namespace CutTheRopeDX.GameMain
                             grab2.Rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
                             grab2.Rope.bungeeAnchor.pin = grab2.Rope.bungeeAnchor.pos;
                         }
-                        if (grab2.radius != -1f)
-                        {
-                            grab2.ReCalcCircle();
-                        }
+                        grab2.ReCalcCircle();
                         return true;
                     }
                     // Cancel stick timer if moved too much (kickable grabs)
