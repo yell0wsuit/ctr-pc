@@ -4,24 +4,17 @@
 Windows ships two builds of the game and a launcher that chooses between them, because the graphics
 backend is fixed when the game is compiled: the Vulkan and OpenGL builds reference different MonoGame
 assemblies exporting the same types, so one process cannot hold both. The OpenGL build exists for
-machines whose Vulkan is missing or software-only, which on Intel means anything before Skylake.
+machines whose Vulkan is missing, which on Intel means anything before Skylake.
 
-Ahead-of-time compilation folds the managed assemblies into each executable, leaving only native
-libraries beside them, and the two backends need disjoint ones: mgruntime for Vulkan, SDL and OpenAL
-for OpenGL. Nothing collides, so both builds share one directory:
+Both builds nonetheless share one directory. Every publish here is single-file, so the managed
+assemblies live inside each executable rather than beside it, whether or not it was compiled ahead of
+time; what stays loose is native and named differently per backend. So the only name the two would
+have fought over is the executable's, and each is renamed as it is folded in:
 
     CutTheRope-DX.exe     launcher: probes Vulkan, runs one of the builds below
     CutTheRopeDX.vk.exe   Vulkan build      + mgruntime.dll
     CutTheRopeDX.gl.exe   OpenGL build      + SDL2.dll, openal.dll, ...
     ffmpeg/  content/     one copy, shared
-
-Without ahead-of-time compilation the loose managed assemblies do collide: both builds produce a
-MonoGame.Framework.dll of the same name and different content. That layout gets a directory per
-backend instead, and the launcher accepts either:
-
-    CutTheRope-DX.exe   launcher
-    content/            shared; the game looks one directory up for it
-    vk/  gl/            a build each, assemblies and all
 
 macOS and Linux ship the game executable on its own, with content beside it, and are built by their
 own scripts. Only Windows has hardware old enough to need the fallback.
@@ -42,46 +35,45 @@ except ImportError:
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR / ".."
 CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
-LAUNCHER_CSPROJ = PROJECT_ROOT / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launcher.csproj"
+LAUNCHER_CSPROJ = (
+    PROJECT_ROOT / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launcher.csproj"
+)
 OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "win-x64"
 RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
 
-# Directory and executable names the launcher looks for; must match BackendSelection.
-BACKEND_DIRECTORIES = {"VK": "vk", "GL": "gl"}
+# Executable names the launcher looks for; must match BackendSelection.
 BACKEND_EXECUTABLES = {"VK": "CutTheRopeDX.vk", "GL": "CutTheRopeDX.gl"}
 
 # Name the game publishes under before it is renamed per backend.
 GAME_ASSEMBLY = "CutTheRope-DX"
 
-# The launcher builds under its own assembly name so it can sit beside the game at build time without
-# colliding with it. Players start this instead.
 LAUNCHER_ASSEMBLY = "CutTheRopeDX.Launcher"
 LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 
 CONTENT_DIRECTORY = "content"
-
-# Developer artifacts that publish emits beside the binaries and no player has a use for. Excluded when
-# the archive is built rather than switched off in the build: NativeAOT's StripSymbols does not suppress
-# a symbol file, it moves symbols out of the executable into one, so there is always something to drop.
-UNSHIPPED_SUFFIXES = (".pdb", ".xml", ".dSYM")
-
-# Where the game project's MoveFfmpegToSubfolder target leaves the FFmpeg libraries after publish.
+UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
 
 
-def publish(csproj: Path, out_dir: Path, version: str, use_aot: bool, extra: list[str] = None):
+def publish(
+    csproj: Path, out_dir: Path, version: str, use_aot: bool, extra: list[str] = None
+):
     """Publish one project into out_dir, failing the script if the build fails."""
     cmd = [
         "dotnet",
         "publish",
         str(csproj),
-        "-c", "Release",
-        "-f", "net10.0",
-        "-r", "win-x64",
+        "-c",
+        "Release",
+        "-f",
+        "net10.0",
+        "-r",
+        "win-x64",
         f"-p:VersionPrefix={version}",
         "-p:VersionSuffix=",
         f"-p:PublishAot={str(use_aot).lower()}",
-        "-o", str(out_dir),
+        "-o",
+        str(out_dir),
         *(extra or []),
     ]
     print(f"\n> {' '.join(cmd)}\n")
@@ -106,11 +98,11 @@ def take_shared_directory(staged: Path, name: str) -> None:
         staged.rename(shared)
 
 
-def flatten(backend: str, staged: Path):
-    """Fold one ahead-of-time build into the output root, renaming its executable.
+def fold_in(backend: str, staged: Path):
+    """Fold one build into the output root, renaming its executable.
 
-    Safe to rename because an ahead-of-time executable is an ordinary native binary: unlike the apphost
-    a framework-dependent build produces, nothing inside it refers to its own file name.
+    Safe to rename: a single-file executable finds the assemblies bundled inside it, and an
+    ahead-of-time one is an ordinary native binary. Neither refers to its own file name.
     """
     for name in (CONTENT_DIRECTORY, FFMPEG_DIRECTORY):
         take_shared_directory(staged / name, name)
@@ -132,17 +124,6 @@ def flatten(backend: str, staged: Path):
     print(f"{backend} build placed as {BACKEND_EXECUTABLES[backend]}.exe")
 
 
-def consolidate_directories():
-    """Lift content out of the per-backend directories so one copy serves both."""
-    for backend, directory in BACKEND_DIRECTORIES.items():
-        produced = OUTPUT_DIR / directory / CONTENT_DIRECTORY
-        if not produced.is_dir():
-            print(f"No content produced by the {backend} build; expected {produced}", file=sys.stderr)
-            sys.exit(1)
-        take_shared_directory(produced, CONTENT_DIRECTORY)
-    print(f"Content shared at {OUTPUT_DIR / CONTENT_DIRECTORY}")
-
-
 def rename_launcher():
     """Give the launcher the name players start.
 
@@ -160,7 +141,7 @@ def rename_launcher():
 def is_shipped(path: Path) -> bool:
     """Whether a published file belongs in the archive players download."""
     return not any(
-        part.endswith(UNSHIPPED_SUFFIXES) for part in (path.name, *path.relative_to(OUTPUT_DIR).parts)
+        part.endswith(UNSHIPPED_SUFFIXES) for part in path.relative_to(OUTPUT_DIR).parts
     )
 
 
@@ -170,18 +151,22 @@ def package(version: str):
     archive_name = f"CutTheRopeDX-v{version}-Windows-x64.7z"
     archive_path = RELEASE_DIR / archive_name
 
-    files = sorted(f for f in OUTPUT_DIR.rglob("*") if f.is_file() and is_shipped(f))
-    dropped = sum(1 for f in OUTPUT_DIR.rglob("*") if f.is_file() and not is_shipped(f))
-    if dropped:
-        print(f"Excluding {dropped} debug/documentation file(s) from the archive")
-    total_size = sum(f.stat().st_size for f in files)
+    published = sorted(f for f in OUTPUT_DIR.rglob("*") if f.is_file())
+    files = [f for f in published if is_shipped(f)]
+    if len(published) != len(files):
+        print(
+            f"Excluding {len(published) - len(files)} debug/documentation file(s) from the archive"
+        )
+    sizes = [f.stat().st_size for f in files]
 
     print(f"\nPackaging {archive_name}...")
-    with py7zr.SevenZipFile(archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]) as archive:
-        with tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
-            for file in files:
+    with py7zr.SevenZipFile(
+        archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
+    ) as archive:
+        with tqdm(total=sum(sizes), unit="B", unit_scale=True) as pbar:
+            for file, size in zip(files, sizes, strict=True):
                 archive.write(file, str(file.relative_to(OUTPUT_DIR)))
-                pbar.update(file.stat().st_size)
+                pbar.update(size)
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Created {archive_path} ({size_mb:.1f} MB)")
@@ -216,17 +201,13 @@ def main():
     if OUTPUT_DIR.exists():
         shutil.rmtree(OUTPUT_DIR)
 
-    # Ahead-of-time builds carry no loose assemblies, so they can share a directory and be told apart by
-    # name. Builds that keep their assemblies cannot: both would write MonoGame.Framework.dll.
-    for backend, directory in BACKEND_DIRECTORIES.items():
+    # Published one at a time into a staging directory, then folded into the root, so that the second
+    # build cannot overwrite the first's executable before it has been renamed.
+    for backend in BACKEND_EXECUTABLES:
         print(f"\n=== {backend} build ===")
-        staged = OUTPUT_DIR / directory
+        staged = OUTPUT_DIR / f"staging-{backend}"
         publish(CSPROJ, staged, version, use_aot, [f"-p:GraphicsBackend={backend}"])
-        if use_aot:
-            flatten(backend, staged)
-
-    if not use_aot:
-        consolidate_directories()
+        fold_in(backend, staged)
 
     print("\n=== launcher ===")
     publish(LAUNCHER_CSPROJ, OUTPUT_DIR, version, use_aot)

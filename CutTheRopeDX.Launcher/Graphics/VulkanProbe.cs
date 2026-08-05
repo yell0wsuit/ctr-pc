@@ -107,24 +107,25 @@ namespace CutTheRopeDX.Launcher.Graphics
         /// </returns>
         public static VulkanProbeResult Run()
         {
-            IntPtr library = LoadLibrary("vulkan-1.dll");
-            if (library == IntPtr.Zero)
-            {
-                return VulkanProbeResult.NoLoader;
-            }
-
+            IntPtr library = IntPtr.Zero;
             try
             {
-                return Probe(library);
+                library = LoadLibrary("vulkan-1.dll");
+                return library == IntPtr.Zero ? VulkanProbeResult.NoLoader : Probe(library);
             }
             catch (Exception ex)
             {
+                // Covers the whole body so callers need no guard of their own. An unusable loader and one
+                // that throws on the way in mean the same thing to everyone upstream.
                 Console.Error.WriteLine($"[graphics] Vulkan probe failed: {ex.Message}");
                 return VulkanProbeResult.NoDevice;
             }
             finally
             {
-                _ = FreeLibrary(library);
+                if (library != IntPtr.Zero)
+                {
+                    _ = FreeLibrary(library);
+                }
             }
         }
 

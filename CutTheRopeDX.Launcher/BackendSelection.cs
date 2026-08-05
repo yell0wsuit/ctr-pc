@@ -30,16 +30,10 @@ namespace CutTheRopeDX.Launcher
         /// <summary>Environment variable that forces a backend, overriding the probe.</summary>
         public const string OverrideVariable = "CTRDX_GRAPHICS_BACKEND";
 
-        /// <summary>Subdirectory holding the Vulkan build in the non-AOT layout.</summary>
-        public const string VulkanDirectory = "vk";
-
-        /// <summary>Subdirectory holding the OpenGL build in the non-AOT layout.</summary>
-        public const string OpenGlDirectory = "gl";
-
-        /// <summary>Name of the Vulkan build beside the launcher in the ahead-of-time layout.</summary>
+        /// <summary>Name of the Vulkan build, which sits beside the launcher.</summary>
         public const string VulkanExecutable = "CutTheRopeDX.vk";
 
-        /// <summary>Name of the OpenGL build beside the launcher in the ahead-of-time layout.</summary>
+        /// <summary>Name of the OpenGL build, which sits beside the launcher.</summary>
         public const string OpenGlExecutable = "CutTheRopeDX.gl";
 
         /// <summary>
@@ -57,13 +51,10 @@ namespace CutTheRopeDX.Launcher
             {
                 return null;
             }
-            string trimmed = value.Trim().TrimStart('-', '/');
-            return trimmed switch
+            return value.Trim().TrimStart('-', '/').ToLowerInvariant() switch
             {
-                _ when trimmed.Equals("gl", StringComparison.OrdinalIgnoreCase)
-                    || trimmed.Equals("opengl", StringComparison.OrdinalIgnoreCase) => GraphicsBackend.OpenGl,
-                _ when trimmed.Equals("vk", StringComparison.OrdinalIgnoreCase)
-                    || trimmed.Equals("vulkan", StringComparison.OrdinalIgnoreCase) => GraphicsBackend.Vulkan,
+                "gl" or "opengl" => GraphicsBackend.OpenGl,
+                "vk" or "vulkan" => GraphicsBackend.Vulkan,
                 _ => null,
             };
         }
@@ -105,17 +96,32 @@ namespace CutTheRopeDX.Launcher
         }
 
         /// <summary>
-        /// Subdirectory, relative to the launcher, holding the chosen build in the non-AOT layout.
+        /// Whether telling the user about a fallback is worth interrupting the launch for.
         /// </summary>
-        /// <param name="backend">Backend to run.</param>
-        /// <returns>The directory name.</returns>
-        public static string DirectoryFor(GraphicsBackend backend)
+        /// <param name="chosen">Backend this launch settled on.</param>
+        /// <param name="lastSeen">Backend recorded on the previous launch, or <see langword="null" /> when none is.</param>
+        /// <param name="wasForced">Whether the backend came from a switch or environment variable.</param>
+        /// <returns><see langword="true" /> when the dialog should be shown.</returns>
+        /// <remarks>
+        /// Only the change is worth reporting. Warning on every launch would train the player to dismiss
+        /// the dialog without reading it, and the message it carries matters exactly once: when the machine
+        /// stops being able to do something it previously could, or was expected to.
+        /// <para>
+        /// A launch that died inside the probe leaves a marker that is not a backend name, so the recovery
+        /// launch after it sees no last-seen value and does warn. That is intended: the player has not been
+        /// told yet, and a driver crashing on probe is precisely the case they can act on.
+        /// </para>
+        /// <para>
+        /// Never shown when the backend was asked for. Someone passing <c>--gl</c> already knows.
+        /// </para>
+        /// </remarks>
+        public static bool ShouldWarn(GraphicsBackend chosen, GraphicsBackend? lastSeen, bool wasForced)
         {
-            return backend == GraphicsBackend.OpenGl ? OpenGlDirectory : VulkanDirectory;
+            return !wasForced && chosen == GraphicsBackend.OpenGl && lastSeen != GraphicsBackend.OpenGl;
         }
 
         /// <summary>
-        /// Name the chosen build carries when it sits beside the launcher, without a file extension.
+        /// Name the chosen build carries, without a file extension.
         /// </summary>
         /// <param name="backend">Backend to run.</param>
         /// <returns>The executable name.</returns>
@@ -129,29 +135,25 @@ namespace CutTheRopeDX.Launcher
         /// </summary>
         /// <param name="baseDirectory">Directory the launcher is running from.</param>
         /// <param name="backend">Backend to run.</param>
-        /// <returns>Candidate paths, relative to <paramref name="baseDirectory"/> where applicable.</returns>
+        /// <returns>Candidate paths under <paramref name="baseDirectory"/>.</returns>
         /// <remarks>
-        /// Two layouts are possible and the launcher cannot tell them apart from anything but the files.
-        /// An ahead-of-time build compiles its managed assemblies into the executable, so the backends
-        /// share one directory and are told apart by name; a build without it leaves loose assemblies whose
-        /// names are the same for both backends, so those get a directory each. Preferring the flat names
-        /// means a release layout is matched before a development one that happens to sit alongside it.
+        /// Both builds sit in one directory and are told apart by name. That works whether or not they were
+        /// compiled ahead of time, because every publish that ships is single-file: the managed assemblies
+        /// go inside the executable either way, and what stays loose beside them is native and named
+        /// differently per backend.
+        /// <para>
+        /// The extensionless form is what the same builds are called off Windows, which is where the
+        /// launcher is developed and its dispatch is exercised even though only Windows ships it.
+        /// </para>
         /// </remarks>
         public static string[] CandidatePaths(string baseDirectory, GraphicsBackend backend)
         {
-            string flat = ExecutableFor(backend);
-            string directory = DirectoryFor(backend);
+            string name = ExecutableFor(backend);
             return
             [
-                Path.Combine(baseDirectory, flat + ".exe"),
-                Path.Combine(baseDirectory, flat),
-                Path.Combine(baseDirectory, directory, GameAssemblyName + ".exe"),
-                Path.Combine(baseDirectory, directory, GameAssemblyName),
-                Path.Combine(baseDirectory, directory, GameAssemblyName + ".dll"),
+                Path.Combine(baseDirectory, name + ".exe"),
+                Path.Combine(baseDirectory, name),
             ];
         }
-
-        /// <summary>Assembly name the game builds under when it is not renamed per backend.</summary>
-        private const string GameAssemblyName = "CutTheRope-DX";
     }
 }

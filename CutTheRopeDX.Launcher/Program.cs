@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Launcher;
 using CutTheRopeDX.Launcher.Graphics;
@@ -10,7 +9,9 @@ using CutTheRopeDX.Launcher.Graphics;
 // MonoGame assembly: the builds it chooses between are compiled against different ones, so anything that
 // loaded a MonoGame type here would tie the launcher to a single backend and defeat the purpose.
 
-bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+// Everything conditional below keys off this rather than RuntimeInformation, because it is the form the
+// platform-compatibility analyzer accepts as a guard for the Windows-only calls it protects.
+bool isWindows = OperatingSystem.IsWindows();
 
 GraphicsBackend? forced =
     BackendSelection.ParseOverride(args)
@@ -20,11 +21,7 @@ string recorded = isWindows ? LauncherState.Read() : null;
 
 // A marker left from last time means that launch never came back from the probe. Assume the driver is at
 // fault and skip it, rather than repeat a call that has already proved fatal once on this machine.
-bool probeIsUnsafe = LauncherState.ProbeWasFatal(recorded);
-
-// The probe loads and unloads vulkan-1.dll itself, so it is only worth running when the answer can change
-// the outcome. Skipping it when a backend was named also gives a way past a driver that crashes on probe.
-bool shouldProbe = isWindows && !forced.HasValue && !probeIsUnsafe;
+bool shouldProbe = isWindows && !forced.HasValue && !LauncherState.ProbeWasFatal(recorded);
 
 if (shouldProbe)
 {
@@ -33,7 +30,7 @@ if (shouldProbe)
     LauncherState.WriteProbing();
 }
 
-VulkanProbeResult probe = shouldProbe ? RunProbeSafely() : VulkanProbeResult.NoLoader;
+VulkanProbeResult probe = shouldProbe && isWindows ? VulkanProbe.Run() : VulkanProbeResult.NoLoader;
 
 GraphicsBackend backend = BackendSelection.Decide(isWindows, probe, forced);
 
@@ -41,8 +38,8 @@ if (isWindows)
 {
     if (forced.HasValue)
     {
-        // An explicitly chosen backend says nothing about what this machine manages on its own, so it must
-        // leave no record behind, least of all one that would read as a fatal probe.
+        // A forced backend says nothing about what this machine manages unaided, so it records nothing. It
+        // is also the way out for a machine pinned to OpenGL by a marker its driver left behind.
         LauncherState.Clear();
     }
     else
@@ -51,13 +48,12 @@ if (isWindows)
         // place whenever the game itself failed to launch, and cost the next launch its probe for nothing.
         LauncherState.WriteBackend(backend);
     }
-}
 
-// Say something before handing over, but only when the answer changed. Windows only: it is the sole
-// platform that ships both builds, so it is the only one where falling back means anything.
-if (isWindows && BackendNotice.ShouldWarn(backend, LauncherState.LastBackend(recorded), forced.HasValue))
-{
-    ShowVulkanNotice();
+    // Say something before handing over, but only when the answer changed.
+    if (BackendSelection.ShouldWarn(backend, LauncherState.LastBackend(recorded), forced.HasValue))
+    {
+        VulkanUnavailableNotice.Show();
+    }
 }
 
 string executable = LocateGameExecutable(backend);
@@ -66,7 +62,7 @@ if (executable is null)
 {
     Console.Error.WriteLine(
         $"[launcher] No {backend} build found beside the launcher as "
-        + $"'{BackendSelection.ExecutableFor(backend)}' or under '{BackendSelection.DirectoryFor(backend)}/'.");
+        + $"'{BackendSelection.ExecutableFor(backend)}'.");
     return 1;
 }
 
@@ -74,7 +70,7 @@ ProcessStartInfo startInfo = new()
 {
     FileName = executable,
     // Run from the build's own directory so relative paths inside the game resolve as they do when the
-    // build is started directly. Shared content sits a level above; ContentPaths looks there for it.
+    // build is started directly, content included.
     WorkingDirectory = Path.GetDirectoryName(executable),
     UseShellExecute = false,
 };
@@ -86,12 +82,6 @@ foreach (string arg in args)
     {
         startInfo.ArgumentList.Add(arg);
     }
-}
-
-if (executable.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-{
-    startInfo.ArgumentList.Insert(0, executable);
-    startInfo.FileName = "dotnet";
 }
 
 try
@@ -109,32 +99,7 @@ catch (Exception exception)
     return 1;
 }
 
-// Kept behind a guard so the Windows-only P/Invoke is never reached on another platform, which the
-// analyzer checks and a published single-platform build would otherwise trip over.
-static void ShowVulkanNotice()
-{
-    if (OperatingSystem.IsWindows())
-    {
-        VulkanUnavailableNotice.Show();
-    }
-}
-
-// Never let a faulting driver inside the probe stop the game from starting; an unusable Vulkan loader and
-// a crashing one both mean the same thing here.
-static VulkanProbeResult RunProbeSafely()
-{
-    try
-    {
-        return OperatingSystem.IsWindows() ? VulkanProbe.Run() : VulkanProbeResult.NoLoader;
-    }
-    catch (Exception)
-    {
-        return VulkanProbeResult.NoLoader;
-    }
-}
-
-// Takes the first layout that is actually present: the flat ahead-of-time one beside the launcher, then
-// the per-backend directories a build with loose assemblies needs.
+// Both builds sit beside the launcher and differ by name, so this is a short list either way.
 static string LocateGameExecutable(GraphicsBackend backend)
 {
     foreach (string candidate in BackendSelection.CandidatePaths(AppContext.BaseDirectory, backend))

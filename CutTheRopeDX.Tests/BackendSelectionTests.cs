@@ -104,41 +104,19 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void EachBackendHasItsOwnDirectory()
+        public void EachBackendHasItsOwnExecutableName()
         {
-            Assert.Equal(BackendSelection.VulkanDirectory, BackendSelection.DirectoryFor(GraphicsBackend.Vulkan));
-            Assert.Equal(BackendSelection.OpenGlDirectory, BackendSelection.DirectoryFor(GraphicsBackend.OpenGl));
-            Assert.NotEqual(BackendSelection.VulkanDirectory, BackendSelection.OpenGlDirectory);
-        }
-
-        [Fact]
-        public void EachBackendHasItsOwnFlatExecutableName()
-        {
-            // The ahead-of-time layout puts both builds in one directory, so the names have to differ.
+            // Both builds share one directory, so the names are the only thing telling them apart.
             Assert.NotEqual(
                 BackendSelection.ExecutableFor(GraphicsBackend.Vulkan),
                 BackendSelection.ExecutableFor(GraphicsBackend.OpenGl));
         }
 
         [Fact]
-        public void TheFlatLayoutIsPreferredOverTheDirectoryLayout()
-        {
-            // A release ships one or the other, but a development tree can hold both. Matching the flat
-            // names first means the ahead-of-time build wins, which is the one a release actually contains.
-            string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.OpenGl);
-
-            int firstFlat = System.Array.FindIndex(candidates, p => p.Contains(BackendSelection.OpenGlExecutable, System.StringComparison.Ordinal));
-            int firstDirectory = System.Array.FindIndex(candidates, p => p.Contains(BackendSelection.OpenGlDirectory + System.IO.Path.DirectorySeparatorChar, System.StringComparison.Ordinal));
-
-            Assert.True(firstFlat >= 0, "no flat candidate offered");
-            Assert.True(firstDirectory >= 0, "no directory candidate offered");
-            Assert.True(firstFlat < firstDirectory, "the directory layout was preferred over the flat one");
-        }
-
-        [Fact]
         public void CandidatesCoverBothExtensionlessAndWindowsNames()
         {
-            // One launcher build serves every platform it is shipped on, and only Windows appends .exe.
+            // Only Windows ships the launcher and appends .exe, but the same dispatch is exercised on the
+            // platform it is developed on, where the published builds carry no extension.
             string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.Vulkan);
 
             Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable + ".exe", System.StringComparison.Ordinal));
@@ -146,13 +124,63 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheManagedAssemblyIsOfferedLastForNonPublishedBuilds()
+        public void EveryCandidateSitsBesideTheLauncher()
         {
-            // A framework-dependent build leaves a .dll with no native host beside it; running it needs
-            // the dotnet muxer, so it is only worth trying once the real executables are ruled out.
-            string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.Vulkan);
+            // Both builds share the launcher's directory, so nothing here should be reaching into a
+            // subdirectory or above itself for them.
+            foreach (string candidate in BackendSelection.CandidatePaths("/base", GraphicsBackend.OpenGl))
+            {
+                Assert.Equal("/base", System.IO.Path.GetDirectoryName(candidate));
+            }
+        }
 
-            Assert.EndsWith(".dll", candidates[^1], System.StringComparison.Ordinal);
+        [Fact]
+        public void TheFirstFallbackToOpenGlIsAnnounced()
+        {
+            // Nothing recorded yet: this machine has not been told why it is not on Vulkan.
+            Assert.True(BackendSelection.ShouldWarn(GraphicsBackend.OpenGl, lastSeen: null, wasForced: false));
+        }
+
+        [Fact]
+        public void RepeatedFallbacksAreNotAnnouncedAgain()
+        {
+            // Warning every launch would train the player to dismiss the dialog unread.
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.OpenGl, GraphicsBackend.OpenGl, wasForced: false));
+        }
+
+        [Fact]
+        public void FallingBackAfterVulkanPreviouslyWorkedIsAnnounced()
+        {
+            // Something changed on the machine, which is exactly the case worth reporting: a driver that
+            // used to work no longer does, and that is usually fixable.
+            Assert.True(BackendSelection.ShouldWarn(GraphicsBackend.OpenGl, GraphicsBackend.Vulkan, wasForced: false));
+        }
+
+        [Fact]
+        public void RunningOnVulkanIsNeverAnnounced()
+        {
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.Vulkan, null, wasForced: false));
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.Vulkan, GraphicsBackend.OpenGl, wasForced: false));
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.Vulkan, GraphicsBackend.Vulkan, wasForced: false));
+        }
+
+        [Fact]
+        public void AnExplicitlyChosenBackendIsNeverAnnounced()
+        {
+            // Someone who passed --gl or set the environment variable already knows what they asked for.
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.OpenGl, null, wasForced: true));
+            Assert.False(BackendSelection.ShouldWarn(GraphicsBackend.OpenGl, GraphicsBackend.Vulkan, wasForced: true));
+        }
+
+        [Fact]
+        public void TheLaunchRecoveringFromAFatalProbeIsWarned()
+        {
+            // That launch left the probing marker behind, which does not parse as a backend, so it arrives
+            // here as no last-seen value. The player has not been told anything yet and should be.
+            Assert.True(BackendSelection.ShouldWarn(
+                GraphicsBackend.OpenGl,
+                LauncherState.LastBackend(LauncherState.ProbingMarker),
+                wasForced: false));
         }
     }
 }

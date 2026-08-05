@@ -18,9 +18,8 @@ namespace CutTheRopeDX.Desktop
     /// <para>
     /// Rooted at the resolved absolute content directory rather than the relative name, because
     /// <see cref="OpenStream"/> is not the only path into content: a streaming song's XNB names an audio
-    /// file beside it, and MonoGame's reader opens that itself, relative to this root. A relative root
-    /// would send it to the running assembly's own directory, which is where the shared-content layout
-    /// keeps no content at all.
+    /// file beside it, and MonoGame's reader opens that itself, relative to this root. A relative root is
+    /// resolved against the working directory, which is only the right place by convention.
     /// </para>
     /// </remarks>
     internal sealed class DesktopContentManager(IServiceProvider serviceProvider)
