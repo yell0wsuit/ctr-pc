@@ -20,6 +20,13 @@
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile>true</PublishSingleFile>
+    <StripSymbols>true</StripSymbols>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
   <!--
     A console window would flash up in front of the game on Windows. Kept as a console app in Debug so
     the probe result and any launch failure are readable.
