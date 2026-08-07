@@ -430,9 +430,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CalculateScore()
         {
-            timeBonus = (int)MAX(0f, 30f - time) * 100;
-            timeBonus /= 10;
-            timeBonus *= 10;
+            timeBonus = MAX(0f, 30f - time) * 100f;
             starBonus = 1000 * starsCollected;
             score = (int)Ceil(timeBonus + starBonus);
         }

@@ -1042,7 +1042,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The score bonus awarded from remaining time.
         /// </summary>
-        public int timeBonus;
+        public float timeBonus;
 
         /// <summary>
         /// The current total score.
