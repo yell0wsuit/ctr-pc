@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Framework.Media
 #endif
 
             bool hasFfmpeg =
-#if DESKTOPVK_FFMPEG
+#if FFMPEG_BACKEND
                 true;
 #else
                 false;
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Framework.Media
                     videoPlayer = new VideoPlayerAVFoundation();
                     break;
 #endif
-#if DESKTOPVK_FFMPEG
+#if FFMPEG_BACKEND
                 case VideoPlayerBackend.Ffmpeg:
                     videoPlayer = new VideoPlayerFFmpeg();
                     break;

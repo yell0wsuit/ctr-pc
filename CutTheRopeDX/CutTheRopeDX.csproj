@@ -130,7 +130,7 @@
 
   <!-- FFmpeg for cross-platform -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <DefineConstants>$(DefineConstants);DESKTOPVK_FFMPEG</DefineConstants>
+    <DefineConstants>$(DefineConstants);FFMPEG_BACKEND</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
