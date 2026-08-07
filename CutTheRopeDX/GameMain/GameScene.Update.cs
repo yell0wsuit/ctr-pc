@@ -167,6 +167,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab grab = bungees[k];
                     grab.Update(delta);
+
+                    if (grab.GunSource is GunSource gunSource)
+                    {
+                        gunSource.TrackAim(Vect(grab.x, grab.y), star.pos);
+                        gunSource.TrackFiredCup(star.pos, candy.rotation);
+                    }
+
                     Bungee rope = grab.Rope;
                     if (grab.mover != null)
                     {

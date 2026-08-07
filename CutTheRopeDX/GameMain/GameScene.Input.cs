@@ -172,11 +172,8 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj in bungees)
                 {
                     Grab grab = (Grab)obj;
-                    if (grab.gun && GunAvailability.CanFire(
-                        candyPresent: primaryInPlay,
-                        candyInLantern: candies[0].inLantern,
-                        gunFired: grab.gunFired,
-                        ropeAbsent: grab.Rope == null))
+                    GunSource gun = grab.GunSource;
+                    if (gun != null && gun.CanFire(candies[0].inLantern))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
@@ -185,16 +182,10 @@ namespace CutTheRopeDX.GameMain
                         float tapRadius = Grab.GUN_TAP_RADIUS;
                         if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
-                            // Calculate direction to candy
-                            Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
-                            grab.gunFired = true;
-                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + DEG_90;
-                            grab.gunCandyInitialRotation = candyMain.rotation;
-                            grab.gunCup.rotation = grab.gunInitialRotation;
-
-                            // Change gunFront quad to fired state
-                            grab.gunFront.SetDrawQuad(3);
-                            grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
+                            gun.Fire(Vect(grab.x, grab.y), star.pos, candyMain.rotation);
+                            gun.Cup.rotation = gun.InitialRotation;
+                            gun.Front.SetDrawQuad(Grab.GunDisabledFrontQuad);
+                            gun.Cup.PlayTimeline(Grab.GUN_CUP_SHOW);
 
                             // Fire the gun - create a rope to the candy
                             float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - ActivePhysicsConstants.BungeeRestLength;

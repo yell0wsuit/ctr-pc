@@ -56,7 +56,10 @@ namespace CutTheRopeDX.GameMain
             grab.wheel = wheel;
             // A grab is either a wheel or a gun, never both; malformed XML with both set
             // resolves to the wheel (PD 2026-07-24).
-            grab.gun = gun && !wheel;
+            if (gun && !wheel)
+            {
+                grab.Source = new GunSource();
+            }
             grab.kickable = kickable;
             grab.kicked = kicked;
             grab.invisible = invisible;
@@ -146,13 +149,13 @@ namespace CutTheRopeDX.GameMain
             // A path mover (bee/launcher) and a drag rail are mutually exclusive movement
             // mechanisms; the authored path wins and rail attributes are ignored (PD 2026-07-24).
             grab.SetMoveLengthVerticalOffset(grab.mover != null ? 0f : k, v, o);
-            if (grab.gun && grab.gunArrow != null)
+            if (grab.GunSource != null && grab.GunSource.Arrow != null)
             {
                 SplitCandyState split = candies[0].Lifecycle.Split;
                 ConstraintedPoint constraintedPoint = split == null ? star
                     : flag ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
-                grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                grab.GunSource.Arrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
             }
             bungees.Add(grab);
         }

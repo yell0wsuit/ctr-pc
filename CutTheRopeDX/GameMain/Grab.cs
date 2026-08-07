@@ -60,8 +60,6 @@ namespace CutTheRopeDX.GameMain
             wheelOperating = -1;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
-            gun = false;
-            gunFired = false;
             invisible = false;
             kicked = false;
             kickActive = false;
@@ -143,10 +141,7 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
-            if (gunFired && gunCup != null)
-            {
-                gunCup.Update(delta);
-            }
+            Source.Update(delta);
             // Transported grabs keep their rope anchor pinned to grab position
             // regardless of launcher state.
             if (IsDrawnByTransporter && Rope != null)
@@ -171,8 +166,6 @@ namespace CutTheRopeDX.GameMain
                 }
                 mover.SetMoveSpeed(launcherSpeed);
             }
-
-            Source.Update(delta);
 
             if (bee != null)
             {
@@ -275,7 +268,7 @@ namespace CutTheRopeDX.GameMain
                 x = (Rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
                 y = (Rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
             }
-            if (gun)
+            if (GunSource != null)
             {
                 return;
             }
@@ -331,12 +324,12 @@ namespace CutTheRopeDX.GameMain
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
-            if (gunBack != null)
+            if (GunSource is GunSource gunSource && gunSource.Back != null)
             {
-                gunBack.Draw();
-                if (!gunFired && gunArrow != null)
+                gunSource.Back.Draw();
+                if (!gunSource.HasFired && gunSource.Arrow != null)
                 {
-                    gunArrow.Draw();
+                    gunSource.Arrow.Draw();
                 }
             }
 
@@ -347,7 +340,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun
-            gunFront?.Draw();
+            GunSource?.Front?.Draw();
 
             if (moveLength <= 0)
             {
@@ -374,28 +367,6 @@ namespace CutTheRopeDX.GameMain
         public void DrawSpider()
         {
             spider.Draw();
-        }
-
-        /// <summary>
-        /// Draws the fired gun cup overlay.
-        /// </summary>
-        public void DrawGunCup()
-        {
-            if (!gunFired)
-            {
-                return;
-            }
-            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            gunCup?.Draw();
-        }
-
-        /// <summary>Updates the gun body to show whether the gun can currently fire.</summary>
-        /// <param name="disabled">
-        /// <see langword="true"/> to show the fired body; otherwise, <see langword="false"/>.
-        /// </param>
-        public void SetGunDisabled(bool disabled)
-        {
-            gunFront?.SetDrawQuad(gunFired || disabled ? GunDisabledFrontQuad : GunFrontQuad);
         }
 
         /// <summary>
@@ -448,44 +419,44 @@ namespace CutTheRopeDX.GameMain
         /// <param name="r">Grab radius, or -1 for a fixed hook without a visible radius.</param>
         public void SetRadius(float r)
         {
-            if (gun)
+            if (Source is GunSource gunSource)
             {
-                gunBack = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
-                gunBack.DoRestoreCutTransparency();
-                gunBack.anchor = gunBack.parentAnchor = 18;
-                _ = AddChild(gunBack);
-                gunBack.visible = false;
+                gunSource.Back = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
+                gunSource.Back.DoRestoreCutTransparency();
+                gunSource.Back.anchor = gunSource.Back.parentAnchor = 18;
+                _ = AddChild(gunSource.Back);
+                gunSource.Back.visible = false;
 
-                gunArrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
-                gunArrow.DoRestoreCutTransparency();
-                gunArrow.anchor = gunArrow.parentAnchor = 18;
-                _ = AddChild(gunArrow);
-                gunArrow.visible = false;
+                gunSource.Arrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
+                gunSource.Arrow.DoRestoreCutTransparency();
+                gunSource.Arrow.anchor = gunSource.Arrow.parentAnchor = 18;
+                _ = AddChild(gunSource.Arrow);
+                gunSource.Arrow.visible = false;
 
-                gunFront = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
-                gunFront.DoRestoreCutTransparency();
-                gunFront.anchor = gunFront.parentAnchor = 18;
-                _ = AddChild(gunFront);
-                gunFront.visible = false;
+                gunSource.Front = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
+                gunSource.Front.DoRestoreCutTransparency();
+                gunSource.Front.anchor = gunSource.Front.parentAnchor = 18;
+                _ = AddChild(gunSource.Front);
+                gunSource.Front.visible = false;
 
-                gunCup = Animation_createWithResID(Resources.Img.ObjGun);
-                gunCup.DoRestoreCutTransparency();
-                gunCup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
-                gunCup.anchor = 18;
-                _ = AddChild(gunCup);
-                gunCup.visible = false;
+                gunSource.Cup = Animation_createWithResID(Resources.Img.ObjGun);
+                gunSource.Cup.DoRestoreCutTransparency();
+                gunSource.Cup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
+                gunSource.Cup.anchor = 18;
+                _ = AddChild(gunSource.Cup);
+                gunSource.Cup.visible = false;
 
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
-                gunCup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
+                gunSource.Cup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
 
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
                 timeline2.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline2.AddKeyFrame(KeyFrame.MakePos(0, 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
-                gunCup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
+                gunSource.Cup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
                 Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
                 track.relative = true;
                 return;
@@ -929,29 +900,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this grab uses survival balloon behavior.</summary>
         public bool baloon;
 
-        /// <summary>Whether this grab uses gun hook behavior.</summary>
-        public bool gun;
-
-        /// <summary>Whether the gun hook has fired its cup.</summary>
-        public bool gunFired;
-
-        /// <summary>Back visual layer for the gun hook.</summary>
-        private Image gunBack;
-
-        /// <summary>Aim arrow visual for the gun hook.</summary>
-        public Image gunArrow;
-
-        /// <summary>Front visual layer for the gun hook.</summary>
-        public Image gunFront;
-
-        /// <summary>Animated suction cup fired by the gun hook.</summary>
-        public Animation gunCup;
-
-        /// <summary>Initial gun hook rotation used when restoring state.</summary>
-        public float gunInitialRotation;
-
-        /// <summary>Initial candy rotation captured when the gun hook fires.</summary>
-        public float gunCandyInitialRotation;
+        /// <summary>Gets this grab's gun source, or <see langword="null"/> when it is not a gun.</summary>
+        public GunSource GunSource => Source as GunSource;
 
         /// <summary>Remaining stain marks available to the suction cup hook.</summary>
         public int stainCounter;
@@ -1020,13 +970,13 @@ namespace CutTheRopeDX.GameMain
         private const int GunBackQuad = 0;
 
         /// <summary>Gun hook arrow quad.</summary>
-        private const int GunArrowQuad = 1;
+        internal const int GunArrowQuad = 1;
 
         /// <summary>Gun hook front quad.</summary>
-        private const int GunFrontQuad = 2;
+        internal const int GunFrontQuad = 2;
 
         /// <summary>Gun hook front quad used after firing and while disabled.</summary>
-        private const int GunDisabledFrontQuad = 3;
+        internal const int GunDisabledFrontQuad = 3;
 
         /// <summary>
         /// Spider animation identifiers.

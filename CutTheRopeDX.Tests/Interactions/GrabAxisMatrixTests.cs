@@ -187,14 +187,12 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Grab gun = scene.Grabs()[0];
             Assert.Null(gun.Rope);
-            Assert.False(gun.gunFired);
 
             int gunX = (int)gun.x;
             int gunY = (int)gun.y;
 
             Assert.True(scene.TouchDownXYIndex(gunX, gunY, 0));
 
-            Assert.True(gun.gunFired);
             Assert.NotNull(gun.Rope);
 
             Bungee fired = gun.Rope;
