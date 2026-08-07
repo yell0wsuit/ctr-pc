@@ -805,9 +805,8 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab bungee4 = (Grab)obj9;
                     // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
-                    bool discBindable = GrabPlatformBind.FollowsPlatform(
-                        GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0),
-                        bungee4.kickable && bungee4.kicked)
+                    bool discBindable = bungee4.Motion.FollowsPlatform
+                        && !(bungee4.kickable && bungee4.kicked)
                         && bungee4 is not IGhostApparition;
                     if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
@@ -1638,7 +1637,7 @@ namespace CutTheRopeDX.GameMain
                         flag12 = true;
                         break;
                     }
-                    if (bungee5.moveLength > 0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if (bungee5.Rail is RailMotion rail5 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || rail5.DraggingTouch != -1))
                     {
                         flag12 = true;
                         break;

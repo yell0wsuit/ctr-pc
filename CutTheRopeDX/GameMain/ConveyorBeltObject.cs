@@ -124,7 +124,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 // Self-moving grabs (bee/launcher path movers) and player rails never ride belts.
-                if (item is Grab bindGrab && !GrabPlatformBind.CanBind(bindGrab.mover != null, bindGrab.moveLength > 0))
+                if (item is Grab bindGrab && !bindGrab.Motion.CanBind)
                 {
                     continue;
                 }

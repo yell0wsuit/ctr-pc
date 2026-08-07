@@ -272,9 +272,9 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (moveLength > 0)
+            if (Rail != null)
             {
-                moveBackground.Draw();
+                Rail.Background.Draw();
             }
             else
             {
@@ -342,17 +342,17 @@ namespace CutTheRopeDX.GameMain
             // Draw front gun
             GunSource?.Front?.Draw();
 
-            if (moveLength <= 0)
+            if (Rail == null)
             {
                 front?.Draw();
             }
-            else if (moverDragging != -1)
+            else if (Rail.DraggingTouch != -1)
             {
-                grabMoverHighlight?.Draw();
+                Rail.MoverHighlight?.Draw();
             }
             else
             {
-                grabMover?.Draw();
+                Rail.Mover?.Draw();
             }
             if (wheel)
             {
@@ -396,6 +396,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void SetLauncher()
         {
+            // A launcher moves itself along its own circular path, so it is refused by platforms for
+            // the same reason a bee is.
+            Motion = new PathMotion();
             launcher = true;
             launcherIncreaseSpeed = true;
             launcherSpeed = 130f;
@@ -522,50 +525,47 @@ namespace CutTheRopeDX.GameMain
         /// <param name="o">Offset of the grab along the rail.</param>
         public void SetMoveLengthVerticalOffset(float l, bool v, float o)
         {
-            moveLength = l;
-            moveVertical = v;
-            moveOffset = o;
-            if (moveLength > 0)
+            if (l <= 0)
             {
-                moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
-                moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
-                moveBackground.width = (int)(l + 142f);
-                moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
-                moveBackground.x = -74f;
-                grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
-                grabMoverHighlight.visible = false;
-                grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
-                _ = AddChild(grabMoverHighlight);
-                grabMover = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookQuad);
-                grabMover.visible = false;
-                grabMover.anchor = grabMover.parentAnchor = 18;
-                _ = AddChild(grabMover);
-                _ = grabMover.AddChild(moveBackground);
-                if (moveVertical)
-                {
-                    moveBackground.rotation = DEG_90;
-                    moveBackground.y = 0f - moveOffset;
-                    minMoveValue = y - moveOffset;
-                    maxMoveValue = y + (moveLength - moveOffset);
-                    grabMover.rotation = DEG_90;
-                    grabMoverHighlight.rotation = DEG_90;
-                }
-                else
-                {
-                    minMoveValue = x - moveOffset;
-                    maxMoveValue = x + (moveLength - moveOffset);
-                    moveBackground.x += 0f - moveOffset;
-                }
-                moveBackground.anchor = 17;
-                moveBackground.x += x;
-                moveBackground.y += y;
-                moveBackground.visible = false;
+                return;
             }
-            moverDragging = -1;
-            if (moveLength >= 0f)
+
+            RailMotion rail = new(l, v, o, x, y);
+            Motion = rail;
+
+            HorizontallyTiledImage moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
+            moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
+            moveBackground.width = (int)(l + 142f);
+            moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
+            moveBackground.x = -74f;
+            Image grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
+            grabMoverHighlight.visible = false;
+            grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
+            _ = AddChild(grabMoverHighlight);
+            Image grabMover = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookQuad);
+            grabMover.visible = false;
+            grabMover.anchor = grabMover.parentAnchor = 18;
+            _ = AddChild(grabMover);
+            _ = grabMover.AddChild(moveBackground);
+            if (v)
             {
-                kickable = false;
+                moveBackground.rotation = DEG_90;
+                moveBackground.y = 0f - o;
+                grabMover.rotation = DEG_90;
+                grabMoverHighlight.rotation = DEG_90;
             }
+            else
+            {
+                moveBackground.x += 0f - o;
+            }
+            moveBackground.anchor = 17;
+            moveBackground.x += x;
+            moveBackground.y += y;
+            moveBackground.visible = false;
+
+            rail.Background = moveBackground;
+            rail.Mover = grabMover;
+            rail.MoverHighlight = grabMoverHighlight;
         }
 
         /// <summary>
@@ -573,6 +573,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void SetBee()
         {
+            // The authored path owns this hook's position, so no platform may capture it.
+            Motion = new PathMotion();
             bee = Image_createWithResIDQuad(Resources.Img.ObjBee, BeeQuad);
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
@@ -831,32 +833,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Last touch point used to compute wheel rotation deltas.</summary>
         public Vector lastWheelTouch;
 
-        /// <summary>Length of the movable hook rail.</summary>
-        public float moveLength;
+        /// <summary>Gets the object that supplies this grab's position.</summary>
+        public AnchorMotion Motion { get; internal set; } = new StaticMotion();
 
-        /// <summary>Whether the movable hook rail is vertical.</summary>
-        public bool moveVertical;
-
-        /// <summary>Offset of the grab along its movable rail.</summary>
-        public float moveOffset;
-
-        /// <summary>Tiled rail background for a movable hook.</summary>
-        public HorizontallyTiledImage moveBackground;
-
-        /// <summary>Movable hook highlight visual.</summary>
-        public Image grabMoverHighlight;
-
-        /// <summary>Movable hook foreground visual.</summary>
-        public Image grabMover;
-
-        /// <summary>Identifier for the active movable-hook drag, or -1 when idle.</summary>
-        public int moverDragging;
-
-        /// <summary>Minimum coordinate value allowed while moving along the rail.</summary>
-        public float minMoveValue;
-
-        /// <summary>Maximum coordinate value allowed while moving along the rail.</summary>
-        public float maxMoveValue;
+        /// <summary>Gets this grab's rail, or <see langword="null"/> when it has none.</summary>
+        public RailMotion Rail => Motion as RailMotion;
 
         /// <summary>Whether this grab has a spider attachment.</summary>
         public bool hasSpider;

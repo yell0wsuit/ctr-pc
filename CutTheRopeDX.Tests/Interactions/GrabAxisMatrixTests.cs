@@ -202,12 +202,12 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         /// <summary>
-        /// The trap the design removes: with no moveLength attribute at all, today's loader clears
-        /// kickable and the cup silently stops working. Pinned here as the current behaviour so the
-        /// change is visible when Task 12 flips it.
+        /// The trap the design removes. The old loader treated a missing moveLength attribute as
+        /// moveLength = 0 and cleared kickable, so a hand-written map's suction cup silently stopped
+        /// working. Rail and cup are now separate axes, so the cup survives.
         /// </summary>
         [Fact]
-        public void SuctionCupWithNoMoveLengthAttributeCurrentlyLosesItsCup()
+        public void SuctionCupWithNoMoveLengthAttributeKeepsItsCup()
         {
             GameScene scene = Load(new Scenario()
                 .Candy(CandyX, CandyY)
@@ -215,7 +215,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Grab cup = scene.Grabs()[0];
 
-            Assert.False(cup.kickable);
+            Assert.True(cup.kickable);
+            Assert.Null(cup.Rail);
         }
     }
 }

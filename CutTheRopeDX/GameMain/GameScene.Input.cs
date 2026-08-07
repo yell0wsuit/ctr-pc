@@ -408,9 +408,8 @@ namespace CutTheRopeDX.GameMain
                     // hook riding a manual belt let the same touch also start a belt drag.
                     return true;
                 }
-                if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.Rail?.TryBeginDrag(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
                 {
-                    bungee.moverDragging = ti;
                     return true;
                 }
             }
@@ -553,10 +552,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     bungee.wheelOperating = -1;
                 }
-                if (bungee.moveLength > 0 && bungee.moverDragging == ti)
-                {
-                    bungee.moverDragging = -1;
-                }
+                bungee.Rail?.EndDrag(ti);
                 if (bungee.kickable && bungee.Rope != null)
                 {
                     float tapRadius = Grab.KICK_TAP_RADIUS;
@@ -701,9 +697,7 @@ namespace CutTheRopeDX.GameMain
                             // the disc would otherwise sweep such a hook off its rail, leaving the
                             // rail drawn where it was. Same rule the disc-capture test in the update
                             // loop applies, so both agree on what this disc owns.
-                            if (!GrabPlatformBind.FollowsPlatform(
-                                    GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
-                                    grab.kickable && grab.kicked)
+                            if (!grab.Motion.FollowsPlatform || (grab.kickable && grab.kicked)
                                 || grab is IGhostApparition)
                             {
                                 continue;
@@ -802,16 +796,9 @@ namespace CutTheRopeDX.GameMain
                         grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
-                    if (grab2.moveLength > 0 && grab2.moverDragging == ti)
+                    if (grab2.Rail is RailMotion rail && rail.DraggingTouch == ti)
                     {
-                        if (grab2.moveVertical)
-                        {
-                            grab2.y = FIT_TO_BOUNDARIES(ty + camera.pos.Y, grab2.minMoveValue, grab2.maxMoveValue);
-                        }
-                        else
-                        {
-                            grab2.x = FIT_TO_BOUNDARIES(tx + camera.pos.X, grab2.minMoveValue, grab2.maxMoveValue);
-                        }
+                        rail.DragTo(grab2, tx + camera.pos.X, ty + camera.pos.Y);
                         if (grab2.Rope != null)
                         {
                             grab2.Rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);

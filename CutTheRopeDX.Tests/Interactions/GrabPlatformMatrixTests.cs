@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, Grab rail) = OnConveyor(s => s.Grab(PlatformX, PlatformY, moveLength: 60f));
 
-            Assert.True(rail.moveLength > 0f);
+            Assert.NotNull(rail.Rail);
             Assert.False(scene.BeltHolds(rail));
         }
 
