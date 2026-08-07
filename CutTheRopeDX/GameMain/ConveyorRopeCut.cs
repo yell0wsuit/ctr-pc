@@ -4,7 +4,7 @@ namespace CutTheRopeDX.GameMain
 {
     /// <summary>
     /// Decides which ropes are cut when a grab wraps around a conveyor edge. The candy is identified by
-    /// the rope's tail (physics point) rather than <see cref="Grab.candyNumber"/>: the multi-candy loader
+    /// the rope's tail (physics point) rather than a legacy candy index: the multi-candy loader
     /// assigns every candy-bound grab the number 0, so matching on it would cut ropes on other candies.
     /// </summary>
     internal static class ConveyorRopeCut

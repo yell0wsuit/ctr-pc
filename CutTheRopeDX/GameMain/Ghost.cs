@@ -251,7 +251,14 @@ namespace CutTheRopeDX.GameMain
                     grab = new GhostGrab().InitWithPosition(x, y);
                     grab.Wheel = null;
                     grab.Spider = null;
-                    grab.SetRadius(grabRadius);
+                    // A ghost apparition is only ever a plain or auto-radius hook, so it goes
+                    // through the same resolver as an authored one.
+                    grab.Source = GrabAxisResolver.Resolve(
+                        new GrabAxisRequest(
+                            Gun: false, Wheel: false, Kickable: false,
+                            Radius: grabRadius, MoveLength: 0f, HasMover: false,
+                            MoveVertical: false, MoveOffset: 0f, AnchorX: x, AnchorY: y)).Source;
+                    grab.CreateAxisVisuals();
                     if (grabRadius == -1f)
                     {
                         ConstraintedPoint ropeAnchor = hostScene?.GetGhostRopeAnchor(Vect(x, y));

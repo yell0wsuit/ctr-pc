@@ -14,7 +14,10 @@ namespace CutTheRopeDX.GameMain
     /// While detached it overrides whatever motion the hook has.
     /// </para>
     /// </summary>
-    internal sealed class SuctionMount
+    /// <param name="startsKicked">
+    /// <see langword="true"/> when the level authors the cup as already detached.
+    /// </param>
+    internal sealed class SuctionMount(bool startsKicked)
     {
         /// <summary>Weight given to the anchor while the cup hangs free.</summary>
         public const float DetachedAnchorWeight = 0.1f;
@@ -25,25 +28,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Share of the new anchor position the back layer moves to each frame.</summary>
         private const float BackLayerFollow = 0.8f;
 
-        /// <summary>Initializes a suction mount.</summary>
-        /// <param name="startsKicked">
-        /// <see langword="true"/> when the level authors the cup as already detached.
-        /// </param>
-        public SuctionMount(bool startsKicked)
-        {
-            IsMounted = !startsKicked;
-            StainCount = Grab.MAX_STAINS;
-            StickTimer = -1f;
-        }
-
         /// <summary>Gets whether the cup is currently stuck to the wall.</summary>
-        public bool IsMounted { get; private set; }
+        public bool IsMounted { get; private set; } = !startsKicked;
 
         /// <summary>Gets the remaining stain decals this cup can leave.</summary>
-        public int StainCount { get; private set; }
+        public int StainCount { get; private set; } = Grab.MAX_STAINS;
 
         /// <summary>Gets the elapsed sticking time, or -1 when not trying to stick.</summary>
-        public float StickTimer { get; private set; }
+        public float StickTimer { get; private set; } = -1f;
 
         /// <summary>
         /// Gets the position the hook's back layer is drawn at. While falling this lags the front by

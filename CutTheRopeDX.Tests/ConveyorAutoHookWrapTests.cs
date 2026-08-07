@@ -25,8 +25,6 @@ namespace CutTheRopeDX.Tests
             };
             autoHook.SetRope(rope);
 
-            Assert.Equal(-1, autoHook.candyNumber);
-
             autoHook.DidMoveToOtherSide();
 
             Assert.Equal(200f, rope.bungeeAnchor.pos.X);

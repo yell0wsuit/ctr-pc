@@ -912,7 +912,7 @@ namespace CutTheRopeDX.GameMain
         /// own rope. Matches iOS destroyRopesForCandy:except:.
         /// </summary>
         /// <remarks>
-        /// Candies are identified by the rope's tail point rather than by <see cref="Grab.candyNumber"/>.
+        /// Candies are identified by the rope's tail point rather than by a legacy candy index.
         /// The legacy numbering only distinguished whole candy (0) from the split halves (1/2), so the
         /// multi-candy loader hands every candy-bound grab the same number 0 — matching on it would cut
         /// ropes belonging to *other* candies. Tail identity is exact for all three cases.

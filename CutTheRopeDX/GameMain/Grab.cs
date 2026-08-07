@@ -57,8 +57,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public Grab()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            baloon = cTRRootController.IsSurvival();
         }
 
         /// <summary>
@@ -80,26 +78,10 @@ namespace CutTheRopeDX.GameMain
             base.Update(delta);
             Source.Update(delta);
             Mount?.SyncPositions(this);
-            // Transported grabs keep their rope anchor pinned to grab position
-            // regardless of launcher state.
-            if (IsDrawnByTransporter || launcher)
+            // Transported grabs keep their rope anchor pinned to grab position.
+            if (IsDrawnByTransporter)
             {
                 SyncRopeAnchor();
-            }
-            if (launcher)
-            {
-                if (launcherIncreaseSpeed)
-                {
-                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
-                    {
-                        launcherIncreaseSpeed = false;
-                    }
-                }
-                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130, 30, delta))
-                {
-                    launcherIncreaseSpeed = true;
-                }
-                mover.SetMoveSpeed(launcherSpeed);
             }
 
             if (bee != null)
@@ -218,10 +200,7 @@ namespace CutTheRopeDX.GameMain
             {
                 Rail.Mover?.Draw();
             }
-            if (Wheel != null)
-            {
-                Wheel.Arm.Draw();
-            }
+            Wheel?.Arm.Draw();
             PostDraw();
         }
 
@@ -245,48 +224,20 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Configures this grab as a launcher that oscillates along a circular path.
-        /// </summary>
-        public void SetLauncher()
-        {
-            // A launcher moves itself along its own circular path, so it is refused by platforms for
-            // the same reason a bee is.
-            Motion = new PathMotion();
-            launcher = true;
-            launcherIncreaseSpeed = true;
-            launcherSpeed = 130f;
-            Mover mover = new(100, launcherSpeed, 0f);
-            mover.SetPathFromStringandStart("RC30", Vect(x, y));
-            SetMover(mover);
-            mover.Start();
-        }
-
-        /// <summary>
         /// Gets the rectangle around this grab that a cut stroke may not cut inside, or
         /// <see langword="null"/> when the whole rope is cuttable. A wheel and a gun each protect
         /// their own tap zone so operating them cannot sever the rope they control.
         /// </summary>
-        public CTRRectangle? CutExclusionZone
-        {
-            get
-            {
-                if (Wheel != null)
-                {
-                    return new CTRRectangle(
-                        x - WheelControl.TapHalfExtent, y - WheelControl.TapHalfExtent,
-                        WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f);
-                }
-
-                if (Source is GunSource)
-                {
-                    return new CTRRectangle(
+        public CTRRectangle? CutExclusionZone =>
+            Wheel != null
+                ? new CTRRectangle(
+                    x - WheelControl.TapHalfExtent, y - WheelControl.TapHalfExtent,
+                    WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)
+                : Source is GunSource
+                    ? new CTRRectangle(
                         x - GUN_CUT_RADIUS, y - GUN_CUT_RADIUS,
-                        GUN_CUT_RADIUS * 2f, GUN_CUT_RADIUS * 2f);
-                }
-
-                return null;
-            }
-        }
+                        GUN_CUT_RADIUS * 2f, GUN_CUT_RADIUS * 2f)
+                    : null;
 
         /// <summary>
         /// Reacts to this grab's own rope being cut. The single place a hook's components learn about
@@ -329,10 +280,10 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Configures this grab's radius and creates the visual resources for its active mode.
+        /// Creates the visual resources for whichever axes this grab was resolved onto. Purely
+        /// visual: <see cref="GrabAxisResolver"/> has already decided which axes exist.
         /// </summary>
-        /// <param name="r">Grab radius, or -1 for a fixed hook without a visible radius.</param>
-        public void SetRadius(float r)
+        public void CreateAxisVisuals()
         {
             if (Source is GunSource gunSource)
             {
@@ -405,7 +356,6 @@ namespace CutTheRopeDX.GameMain
                 _ = AddChild(front);
                 back.visible = false;
                 front.visible = false;
-                Source = new AutoRadiusSource(r, Vect(x, y));
             }
 
             if (Wheel is WheelControl wheelControl)
@@ -428,20 +378,19 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Configures this grab as a movable hook along a horizontal or vertical rail.
+        /// Creates the rail's three images, when this grab was resolved onto a rail. Purely visual:
+        /// the rail's geometry belongs to <see cref="RailMotion"/>.
         /// </summary>
-        /// <param name="l">Movable rail length.</param>
-        /// <param name="v">Whether the rail is vertical.</param>
-        /// <param name="o">Offset of the grab along the rail.</param>
-        public void SetMoveLengthVerticalOffset(float l, bool v, float o)
+        public void CreateRailVisuals()
         {
-            if (l <= 0)
+            if (Rail is not RailMotion rail)
             {
                 return;
             }
 
-            RailMotion rail = new(l, v, o, x, y);
-            Motion = rail;
+            float l = rail.Length;
+            bool v = rail.IsVertical;
+            float o = rail.Offset;
 
             HorizontallyTiledImage moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
             moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
@@ -483,8 +432,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void SetBee()
         {
-            // The authored path owns this hook's position, so no platform may capture it.
-            Motion = new PathMotion();
             bee = Image_createWithResIDQuad(Resources.Img.ObjBee, BeeQuad);
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
@@ -674,9 +621,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the rope attached to this grab, or <see langword="null"/> when there is none.</summary>
         public Bungee Rope => Attachment.Rope;
 
-        /// <summary>Index of the candy attached to this grab, or -1 when no candy is attached.</summary>
-        public int candyNumber = -1;
-
         /// <summary>Gets the object that decides whether this grab can produce a rope.</summary>
         public RopeSource Source { get; internal set; } = new PreAttachedSource();
 
@@ -726,15 +670,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets this grab's spider, or <see langword="null"/> when it has none.</summary>
         public SpiderRider Spider { get; internal set; }
 
-        /// <summary>Whether this grab moves as a launcher.</summary>
-        public bool launcher;
-
-        /// <summary>Current launcher movement speed.</summary>
-        public float launcherSpeed;
-
-        /// <summary>Whether launcher speed is currently increasing.</summary>
-        public bool launcherIncreaseSpeed;
-
         /// <summary>Initial grab rotation used when restoring state.</summary>
         public float initial_rotation;
 
@@ -746,9 +681,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Initial rotated-circle binding used when restoring state.</summary>
         public RotatedCircle initial_rotatedCircle;
-
-        /// <summary>Whether this grab uses survival balloon behavior.</summary>
-        public bool baloon;
 
         /// <summary>Gets this grab's gun source, or <see langword="null"/> when it is not a gun.</summary>
         public GunSource GunSource => Source as GunSource;

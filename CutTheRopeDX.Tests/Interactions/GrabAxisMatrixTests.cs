@@ -202,12 +202,12 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         /// <summary>
-        /// The trap the design removes. The old loader treated a missing moveLength attribute as
-        /// moveLength = 0 and cleared kickable, so a hand-written map's suction cup silently stopped
-        /// working. Rail and cup are now separate axes, so the cup survives.
+        /// The trap the design removes: a map that omits moveLength entirely used to have its
+        /// suction cup silently cleared by SetMoveLengthVerticalOffset. Rail-vs-cup is now an
+        /// explicit resolver decision and the cup survives.
         /// </summary>
         [Fact]
-        public void SuctionCupWithNoMoveLengthAttributeKeepsItsCup()
+        public void SuctionCupSurvivesAMissingMoveLengthAttribute()
         {
             GameScene scene = Load(new Scenario()
                 .Candy(CandyX, CandyY)

@@ -575,7 +575,10 @@ namespace CutTheRopeDX.GameMain
                 // Side-switch callbacks
                 if (wrapped)
                 {
-                    if (item is Grab grab && grab.Rope != null && grab.candyNumber != -1)
+                    // Only a hook whose rope was authored in the level cuts its candy's other ropes
+                    // when it wraps; an auto-attaching hook never did, which is what the old
+                    // candyNumber != -1 test meant.
+                    if (item is Grab grab && grab.Rope != null && grab.Source is PreAttachedSource)
                     {
                         OnDestroyRopesForCandy?.Invoke(grab);
                     }

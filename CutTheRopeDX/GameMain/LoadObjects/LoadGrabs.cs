@@ -53,18 +53,6 @@ namespace CutTheRopeDX.GameMain
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
-            if (wheel)
-            {
-                grab.Wheel = new WheelControl();
-            }
-            else if (gun)
-            {
-                grab.Source = new GunSource();
-            }
-            if (kickable)
-            {
-                grab.Mount = new SuctionMount(kicked);
-            }
             HookModifiers modifiers = HookModifiers.None;
             if (invisible)
             {
@@ -104,7 +92,28 @@ namespace CutTheRopeDX.GameMain
             {
                 grabRadius *= scale;
             }
-            if (grabRadius == -1f && !gun)
+
+            // One place decides which axes this grab has. Everything below only builds visuals for
+            // the axes it was given.
+            GrabAxes axes = GrabAxisResolver.Resolve(
+                new GrabAxisRequest(
+                    Gun: gun,
+                    Wheel: wheel,
+                    Kickable: kickable,
+                    Radius: grabRadius,
+                    MoveLength: k,
+                    HasMover: grab.mover != null,
+                    MoveVertical: v,
+                    MoveOffset: o,
+                    AnchorX: hx,
+                    AnchorY: hy),
+                startsKicked: kicked);
+            grab.Source = axes.Source;
+            grab.Motion = axes.Motion;
+            grab.Mount = axes.Mount;
+            grab.Wheel = axes.Wheel;
+
+            if (grab.Source is PreAttachedSource)
             {
                 ConstraintedPoint constraintedPoint;
                 CandyContext targetAxe = grabAxeNumber != null ? FindAxeByNumber(grabAxeNumber) : null;
@@ -116,24 +125,20 @@ namespace CutTheRopeDX.GameMain
                     : flag ? split.Left.Body.Point : split.Right.Body.Point;
                 if (bindBulb)
                 {
-                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
                     CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
                     constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
                 }
                 else if (targetAxe != null)
                 {
-                    grab.candyNumber = 0;
                     constraintedPoint = targetAxe.WholeBody.Point;
                 }
                 else if (targetCandy != null)
                 {
                     // Multi-candy: bind to the candy named by candyNumber.
-                    grab.candyNumber = 0;
                     constraintedPoint = targetCandy.WholeBody.Point;
                 }
                 else
                 {
-                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
                     constraintedPoint = authoredHalf ?? star;
                 }
 
@@ -159,10 +164,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            grab.SetRadius(grabRadius);
-            // A path mover (bee/launcher) and a drag rail are mutually exclusive movement
-            // mechanisms; the authored path wins and rail attributes are ignored (PD 2026-07-24).
-            grab.SetMoveLengthVerticalOffset(grab.mover != null ? 0f : k, v, o);
+            grab.CreateAxisVisuals();
+            grab.CreateRailVisuals();
             if (grab.GunSource != null && grab.GunSource.Arrow != null)
             {
                 SplitCandyState split = candies[0].Lifecycle.Split;
