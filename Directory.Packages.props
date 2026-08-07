@@ -15,7 +15,6 @@
     <PackageVersion Include="MonoGame.Runtime.Mac.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="MonoGame.Runtime.Linux.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="FFmpeg.AutoGen" Version="8.1.0" />
-    <PackageVersion Include="FFmpeg.LGPL" Version="20260210.1.0" />
   </ItemGroup>
 
   <!-- Content builder -->

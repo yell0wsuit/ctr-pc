@@ -23,6 +23,9 @@ own scripts. Only Windows has hardware old enough to need the fallback.
 import shutil
 import subprocess
 import sys
+import tempfile
+import urllib.request
+import zipfile
 from pathlib import Path
 
 try:
@@ -53,6 +56,20 @@ LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
+FFMPEG_URL = (
+    "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/"
+    "ffmpeg-n8.1-latest-win64-lgpl-shared-8.1.zip"
+)
+FFMPEG_DLL_GLOBS = (
+    "avcodec-*.dll",
+    "avdevice-*.dll",
+    "avfilter-*.dll",
+    "avformat-*.dll",
+    "avutil-*.dll",
+    "postproc-*.dll",
+    "swresample-*.dll",
+    "swscale-*.dll",
+)
 
 
 def publish(
@@ -80,6 +97,55 @@ def publish(
     result = subprocess.run(cmd, check=False)
     if result.returncode != 0:
         sys.exit(result.returncode)
+
+
+def download_ffmpeg() -> None:
+    """Download FFmpeg LGPL shared libraries into the package ffmpeg directory."""
+    destination = OUTPUT_DIR / FFMPEG_DIRECTORY
+    if destination.is_dir() and any(destination.glob("avcodec-*.dll")):
+        print(f"FFmpeg shared libraries already present in {destination}")
+        return
+
+    print("\n=== FFmpeg ===")
+    print(f"Downloading {FFMPEG_URL}")
+
+    with tempfile.TemporaryDirectory() as temp_dir_name:
+        temp_dir = Path(temp_dir_name)
+        archive_path = temp_dir / "ffmpeg-win64-lgpl-shared.zip"
+        urllib.request.urlretrieve(FFMPEG_URL, archive_path)
+
+        with zipfile.ZipFile(archive_path) as archive:
+            archive.extractall(temp_dir / "extracted")
+
+        roots = [path for path in (temp_dir / "extracted").iterdir() if path.is_dir()]
+        if len(roots) != 1:
+            print("Could not find the extracted FFmpeg directory", file=sys.stderr)
+            sys.exit(1)
+
+        extracted = roots[0]
+        bin_dir = extracted / "bin"
+        if not bin_dir.is_dir():
+            print(f"FFmpeg bin directory not found at {bin_dir}", file=sys.stderr)
+            sys.exit(1)
+
+        dlls = sorted(
+            {dll for pattern in FFMPEG_DLL_GLOBS for dll in bin_dir.glob(pattern)}
+        )
+        if not dlls:
+            print(
+                "No FFmpeg shared DLLs found in the downloaded archive", file=sys.stderr
+            )
+            sys.exit(1)
+
+        destination.mkdir(parents=True, exist_ok=True)
+        for dll in dlls:
+            shutil.copy2(dll, destination / dll.name)
+
+        license_file = extracted / "LICENSE.txt"
+        if license_file.is_file():
+            shutil.copy2(license_file, destination / "FFmpeg-LICENSE.txt")
+
+    print(f"FFmpeg shared libraries copied to {destination}")
 
 
 def take_shared_directory(staged: Path, name: str) -> None:
@@ -219,6 +285,7 @@ def main():
     publish(LAUNCHER_CSPROJ, OUTPUT_DIR, version, use_aot)
 
     rename_launcher()
+    download_ffmpeg()
     package(version)
 
 

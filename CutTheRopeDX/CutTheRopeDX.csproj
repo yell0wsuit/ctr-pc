@@ -108,11 +108,6 @@
     <PackageReference Include="FFmpeg.AutoGen" />
   </ItemGroup>
 
-  <!-- Windows: bundled native FFmpeg libraries -->
-  <ItemGroup Condition="'$(GraphicsBackend)' == 'VK' AND ($(RuntimeIdentifier.StartsWith('win')) OR ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows'))))">
-    <PackageReference Include="FFmpeg.LGPL" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(GraphicsBackend)' == 'VK'">
     <MonoGamePlatform>DesktopVK</MonoGamePlatform>
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPVK</DefineConstants>
@@ -169,31 +164,6 @@
 
     <!-- Sign the bundle itself -->
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
-  </Target>
-
-  <!-- Windows: move FFmpeg DLLs into ffmpeg/ subfolder after publish -->
-  <Target Name="MoveFfmpegToSubfolder"
-          AfterTargets="Publish"
-          Condition="'$(GraphicsBackend)' == 'VK' AND $(RuntimeIdentifier.StartsWith('win'))">
-
-    <ItemGroup>
-      <FfmpegDlls Include="
-        $(PublishDir)avcodec-*.dll;
-        $(PublishDir)avformat-*.dll;
-        $(PublishDir)avutil-*.dll;
-        $(PublishDir)swresample-*.dll;
-        $(PublishDir)swscale-*.dll;
-        $(PublishDir)avdevice-*.dll;
-        $(PublishDir)avfilter-*.dll;
-        $(PublishDir)postproc-*.dll" />
-    </ItemGroup>
-
-    <MakeDir Directories="$(PublishDir)ffmpeg"
-            Condition="'@(FfmpegDlls)' != ''" />
-
-    <Move SourceFiles="@(FfmpegDlls)"
-          DestinationFolder="$(PublishDir)ffmpeg"
-          Condition="'@(FfmpegDlls)' != ''" />
   </Target>
 
   <Target Name="MoveMacOSAppToPublish" AfterTargets="Publish" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
