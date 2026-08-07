@@ -321,9 +321,11 @@ namespace CutTheRopeDX.GameMain
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (grab.Wheel == null || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - WheelControl.TapHalfExtent, grab.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)) &&
-                                   (grab.GunSource == null || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
-                                   LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
+                            CTRRectangle? exclusion = grab.CutExclusionZone;
+                            bool outsideExclusion = exclusion == null
+                                || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, exclusion.Value.x, exclusion.Value.y, exclusion.Value.w, exclusion.Value.h);
+                            flag = outsideExclusion
+                                && LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
                         else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
                         {
@@ -360,7 +362,7 @@ namespace CutTheRopeDX.GameMain
                                 rope.cutTime = 0f;
                                 rope.RemovePart(j);
                             }
-                            grab.Source.OnRopeCut(RopeCutReason.Severed);
+                            grab.OnRopeCut(RopeCutReason.Severed);
                             return ropesCutCount;
                         }
                     }
@@ -501,7 +503,6 @@ namespace CutTheRopeDX.GameMain
                 CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderFall);
-            g.Spider.Bust();
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -552,7 +553,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         SpiderBusted(grab);
                     }
-                    grab.Source.OnRopeCut(RopeCutReason.Severed);
+                    grab.OnRopeCut(RopeCutReason.Severed);
                 }
             }
             sg.Spider.Win();

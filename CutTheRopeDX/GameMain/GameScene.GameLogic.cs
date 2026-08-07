@@ -292,7 +292,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         SpiderBusted(grab);
                     }
-                    grab.Source.OnRopeCut(RopeCutReason.CandyReleased);
+                    grab.OnRopeCut(RopeCutReason.CandyReleased);
                 }
             }
             // candiesConnected elastic: not in `bungees`. When one of its candy endpoints is

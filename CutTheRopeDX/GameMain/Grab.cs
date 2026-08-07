@@ -262,6 +262,48 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gets the rectangle around this grab that a cut stroke may not cut inside, or
+        /// <see langword="null"/> when the whole rope is cuttable. A wheel and a gun each protect
+        /// their own tap zone so operating them cannot sever the rope they control.
+        /// </summary>
+        public CTRRectangle? CutExclusionZone
+        {
+            get
+            {
+                if (Wheel != null)
+                {
+                    return new CTRRectangle(
+                        x - WheelControl.TapHalfExtent, y - WheelControl.TapHalfExtent,
+                        WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f);
+                }
+
+                if (Source is GunSource)
+                {
+                    return new CTRRectangle(
+                        x - GUN_CUT_RADIUS, y - GUN_CUT_RADIUS,
+                        GUN_CUT_RADIUS * 2f, GUN_CUT_RADIUS * 2f);
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Reacts to this grab's own rope being cut. The single place a hook's components learn about
+        /// it; every cut site used to inline the spider and gun-cup handling itself.
+        /// </summary>
+        /// <param name="reason">Why the rope was cut.</param>
+        public void OnRopeCut(RopeCutReason reason)
+        {
+            if (Spider?.IsWalking == true)
+            {
+                Spider.Bust();
+            }
+
+            Source.OnRopeCut(reason);
+        }
+
+        /// <summary>
         /// Pins this grab's rope anchor to its own position. Five separate copies of these two lines
         /// used to exist - transporter, launcher, path mover, disc rotation and rail drag - and they
         /// were byte-identical.
