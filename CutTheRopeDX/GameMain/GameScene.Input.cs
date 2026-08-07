@@ -397,10 +397,8 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.wheel && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
+                if (bungee.Wheel?.TryBeginOperating(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
                 {
-                    bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
-                    bungee.wheelOperating = ti;
                     // A touch that lands on the wheel belongs to the wheel: without this, a wheel
                     // hook riding a manual belt let the same touch also start a belt drag.
                     return true;
@@ -545,10 +543,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj3 in bungees)
             {
                 Grab bungee = (Grab)obj3;
-                if (bungee.wheel && bungee.wheelOperating == ti)
-                {
-                    bungee.wheelOperating = -1;
-                }
+                bungee.Wheel?.EndOperating(ti);
                 bungee.Rail?.EndDrag(ti);
                 if (bungee.Mount is SuctionMount mount && bungee.Rope != null)
                 {
@@ -783,9 +778,9 @@ namespace CutTheRopeDX.GameMain
                 Grab grab2 = bungees[m];
                 if (grab2 != null)
                 {
-                    if (grab2.wheel && grab2.wheelOperating == ti)
+                    if (grab2.Wheel is WheelControl wheel && wheel.OperatingTouch == ti)
                     {
-                        grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
+                        wheel.HandleRotate(grab2, Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
                     if (grab2.Rail is RailMotion rail && rail.DraggingTouch == ti)

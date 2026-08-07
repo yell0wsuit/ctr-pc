@@ -57,7 +57,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public Grab()
         {
-            wheelOperating = -1;
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
             invisible = false;
@@ -74,64 +73,6 @@ namespace CutTheRopeDX.GameMain
         {
             Vector v3 = VectSub(v1, c);
             return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
-        }
-
-        /// <summary>
-        /// Records the starting touch point for wheel rotation.
-        /// </summary>
-        /// <param name="v">World-space touch point.</param>
-        public void HandleWheelTouch(Vector v)
-        {
-            lastWheelTouch = v;
-        }
-
-        /// <summary>
-        /// Rotates a wheel hook from the last touch point and rolls the attached rope when possible.
-        /// </summary>
-        /// <param name="v">Current world-space touch point.</param>
-        public void HandleWheelRotate(Vector v)
-        {
-            if (lastWheelTouch.X - v.X == 0f && lastWheelTouch.Y - v.Y == 0f)
-            {
-                return;
-            }
-            CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
-            float rotateDelta = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
-            if (rotateDelta > DEG_180)
-            {
-                rotateDelta -= DEG_360;
-            }
-            else if (rotateDelta < -DEG_180)
-            {
-                rotateDelta += DEG_360;
-            }
-            wheelImage2.rotation += rotateDelta;
-            wheelImage3.rotation += rotateDelta;
-            wheelHighlight.rotation += rotateDelta;
-            float maxWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMax;
-            float minWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMin;
-            rotateDelta = rotateDelta > 0f ? MIN(MAX(minWheelDelta, rotateDelta), maxWheelDelta) : MAX(MIN(0f - minWheelDelta, rotateDelta), 0f - maxWheelDelta);
-            float ropeLength = 0f;
-            if (Rope != null)
-            {
-                ropeLength = Rope.GetLength();
-            }
-            if (Rope != null)
-            {
-                if (rotateDelta > 0f)
-                {
-                    if (ropeLength < ActivePhysicsConstants.GrabRopeRollMaxLength)
-                    {
-                        Rope.Roll(rotateDelta);
-                    }
-                }
-                else if (rotateDelta != 0f && Rope.parts.Count > 3)
-                {
-                    _ = Rope.RollBack(0f - rotateDelta);
-                }
-                wheelDirty = true;
-            }
-            lastWheelTouch = v;
         }
 
         /// <inheritdoc />
@@ -178,16 +119,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
-            if (wheel && wheelDirty)
-            {
-                float wheelScaleLength = Rope == null ? 0f : Rope.GetLength() * 0.7f;
-                if (wheelScaleLength == 0f)
-                {
-                    wheelImage2.scaleX = wheelImage2.scaleY = 0f;
-                    return;
-                }
-                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2f, 1 - RT(wheelScaleLength / 1400f, wheelScaleLength / 700)));
-            }
+            Wheel?.UpdateArmScale(this);
         }
 
         /// <summary>
@@ -313,12 +245,12 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Bungee bungee = Rope;
 
-            if (wheel)
+            if (Wheel != null)
             {
-                wheelHighlight.visible = wheelOperating != -1;
-                wheelImage3.visible = wheelOperating == -1;
+                Wheel.Highlight.visible = Wheel.OperatingTouch != -1;
+                Wheel.Indicator.visible = Wheel.OperatingTouch == -1;
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                wheelImage.Draw();
+                Wheel.Base.Draw();
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
@@ -352,9 +284,9 @@ namespace CutTheRopeDX.GameMain
             {
                 Rail.Mover?.Draw();
             }
-            if (wheel)
+            if (Wheel != null)
             {
-                wheelImage2.Draw();
+                Wheel.Arm.Draw();
             }
             PostDraw();
         }
@@ -494,23 +426,22 @@ namespace CutTheRopeDX.GameMain
                 Source = new AutoRadiusSource(r, Vect(x, y));
             }
 
-            if (wheel)
+            if (Wheel is WheelControl wheelControl)
             {
-                wheelImage = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
-                wheelImage.anchor = wheelImage.parentAnchor = 18;
-                _ = AddChild(wheelImage);
-                wheelImage.visible = false;
-                wheelImage2 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadArm);
-                wheelImage2.passTransformationsToChilds = false;
-                wheelHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadHighlight);
-                wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
-                _ = wheelImage2.AddChild(wheelHighlight);
-                wheelImage3 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadIndicator);
-                wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
-                _ = wheelImage2.AddChild(wheelImage3);
-                _ = AddChild(wheelImage2);
-                wheelImage2.visible = false;
-                wheelDirty = true;
+                wheelControl.Base = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
+                wheelControl.Base.anchor = wheelControl.Base.parentAnchor = 18;
+                _ = AddChild(wheelControl.Base);
+                wheelControl.Base.visible = false;
+                wheelControl.Arm = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadArm);
+                wheelControl.Arm.passTransformationsToChilds = false;
+                wheelControl.Highlight = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadHighlight);
+                wheelControl.Highlight.anchor = wheelControl.Highlight.parentAnchor = 18;
+                _ = wheelControl.Arm.AddChild(wheelControl.Highlight);
+                wheelControl.Indicator = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadIndicator);
+                wheelControl.Indicator.anchor = wheelControl.Indicator.parentAnchor = wheelControl.Arm.anchor = wheelControl.Arm.parentAnchor = 18;
+                _ = wheelControl.Arm.AddChild(wheelControl.Indicator);
+                _ = AddChild(wheelControl.Arm);
+                wheelControl.Arm.visible = false;
             }
         }
 
@@ -800,26 +731,8 @@ namespace CutTheRopeDX.GameMain
             return s_grabCircleVerticesCache;
         }
 
-        /// <summary>Whether this grab uses the regulated wheel hook behavior.</summary>
-        public bool wheel;
-
-        /// <summary>Highlight visual shown while the wheel hook is being operated.</summary>
-        public Image wheelHighlight;
-
-        /// <summary>Base wheel hook visual.</summary>
-        public Image wheelImage;
-
-        /// <summary>Wheel hook arm visual.</summary>
-        public Image wheelImage2;
-
-        /// <summary>Wheel hook indicator visual.</summary>
-        public Image wheelImage3;
-
-        /// <summary>Identifier for the active wheel touch, or -1 when idle.</summary>
-        public int wheelOperating;
-
-        /// <summary>Last touch point used to compute wheel rotation deltas.</summary>
-        public Vector lastWheelTouch;
+        /// <summary>Gets this grab's wheel, or <see langword="null"/> when it has none.</summary>
+        public WheelControl Wheel { get; internal set; }
 
         /// <summary>Gets the object that supplies this grab's position.</summary>
         public AnchorMotion Motion { get; internal set; } = new StaticMotion();
@@ -841,9 +754,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether the spider should activate on the next update.</summary>
         public bool shouldActivate;
-
-        /// <summary>Whether the wheel arm scale needs to be recomputed.</summary>
-        public bool wheelDirty;
 
         /// <summary>Whether this grab moves as a launcher.</summary>
         public bool launcher;

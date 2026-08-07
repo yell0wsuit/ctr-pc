@@ -321,7 +321,7 @@ namespace CutTheRopeDX.GameMain
                         bool flag = false;
                         if (r == null)
                         {
-                            flag = (!grab.wheel || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - 110f, grab.y - 110f, 220f, 220f)) &&
+                            flag = (grab.Wheel == null || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - WheelControl.TapHalfExtent, grab.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)) &&
                                    (grab.GunSource == null || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
                                    LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
                         }
@@ -659,7 +659,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
                 float distanceToConstraint = VectDistance(constraintedPoint.pos, v);
-                if (distanceToConstraint < closestDistance && (!g.wheel || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                if (distanceToConstraint < closestDistance && (g.Wheel == null || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - WheelControl.TapHalfExtent, g.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)))
                 {
                     closestDistance = distanceToConstraint;
                     result = rope;

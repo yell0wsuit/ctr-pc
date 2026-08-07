@@ -1625,7 +1625,7 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj22 in bungees)
                 {
                     Grab bungee5 = (Grab)obj22;
-                    if (bungee5.wheel && PointInRect(p.X, p.Y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
+                    if (bungee5.Wheel != null && PointInRect(p.X, p.Y, bungee5.x - WheelControl.TapHalfExtent, bungee5.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f))
                     {
                         flag12 = true;
                         break;

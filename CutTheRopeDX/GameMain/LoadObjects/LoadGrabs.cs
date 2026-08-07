@@ -53,10 +53,13 @@ namespace CutTheRopeDX.GameMain
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
-            grab.wheel = wheel;
             // A grab is either a wheel or a gun, never both; malformed XML with both set
             // resolves to the wheel (PD 2026-07-24).
-            if (gun && !wheel)
+            if (wheel)
+            {
+                grab.Wheel = new WheelControl();
+            }
+            else if (gun)
             {
                 grab.Source = new GunSource();
             }
