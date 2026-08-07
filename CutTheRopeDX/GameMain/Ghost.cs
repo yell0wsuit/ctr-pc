@@ -248,7 +248,7 @@ namespace CutTheRopeDX.GameMain
                 case 4:
                     grab = new GhostGrab().InitWithPosition(x, y);
                     grab.Wheel = null;
-                    grab.spider = null;
+                    grab.Spider = null;
                     grab.SetRadius(grabRadius);
                     if (grabRadius == -1f)
                     {

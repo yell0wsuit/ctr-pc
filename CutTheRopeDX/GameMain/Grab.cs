@@ -123,68 +123,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Updates spider movement along the attached rope.
-        /// </summary>
-        /// <param name="delta">Elapsed time in seconds since the previous update.</param>
-        public void UpdateSpider(float delta)
-        {
-            if (hasSpider && shouldActivate)
-            {
-                shouldActivate = false;
-                spiderActive = true;
-                CTRSoundMgr.PlaySound(Resources.Snd.SpiderActivate);
-                spider.PlayTimeline(0);
-            }
-            if (!hasSpider || !spiderActive)
-            {
-                return;
-            }
-            if (spider.GetCurrentTimelineIndex() != 0)
-            {
-                spiderPos += delta * ActivePhysicsConstants.SpiderTraversalSpeed;
-            }
-            float traversedLength = 0f;
-            bool flag = false;
-            if (Rope != null)
-            {
-                int i = 0;
-                while (i < Rope.drawPtsCount)
-                {
-                    Vector vector = Vect(Rope.drawPts[i], Rope.drawPts[i + 1]);
-                    Vector vector2 = Vect(Rope.drawPts[i + 2], Rope.drawPts[i + 3]);
-                    float segmentLength = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
-                    if (spiderPos >= traversedLength && (spiderPos < traversedLength + segmentLength || i > Rope.drawPtsCount - 3))
-                    {
-                        float segmentProgress = spiderPos - traversedLength;
-                        Vector v = VectSub(vector2, vector);
-                        v = VectMult(v, segmentProgress / segmentLength);
-                        spider.x = vector.X + v.X;
-                        spider.y = vector.Y + v.Y;
-                        if (i > Rope.drawPtsCount - 3)
-                        {
-                            flag = true;
-                        }
-                        if (spider.GetCurrentTimelineIndex() != 0)
-                        {
-                            spider.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(v)) + DEG_270;
-                            break;
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        traversedLength += segmentLength;
-                        i += 2;
-                    }
-                }
-            }
-            if (flag)
-            {
-                spiderPos = -1f;
-            }
-        }
-
-        /// <summary>
         /// Draws the hook background layer and optional grab-radius outline.
         /// </summary>
         public virtual void DrawBack()
@@ -292,24 +230,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Draws the spider attachment animation.
-        /// </summary>
-        public void DrawSpider()
-        {
-            spider.Draw();
-        }
-
-        /// <summary>
         /// Attaches a rope to this grab and activates spider startup when needed.
         /// </summary>
         /// <param name="r">Rope to attach.</param>
         public void SetRope(Bungee r)
         {
             _ = Attachment.TryAttach(r);
-            if (hasSpider)
-            {
-                shouldActivate = true;
-            }
+            Spider?.Arm(ropeAttachedToCandy: true);
         }
 
         /// <summary>
@@ -533,26 +460,21 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(bee);
         }
 
-        /// <summary>
-        /// Configures spider support for this grab.
-        /// </summary>
-        /// <param name="s">Whether this grab has an attached spider.</param>
-        public void SetSpider(bool s)
+        /// <summary>Attaches a spider to this grab.</summary>
+        public void SetSpider()
         {
-            hasSpider = s;
-            shouldActivate = false;
-            spiderActive = false;
-            spider = Animation_createWithResID(Resources.Img.ObjSpider);
-            spider.DoRestoreCutTransparency();
-            spider.anchor = 18;
-            spider.x = x;
-            spider.y = y;
-            spider.visible = false;
-            spider.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
-            spider.SetDelayatIndexforAnimation(0.4f, 5, 0);
-            spider.AddAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
-            spider.SwitchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
-            _ = AddChild(spider);
+            Animation spiderAnimation = Animation_createWithResID(Resources.Img.ObjSpider);
+            spiderAnimation.DoRestoreCutTransparency();
+            spiderAnimation.anchor = 18;
+            spiderAnimation.x = x;
+            spiderAnimation.y = y;
+            spiderAnimation.visible = false;
+            spiderAnimation.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
+            spiderAnimation.SetDelayatIndexforAnimation(0.4f, 5, 0);
+            spiderAnimation.AddAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
+            spiderAnimation.SwitchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
+            _ = AddChild(spiderAnimation);
+            Spider = new SpiderRider { Animation = spiderAnimation };
         }
 
         /// <summary>
@@ -613,8 +535,8 @@ namespace CutTheRopeDX.GameMain
                 DestroyRope();
                 bee?.Dispose();
                 bee = null;
-                spider?.Dispose();
-                spider = null;
+                Spider?.Animation?.Dispose();
+                Spider = null;
             }
             base.Dispose(disposing);
         }
@@ -740,20 +662,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets this grab's rail, or <see langword="null"/> when it has none.</summary>
         public RailMotion Rail => Motion as RailMotion;
 
-        /// <summary>Whether this grab has a spider attachment.</summary>
-        public bool hasSpider;
-
-        /// <summary>Whether the spider attachment is currently walking along the rope.</summary>
-        public bool spiderActive;
-
-        /// <summary>Spider attachment animation.</summary>
-        public Animation spider;
-
-        /// <summary>Current spider traversal distance along the rope.</summary>
-        public float spiderPos;
-
-        /// <summary>Whether the spider should activate on the next update.</summary>
-        public bool shouldActivate;
+        /// <summary>Gets this grab's spider, or <see langword="null"/> when it has none.</summary>
+        public SpiderRider Spider { get; internal set; }
 
         /// <summary>Whether this grab moves as a launcher.</summary>
         public bool launcher;

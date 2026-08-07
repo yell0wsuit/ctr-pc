@@ -288,7 +288,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         rope.hideTailParts = true;
                     }
-                    if (grab.hasSpider && grab.spiderActive)
+                    if (grab.Spider?.IsWalking == true)
                     {
                         SpiderBusted(grab);
                     }

@@ -342,7 +342,7 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
                             ropesCutCount++;
-                            if (grab.hasSpider && grab.spiderActive)
+                            if (grab.Spider?.IsWalking == true)
                             {
                                 SpiderBusted(grab);
                             }
@@ -501,28 +501,28 @@ namespace CutTheRopeDX.GameMain
                 CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderFall);
-            g.hasSpider = false;
+            g.Spider.Bust();
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)g.Spider.Animation.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)g.Spider.Animation.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y - 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
-            image.x = g.spider.x;
-            image.y = g.spider.y;
+            image.x = g.Spider.Animation.x;
+            image.y = g.Spider.Animation.y;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
@@ -548,14 +548,14 @@ namespace CutTheRopeDX.GameMain
                         rope.SetCut(rope.parts.Count - 2);
                         rope.forceWhite = false;
                     }
-                    if (grab.hasSpider && grab.spiderActive && sg != grab)
+                    if (grab.Spider?.IsWalking == true && sg != grab)
                     {
                         SpiderBusted(grab);
                     }
                     grab.Source.OnRopeCut(RopeCutReason.Severed);
                 }
             }
-            sg.hasSpider = false;
+            sg.Spider.Win();
             // spiderTookCandy = true;
             // The spider takes whichever body its rope ends on - a whole candy or one split half. A
             // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
@@ -576,20 +576,20 @@ namespace CutTheRopeDX.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
-            image.x = sg.spider.x;
-            image.y = sg.spider.y - 10f;
+            image.x = sg.Spider.Animation.x;
+            image.y = sg.Spider.Animation.y - 10f;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);

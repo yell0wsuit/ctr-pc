@@ -207,10 +207,10 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
-                    if (grab.hasSpider && !grab.spiderActive)
+                    if (grab.Spider is SpiderRider idleRider && idleRider.IsAttached && !idleRider.IsWalking)
                     {
-                        grab.spider.x = grab.x;
-                        grab.spider.y = grab.y;
+                        idleRider.Animation.x = grab.x;
+                        idleRider.Animation.y = grab.y;
                     }
 
                     bool shouldProcessGrabRadius = true;
@@ -220,25 +220,22 @@ namespace CutTheRopeDX.GameMain
                         if (grab.Attachment.IsSimulated)
                         {
                             UpdateRopeWithAntCarryOverride(rope, delta);
-                            if (grab.hasSpider)
+                            if (grab.Spider is SpiderRider rider && rider.IsAttached)
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
                                     // Don't let spider activate if rope is not attached to candy
-                                    if (grab.shouldActivate && !IsSpiderGrabbableCandyPoint(rope.tail))
+                                    if (rider.State == SpiderRiderState.Arming && !IsSpiderGrabbableCandyPoint(rope.tail))
                                     {
-                                        grab.shouldActivate = false;
+                                        rider.Arm(ropeAttachedToCandy: false);
                                     }
-                                    grab.UpdateSpider(delta);
+                                    rider.Update(grab, delta);
                                 }
-                                if (grab.spiderPos == -1f)
+                                // Only let spider win if rope is attached to candy
+                                if (rider.HasReachedCandy && IsSpiderGrabbableCandyPoint(rope.tail))
                                 {
-                                    // Only let spider win if rope is attached to candy
-                                    if (IsSpiderGrabbableCandyPoint(rope.tail))
-                                    {
-                                        SpiderWon(grab);
-                                        break;
-                                    }
+                                    SpiderWon(grab);
+                                    break;
                                 }
                             }
                         }

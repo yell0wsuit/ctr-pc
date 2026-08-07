@@ -317,9 +317,9 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungeeSpider in bungees)
             {
                 Grab bungee3 = (Grab)bungeeSpider;
-                if (bungee3.hasSpider)
+                if (bungee3.Spider is SpiderRider drawnRider && drawnRider.IsAttached)
                 {
-                    bungee3.DrawSpider();
+                    drawnRider.Animation.Draw();
                 }
             }
             aniPool.Draw();

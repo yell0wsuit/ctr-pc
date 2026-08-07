@@ -133,10 +133,10 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(GrabX, GrabY, radius: 200f, spider: true, moveLength: -1f));
 
             Grab hook = scene.Grabs()[0];
-            Assert.False(hook.spiderActive);
+            Assert.False(hook.Spider.IsWalking);
 
             Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
-            Assert.True(Interaction.StepUntil(scene, () => hook.spiderActive));
+            Assert.True(Interaction.StepUntil(scene, () => hook.Spider.IsWalking));
         }
 
         /// <summary>

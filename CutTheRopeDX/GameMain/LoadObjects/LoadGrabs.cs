@@ -69,7 +69,10 @@ namespace CutTheRopeDX.GameMain
             }
             grab.invisible = invisible;
             grab.cutOnlyByAxe = !breakable;
-            grab.SetSpider(spider);
+            if (spider)
+            {
+                grab.SetSpider();
+            }
             grab.ParseMover(xmlNode);
             if (grab.mover != null)
             {
