@@ -147,6 +147,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../alsoft.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
   <!--
     macOS: codesign dylibs and the app bundle after build.
     This must be done to avoid app crashes when opening (thanks macOS).
