@@ -130,6 +130,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (grab != null && grab.GetCurrentTimelineIndex() == 11 && grab.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
+                hostScene?.UnregisterRope(grab.Rope);
                 grab.DestroyRope();
                 _ = gsBungees.Remove(grab);
                 grab = null;
@@ -185,6 +186,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (grab.GetCurrentTimelineIndex() == 11)
                 {
+                    hostScene?.UnregisterRope(grab.Rope);
                     grab.DestroyRope();
                     _ = gsBungees.Remove(grab);
                     grab = null;
@@ -271,6 +273,7 @@ namespace CutTheRopeDX.GameMain
                                 ropeLength);
                             autoRope.bungeeAnchor.pin = autoRope.bungeeAnchor.pos;
                             grab.SetRope(autoRope);
+                            hostScene?.RegisterRope(autoRope, grab);
                         }
                     }
                     gsBungees.Add(grab);

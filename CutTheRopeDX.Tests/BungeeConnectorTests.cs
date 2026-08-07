@@ -29,6 +29,11 @@ namespace CutTheRopeDX.Tests
             GameScene scene = (GameScene)RuntimeHelpers.GetUninitializedObject(typeof(GameScene));
             typeof(GameScene).GetField("bungees", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(scene, new List<Grab>());
             typeof(GameScene).GetField("candyConnector", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(scene, connector);
+            // The rope sweeps read the registry, not the candyConnector field, so index it the way
+            // the loader does.
+            RopeRegistry ropes = new();
+            ropes.RegisterConnector(connector);
+            typeof(GameScene).GetField("ropes", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(scene, ropes);
             return scene;
         }
 

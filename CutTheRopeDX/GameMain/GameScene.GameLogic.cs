@@ -270,46 +270,52 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds a rope a ghost apparition just conjured to the scene's rope index, so the merged
+        /// cut, axe and release sweeps see it like any other hook rope.
+        /// </summary>
+        /// <param name="rope">The rope that was created.</param>
+        /// <param name="owner">The hook that owns it.</param>
+        internal void RegisterRope(Bungee rope, Grab owner)
+        {
+            ropes.Register(rope, owner);
+        }
+
+        /// <summary>Drops a rope from the scene's rope index before it is disposed.</summary>
+        /// <param name="rope">The rope being destroyed.</param>
+        internal void UnregisterRope(Bungee rope)
+        {
+            ropes.Unregister(rope);
+        }
+
         /// <summary>Cuts/hides all uncut ropes whose tail is the given candy point.</summary>
         public void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
         {
-            int grabCount = bungees.Count;
-            for (int i = 0; i < grabCount; i++)
+            // One pass over every rope: RopeEntry knows which end a released candy sits on, which is
+            // the connector's one asymmetry - a hook's rope only ever holds a candy at its tail.
+            foreach (RopeEntry entry in ropes.All)
             {
-                Grab grab = bungees[i];
-                Bungee rope = grab.Rope;
-                if (rope != null && rope.tail == candyPoint)
+                int? cutPart = entry.CutPartForCandy(candyPoint);
+                if (cutPart == null)
                 {
-                    if (rope.cut == -1)
-                    {
-                        rope.SetCut(rope.parts.Count - 2);
-                    }
-                    else
-                    {
-                        rope.hideTailParts = true;
-                    }
-                    if (grab.Spider?.IsWalking == true)
-                    {
-                        SpiderBusted(grab);
-                    }
-                    grab.OnRopeCut(RopeCutReason.CandyReleased);
+                    continue;
                 }
-            }
-            // candiesConnected elastic: not in `bungees`. When one of its candy endpoints is
-            // released, cut it at the matching end (tail end vs head end), like the engine's
-            // releaseRopeForTheCandy. If already cut, hide the dangling tail segments.
-            if (candyConnector != null
-                && (candyPoint == candyConnector.tail || candyPoint == candyConnector.bungeeAnchor))
-            {
-                if (candyConnector.cut == -1)
+
+                if (entry.Rope.cut == -1)
                 {
-                    int cutPart = candyPoint == candyConnector.tail ? candyConnector.parts.Count - 2 : 0;
-                    candyConnector.SetCut(cutPart);
+                    entry.Rope.SetCut(cutPart.Value);
                 }
                 else
                 {
-                    candyConnector.hideTailParts = true;
+                    entry.Rope.hideTailParts = true;
                 }
+
+                if (entry.Owner?.Spider?.IsWalking == true)
+                {
+                    SpiderBusted(entry.Owner);
+                }
+
+                entry.Owner?.OnRopeCut(RopeCutReason.CandyReleased);
             }
         }
 

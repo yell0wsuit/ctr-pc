@@ -1659,7 +1659,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="grab">The radius grab looking for a body.</param>
         /// <param name="body">The candidate body.</param>
         /// <returns><see langword="true"/> when a rope was created.</returns>
-        private static bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
+        private bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
         {
             AutoRadiusSource source = grab.RadiusSource;
             if (source == null || !source.CanAttach || !source.InRange(Vect(grab.x, grab.y), body.Point.pos))
@@ -1678,6 +1678,7 @@ namespace CutTheRopeDX.GameMain
 
             source.BeginFade();
             grab.SetRope(bungee);
+            ropes.Register(bungee, grab);
 
             CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
             if (grab.mover != null)

@@ -53,8 +53,6 @@ namespace CutTheRopeDX.GameMain
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
-            // A grab is either a wheel or a gun, never both; malformed XML with both set
-            // resolves to the wheel (PD 2026-07-24).
             if (wheel)
             {
                 grab.Wheel = new WheelControl();
@@ -154,6 +152,7 @@ namespace CutTheRopeDX.GameMain
                         bungee.SetCutOnlyByAxe();
                     }
                     grab.SetRope(bungee);
+                    ropes.Register(bungee, grab);
                     if (grab.Mount?.IsMounted == false)
                     {
                         grab.Mount.Kick(grab);

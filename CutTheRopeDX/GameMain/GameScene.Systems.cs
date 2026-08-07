@@ -308,78 +308,30 @@ namespace CutTheRopeDX.GameMain
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int ropesCutCount = 0;
-            for (int i = 0; i < bungees.Count; i++)
+            // One pass over every rope in the level: a hook's rope and the candy connector are cut
+            // by the same test, they only differ in whether an owning hook reacts afterwards.
+            foreach (RopeEntry entry in ropes.All)
             {
-                Grab grab = bungees[i];
-                Bungee rope = grab.Rope;
-                if (grab.Attachment.IsIntact)
+                Bungee rope = entry.Rope;
+                if (rope.cut != -1 || rope.cutOnlyByAxe)
                 {
-                    for (int j = 0; j < rope.parts.Count - 1; j++)
-                    {
-                        ConstraintedPoint constraintedPoint = rope.parts[j];
-                        ConstraintedPoint constraintedPoint2 = rope.parts[j + 1];
-                        bool flag = false;
-                        if (r == null)
-                        {
-                            CTRRectangle? exclusion = grab.CutExclusionZone;
-                            bool outsideExclusion = exclusion == null
-                                || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, exclusion.Value.x, exclusion.Value.y, exclusion.Value.w, exclusion.Value.h);
-                            flag = outsideExclusion
-                                && LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
-                        }
-                        else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
-                        {
-                            float minX = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
-                            float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
-                            float x1r = MaxOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
-                            float y1b = MaxOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
-                            flag = RectInRect(minX, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
-                        }
-                        if (flag)
-                        {
-                            // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
-                            // finger/razor never cuts them.
-                            if (rope.cutOnlyByAxe)
-                            {
-                                continue;
-                            }
-                            ropesCutCount++;
-                            if (grab.Spider?.IsWalking == true)
-                            {
-                                SpiderBusted(grab);
-                            }
-                            string ropeSound = rope.relaxed switch
-                            {
-                                0 => Resources.Snd.RopeBleak1,
-                                1 => Resources.Snd.RopeBleak2,
-                                2 => Resources.Snd.RopeBleak3,
-                                _ => Resources.Snd.RopeBleak4
-                            };
-                            CTRSoundMgr.PlaySound(ropeSound);
-                            rope.SetCut(j);
-                            if (im)
-                            {
-                                rope.cutTime = 0f;
-                                rope.RemovePart(j);
-                            }
-                            grab.OnRopeCut(RopeCutReason.Severed);
-                            return ropesCutCount;
-                        }
-                    }
+                    // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
+                    // finger/razor never cuts them.
+                    continue;
                 }
-            }
-            // candiesConnected elastic: not in `bungees`, so test it with the same per-segment cut.
-            // A chain connector (candiesConnectedBreakable="false") is axe-only, never finger-cut.
-            if (candyConnector != null && candyConnector.cut == -1 && !candyConnector.cutOnlyByAxe)
-            {
-                for (int j = 0; j < candyConnector.parts.Count - 1; j++)
+
+                for (int j = 0; j < rope.parts.Count - 1; j++)
                 {
-                    ConstraintedPoint a = candyConnector.parts[j];
-                    ConstraintedPoint b = candyConnector.parts[j + 1];
+                    ConstraintedPoint a = rope.parts[j];
+                    ConstraintedPoint b = rope.parts[j + 1];
                     bool hit;
                     if (r == null)
                     {
-                        hit = LineInLine(v1.X, v1.Y, v2.X, v2.Y, a.pos.X, a.pos.Y, b.pos.X, b.pos.Y);
+                        CTRRectangle? exclusion = entry.Owner?.CutExclusionZone;
+                        bool outsideExclusion = exclusion == null
+                            || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, exclusion.Value.x, exclusion.Value.y, exclusion.Value.w, exclusion.Value.h);
+                        hit = outsideExclusion
+                            && LineInLine(v1.X, v1.Y, v2.X, v2.Y, a.pos.X, a.pos.Y, b.pos.X, b.pos.Y);
                     }
                     else if (a.prevPos.X != UNDEFINED_COORDINATE)
                     {
@@ -393,25 +345,34 @@ namespace CutTheRopeDX.GameMain
                     {
                         hit = false;
                     }
-                    if (hit)
+
+                    if (!hit)
                     {
-                        ropesCutCount++;
-                        string ropeSound = candyConnector.relaxed switch
-                        {
-                            0 => Resources.Snd.RopeBleak1,
-                            1 => Resources.Snd.RopeBleak2,
-                            2 => Resources.Snd.RopeBleak3,
-                            _ => Resources.Snd.RopeBleak4
-                        };
-                        CTRSoundMgr.PlaySound(ropeSound);
-                        candyConnector.SetCut(j);
-                        if (im)
-                        {
-                            candyConnector.cutTime = 0f;
-                            candyConnector.RemovePart(j);
-                        }
-                        return ropesCutCount;
+                        continue;
                     }
+
+                    ropesCutCount++;
+                    if (entry.Owner?.Spider?.IsWalking == true)
+                    {
+                        SpiderBusted(entry.Owner);
+                    }
+                    string ropeSound = rope.relaxed switch
+                    {
+                        0 => Resources.Snd.RopeBleak1,
+                        1 => Resources.Snd.RopeBleak2,
+                        2 => Resources.Snd.RopeBleak3,
+                        _ => Resources.Snd.RopeBleak4
+                    };
+                    CTRSoundMgr.PlaySound(ropeSound);
+                    rope.SetCut(j);
+                    if (im)
+                    {
+                        rope.cutTime = 0f;
+                        rope.RemovePart(j);
+                    }
+
+                    entry.Owner?.OnRopeCut(RopeCutReason.Severed);
+                    return ropesCutCount;
                 }
             }
             return ropesCutCount;
@@ -431,27 +392,19 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                for (int i = 0; i < bungees.Count; i++)
+                // One pass over every chain in the level - hook chains and a chain connector alike.
+                // At most one chain per axe swing, which is what the grab loop's break already did.
+                foreach (RopeEntry entry in ropes.All)
                 {
-                    Grab grab = bungees[i];
-                    Bungee rope = grab.Rope;
-                    if (rope == null || rope.cut != -1 || !rope.cutOnlyByAxe)
+                    if (entry.Rope.cut != -1 || !entry.Rope.cutOnlyByAxe)
                     {
                         continue;
                     }
 
-                    if (TryCutAxeOnlyChain(axeCtx, rope))
+                    if (TryCutAxeOnlyChain(axeCtx, entry.Rope))
                     {
                         break;
                     }
-                }
-
-                // candiesConnected elastic: not in `bungees`. The axe also severs a chain connector
-                // (candiesConnectedBreakable="false"), matching the original cutTheUnbreakable's
-                // separate candyConnector block.
-                if (candyConnector != null && candyConnector.cut == -1 && candyConnector.cutOnlyByAxe)
-                {
-                    _ = TryCutAxeOnlyChain(axeCtx, candyConnector);
                 }
             }
         }

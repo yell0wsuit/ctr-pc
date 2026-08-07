@@ -763,6 +763,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private List<Grab> bungees;
 
+        /// <summary>Index over every rope in the level, hook ropes and the candy connector alike.</summary>
+        private RopeRegistry ropes;
+
         /// <summary>The elastic rope joining the two candies in a candiesConnected level, or null.</summary>
         private Bungee candyConnector;
 
