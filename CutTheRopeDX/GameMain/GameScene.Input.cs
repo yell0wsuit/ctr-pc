@@ -703,11 +703,7 @@ namespace CutTheRopeDX.GameMain
                                 Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.X;
                                 grab.y = vector3.Y;
-                                if (grab.Rope != null)
-                                {
-                                    grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                                    grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
-                                }
+                                grab.SyncRopeAnchor();
                                 grab.ReCalcCircle();
                             }
                         }
@@ -786,11 +782,7 @@ namespace CutTheRopeDX.GameMain
                     if (grab2.Rail is RailMotion rail && rail.DraggingTouch == ti)
                     {
                         rail.DragTo(grab2, tx + camera.pos.X, ty + camera.pos.Y);
-                        if (grab2.Rope != null)
-                        {
-                            grab2.Rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
-                            grab2.Rope.bungeeAnchor.pin = grab2.Rope.bungeeAnchor.pos;
-                        }
+                        grab2.SyncRopeAnchor();
                         grab2.ReCalcCircle();
                         return true;
                     }

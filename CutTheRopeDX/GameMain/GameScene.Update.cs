@@ -177,11 +177,7 @@ namespace CutTheRopeDX.GameMain
                     Bungee rope = grab.Rope;
                     if (grab.mover != null)
                     {
-                        if (grab.Rope != null)
-                        {
-                            grab.Rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                            grab.Rope.bungeeAnchor.pin = grab.Rope.bungeeAnchor.pos;
-                        }
+                        grab.SyncRopeAnchor();
                         grab.ReCalcCircle();
                     }
 
@@ -1675,7 +1671,7 @@ namespace CutTheRopeDX.GameMain
                 null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y,
                 source.Radius + ActivePhysicsConstants.CandyGrabPadding);
 
-            if (grab.cutOnlyByAxe)
+            if (grab.IsChainAnchor)
             {
                 bungee.SetCutOnlyByAxe();
             }

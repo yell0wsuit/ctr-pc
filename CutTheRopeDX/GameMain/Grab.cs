@@ -59,7 +59,6 @@ namespace CutTheRopeDX.GameMain
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
-            invisible = false;
         }
 
         /// <summary>
@@ -83,15 +82,12 @@ namespace CutTheRopeDX.GameMain
             Mount?.SyncPositions(this);
             // Transported grabs keep their rope anchor pinned to grab position
             // regardless of launcher state.
-            if (IsDrawnByTransporter && Rope != null)
+            if (IsDrawnByTransporter || launcher)
             {
-                Rope.bungeeAnchor.pos = Vect(x, y);
-                Rope.bungeeAnchor.pin = Rope.bungeeAnchor.pos;
+                SyncRopeAnchor();
             }
-            if (launcher && Rope != null)
+            if (launcher)
             {
-                Rope.bungeeAnchor.pos = Vect(x, y);
-                Rope.bungeeAnchor.pin = Rope.bungeeAnchor.pos;
                 if (launcherIncreaseSpeed)
                 {
                     if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
@@ -127,7 +123,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public virtual void DrawBack()
         {
-            if (invisible)
+            if (IsInvisible)
             {
                 return;
             }
@@ -170,7 +166,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Draw()
         {
-            if (invisible)
+            if (IsInvisible)
             {
                 return;
             }
@@ -266,6 +262,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Pins this grab's rope anchor to its own position. Five separate copies of these two lines
+        /// used to exist - transporter, launcher, path mover, disc rotation and rail drag - and they
+        /// were byte-identical.
+        /// </summary>
+        public void SyncRopeAnchor()
+        {
+            Bungee attached = Rope;
+            if (attached == null)
+            {
+                return;
+            }
+
+            attached.bungeeAnchor.pos = Vect(x, y);
+            attached.bungeeAnchor.pin = attached.bungeeAnchor.pos;
+        }
+
+        /// <summary>
         /// Recomputes the cached grab-radius circle vertices.
         /// </summary>
         public void ReCalcCircle()
@@ -338,9 +351,9 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 // A chain auto-hook (breakable="false") uses the dedicated chain auto-hook atlas.
-                string autoTexture = cutOnlyByAxe ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHook;
-                int autoBackQuad = cutOnlyByAxe ? HookAutoChainBackQuad : HookAutoBackQuad;
-                int autoFrontQuad = cutOnlyByAxe ? HookAutoChainFrontQuad : HookAutoFrontQuad;
+                string autoTexture = IsChainAnchor ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHook;
+                int autoBackQuad = IsChainAnchor ? HookAutoChainBackQuad : HookAutoBackQuad;
+                int autoFrontQuad = IsChainAnchor ? HookAutoChainFrontQuad : HookAutoFrontQuad;
                 back = Image_createWithResIDQuad(autoTexture, autoBackQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
@@ -628,13 +641,19 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets this grab's radius source, or <see langword="null"/> when it has none.</summary>
         public AutoRadiusSource RadiusSource => Source as AutoRadiusSource;
 
+        /// <summary>Gets or sets this grab's independent traits.</summary>
+        public HookModifiers Modifiers { get; internal set; } = HookModifiers.None;
+
         /// <summary>
-        /// Whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain hook
-        /// sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs (those
-        /// with a radius) this drives the <see cref="Resources.Img.ObjHookAutoChain"/>
-        /// variant and is applied to the rope created on attach.
+        /// Gets whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain
+        /// hook sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs
+        /// (those with a radius) this drives the <see cref="Resources.Img.ObjHookAutoChain"/> variant
+        /// and is applied to the rope created on attach.
         /// </summary>
-        public bool cutOnlyByAxe;
+        public bool IsChainAnchor => Modifiers.HasFlag(HookModifiers.ChainAnchor);
+
+        /// <summary>Gets whether this grab should skip drawing.</summary>
+        public bool IsInvisible => Modifiers.HasFlag(HookModifiers.Invisible);
 
         /// <summary>Reusable vertex buffer used when drawing grab radius circles.</summary>
         private static VertexPositionColor[] s_grabCircleVerticesCache;
@@ -694,9 +713,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets this grab's suction mount, or <see langword="null"/> when it has none.</summary>
         public SuctionMount Mount { get; internal set; }
-
-        /// <summary>Whether this grab should skip drawing.</summary>
-        public bool invisible;
 
         /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;

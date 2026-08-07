@@ -67,8 +67,16 @@ namespace CutTheRopeDX.GameMain
             {
                 grab.Mount = new SuctionMount(kicked);
             }
-            grab.invisible = invisible;
-            grab.cutOnlyByAxe = !breakable;
+            HookModifiers modifiers = HookModifiers.None;
+            if (invisible)
+            {
+                modifiers |= HookModifiers.Invisible;
+            }
+            if (!breakable)
+            {
+                modifiers |= HookModifiers.ChainAnchor;
+            }
+            grab.Modifiers = modifiers;
             if (spider)
             {
                 grab.SetSpider();
