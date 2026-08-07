@@ -725,7 +725,7 @@ namespace CutTheRopeDX.GameMain
         public int raState;
 
         /// <summary>Time bonus score used by the result countdown.</summary>
-        public int timeBonus;
+        public float timeBonus;
 
         /// <summary>Star bonus score used by the result countdown.</summary>
         public int starBonus;
