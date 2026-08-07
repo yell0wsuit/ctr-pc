@@ -185,31 +185,25 @@ namespace CutTheRopeDX.GameMain
                         grab.ReCalcCircle();
                     }
 
-                    // Process stickTimer for kickable grabs
-                    if (rope != null && grab.stickTimer != -1f)
+                    // A detached suction cup that has been trying to stick for long enough re-sticks,
+                    // but only where there is wall to stick to.
+                    if (rope != null && grab.Mount is SuctionMount mount && mount.TickSticking(delta))
                     {
-                        grab.stickTimer += delta;
-                        if (grab.stickTimer > Grab.STICK_DELAY)
+                        if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
                         {
-                            if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
+                            mount.Remount(grab);
+                            grab.UpdateKickState();
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
+                            int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                            Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                            if (wallClimberCount >= 50)
                             {
-                                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
-                                grab.kicked = false;
-                                rope.bungeeAnchor.SetWeight(0.02f);
-                                grab.UpdateKickState();
-                                CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
-                                int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
-                                Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
-                                if (wallClimberCount >= 50)
-                                {
-                                    CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
-                                }
-                                if (wallClimberCount >= 400)
-                                {
-                                    CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
-                                }
+                                CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
                             }
-                            grab.stickTimer = -1f;
+                            if (wallClimberCount >= 400)
+                            {
+                                CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                            }
                         }
                     }
 
@@ -805,8 +799,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab bungee4 = (Grab)obj9;
                     // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
-                    bool discBindable = bungee4.Motion.FollowsPlatform
-                        && !(bungee4.kickable && bungee4.kicked)
+                    bool discBindable = (bungee4.Mount?.FollowsPlatform ?? bungee4.Motion.FollowsPlatform)
                         && bungee4 is not IGhostApparition;
                     if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
@@ -1313,7 +1306,7 @@ namespace CutTheRopeDX.GameMain
             {
                 foreach (Grab grab in bungees)
                 {
-                    if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.Rope != null)
+                    if (grab != null && grab.Mount?.IsMounted == false && grab.y > waterLayer.y && grab.Rope != null)
                     {
                         float damping = ActivePhysicsConstants.WaterDamping;
                         ConstraintedPoint anchor = grab.Rope.bungeeAnchor;

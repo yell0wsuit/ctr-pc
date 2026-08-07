@@ -224,7 +224,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungee in bungees)
             {
                 Grab grab = (Grab)bungee;
-                if (grab?.Rope != null && grab.kickable && grab.kicked)
+                if (grab?.Rope != null && grab.Mount?.IsMounted == false)
                 {
                     HandlePumpFlowPtSkin(p, grab.Rope.bungeeAnchor, grab);
                 }

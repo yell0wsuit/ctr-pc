@@ -60,8 +60,10 @@ namespace CutTheRopeDX.GameMain
             {
                 grab.Source = new GunSource();
             }
-            grab.kickable = kickable;
-            grab.kicked = kicked;
+            if (kickable)
+            {
+                grab.Mount = new SuctionMount(kicked);
+            }
             grab.invisible = invisible;
             grab.cutOnlyByAxe = !breakable;
             grab.SetSpider(spider);
@@ -138,10 +140,9 @@ namespace CutTheRopeDX.GameMain
                         bungee.SetCutOnlyByAxe();
                     }
                     grab.SetRope(bungee);
-                    if (grab.kicked)
+                    if (grab.Mount?.IsMounted == false)
                     {
-                        bungee.bungeeAnchor.pin = Vect(-1f, -1f);
-                        bungee.bungeeAnchor.SetWeight(0.1f);
+                        grab.Mount.Kick(grab);
                     }
                 }
             }

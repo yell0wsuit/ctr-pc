@@ -155,7 +155,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1f));
             HeadlessGame.StepFrames(scene, RideFrames);
 
-            cup.kicked = false;
+            cup.Mount.Remount(cup);
             float restuckOffset = cup.PositionOnTransporter;
             HeadlessGame.StepFrames(scene, RideFrames);
 
@@ -178,7 +178,7 @@ namespace CutTheRopeDX.Tests.Interactions
             HeadlessGame.StepFrames(scene, 1);
             Assert.False(scene.DiscHolds(cup));
 
-            cup.kicked = false;
+            cup.Mount.Remount(cup);
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.True(scene.DiscHolds(cup));

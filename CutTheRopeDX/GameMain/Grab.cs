@@ -61,9 +61,6 @@ namespace CutTheRopeDX.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             baloon = cTRRootController.IsSurvival();
             invisible = false;
-            kicked = false;
-            kickActive = false;
-            stickTimer = -1f;
         }
 
         /// <summary>
@@ -142,6 +139,7 @@ namespace CutTheRopeDX.GameMain
         {
             base.Update(delta);
             Source.Update(delta);
+            Mount?.SyncPositions(this);
             // Transported grabs keep their rope anchor pinned to grab position
             // regardless of launcher state.
             if (IsDrawnByTransporter && Rope != null)
@@ -263,10 +261,10 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (kickable && kicked && Rope != null)
+            if (Mount?.IsMounted == false)
             {
-                x = (Rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
-                y = (Rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
+                x = Mount.BackLayerPosition.X;
+                y = Mount.BackLayerPosition.Y;
             }
             if (GunSource != null)
             {
@@ -306,10 +304,10 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (kickable && kicked && Rope != null)
+            if (Mount?.IsMounted == false)
             {
-                x = Rope.bungeeAnchor.pos.X;
-                y = Rope.bungeeAnchor.pos.Y;
+                x = Mount.AnchorPosition.X;
+                y = Mount.AnchorPosition.Y;
             }
             PreDraw();
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
@@ -464,9 +462,8 @@ namespace CutTheRopeDX.GameMain
                 track.relative = true;
                 return;
             }
-            if (kickable)
+            if (Mount != null)
             {
-                stainCounter = MAX_STAINS;
                 back = Image_createWithResIDQuad(Resources.Img.ObjSticker, 3);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
@@ -635,21 +632,12 @@ namespace CutTheRopeDX.GameMain
             Attachment.Release();
         }
 
-        /// <summary>
-        /// Updates suction cup visuals and synchronizes position to the attached rope.
-        /// </summary>
+        /// <summary>Switches the suction cup images between their stuck and detached quads.</summary>
         public void UpdateKickState()
         {
-            if (kicked)
-            {
-                back?.SetDrawQuad(1);
-                front?.SetDrawQuad(2);
-            }
-            else
-            {
-                back?.SetDrawQuad(3);
-                front?.SetDrawQuad(4);
-            }
+            bool detached = Mount?.IsMounted == false;
+            back?.SetDrawQuad(detached ? 1 : 3);
+            front?.SetDrawQuad(detached ? 2 : 4);
             if (Rope != null)
             {
                 x = Rope.bungeeAnchor.pos.X;
@@ -884,23 +872,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets this grab's gun source, or <see langword="null"/> when it is not a gun.</summary>
         public GunSource GunSource => Source as GunSource;
 
-        /// <summary>Remaining stain marks available to the suction cup hook.</summary>
-        public int stainCounter;
-
-        /// <summary>Whether this grab uses suction cup behavior.</summary>
-        public bool kickable;
-
-        /// <summary>Whether suction cup behavior has been triggered.</summary>
-        public bool kicked;
-
-        /// <summary>Whether suction cup behavior is active.</summary>
-        public bool kickActive;
+        /// <summary>Gets this grab's suction mount, or <see langword="null"/> when it has none.</summary>
+        public SuctionMount Mount { get; internal set; }
 
         /// <summary>Whether this grab should skip drawing.</summary>
         public bool invisible;
-
-        /// <summary>Timer used by suction cup sticking behavior.</summary>
-        public float stickTimer;
 
         /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;

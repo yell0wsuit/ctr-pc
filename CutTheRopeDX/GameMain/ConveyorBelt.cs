@@ -525,7 +525,8 @@ namespace CutTheRopeDX.GameMain
             {
                 // A kicked (detached) suction cup is a free physics body: stay bound but stop
                 // driving it; when it re-sticks the belt resumes moving it automatically.
-                if (item is Grab kickedGrab && kickedGrab.kickable && kickedGrab.kicked)
+                if (item is Grab kickedGrab
+                    && !(kickedGrab.Mount?.FollowsPlatform ?? kickedGrab.Motion.FollowsPlatform))
                 {
                     continue;
                 }

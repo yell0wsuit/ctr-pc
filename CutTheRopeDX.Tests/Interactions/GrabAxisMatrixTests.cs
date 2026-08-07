@@ -151,7 +151,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(GrabX, GrabY, length: 200, kickable: true, moveLength: -1f));
 
             Grab cup = scene.Grabs()[0];
-            Assert.False(cup.kicked);
+            Assert.True(cup.Mount.IsMounted);
 
             int cupX = (int)cup.x;
             int cupY = (int)cup.y;
@@ -159,7 +159,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(scene.TouchDownXYIndex(cupX, cupY, 0));
             _ = scene.TouchUpXYIndex(cupX, cupY, 0);
 
-            Assert.True(cup.kicked);
+            Assert.False(cup.Mount.IsMounted);
             Assert.Equal(-1f, cup.Rope.bungeeAnchor.pin.X);
         }
 
@@ -173,7 +173,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Grab cup = scene.Grabs()[0];
 
-            Assert.True(cup.kicked);
+            Assert.False(cup.Mount.IsMounted);
             Assert.Equal(-1f, cup.Rope.bungeeAnchor.pin.X);
         }
 
@@ -215,7 +215,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Grab cup = scene.Grabs()[0];
 
-            Assert.True(cup.kickable);
+            Assert.NotNull(cup.Mount);
             Assert.Null(cup.Rail);
         }
     }

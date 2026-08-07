@@ -372,29 +372,26 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            // Check if we touched a non-kicked kickable grab
-            bool touchedNonKickedKickable = false;
+            // A tap that lands on a stuck cup claims the touch; taps that land anywhere else start
+            // every detached cup trying to re-stick.
+            bool touchedMountedCup = false;
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
                 float tapRadius = Grab.KICK_TAP_RADIUS;
-                if (bungee.kickable && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                if (bungee.Mount is SuctionMount tapped && tapped.IsMounted
+                    && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                 {
-                    if (!bungee.kicked)
-                    {
-                        touchedNonKickedKickable = true;
-                        break;
-                    }
-                    bungee.kickActive = true;
+                    touchedMountedCup = true;
+                    break;
                 }
             }
-            // Start stick timer for kicked kickable grabs if we didn't touch a non-kicked one
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.kickable && bungee.Rope != null && !touchedNonKickedKickable && bungee.kicked)
+                if (bungee.Mount is SuctionMount mount && !mount.IsMounted && bungee.Rope != null && !touchedMountedCup)
                 {
-                    bungee.stickTimer = 0f;
+                    mount.BeginSticking();
                 }
             }
             foreach (object obj4 in bungees)
@@ -553,27 +550,23 @@ namespace CutTheRopeDX.GameMain
                     bungee.wheelOperating = -1;
                 }
                 bungee.Rail?.EndDrag(ti);
-                if (bungee.kickable && bungee.Rope != null)
+                if (bungee.Mount is SuctionMount mount && bungee.Rope != null)
                 {
                     float tapRadius = Grab.KICK_TAP_RADIUS;
-                    if (!bungee.kickActive && !bungee.kicked && bungee.Rope.cut == -1 &&
+                    if (mount.IsMounted && bungee.Rope.cut == -1 &&
                         PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                     {
-                        if (bungee.stainCounter > 0)
+                        if (mount.TakeStain(out float stainAlpha))
                         {
                             Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
                             stain.DoRestoreCutTransparency();
                             stain.x = bungee.Rope.bungeeAnchor.pos.X;
                             stain.y = bungee.Rope.bungeeAnchor.pos.Y;
                             stain.anchor = 18;
-                            stain.color.AlphaChannel = bungee.stainCounter / 10f;
+                            stain.color.AlphaChannel = stainAlpha;
                             _ = decalsLayer.AddChild(stain);
-                            bungee.stainCounter--;
                         }
-                        bungee.Rope.bungeeAnchor.pin = Vect(-1f, -1f);
-                        bungee.Rope.bungeeAnchor.SetWeight(0.1f);
-                        bungee.kicked = true;
-                        bungee.stickTimer = -1f;
+                        mount.Kick(bungee);
                         bungee.UpdateKickState();
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
                         int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
@@ -587,7 +580,6 @@ namespace CutTheRopeDX.GameMain
                             CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
                         }
                     }
-                    bungee.kickActive = false;
                 }
             }
             _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
@@ -697,7 +689,7 @@ namespace CutTheRopeDX.GameMain
                             // the disc would otherwise sweep such a hook off its rail, leaving the
                             // rail drawn where it was. Same rule the disc-capture test in the update
                             // loop applies, so both agree on what this disc owns.
-                            if (!grab.Motion.FollowsPlatform || (grab.kickable && grab.kicked)
+                            if (!(grab.Mount?.FollowsPlatform ?? grab.Motion.FollowsPlatform)
                                 || grab is IGhostApparition)
                             {
                                 continue;
@@ -808,10 +800,10 @@ namespace CutTheRopeDX.GameMain
                         return true;
                     }
                     // Cancel stick timer if moved too much (kickable grabs)
-                    if (grab2.kickable && grab2.kicked && grab2.Rope != null &&
+                    if (grab2.Mount is SuctionMount dragMount && !dragMount.IsMounted && grab2.Rope != null &&
                         VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
                     {
-                        grab2.stickTimer = -1f;
+                        dragMount.CancelSticking();
                     }
                 }
             }
