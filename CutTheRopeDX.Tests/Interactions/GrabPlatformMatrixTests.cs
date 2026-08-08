@@ -7,9 +7,9 @@ using Xunit;
 namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
-    /// Grab-and-platform matrix: platforms never move a grab that has its own movement. A bee, a
-    /// launcher and a player drag rail are excluded when the platform binds; a kicked suction cup
-    /// is excluded per frame while it falls and resumes when it re-sticks. Everything else - gun,
+    /// Grab-and-platform matrix: platforms never move a grab that has its own movement. A path
+    /// mover and a player drag rail are excluded when the platform binds; a kicked suction cup is
+    /// excluded per frame while it falls and resumes when it re-sticks. Everything else - gun,
     /// wheel, stuck cup, spider hook, auto-attach hook - rides along.
     /// </summary>
     public sealed class GrabPlatformMatrixTests
@@ -37,32 +37,16 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void ConveyorDoesNotRebindAGrabThatBecomesALauncher()
+        public void ConveyorRefusesASelfMovingGrabOnEveryBindPass()
         {
-            // No level authors a launcher, so one is made the way the engine makes it. The belt's
-            // bind pass is then re-run over it: a launcher moves itself, so it is refused for the
-            // same reason a bee is - it is one predicate, not two rules.
-            (GameScene scene, Grab launcher) = OnConveyor(s => s.Grab(PlatformX, PlatformY));
-            Assert.True(scene.BeltHolds(launcher));
+            // The belt's bind pass is re-run over a path grab: a hook that moves itself is refused
+            // every time it is offered, not only on the first pass.
+            (GameScene scene, Grab bee) = OnConveyor(s => s.Grab(PlatformX, PlatformY, path: "60,0", moveSpeed: 30f));
+            Assert.False(scene.BeltHolds(bee));
 
-            scene.Conveyors().Remove(launcher);
-            launcher.SetLauncher();
-            scene.Conveyors().ProcessItems([launcher]);
+            scene.Conveyors().ProcessItems([bee]);
 
-            Assert.False(scene.BeltHolds(launcher));
-        }
-
-        [Fact]
-        public void DiscReleasesAGrabThatBecomesALauncher()
-        {
-            (GameScene scene, Grab launcher) = OnDisc(s => s.Grab(PlatformX, PlatformY));
-            HeadlessGame.StepFrames(scene, 1);
-            Assert.True(scene.DiscHolds(launcher));
-
-            launcher.SetLauncher();
-            HeadlessGame.StepFrames(scene, 1);
-
-            Assert.False(scene.DiscHolds(launcher));
+            Assert.False(scene.BeltHolds(bee));
         }
 
         [Fact]
@@ -70,7 +54,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, Grab rail) = OnConveyor(s => s.Grab(PlatformX, PlatformY, moveLength: 60f));
 
-            Assert.True(rail.moveLength > 0f);
+            Assert.NotNull(rail.Rail);
             Assert.False(scene.BeltHolds(rail));
         }
 
@@ -120,7 +104,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void ConveyorCarriesAStuckSuctionCup()
         {
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, moveLength: -1f));
 
             AssertCarriedByBelt(scene, cup);
         }
@@ -140,7 +124,7 @@ namespace CutTheRopeDX.Tests.Interactions
             // A kicked cup stays bound - the belt just stops advancing it, so it resumes on its own
             // once it re-sticks. Its own position keeps changing as it falls, so the belt's
             // coordinate is what has to hold still.
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1f));
             Assert.True(scene.BeltHolds(cup));
 
             float startOffset = cup.PositionOnTransporter;
@@ -152,10 +136,10 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void ConveyorResumesDrivingASuctionCupThatReSticks()
         {
-            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnConveyor(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1f));
             HeadlessGame.StepFrames(scene, RideFrames);
 
-            cup.kicked = false;
+            cup.Mount.Remount(cup);
             float restuckOffset = cup.PositionOnTransporter;
             HeadlessGame.StepFrames(scene, RideFrames);
 
@@ -165,7 +149,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void DiscDoesNotCaptureAKickedSuctionCup()
         {
-            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1));
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.False(scene.DiscHolds(cup));
@@ -174,11 +158,11 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void DiscCapturesASuctionCupThatReSticks()
         {
-            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true));
+            (GameScene scene, Grab cup) = OnDisc(s => s.Grab(PlatformX, PlatformY, kickable: true, kicked: true, moveLength: -1));
             HeadlessGame.StepFrames(scene, 1);
             Assert.False(scene.DiscHolds(cup));
 
-            cup.kicked = false;
+            cup.Mount.Remount(cup);
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.True(scene.DiscHolds(cup));

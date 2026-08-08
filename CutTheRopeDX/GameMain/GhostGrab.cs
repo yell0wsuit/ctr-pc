@@ -105,20 +105,20 @@ namespace CutTheRopeDX.GameMain
             back.Draw();
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            if (radius != -1f || hideRadius)
+            if (RadiusSource?.ShouldDrawCircle == true)
             {
                 CTRRootController rootController = (CTRRootController)Application.SharedRootController();
                 int pack = rootController.GetPack();
                 RGBAColor? ghostGrabOverride = PackConfig.GetGhostGrabColor(pack);
                 RGBAColor grabColor = ghostGrabOverride.HasValue
-                    ? RGBAColor.MakeRGBA(ghostGrabOverride.Value.RedColor, ghostGrabOverride.Value.GreenColor, ghostGrabOverride.Value.BlueColor, radiusAlpha * color.AlphaChannel)
-                    : RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha * color.AlphaChannel);
+                    ? RGBAColor.MakeRGBA(ghostGrabOverride.Value.RedColor, ghostGrabOverride.Value.GreenColor, ghostGrabOverride.Value.BlueColor, RadiusSource.RadiusAlpha * color.AlphaChannel)
+                    : RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, RadiusSource.RadiusAlpha * color.AlphaChannel);
                 DrawGrabCircle(this, grabColor);
             }
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            rope?.Draw();
+            Rope?.Draw();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

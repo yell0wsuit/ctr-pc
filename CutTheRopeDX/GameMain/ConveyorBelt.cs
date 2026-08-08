@@ -525,7 +525,8 @@ namespace CutTheRopeDX.GameMain
             {
                 // A kicked (detached) suction cup is a free physics body: stay bound but stop
                 // driving it; when it re-sticks the belt resumes moving it automatically.
-                if (item is Grab kickedGrab && !GrabPlatformBind.FollowsPlatform(true, kickedGrab.kickable && kickedGrab.kicked))
+                if (item is Grab kickedGrab
+                    && !(kickedGrab.Mount?.FollowsPlatform ?? kickedGrab.Motion.FollowsPlatform))
                 {
                     continue;
                 }
@@ -574,7 +575,10 @@ namespace CutTheRopeDX.GameMain
                 // Side-switch callbacks
                 if (wrapped)
                 {
-                    if (item is Grab grab && grab.rope != null && grab.candyNumber != -1)
+                    // Only a hook whose rope was authored in the level cuts its candy's other ropes
+                    // when it wraps; an auto-attaching hook never did, which is what the old
+                    // candyNumber != -1 test meant.
+                    if (item is Grab grab && grab.Rope != null && grab.Source is PreAttachedSource)
                     {
                         OnDestroyRopesForCandy?.Invoke(grab);
                     }

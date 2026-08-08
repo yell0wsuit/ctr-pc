@@ -172,11 +172,8 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj in bungees)
                 {
                     Grab grab = (Grab)obj;
-                    if (grab.gun && GunAvailability.CanFire(
-                        candyPresent: primaryInPlay,
-                        candyInLantern: candies[0].inLantern,
-                        gunFired: grab.gunFired,
-                        ropeAbsent: grab.rope == null))
+                    GunSource gun = grab.GunSource;
+                    if (gun != null && gun.CanFire(candies[0].inLantern))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
@@ -185,16 +182,10 @@ namespace CutTheRopeDX.GameMain
                         float tapRadius = Grab.GUN_TAP_RADIUS;
                         if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
-                            // Calculate direction to candy
-                            Vector gunToCandy = VectSub(Vect(grab.x, grab.y), star.pos);
-                            grab.gunFired = true;
-                            grab.gunInitialRotation = RADIANS_TO_DEGREES(VectAngleNormalized(gunToCandy)) + DEG_90;
-                            grab.gunCandyInitialRotation = candyMain.rotation;
-                            grab.gunCup.rotation = grab.gunInitialRotation;
-
-                            // Change gunFront quad to fired state
-                            grab.gunFront.SetDrawQuad(3);
-                            grab.gunCup.PlayTimeline(Grab.GUN_CUP_SHOW);
+                            gun.Fire(Vect(grab.x, grab.y), star.pos, candyMain.rotation);
+                            gun.Cup.rotation = gun.InitialRotation;
+                            gun.Front.SetDrawQuad(Grab.GunDisabledFrontQuad);
+                            gun.Cup.PlayTimeline(Grab.GUN_CUP_SHOW);
 
                             // Fire the gun - create a rope to the candy
                             float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - ActivePhysicsConstants.BungeeRestLength;
@@ -202,6 +193,7 @@ namespace CutTheRopeDX.GameMain
                             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                             grab.SetRope(bungee);
+                            ropes.Register(bungee, grab);
                             CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
 
                             // Track achievement
@@ -381,45 +373,39 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            // Check if we touched a non-kicked kickable grab
-            bool touchedNonKickedKickable = false;
+            // A tap that lands on a stuck cup claims the touch; taps that land anywhere else start
+            // every detached cup trying to re-stick.
+            bool touchedMountedCup = false;
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
                 float tapRadius = Grab.KICK_TAP_RADIUS;
-                if (bungee.kickable && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                if (bungee.Mount is SuctionMount tapped && tapped.IsMounted
+                    && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                 {
-                    if (!bungee.kicked)
-                    {
-                        touchedNonKickedKickable = true;
-                        break;
-                    }
-                    bungee.kickActive = true;
-                }
-            }
-            // Start stick timer for kicked kickable grabs if we didn't touch a non-kicked one
-            foreach (object obj4 in bungees)
-            {
-                Grab bungee = (Grab)obj4;
-                if (bungee.kickable && bungee.rope != null && !touchedNonKickedKickable && bungee.kicked)
-                {
-                    bungee.stickTimer = 0f;
+                    touchedMountedCup = true;
+                    break;
                 }
             }
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.wheel && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 110f, bungee.y - 110f, 220f, 220f))
+                if (bungee.Mount is SuctionMount mount && !mount.IsMounted && bungee.Rope != null && !touchedMountedCup)
                 {
-                    bungee.HandleWheelTouch(Vect(tx + camera.pos.X, ty + camera.pos.Y));
-                    bungee.wheelOperating = ti;
+                    mount.BeginSticking();
+                }
+            }
+            foreach (object obj4 in bungees)
+            {
+                Grab bungee = (Grab)obj4;
+                if (bungee.Wheel?.TryBeginOperating(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
+                {
                     // A touch that lands on the wheel belongs to the wheel: without this, a wheel
                     // hook riding a manual belt let the same touch also start a belt drag.
                     return true;
                 }
-                if (bungee.moveLength > 0 && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - 65f, bungee.y - 65f, 130f, 130f))
+                if (bungee.Rail?.TryBeginDrag(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
                 {
-                    bungee.moverDragging = ti;
                     return true;
                 }
             }
@@ -558,35 +544,25 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj3 in bungees)
             {
                 Grab bungee = (Grab)obj3;
-                if (bungee.wheel && bungee.wheelOperating == ti)
-                {
-                    bungee.wheelOperating = -1;
-                }
-                if (bungee.moveLength > 0 && bungee.moverDragging == ti)
-                {
-                    bungee.moverDragging = -1;
-                }
-                if (bungee.kickable && bungee.rope != null)
+                bungee.Wheel?.EndOperating(ti);
+                bungee.Rail?.EndDrag(ti);
+                if (bungee.Mount is SuctionMount mount && bungee.Rope != null)
                 {
                     float tapRadius = Grab.KICK_TAP_RADIUS;
-                    if (!bungee.kickActive && !bungee.kicked && bungee.rope.cut == -1 &&
+                    if (mount.IsMounted && bungee.Rope.cut == -1 &&
                         PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                     {
-                        if (bungee.stainCounter > 0)
+                        if (mount.TakeStain(out float stainAlpha))
                         {
                             Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
                             stain.DoRestoreCutTransparency();
-                            stain.x = bungee.rope.bungeeAnchor.pos.X;
-                            stain.y = bungee.rope.bungeeAnchor.pos.Y;
+                            stain.x = bungee.Rope.bungeeAnchor.pos.X;
+                            stain.y = bungee.Rope.bungeeAnchor.pos.Y;
                             stain.anchor = 18;
-                            stain.color.AlphaChannel = bungee.stainCounter / 10f;
+                            stain.color.AlphaChannel = stainAlpha;
                             _ = decalsLayer.AddChild(stain);
-                            bungee.stainCounter--;
                         }
-                        bungee.rope.bungeeAnchor.pin = Vect(-1f, -1f);
-                        bungee.rope.bungeeAnchor.SetWeight(0.1f);
-                        bungee.kicked = true;
-                        bungee.stickTimer = -1f;
+                        mount.Kick(bungee);
                         bungee.UpdateKickState();
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
                         int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
@@ -600,7 +576,6 @@ namespace CutTheRopeDX.GameMain
                             CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
                         }
                     }
-                    bungee.kickActive = false;
                 }
             }
             _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
@@ -710,9 +685,7 @@ namespace CutTheRopeDX.GameMain
                             // the disc would otherwise sweep such a hook off its rail, leaving the
                             // rail drawn where it was. Same rule the disc-capture test in the update
                             // loop applies, so both agree on what this disc owns.
-                            if (!GrabPlatformBind.FollowsPlatform(
-                                    GrabPlatformBind.CanBind(grab.mover != null, grab.moveLength > 0),
-                                    grab.kickable && grab.kicked)
+                            if (!(grab.Mount?.FollowsPlatform ?? grab.Motion.FollowsPlatform)
                                 || grab is IGhostApparition)
                             {
                                 continue;
@@ -731,15 +704,8 @@ namespace CutTheRopeDX.GameMain
                                 Vector vector3 = VectRotateAround(Vect(grab.initial_x, grab.initial_y), a2, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = vector3.X;
                                 grab.y = vector3.Y;
-                                if (grab.rope != null)
-                                {
-                                    grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                                    grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
-                                }
-                                if (grab.radius != -1f)
-                                {
-                                    grab.ReCalcCircle();
-                                }
+                                grab.SyncRopeAnchor();
+                                grab.ReCalcCircle();
                             }
                         }
                         for (int k = 0; k < pumps.Count; k++)
@@ -809,37 +775,23 @@ namespace CutTheRopeDX.GameMain
                 Grab grab2 = bungees[m];
                 if (grab2 != null)
                 {
-                    if (grab2.wheel && grab2.wheelOperating == ti)
+                    if (grab2.Wheel is WheelControl wheel && wheel.OperatingTouch == ti)
                     {
-                        grab2.HandleWheelRotate(Vect(tx + camera.pos.X, ty + camera.pos.Y));
+                        wheel.HandleRotate(grab2, Vect(tx + camera.pos.X, ty + camera.pos.Y));
                         return true;
                     }
-                    if (grab2.moveLength > 0 && grab2.moverDragging == ti)
+                    if (grab2.Rail is RailMotion rail && rail.DraggingTouch == ti)
                     {
-                        if (grab2.moveVertical)
-                        {
-                            grab2.y = FIT_TO_BOUNDARIES(ty + camera.pos.Y, grab2.minMoveValue, grab2.maxMoveValue);
-                        }
-                        else
-                        {
-                            grab2.x = FIT_TO_BOUNDARIES(tx + camera.pos.X, grab2.minMoveValue, grab2.maxMoveValue);
-                        }
-                        if (grab2.rope != null)
-                        {
-                            grab2.rope.bungeeAnchor.pos = Vect(grab2.x, grab2.y);
-                            grab2.rope.bungeeAnchor.pin = grab2.rope.bungeeAnchor.pos;
-                        }
-                        if (grab2.radius != -1f)
-                        {
-                            grab2.ReCalcCircle();
-                        }
+                        rail.DragTo(grab2, tx + camera.pos.X, ty + camera.pos.Y);
+                        grab2.SyncRopeAnchor();
+                        grab2.ReCalcCircle();
                         return true;
                     }
                     // Cancel stick timer if moved too much (kickable grabs)
-                    if (grab2.kickable && grab2.kicked && grab2.rope != null &&
+                    if (grab2.Mount is SuctionMount dragMount && !dragMount.IsMounted && grab2.Rope != null &&
                         VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
                     {
-                        grab2.stickTimer = -1f;
+                        dragMount.CancelSticking();
                     }
                 }
             }

@@ -224,9 +224,9 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungee in bungees)
             {
                 Grab grab = (Grab)bungee;
-                if (grab?.rope != null && grab.kickable && grab.kicked)
+                if (grab?.Rope != null && grab.Mount?.IsMounted == false)
                 {
-                    HandlePumpFlowPtSkin(p, grab.rope.bungeeAnchor, grab);
+                    HandlePumpFlowPtSkin(p, grab.Rope.bungeeAnchor, grab);
                 }
             }
         }
@@ -308,79 +308,30 @@ namespace CutTheRopeDX.GameMain
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int ropesCutCount = 0;
-            for (int i = 0; i < bungees.Count; i++)
+            // One pass over every rope in the level: a hook's rope and the candy connector are cut
+            // by the same test, they only differ in whether an owning hook reacts afterwards.
+            foreach (RopeEntry entry in ropes.All)
             {
-                Grab grab = bungees[i];
-                Bungee rope = grab.rope;
-                if (rope != null && rope.cut == -1)
+                Bungee rope = entry.Rope;
+                if (rope.cut != -1 || rope.cutOnlyByAxe)
                 {
-                    for (int j = 0; j < rope.parts.Count - 1; j++)
-                    {
-                        ConstraintedPoint constraintedPoint = rope.parts[j];
-                        ConstraintedPoint constraintedPoint2 = rope.parts[j + 1];
-                        bool flag = false;
-                        if (r == null)
-                        {
-                            flag = (!grab.wheel || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - 110f, grab.y - 110f, 220f, 220f)) &&
-                                   (!grab.gun || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, grab.x - Grab.GUN_CUT_RADIUS, grab.y - Grab.GUN_CUT_RADIUS, Grab.GUN_CUT_RADIUS * 2f, Grab.GUN_CUT_RADIUS * 2f)) &&
-                                   LineInLine(v1.X, v1.Y, v2.X, v2.Y, constraintedPoint.pos.X, constraintedPoint.pos.Y, constraintedPoint2.pos.X, constraintedPoint2.pos.Y);
-                        }
-                        else if (constraintedPoint.prevPos.X != UNDEFINED_COORDINATE)
-                        {
-                            float minX = MinOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
-                            float y1t = MinOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
-                            float x1r = MaxOf4(constraintedPoint.pos.X, constraintedPoint.prevPos.X, constraintedPoint2.pos.X, constraintedPoint2.prevPos.X);
-                            float y1b = MaxOf4(constraintedPoint.pos.Y, constraintedPoint.prevPos.Y, constraintedPoint2.pos.Y, constraintedPoint2.prevPos.Y);
-                            flag = RectInRect(minX, y1t, x1r, y1b, r.drawX, r.drawY, r.drawX + r.width, r.drawY + r.height);
-                        }
-                        if (flag)
-                        {
-                            // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
-                            // finger/razor never cuts them.
-                            if (rope.cutOnlyByAxe)
-                            {
-                                continue;
-                            }
-                            ropesCutCount++;
-                            if (grab.hasSpider && grab.spiderActive)
-                            {
-                                SpiderBusted(grab);
-                            }
-                            string ropeSound = rope.relaxed switch
-                            {
-                                0 => Resources.Snd.RopeBleak1,
-                                1 => Resources.Snd.RopeBleak2,
-                                2 => Resources.Snd.RopeBleak3,
-                                _ => Resources.Snd.RopeBleak4
-                            };
-                            CTRSoundMgr.PlaySound(ropeSound);
-                            rope.SetCut(j);
-                            if (im)
-                            {
-                                rope.cutTime = 0f;
-                                rope.RemovePart(j);
-                            }
-                            if (grab.gun && grab.gunCup != null)
-                            {
-                                grab.gunCup.PlayTimeline(Grab.GUN_CUP_HIDE);
-                            }
-                            return ropesCutCount;
-                        }
-                    }
+                    // Chains are cut only by the axe (see CutAxeOnlyChainsWithAxes); the
+                    // finger/razor never cuts them.
+                    continue;
                 }
-            }
-            // candiesConnected elastic: not in `bungees`, so test it with the same per-segment cut.
-            // A chain connector (candiesConnectedBreakable="false") is axe-only, never finger-cut.
-            if (candyConnector != null && candyConnector.cut == -1 && !candyConnector.cutOnlyByAxe)
-            {
-                for (int j = 0; j < candyConnector.parts.Count - 1; j++)
+
+                for (int j = 0; j < rope.parts.Count - 1; j++)
                 {
-                    ConstraintedPoint a = candyConnector.parts[j];
-                    ConstraintedPoint b = candyConnector.parts[j + 1];
+                    ConstraintedPoint a = rope.parts[j];
+                    ConstraintedPoint b = rope.parts[j + 1];
                     bool hit;
                     if (r == null)
                     {
-                        hit = LineInLine(v1.X, v1.Y, v2.X, v2.Y, a.pos.X, a.pos.Y, b.pos.X, b.pos.Y);
+                        CTRRectangle? exclusion = entry.Owner?.CutExclusionZone;
+                        bool outsideExclusion = exclusion == null
+                            || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, exclusion.Value.x, exclusion.Value.y, exclusion.Value.w, exclusion.Value.h);
+                        hit = outsideExclusion
+                            && LineInLine(v1.X, v1.Y, v2.X, v2.Y, a.pos.X, a.pos.Y, b.pos.X, b.pos.Y);
                     }
                     else if (a.prevPos.X != UNDEFINED_COORDINATE)
                     {
@@ -394,25 +345,34 @@ namespace CutTheRopeDX.GameMain
                     {
                         hit = false;
                     }
-                    if (hit)
+
+                    if (!hit)
                     {
-                        ropesCutCount++;
-                        string ropeSound = candyConnector.relaxed switch
-                        {
-                            0 => Resources.Snd.RopeBleak1,
-                            1 => Resources.Snd.RopeBleak2,
-                            2 => Resources.Snd.RopeBleak3,
-                            _ => Resources.Snd.RopeBleak4
-                        };
-                        CTRSoundMgr.PlaySound(ropeSound);
-                        candyConnector.SetCut(j);
-                        if (im)
-                        {
-                            candyConnector.cutTime = 0f;
-                            candyConnector.RemovePart(j);
-                        }
-                        return ropesCutCount;
+                        continue;
                     }
+
+                    ropesCutCount++;
+                    if (entry.Owner?.Spider?.ShouldBustOnRopeCut == true)
+                    {
+                        SpiderBusted(entry.Owner);
+                    }
+                    string ropeSound = rope.relaxed switch
+                    {
+                        0 => Resources.Snd.RopeBleak1,
+                        1 => Resources.Snd.RopeBleak2,
+                        2 => Resources.Snd.RopeBleak3,
+                        _ => Resources.Snd.RopeBleak4
+                    };
+                    CTRSoundMgr.PlaySound(ropeSound);
+                    rope.SetCut(j);
+                    if (im)
+                    {
+                        rope.cutTime = 0f;
+                        rope.RemovePart(j);
+                    }
+
+                    entry.Owner?.OnRopeCut(RopeCutReason.Severed);
+                    return ropesCutCount;
                 }
             }
             return ropesCutCount;
@@ -432,27 +392,19 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                for (int i = 0; i < bungees.Count; i++)
+                // One pass over every chain in the level - hook chains and a chain connector alike.
+                // At most one chain per axe swing, which is what the grab loop's break already did.
+                foreach (RopeEntry entry in ropes.All)
                 {
-                    Grab grab = bungees[i];
-                    Bungee rope = grab.rope;
-                    if (rope == null || rope.cut != -1 || !rope.cutOnlyByAxe)
+                    if (entry.Rope.cut != -1 || !entry.Rope.cutOnlyByAxe)
                     {
                         continue;
                     }
 
-                    if (TryCutAxeOnlyChain(axeCtx, rope))
+                    if (TryCutAxeOnlyChain(axeCtx, entry.Rope))
                     {
                         break;
                     }
-                }
-
-                // candiesConnected elastic: not in `bungees`. The axe also severs a chain connector
-                // (candiesConnectedBreakable="false"), matching the original cutTheUnbreakable's
-                // separate candyConnector block.
-                if (candyConnector != null && candyConnector.cut == -1 && candyConnector.cutOnlyByAxe)
-                {
-                    _ = TryCutAxeOnlyChain(axeCtx, candyConnector);
                 }
             }
         }
@@ -504,28 +456,27 @@ namespace CutTheRopeDX.GameMain
                 CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderFall);
-            g.hasSpider = false;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)g.Spider.Animation.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)g.spider.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y - 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.spider.x, (int)(g.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)g.Spider.Animation.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y - 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeRotation(RND_RANGE(-120, 120), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
-            image.x = g.spider.x;
-            image.y = g.spider.y;
+            image.x = g.Spider.Animation.x;
+            image.y = g.Spider.Animation.y;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
@@ -538,30 +489,31 @@ namespace CutTheRopeDX.GameMain
         public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
-            ConstraintedPoint capturedStar = sg.rope?.tail;
+            ConstraintedPoint capturedStar = sg.Rope?.tail;
             int grabCount = bungees.Count;
             for (int i = 0; i < grabCount; i++)
             {
                 Grab grab = bungees[i];
-                Bungee rope = grab.rope;
+                Bungee rope = grab.Rope;
                 if (rope != null && rope.tail == capturedStar)
                 {
                     if (rope.cut == -1)
                     {
                         rope.SetCut(rope.parts.Count - 2);
-                        rope.forceWhite = false;
                     }
-                    if (grab.hasSpider && grab.spiderActive && sg != grab)
+                    int tailPart = rope.parts.Count - 2;
+                    if (rope.tail.HasConstraintTo(rope.parts[tailPart]))
+                    {
+                        rope.RemovePart(tailPart);
+                    }
+                    if (grab.Spider?.ShouldBustOnRopeCut == true && sg != grab)
                     {
                         SpiderBusted(grab);
                     }
-                    if (grab.gun && grab.gunCup != null && RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, grab.gunCup.color))
-                    {
-                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_DROP_AND_HIDE);
-                    }
+                    grab.OnRopeCut(RopeCutReason.Severed);
                 }
             }
-            sg.hasSpider = false;
+            sg.Spider.Win();
             // spiderTookCandy = true;
             // The spider takes whichever body its rope ends on - a whole candy or one split half. A
             // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
@@ -582,20 +534,20 @@ namespace CutTheRopeDX.GameMain
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y - 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.spider.x, (int)(sg.spider.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y + SCREEN_HEIGHT), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
             }
             image.AddTimelinewithID(timeline, 0);
             image.PlayTimeline(0);
-            image.x = sg.spider.x;
-            image.y = sg.spider.y - 10f;
+            image.x = sg.Spider.Animation.x;
+            image.y = sg.Spider.Animation.y - 10f;
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
@@ -624,7 +576,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab2 = bungees[i];
-                Bungee rope = grab2.rope;
+                Bungee rope = grab2.Rope;
                 if (rope != null)
                 {
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
@@ -656,7 +608,7 @@ namespace CutTheRopeDX.GameMain
             Bungee result = null;
             float closestDistance = initialDistance;
             Vector v = s;
-            Bungee rope = g.rope;
+            Bungee rope = g.Rope;
             if (rope == null || rope.cut != -1)
             {
                 return null;
@@ -665,7 +617,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ConstraintedPoint constraintedPoint = rope.parts[i];
                 float distanceToConstraint = VectDistance(constraintedPoint.pos, v);
-                if (distanceToConstraint < closestDistance && (!g.wheel || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - 110f, g.y - 110f, 220f, 220f)))
+                if (distanceToConstraint < closestDistance && (g.Wheel == null || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - WheelControl.TapHalfExtent, g.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)))
                 {
                     closestDistance = distanceToConstraint;
                     result = rope;

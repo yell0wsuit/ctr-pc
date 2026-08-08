@@ -167,80 +167,71 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab grab = bungees[k];
                     grab.Update(delta);
-                    Bungee rope = grab.rope;
+
+                    if (grab.GunSource is GunSource gunSource)
+                    {
+                        gunSource.TrackAim(Vect(grab.x, grab.y), star.pos);
+                        gunSource.TrackFiredCup(star.pos, candy.rotation);
+                    }
+
+                    Bungee rope = grab.Rope;
                     if (grab.mover != null)
                     {
-                        if (grab.rope != null)
-                        {
-                            grab.rope.bungeeAnchor.pos = Vect(grab.x, grab.y);
-                            grab.rope.bungeeAnchor.pin = grab.rope.bungeeAnchor.pos;
-                        }
-                        if (grab.radius != -1f)
-                        {
-                            grab.ReCalcCircle();
-                        }
+                        grab.SyncRopeAnchor();
+                        grab.ReCalcCircle();
                     }
 
-                    // Process stickTimer for kickable grabs
-                    if (rope != null && grab.stickTimer != -1f)
+                    // A detached suction cup that has been trying to stick for long enough re-sticks,
+                    // but only where there is wall to stick to.
+                    if (rope != null && grab.Mount is SuctionMount mount && mount.TickSticking(delta))
                     {
-                        grab.stickTimer += delta;
-                        if (grab.stickTimer > Grab.STICK_DELAY)
+                        if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
                         {
-                            if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
+                            mount.Remount(grab);
+                            grab.UpdateKickState();
+                            CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
+                            int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
+                            Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
+                            if (wallClimberCount >= 50)
                             {
-                                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
-                                grab.kicked = false;
-                                rope.bungeeAnchor.SetWeight(0.02f);
-                                grab.UpdateKickState();
-                                CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
-                                int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
-                                Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
-                                if (wallClimberCount >= 50)
-                                {
-                                    CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
-                                }
-                                if (wallClimberCount >= 400)
-                                {
-                                    CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
-                                }
+                                CTRRootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
                             }
-                            grab.stickTimer = -1f;
+                            if (wallClimberCount >= 400)
+                            {
+                                CTRRootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                            }
                         }
                     }
 
-                    if (grab.hasSpider && !grab.spiderActive)
+                    if (grab.Spider is SpiderRider idleRider && idleRider.IsAttached && !idleRider.IsWalking)
                     {
-                        grab.spider.x = grab.x;
-                        grab.spider.y = grab.y;
+                        idleRider.Animation.x = grab.x;
+                        idleRider.Animation.y = grab.y;
                     }
 
                     bool shouldProcessGrabRadius = true;
 
                     if (rope != null)
                     {
-                        if (rope.cut == -1 || rope.cutTime != 0)
+                        if (grab.Attachment.IsSimulated)
                         {
                             UpdateRopeWithAntCarryOverride(rope, delta);
-                            if (grab.hasSpider)
+                            if (grab.Spider is SpiderRider rider && rider.IsAttached)
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                                 {
                                     // Don't let spider activate if rope is not attached to candy
-                                    if (grab.shouldActivate && !IsSpiderGrabbableCandyPoint(rope.tail))
+                                    if (rider.State == SpiderRiderState.Arming && !IsSpiderGrabbableCandyPoint(rope.tail))
                                     {
-                                        grab.shouldActivate = false;
+                                        rider.Arm(ropeAttachedToCandy: false);
                                     }
-                                    grab.UpdateSpider(delta);
+                                    rider.Update(grab, delta);
                                 }
-                                if (grab.spiderPos == -1f)
+                                // Only let spider win if rope is attached to candy
+                                if (rider.HasReachedCandy && IsSpiderGrabbableCandyPoint(rope.tail))
                                 {
-                                    // Only let spider win if rope is attached to candy
-                                    if (IsSpiderGrabbableCandyPoint(rope.tail))
-                                    {
-                                        SpiderWon(grab);
-                                        break;
-                                    }
+                                    SpiderWon(grab);
+                                    break;
                                 }
                             }
                         }
@@ -252,7 +243,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (shouldProcessGrabRadius)
                     {
-                        if (grab.radius != -1f && grab.rope == null)
+                        if (grab.Source.CanAttach && grab.Attachment.State == RopeAttachmentState.Idle)
                         {
                             // One pass over every hookable body: whole candies and split halves alike
                             // attach to a radius hook the moment they come inside it.
@@ -447,7 +438,7 @@ namespace CutTheRopeDX.GameMain
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
-                            Bungee rope2 = bungees[m].rope;
+                            Bungee rope2 = bungees[m].Rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == mergedLeft || rope2.tail == mergedRight))
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
@@ -801,9 +792,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab bungee4 = (Grab)obj9;
                     // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
-                    bool discBindable = GrabPlatformBind.FollowsPlatform(
-                        GrabPlatformBind.CanBind(bungee4.mover != null, bungee4.moveLength > 0),
-                        bungee4.kickable && bungee4.kicked)
+                    bool discBindable = (bungee4.Mount?.FollowsPlatform ?? bungee4.Motion.FollowsPlatform)
                         && bungee4 is not IGhostApparition;
                     if (discBindable && VectDistance(Vect(bungee4.x, bungee4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(5) * 3f))
                     {
@@ -860,13 +849,6 @@ namespace CutTheRopeDX.GameMain
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), candyPresent: true, miceManager.IsActiveMouseInRange(body.Point)))
                         {
                             miceManager.GrabWithActiveMouse(body.Point, body.Visual);
-                            // The rocket steals from nobody and nobody kills it (PD 2026-07-24):
-                            // a stolen rocket-bound candy keeps its rocket, which strains at the
-                            // mouse's mouth and launches when the mouse drops the candy. The
-                            // per-frame gravity enforcement in the rocket update keeps flight
-                            // physics intact across the mouse's drop path. The mouse likewise
-                            // keeps a bubble (official levels carry bubbled candy) and any
-                            // riding snail.
                             TriggerSpecialTutorial(4);
                             break;
                         }
@@ -1053,7 +1035,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 if (bungee != null)
                                 {
-                                    Bungee rope = bungee.rope;
+                                    Bungee rope = bungee.Rope;
                                     if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.capturingHand == null)
                                     {
                                         ropeRelaxed = true;
@@ -1310,10 +1292,10 @@ namespace CutTheRopeDX.GameMain
             {
                 foreach (Grab grab in bungees)
                 {
-                    if (grab != null && grab.kickable && grab.kicked && grab.y > waterLayer.y && grab.rope != null)
+                    if (grab != null && grab.Mount?.IsMounted == false && grab.y > waterLayer.y && grab.Rope != null)
                     {
                         float damping = ActivePhysicsConstants.WaterDamping;
-                        ConstraintedPoint anchor = grab.rope.bungeeAnchor;
+                        ConstraintedPoint anchor = grab.Rope.bungeeAnchor;
                         anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + ActivePhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
@@ -1629,12 +1611,12 @@ namespace CutTheRopeDX.GameMain
                 foreach (object obj22 in bungees)
                 {
                     Grab bungee5 = (Grab)obj22;
-                    if (bungee5.wheel && PointInRect(p.X, p.Y, bungee5.x - 110f, bungee5.y - 110f, 220f, 220f))
+                    if (bungee5.Wheel != null && PointInRect(p.X, p.Y, bungee5.x - WheelControl.TapHalfExtent, bungee5.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f))
                     {
                         flag12 = true;
                         break;
                     }
-                    if (bungee5.moveLength > 0 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || bungee5.moverDragging != -1))
+                    if (bungee5.Rail is RailMotion rail5 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || rail5.DraggingTouch != -1))
                     {
                         flag12 = true;
                         break;
@@ -1672,35 +1654,25 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when a rope was created.</returns>
         private bool TryAutoAttachGrabToBody(Grab grab, CandyBody body)
         {
-            bool inRange = VectDistance(Vect(grab.x, grab.y), body.Point.pos) <= grab.radius + ActivePhysicsConstants.CandyGrabPadding;
-            if (!GrabHookAttach.ShouldAttach(grab.radius != -1f, grab.rope == null, candyPresent: true, inRange))
+            AutoRadiusSource source = grab.RadiusSource;
+            if (source == null || !source.CanAttach || !source.InRange(Vect(grab.x, grab.y), body.Point.pos))
             {
                 return false;
             }
 
-            CandyContext ctx = body.Owner;
-            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y, grab.radius + ActivePhysicsConstants.CandyGrabPadding);
+            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y,
+                source.Radius + ActivePhysicsConstants.CandyGrabPadding);
             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-            if (grab.cutOnlyByAxe)
+
+            if (grab.IsChainAnchor)
             {
                 bungee.SetCutOnlyByAxe();
             }
-            grab.hideRadius = true;
-            grab.SetRope(bungee);
-            if (ctx.HasActiveRocket)
-            {
-                ctx.activeRocket.anglePercent = 0f;
-                ctx.activeRocket.perpSetted = false;
-                ctx.activeRocket.startRotation += ctx.activeRocket.additionalAngle;
-                ctx.activeRocket.additionalAngle = 0f;
-            }
 
-            // If the mouse already has THIS body, immediately cut the rope. Per-candy: a mouse
-            // holding another candy must not cut a rope just auto-attached to this one.
-            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), body.Point))
-            {
-                bungee.SetCut(bungee.parts.Count - 2);
-            }
+            source.BeginFade();
+            grab.SetRope(bungee);
+            ropes.Register(bungee, grab);
 
             CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
             if (grab.mover != null)

@@ -130,12 +130,13 @@ namespace CutTheRopeDX.GameMain
             }
             if (grab != null && grab.GetCurrentTimelineIndex() == 11 && grab.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
+                hostScene?.UnregisterRope(grab.Rope);
                 grab.DestroyRope();
                 _ = gsBungees.Remove(grab);
                 grab = null;
             }
             base.Update(delta);
-            if (grab != null && grab.rope != null && grab.rope.cut != -1 && grab.GetCurrentTimelineIndex() == 10)
+            if (grab != null && grab.Rope != null && grab.Rope.cut != -1 && grab.GetCurrentTimelineIndex() == 10)
             {
                 cyclingEnabled = true;
                 ResetToState(1);
@@ -173,10 +174,10 @@ namespace CutTheRopeDX.GameMain
             }
             if (grab != null)
             {
-                Bungee rope = grab.rope;
+                Bungee rope = grab.Rope;
                 if (rope != null)
                 {
-                    grab.rope.forceWhite = true;
+                    grab.Rope.forceWhite = true;
                     rope.cutTime = GHOST_MORPHING_APPEAR_TIME;
                     if (rope.cut == -1)
                     {
@@ -185,6 +186,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (grab.GetCurrentTimelineIndex() == 11)
                 {
+                    hostScene?.UnregisterRope(grab.Rope);
                     grab.DestroyRope();
                     _ = gsBungees.Remove(grab);
                     grab = null;
@@ -247,9 +249,16 @@ namespace CutTheRopeDX.GameMain
                     break;
                 case 4:
                     grab = new GhostGrab().InitWithPosition(x, y);
-                    grab.wheel = false;
-                    grab.spider = null;
-                    grab.SetRadius(grabRadius);
+                    grab.Wheel = null;
+                    grab.Spider = null;
+                    // A ghost apparition is only ever a plain or auto-radius hook, so it goes
+                    // through the same resolver as an authored one.
+                    grab.Source = GrabAxisResolver.Resolve(
+                        new GrabAxisRequest(
+                            Gun: false, Wheel: false, Kickable: false,
+                            Radius: grabRadius, MoveLength: 0f, HasMover: false,
+                            MoveVertical: false, MoveOffset: 0f, AnchorX: x, AnchorY: y)).Source;
+                    grab.CreateAxisVisuals();
                     if (grabRadius == -1f)
                     {
                         ConstraintedPoint ropeAnchor = hostScene?.GetGhostRopeAnchor(Vect(x, y));
@@ -271,6 +280,7 @@ namespace CutTheRopeDX.GameMain
                                 ropeLength);
                             autoRope.bungeeAnchor.pin = autoRope.bungeeAnchor.pos;
                             grab.SetRope(autoRope);
+                            hostScene?.RegisterRope(autoRope, grab);
                         }
                     }
                     gsBungees.Add(grab);

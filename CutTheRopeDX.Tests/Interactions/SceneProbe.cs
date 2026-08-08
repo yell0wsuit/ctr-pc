@@ -216,6 +216,17 @@ namespace CutTheRopeDX.Tests.Interactions
             return nearest;
         }
 
+        /// <summary>
+        /// The rope a grab currently holds, or <see langword="null"/> when it holds none. Exists so a
+        /// test can read a hook's rope without naming the field, which the axis refactor renames.
+        /// </summary>
+        /// <param name="grab">Grab to inspect.</param>
+        /// <returns>The held rope, or <see langword="null"/>.</returns>
+        public static Bungee RopeOf(this Grab grab)
+        {
+            return grab.Rope;
+        }
+
         /// <summary>Whether the primary candy's lifecycle leaves no whole body in play.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns><see langword="true"/> when the primary candy is removed, hidden, or split.</returns>
@@ -233,7 +244,7 @@ namespace CutTheRopeDX.Tests.Interactions
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.rope != null && grab.rope.tail == candy.WholeBody.Point && grab.rope.cut == -1)
+                if (grab.Rope != null && grab.Rope.tail == candy.WholeBody.Point && grab.Rope.cut == -1)
                 {
                     count++;
                 }

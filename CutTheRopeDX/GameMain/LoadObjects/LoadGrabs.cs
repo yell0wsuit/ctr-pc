@@ -53,15 +53,20 @@ namespace CutTheRopeDX.GameMain
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
-            grab.wheel = wheel;
-            // A grab is either a wheel or a gun, never both; malformed XML with both set
-            // resolves to the wheel (PD 2026-07-24).
-            grab.gun = gun && !wheel;
-            grab.kickable = kickable;
-            grab.kicked = kicked;
-            grab.invisible = invisible;
-            grab.cutOnlyByAxe = !breakable;
-            grab.SetSpider(spider);
+            HookModifiers modifiers = HookModifiers.None;
+            if (invisible)
+            {
+                modifiers |= HookModifiers.Invisible;
+            }
+            if (!breakable)
+            {
+                modifiers |= HookModifiers.ChainAnchor;
+            }
+            grab.Modifiers = modifiers;
+            if (spider)
+            {
+                grab.SetSpider();
+            }
             grab.ParseMover(xmlNode);
             if (grab.mover != null)
             {
@@ -87,7 +92,28 @@ namespace CutTheRopeDX.GameMain
             {
                 grabRadius *= scale;
             }
-            if (grabRadius == -1f && !gun)
+
+            // One place decides which axes this grab has. Everything below only builds visuals for
+            // the axes it was given.
+            GrabAxes axes = GrabAxisResolver.Resolve(
+                new GrabAxisRequest(
+                    Gun: gun,
+                    Wheel: wheel,
+                    Kickable: kickable,
+                    Radius: grabRadius,
+                    MoveLength: k,
+                    HasMover: grab.mover != null,
+                    MoveVertical: v,
+                    MoveOffset: o,
+                    AnchorX: hx,
+                    AnchorY: hy),
+                startsKicked: kicked);
+            grab.Source = axes.Source;
+            grab.Motion = axes.Motion;
+            grab.Mount = axes.Mount;
+            grab.Wheel = axes.Wheel;
+
+            if (grab.Source is PreAttachedSource)
             {
                 ConstraintedPoint constraintedPoint;
                 CandyContext targetAxe = grabAxeNumber != null ? FindAxeByNumber(grabAxeNumber) : null;
@@ -99,24 +125,20 @@ namespace CutTheRopeDX.GameMain
                     : flag ? split.Left.Body.Point : split.Right.Body.Point;
                 if (bindBulb)
                 {
-                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
                     CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
                     constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
                 }
                 else if (targetAxe != null)
                 {
-                    grab.candyNumber = 0;
                     constraintedPoint = targetAxe.WholeBody.Point;
                 }
                 else if (targetCandy != null)
                 {
                     // Multi-candy: bind to the candy named by candyNumber.
-                    grab.candyNumber = 0;
                     constraintedPoint = targetCandy.WholeBody.Point;
                 }
                 else
                 {
-                    grab.candyNumber = split == null ? 0 : flag ? 1 : 2;
                     constraintedPoint = authoredHalf ?? star;
                 }
 
@@ -135,24 +157,22 @@ namespace CutTheRopeDX.GameMain
                         bungee.SetCutOnlyByAxe();
                     }
                     grab.SetRope(bungee);
-                    if (grab.kicked)
+                    ropes.Register(bungee, grab);
+                    if (grab.Mount?.IsMounted == false)
                     {
-                        bungee.bungeeAnchor.pin = Vect(-1f, -1f);
-                        bungee.bungeeAnchor.SetWeight(0.1f);
+                        grab.Mount.Kick(grab);
                     }
                 }
             }
-            grab.SetRadius(grabRadius);
-            // A path mover (bee/launcher) and a drag rail are mutually exclusive movement
-            // mechanisms; the authored path wins and rail attributes are ignored (PD 2026-07-24).
-            grab.SetMoveLengthVerticalOffset(grab.mover != null ? 0f : k, v, o);
-            if (grab.gun && grab.gunArrow != null)
+            grab.CreateAxisVisuals();
+            grab.CreateRailVisuals();
+            if (grab.GunSource != null && grab.GunSource.Arrow != null)
             {
                 SplitCandyState split = candies[0].Lifecycle.Split;
                 ConstraintedPoint constraintedPoint = split == null ? star
                     : flag ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
-                grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                grab.GunSource.Arrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
             }
             bungees.Add(grab);
         }

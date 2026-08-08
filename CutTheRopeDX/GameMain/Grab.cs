@@ -23,22 +23,29 @@ namespace CutTheRopeDX.GameMain
         /// <param name="color">Color used for the radius outline.</param>
         protected static void DrawGrabCircle(Grab s, RGBAColor color)
         {
-            int segmentCount = s.vertexCount / 2;
+            AutoRadiusSource source = s.RadiusSource;
+            if (source == null)
+            {
+                return;
+            }
+
+            int segmentCount = source.VertexCount / 2;
             int totalVertices = segmentCount * 8;
             VertexPositionColor[] vertices = GetGrabCircleVertexCache(totalVertices);
             int writeIndex = 0;
-            for (int i = 0; i < s.vertexCount; i += 2)
+            for (int i = 0; i < source.VertexCount; i += 2)
             {
                 VertexPositionColor[] lineVertices = DrawHelper.BuildAntialiasedLineVertices(
-                    s.vertices[i * 2],
-                    s.vertices[(i * 2) + 1],
-                    s.vertices[(i * 2) + 2],
-                    s.vertices[(i * 2) + 3],
+                    source.Vertices[i * 2],
+                    source.Vertices[(i * 2) + 1],
+                    source.Vertices[(i * 2) + 2],
+                    source.Vertices[(i * 2) + 3],
                     3f,
                     color);
                 Array.Copy(lineVertices, 0, vertices, writeIndex, 8);
                 writeIndex += 8;
             }
+
             if (writeIndex > 0)
             {
                 Renderer.DrawTriangleStrip(vertices, writeIndex);
@@ -50,16 +57,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public Grab()
         {
-            rope = null;
-            wheelOperating = -1;
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            baloon = cTRRootController.IsSurvival();
-            gun = false;
-            gunFired = false;
-            invisible = false;
-            kicked = false;
-            kickActive = false;
-            stickTimer = -1f;
         }
 
         /// <summary>
@@ -75,105 +72,17 @@ namespace CutTheRopeDX.GameMain
             return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
         }
 
-        /// <summary>
-        /// Records the starting touch point for wheel rotation.
-        /// </summary>
-        /// <param name="v">World-space touch point.</param>
-        public void HandleWheelTouch(Vector v)
-        {
-            lastWheelTouch = v;
-        }
-
-        /// <summary>
-        /// Rotates a wheel hook from the last touch point and rolls the attached rope when possible.
-        /// </summary>
-        /// <param name="v">Current world-space touch point.</param>
-        public void HandleWheelRotate(Vector v)
-        {
-            if (lastWheelTouch.X - v.X == 0f && lastWheelTouch.Y - v.Y == 0f)
-            {
-                return;
-            }
-            CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
-            float rotateDelta = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
-            if (rotateDelta > DEG_180)
-            {
-                rotateDelta -= DEG_360;
-            }
-            else if (rotateDelta < -DEG_180)
-            {
-                rotateDelta += DEG_360;
-            }
-            wheelImage2.rotation += rotateDelta;
-            wheelImage3.rotation += rotateDelta;
-            wheelHighlight.rotation += rotateDelta;
-            float maxWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMax;
-            float minWheelDelta = ActivePhysicsConstants.GrabWheelRotateDeltaMin;
-            rotateDelta = rotateDelta > 0f ? MIN(MAX(minWheelDelta, rotateDelta), maxWheelDelta) : MAX(MIN(0f - minWheelDelta, rotateDelta), 0f - maxWheelDelta);
-            float ropeLength = 0f;
-            if (rope != null)
-            {
-                ropeLength = rope.GetLength();
-            }
-            if (rope != null)
-            {
-                if (rotateDelta > 0f)
-                {
-                    if (ropeLength < ActivePhysicsConstants.GrabRopeRollMaxLength)
-                    {
-                        rope.Roll(rotateDelta);
-                    }
-                }
-                else if (rotateDelta != 0f && rope.parts.Count > 3)
-                {
-                    _ = rope.RollBack(0f - rotateDelta);
-                }
-                wheelDirty = true;
-            }
-            lastWheelTouch = v;
-        }
-
         /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
-            if (gunFired && gunCup != null)
+            Source.Update(delta);
+            // Transported grabs keep their rope anchor pinned to grab position.
+            if (IsDrawnByTransporter)
             {
-                gunCup.Update(delta);
+                SyncRopeAnchor();
             }
-            // Transported grabs keep their rope anchor pinned to grab position
-            // regardless of launcher state.
-            if (IsDrawnByTransporter && rope != null)
-            {
-                rope.bungeeAnchor.pos = Vect(x, y);
-                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
-            }
-            if (launcher && rope != null)
-            {
-                rope.bungeeAnchor.pos = Vect(x, y);
-                rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
-                if (launcherIncreaseSpeed)
-                {
-                    if (Mover.MoveVariableToTarget(ref launcherSpeed, 200, 30, delta))
-                    {
-                        launcherIncreaseSpeed = false;
-                    }
-                }
-                else if (Mover.MoveVariableToTarget(ref launcherSpeed, 130, 30, delta))
-                {
-                    launcherIncreaseSpeed = true;
-                }
-                mover.SetMoveSpeed(launcherSpeed);
-            }
-            if (hideRadius)
-            {
-                radiusAlpha -= 1.5f * delta;
-                if (radiusAlpha <= 0)
-                {
-                    radius = -1f;
-                    hideRadius = false;
-                }
-            }
+
             if (bee != null)
             {
                 Vector vector2 = mover.path[mover.targetPoint];
@@ -187,78 +96,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
-            if (wheel && wheelDirty)
-            {
-                float wheelScaleLength = rope == null ? 0f : rope.GetLength() * 0.7f;
-                if (wheelScaleLength == 0f)
-                {
-                    wheelImage2.scaleX = wheelImage2.scaleY = 0f;
-                    return;
-                }
-                wheelImage2.scaleX = wheelImage2.scaleY = MAX(0f, MIN(1.2f, 1 - RT(wheelScaleLength / 1400f, wheelScaleLength / 700)));
-            }
-        }
-
-        /// <summary>
-        /// Updates spider movement along the attached rope.
-        /// </summary>
-        /// <param name="delta">Elapsed time in seconds since the previous update.</param>
-        public void UpdateSpider(float delta)
-        {
-            if (hasSpider && shouldActivate)
-            {
-                shouldActivate = false;
-                spiderActive = true;
-                CTRSoundMgr.PlaySound(Resources.Snd.SpiderActivate);
-                spider.PlayTimeline(0);
-            }
-            if (!hasSpider || !spiderActive)
-            {
-                return;
-            }
-            if (spider.GetCurrentTimelineIndex() != 0)
-            {
-                spiderPos += delta * ActivePhysicsConstants.SpiderTraversalSpeed;
-            }
-            float traversedLength = 0f;
-            bool flag = false;
-            if (rope != null)
-            {
-                int i = 0;
-                while (i < rope.drawPtsCount)
-                {
-                    Vector vector = Vect(rope.drawPts[i], rope.drawPts[i + 1]);
-                    Vector vector2 = Vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
-                    float segmentLength = MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, VectDistance(vector, vector2));
-                    if (spiderPos >= traversedLength && (spiderPos < traversedLength + segmentLength || i > rope.drawPtsCount - 3))
-                    {
-                        float segmentProgress = spiderPos - traversedLength;
-                        Vector v = VectSub(vector2, vector);
-                        v = VectMult(v, segmentProgress / segmentLength);
-                        spider.x = vector.X + v.X;
-                        spider.y = vector.Y + v.Y;
-                        if (i > rope.drawPtsCount - 3)
-                        {
-                            flag = true;
-                        }
-                        if (spider.GetCurrentTimelineIndex() != 0)
-                        {
-                            spider.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(v)) + DEG_270;
-                            break;
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        traversedLength += segmentLength;
-                        i += 2;
-                    }
-                }
-            }
-            if (flag)
-            {
-                spiderPos = -1f;
-            }
+            Wheel?.UpdateArmScale(this);
         }
 
         /// <summary>
@@ -266,31 +104,30 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public virtual void DrawBack()
         {
-            if (invisible)
+            if (IsInvisible)
             {
                 return;
             }
-            if (kickable && kicked && rope != null)
+            if (Mount?.IsMounted == false)
             {
-                x = (rope.bungeeAnchor.pos.X * 0.8f) + (x * 0.2f);
-                y = (rope.bungeeAnchor.pos.Y * 0.8f) + (y * 0.2f);
+                Mount.SyncBackPosition(this);
             }
-            if (gun)
+            if (GunSource != null)
             {
                 return;
             }
-            if (moveLength > 0)
+            if (Rail != null)
             {
-                moveBackground.Draw();
+                Rail.Background.Draw();
             }
             else
             {
                 back.Draw();
             }
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            if (radius != -1f || hideRadius)
+            if (RadiusSource?.ShouldDrawCircle == true)
             {
-                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, radiusAlpha);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2f, 0.5f, 0.9f, RadiusSource.RadiusAlpha);
                 DrawGrabCircle(this, rgbaColor);
             }
             Renderer.SetColor(Color.White);
@@ -302,41 +139,40 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DrawBungee()
         {
-            Bungee bungee = rope;
+            Bungee bungee = Rope;
             bungee?.Draw();
         }
 
         /// <inheritdoc />
         public override void Draw()
         {
-            if (invisible)
+            if (IsInvisible)
             {
                 return;
             }
-            if (kickable && kicked && rope != null)
+            if (Mount?.IsMounted == false)
             {
-                x = rope.bungeeAnchor.pos.X;
-                y = rope.bungeeAnchor.pos.Y;
+                Mount.SyncFrontPosition(this);
             }
             PreDraw();
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Bungee bungee = rope;
+            Bungee bungee = Rope;
 
-            if (wheel)
+            if (Wheel != null)
             {
-                wheelHighlight.visible = wheelOperating != -1;
-                wheelImage3.visible = wheelOperating == -1;
+                Wheel.Highlight.visible = Wheel.OperatingTouch != -1;
+                Wheel.Indicator.visible = Wheel.OperatingTouch == -1;
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                wheelImage.Draw();
+                Wheel.Base.Draw();
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
 
-            if (gunBack != null)
+            if (GunSource is GunSource gunSource && gunSource.Back != null)
             {
-                gunBack.Draw();
-                if (!gunFired && gunArrow != null)
+                gunSource.Back.Draw();
+                if (!gunSource.HasFired && gunSource.Arrow != null)
                 {
-                    gunArrow.Draw();
+                    gunSource.Arrow.Draw();
                 }
             }
 
@@ -347,55 +183,22 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
 
             // Draw front gun
-            gunFront?.Draw();
+            GunSource?.Front?.Draw();
 
-            if (moveLength <= 0)
+            if (Rail == null)
             {
                 front?.Draw();
             }
-            else if (moverDragging != -1)
+            else if (Rail.DraggingTouch != -1)
             {
-                grabMoverHighlight?.Draw();
+                Rail.MoverHighlight?.Draw();
             }
             else
             {
-                grabMover?.Draw();
+                Rail.Mover?.Draw();
             }
-            if (wheel)
-            {
-                wheelImage2.Draw();
-            }
+            Wheel?.Arm.Draw();
             PostDraw();
-        }
-
-        /// <summary>
-        /// Draws the spider attachment animation.
-        /// </summary>
-        public void DrawSpider()
-        {
-            spider.Draw();
-        }
-
-        /// <summary>
-        /// Draws the fired gun cup overlay.
-        /// </summary>
-        public void DrawGunCup()
-        {
-            if (!gunFired)
-            {
-                return;
-            }
-            Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            gunCup?.Draw();
-        }
-
-        /// <summary>Updates the gun body to show whether the gun can currently fire.</summary>
-        /// <param name="disabled">
-        /// <see langword="true"/> to show the fired body; otherwise, <see langword="false"/>.
-        /// </param>
-        public void SetGunDisabled(bool disabled)
-        {
-            gunFront?.SetDrawQuad(gunFired || disabled ? GunDisabledFrontQuad : GunFrontQuad);
         }
 
         /// <summary>
@@ -404,12 +207,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="r">Rope to attach.</param>
         public void SetRope(Bungee r)
         {
-            rope = r;
-            radius = -1f;
-            if (hasSpider)
-            {
-                shouldActivate = true;
-            }
+            _ = Attachment.TryAttach(r);
+            Spider?.Arm(ropeAttachedToCandy: true);
         }
 
         /// <summary>
@@ -418,21 +217,55 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The chain hook atlas for chain bungees; otherwise the default hook atlas.</returns>
         internal string GetHookTextureResource()
         {
-            return rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
+            return Rope?.cutOnlyByAxe == true ? Resources.Img.ObjHookChain : Resources.Img.ObjHook;
         }
 
         /// <summary>
-        /// Configures this grab as a launcher that oscillates along a circular path.
+        /// Gets the rectangle around this grab that a cut stroke may not cut inside, or
+        /// <see langword="null"/> when the whole rope is cuttable. A wheel and a gun each protect
+        /// their own tap zone so operating them cannot sever the rope they control.
         /// </summary>
-        public void SetLauncher()
+        public CTRRectangle? CutExclusionZone =>
+            Wheel != null
+                ? new CTRRectangle(
+                    x - WheelControl.TapHalfExtent, y - WheelControl.TapHalfExtent,
+                    WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)
+                : Source is GunSource
+                    ? new CTRRectangle(
+                        x - GUN_CUT_RADIUS, y - GUN_CUT_RADIUS,
+                        GUN_CUT_RADIUS * 2f, GUN_CUT_RADIUS * 2f)
+                    : null;
+
+        /// <summary>
+        /// Reacts to this grab's own rope being cut. The single place a hook's components learn about
+        /// it; every cut site used to inline the spider and gun-cup handling itself.
+        /// </summary>
+        /// <param name="reason">Why the rope was cut.</param>
+        public void OnRopeCut(RopeCutReason reason)
         {
-            launcher = true;
-            launcherIncreaseSpeed = true;
-            launcherSpeed = 130f;
-            Mover mover = new(100, launcherSpeed, 0f);
-            mover.SetPathFromStringandStart("RC30", Vect(x, y));
-            SetMover(mover);
-            mover.Start();
+            if (Spider?.ShouldBustOnRopeCut == true)
+            {
+                Spider.Bust();
+            }
+
+            Source.OnRopeCut(reason);
+        }
+
+        /// <summary>
+        /// Pins this grab's rope anchor to its own position. Five separate copies of these two lines
+        /// used to exist - transporter, launcher, path mover, disc rotation and rail drag - and they
+        /// were byte-identical.
+        /// </summary>
+        public void SyncRopeAnchor()
+        {
+            Bungee attached = Rope;
+            if (attached == null)
+            {
+                return;
+            }
+
+            attached.bungeeAnchor.pos = Vect(x, y);
+            attached.bungeeAnchor.pin = attached.bungeeAnchor.pos;
         }
 
         /// <summary>
@@ -440,61 +273,59 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ReCalcCircle()
         {
-            DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
+            Source.OnAnchorMoved(Vect(x, y));
         }
 
         /// <summary>
-        /// Configures this grab's radius and creates the visual resources for its active mode.
+        /// Creates the visual resources for whichever axes this grab was resolved onto. Purely
+        /// visual: <see cref="GrabAxisResolver"/> has already decided which axes exist.
         /// </summary>
-        /// <param name="r">Grab radius, or -1 for a fixed hook without a visible radius.</param>
-        public void SetRadius(float r)
+        public void CreateAxisVisuals()
         {
-            radius = r;
-            if (gun)
+            if (Source is GunSource gunSource)
             {
-                gunBack = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
-                gunBack.DoRestoreCutTransparency();
-                gunBack.anchor = gunBack.parentAnchor = 18;
-                _ = AddChild(gunBack);
-                gunBack.visible = false;
+                gunSource.Back = Image_createWithResIDQuad(Resources.Img.ObjGun, GunBackQuad);
+                gunSource.Back.DoRestoreCutTransparency();
+                gunSource.Back.anchor = gunSource.Back.parentAnchor = 18;
+                _ = AddChild(gunSource.Back);
+                gunSource.Back.visible = false;
 
-                gunArrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
-                gunArrow.DoRestoreCutTransparency();
-                gunArrow.anchor = gunArrow.parentAnchor = 18;
-                _ = AddChild(gunArrow);
-                gunArrow.visible = false;
+                gunSource.Arrow = Image_createWithResIDQuad(Resources.Img.ObjGun, GunArrowQuad);
+                gunSource.Arrow.DoRestoreCutTransparency();
+                gunSource.Arrow.anchor = gunSource.Arrow.parentAnchor = 18;
+                _ = AddChild(gunSource.Arrow);
+                gunSource.Arrow.visible = false;
 
-                gunFront = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
-                gunFront.DoRestoreCutTransparency();
-                gunFront.anchor = gunFront.parentAnchor = 18;
-                _ = AddChild(gunFront);
-                gunFront.visible = false;
+                gunSource.Front = Image_createWithResIDQuad(Resources.Img.ObjGun, GunFrontQuad);
+                gunSource.Front.DoRestoreCutTransparency();
+                gunSource.Front.anchor = gunSource.Front.parentAnchor = 18;
+                _ = AddChild(gunSource.Front);
+                gunSource.Front.visible = false;
 
-                gunCup = Animation_createWithResID(Resources.Img.ObjGun);
-                gunCup.DoRestoreCutTransparency();
-                gunCup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
-                gunCup.anchor = 18;
-                _ = AddChild(gunCup);
-                gunCup.visible = false;
+                gunSource.Cup = Animation_createWithResID(Resources.Img.ObjGun);
+                gunSource.Cup.DoRestoreCutTransparency();
+                gunSource.Cup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
+                gunSource.Cup.anchor = 18;
+                _ = AddChild(gunSource.Cup);
+                gunSource.Cup.visible = false;
 
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
-                gunCup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
+                gunSource.Cup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
 
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
                 timeline2.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline2.AddKeyFrame(KeyFrame.MakePos(0, 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
-                gunCup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
+                gunSource.Cup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
                 Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
                 track.relative = true;
                 return;
             }
-            if (kickable)
+            if (Mount != null)
             {
-                stainCounter = MAX_STAINS;
                 back = Image_createWithResIDQuad(Resources.Img.ObjSticker, 3);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
@@ -507,7 +338,7 @@ namespace CutTheRopeDX.GameMain
                 front.visible = false;
                 UpdateKickState();
             }
-            else if (radius == -1f)
+            else if (Source is PreAttachedSource)
             {
                 string hookTexture = GetHookTextureResource();
                 int hookBaseQuad = hookTexture == Resources.Img.ObjHookChain ? Hook01BackQuad : RandomHookBaseQuad();
@@ -524,9 +355,9 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 // A chain auto-hook (breakable="false") uses the dedicated chain auto-hook atlas.
-                string autoTexture = cutOnlyByAxe ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHook;
-                int autoBackQuad = cutOnlyByAxe ? HookAutoChainBackQuad : HookAutoBackQuad;
-                int autoFrontQuad = cutOnlyByAxe ? HookAutoChainFrontQuad : HookAutoFrontQuad;
+                string autoTexture = IsChainAnchor ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHook;
+                int autoBackQuad = IsChainAnchor ? HookAutoChainBackQuad : HookAutoBackQuad;
+                int autoFrontQuad = IsChainAnchor ? HookAutoChainFrontQuad : HookAutoFrontQuad;
                 back = Image_createWithResIDQuad(autoTexture, autoBackQuad);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
@@ -536,89 +367,75 @@ namespace CutTheRopeDX.GameMain
                 _ = AddChild(front);
                 back.visible = false;
                 front.visible = false;
-                radiusAlpha = 1f;
-                hideRadius = false;
-                vertexCount = (int)MAX(16f, radius);
-                vertexCount /= 2;
-                if (vertexCount % 2 != 0)
-                {
-                    vertexCount++;
-                }
-                vertices = new float[vertexCount * 2];
-                DrawHelper.CalcCircle(x, y, radius, vertexCount, vertices);
             }
-            if (wheel)
+
+            if (Wheel is WheelControl wheelControl)
             {
-                wheelImage = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
-                wheelImage.anchor = wheelImage.parentAnchor = 18;
-                _ = AddChild(wheelImage);
-                wheelImage.visible = false;
-                wheelImage2 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadArm);
-                wheelImage2.passTransformationsToChilds = false;
-                wheelHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadHighlight);
-                wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
-                _ = wheelImage2.AddChild(wheelHighlight);
-                wheelImage3 = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadIndicator);
-                wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
-                _ = wheelImage2.AddChild(wheelImage3);
-                _ = AddChild(wheelImage2);
-                wheelImage2.visible = false;
-                wheelDirty = true;
+                wheelControl.Base = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadBase);
+                wheelControl.Base.anchor = wheelControl.Base.parentAnchor = 18;
+                _ = AddChild(wheelControl.Base);
+                wheelControl.Base.visible = false;
+                wheelControl.Arm = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadArm);
+                wheelControl.Arm.passTransformationsToChilds = false;
+                wheelControl.Highlight = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadHighlight);
+                wheelControl.Highlight.anchor = wheelControl.Highlight.parentAnchor = 18;
+                _ = wheelControl.Arm.AddChild(wheelControl.Highlight);
+                wheelControl.Indicator = Image_createWithResIDQuad(Resources.Img.ObjHook, RegulatedWheelQuadIndicator);
+                wheelControl.Indicator.anchor = wheelControl.Indicator.parentAnchor = wheelControl.Arm.anchor = wheelControl.Arm.parentAnchor = 18;
+                _ = wheelControl.Arm.AddChild(wheelControl.Indicator);
+                _ = AddChild(wheelControl.Arm);
+                wheelControl.Arm.visible = false;
             }
         }
 
         /// <summary>
-        /// Configures this grab as a movable hook along a horizontal or vertical rail.
+        /// Creates the rail's three images, when this grab was resolved onto a rail. Purely visual:
+        /// the rail's geometry belongs to <see cref="RailMotion"/>.
         /// </summary>
-        /// <param name="l">Movable rail length.</param>
-        /// <param name="v">Whether the rail is vertical.</param>
-        /// <param name="o">Offset of the grab along the rail.</param>
-        public void SetMoveLengthVerticalOffset(float l, bool v, float o)
+        public void CreateRailVisuals()
         {
-            moveLength = l;
-            moveVertical = v;
-            moveOffset = o;
-            if (moveLength > 0)
+            if (Rail is not RailMotion rail)
             {
-                moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
-                moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
-                moveBackground.width = (int)(l + 142f);
-                moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
-                moveBackground.x = -74f;
-                grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
-                grabMoverHighlight.visible = false;
-                grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
-                _ = AddChild(grabMoverHighlight);
-                grabMover = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookQuad);
-                grabMover.visible = false;
-                grabMover.anchor = grabMover.parentAnchor = 18;
-                _ = AddChild(grabMover);
-                _ = grabMover.AddChild(moveBackground);
-                if (moveVertical)
-                {
-                    moveBackground.rotation = DEG_90;
-                    moveBackground.y = 0f - moveOffset;
-                    minMoveValue = y - moveOffset;
-                    maxMoveValue = y + (moveLength - moveOffset);
-                    grabMover.rotation = DEG_90;
-                    grabMoverHighlight.rotation = DEG_90;
-                }
-                else
-                {
-                    minMoveValue = x - moveOffset;
-                    maxMoveValue = x + (moveLength - moveOffset);
-                    moveBackground.x += 0f - moveOffset;
-                }
-                moveBackground.anchor = 17;
-                moveBackground.x += x;
-                moveBackground.y += y;
-                moveBackground.visible = false;
+                return;
             }
-            moverDragging = -1;
-            if (moveLength >= 0f)
+
+            float l = rail.Length;
+            bool v = rail.IsVertical;
+            float o = rail.Offset;
+
+            HorizontallyTiledImage moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(Resources.Img.ObjHook);
+            moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
+            moveBackground.width = (int)(l + 142f);
+            moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
+            moveBackground.x = -74f;
+            Image grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
+            grabMoverHighlight.visible = false;
+            grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
+            _ = AddChild(grabMoverHighlight);
+            Image grabMover = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookQuad);
+            grabMover.visible = false;
+            grabMover.anchor = grabMover.parentAnchor = 18;
+            _ = AddChild(grabMover);
+            _ = grabMover.AddChild(moveBackground);
+            if (v)
             {
-                kickable = false;
+                moveBackground.rotation = DEG_90;
+                moveBackground.y = 0f - o;
+                grabMover.rotation = DEG_90;
+                grabMoverHighlight.rotation = DEG_90;
             }
+            else
+            {
+                moveBackground.x += 0f - o;
+            }
+            moveBackground.anchor = 17;
+            moveBackground.x += x;
+            moveBackground.y += y;
+            moveBackground.visible = false;
+
+            rail.Background = moveBackground;
+            rail.Mover = grabMover;
+            rail.MoverHighlight = grabMoverHighlight;
         }
 
         /// <summary>
@@ -656,26 +473,21 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(bee);
         }
 
-        /// <summary>
-        /// Configures spider support for this grab.
-        /// </summary>
-        /// <param name="s">Whether this grab has an attached spider.</param>
-        public void SetSpider(bool s)
+        /// <summary>Attaches a spider to this grab.</summary>
+        public void SetSpider()
         {
-            hasSpider = s;
-            shouldActivate = false;
-            spiderActive = false;
-            spider = Animation_createWithResID(Resources.Img.ObjSpider);
-            spider.DoRestoreCutTransparency();
-            spider.anchor = 18;
-            spider.x = x;
-            spider.y = y;
-            spider.visible = false;
-            spider.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
-            spider.SetDelayatIndexforAnimation(0.4f, 5, 0);
-            spider.AddAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
-            spider.SwitchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
-            _ = AddChild(spider);
+            Animation spiderAnimation = Animation_createWithResID(Resources.Img.ObjSpider);
+            spiderAnimation.DoRestoreCutTransparency();
+            spiderAnimation.anchor = 18;
+            spiderAnimation.x = x;
+            spiderAnimation.y = y;
+            spiderAnimation.visible = false;
+            spiderAnimation.AddAnimationWithIDDelayLoopFirstLast(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 6);
+            spiderAnimation.SetDelayatIndexforAnimation(0.4f, 5, 0);
+            spiderAnimation.AddAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
+            spiderAnimation.SwitchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
+            _ = AddChild(spiderAnimation);
+            Spider = new SpiderRider { Animation = spiderAnimation };
         }
 
         /// <summary>
@@ -683,29 +495,19 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DestroyRope()
         {
-            rope?.Dispose();
-            rope = null;
+            Attachment.Release();
         }
 
-        /// <summary>
-        /// Updates suction cup visuals and synchronizes position to the attached rope.
-        /// </summary>
+        /// <summary>Switches the suction cup images between their stuck and detached quads.</summary>
         public void UpdateKickState()
         {
-            if (kicked)
+            bool detached = Mount?.IsMounted == false;
+            back?.SetDrawQuad(detached ? 1 : 3);
+            front?.SetDrawQuad(detached ? 2 : 4);
+            if (Rope != null)
             {
-                back?.SetDrawQuad(1);
-                front?.SetDrawQuad(2);
-            }
-            else
-            {
-                back?.SetDrawQuad(3);
-                front?.SetDrawQuad(4);
-            }
-            if (rope != null)
-            {
-                x = rope.bungeeAnchor.pos.X;
-                y = rope.bungeeAnchor.pos.Y;
+                x = Rope.bungeeAnchor.pos.X;
+                y = Rope.bungeeAnchor.pos.Y;
             }
         }
 
@@ -743,15 +545,11 @@ namespace CutTheRopeDX.GameMain
         {
             if (disposing)
             {
-                if (vertices != null)
-                {
-                    vertices = null;
-                }
                 DestroyRope();
                 bee?.Dispose();
                 bee = null;
-                spider?.Dispose();
-                spider = null;
+                Spider?.Animation?.Dispose();
+                Spider = null;
             }
             base.Dispose(disposing);
         }
@@ -792,9 +590,9 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void DidMoveToOtherSide()
         {
-            if (rope != null && rope.cut == -1)
+            if (Rope != null && Rope.cut == -1)
             {
-                rope.MoveAnchor(Vect(x, y));
+                Rope.MoveAnchor(Vect(x, y));
             }
         }
 
@@ -828,34 +626,31 @@ namespace CutTheRopeDX.GameMain
 
         // public Image dot;
 
-        /// <summary>Rope attached to this grab.</summary>
-        public Bungee rope;
+        /// <summary>Gets the authority for this grab's rope and its condition.</summary>
+        public RopeAttachment Attachment { get; } = new();
 
-        /// <summary>Index of the candy attached to this grab, or -1 when no candy is attached.</summary>
-        public int candyNumber = -1;
+        /// <summary>Gets the rope attached to this grab, or <see langword="null"/> when there is none.</summary>
+        public Bungee Rope => Attachment.Rope;
 
-        /// <summary>Grab radius used for rope creation and radius visualization.</summary>
-        public float radius;
+        /// <summary>Gets the object that decides whether this grab can produce a rope.</summary>
+        public RopeSource Source { get; internal set; } = new PreAttachedSource();
+
+        /// <summary>Gets this grab's radius source, or <see langword="null"/> when it has none.</summary>
+        public AutoRadiusSource RadiusSource => Source as AutoRadiusSource;
+
+        /// <summary>Gets or sets this grab's independent traits.</summary>
+        public HookModifiers Modifiers { get; internal set; } = HookModifiers.None;
 
         /// <summary>
-        /// Whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain hook
-        /// sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs (those
-        /// with a <see cref="radius"/>) this drives the <see cref="Resources.Img.ObjHookAutoChain"/>
-        /// variant and is applied to the rope created on attach.
+        /// Gets whether this grab is a chain (<c>breakable="false"</c>): it renders with the chain
+        /// hook sprites and any rope it creates can only be cut by the axe. For auto-attaching grabs
+        /// (those with a radius) this drives the <see cref="Resources.Img.ObjHookAutoChain"/> variant
+        /// and is applied to the rope created on attach.
         /// </summary>
-        public bool cutOnlyByAxe;
+        public bool IsChainAnchor => Modifiers.HasFlag(HookModifiers.ChainAnchor);
 
-        /// <summary>Alpha multiplier for the grab-radius visualization.</summary>
-        public float radiusAlpha;
-
-        /// <summary>Whether the grab-radius visualization is fading out.</summary>
-        public bool hideRadius;
-
-        /// <summary>Cached radius circle vertex positions.</summary>
-        public float[] vertices;
-
-        /// <summary>Number of radius circle vertices stored in <see cref="vertices"/>.</summary>
-        public int vertexCount;
+        /// <summary>Gets whether this grab should skip drawing.</summary>
+        public bool IsInvisible => Modifiers.HasFlag(HookModifiers.Invisible);
 
         /// <summary>Reusable vertex buffer used when drawing grab radius circles.</summary>
         private static VertexPositionColor[] s_grabCircleVerticesCache;
@@ -874,80 +669,17 @@ namespace CutTheRopeDX.GameMain
             return s_grabCircleVerticesCache;
         }
 
-        /// <summary>Whether this grab uses the regulated wheel hook behavior.</summary>
-        public bool wheel;
+        /// <summary>Gets this grab's wheel, or <see langword="null"/> when it has none.</summary>
+        public WheelControl Wheel { get; internal set; }
 
-        /// <summary>Highlight visual shown while the wheel hook is being operated.</summary>
-        public Image wheelHighlight;
+        /// <summary>Gets the object that supplies this grab's position.</summary>
+        public AnchorMotion Motion { get; internal set; } = new StaticMotion();
 
-        /// <summary>Base wheel hook visual.</summary>
-        public Image wheelImage;
+        /// <summary>Gets this grab's rail, or <see langword="null"/> when it has none.</summary>
+        public RailMotion Rail => Motion as RailMotion;
 
-        /// <summary>Wheel hook arm visual.</summary>
-        public Image wheelImage2;
-
-        /// <summary>Wheel hook indicator visual.</summary>
-        public Image wheelImage3;
-
-        /// <summary>Identifier for the active wheel touch, or -1 when idle.</summary>
-        public int wheelOperating;
-
-        /// <summary>Last touch point used to compute wheel rotation deltas.</summary>
-        public Vector lastWheelTouch;
-
-        /// <summary>Length of the movable hook rail.</summary>
-        public float moveLength;
-
-        /// <summary>Whether the movable hook rail is vertical.</summary>
-        public bool moveVertical;
-
-        /// <summary>Offset of the grab along its movable rail.</summary>
-        public float moveOffset;
-
-        /// <summary>Tiled rail background for a movable hook.</summary>
-        public HorizontallyTiledImage moveBackground;
-
-        /// <summary>Movable hook highlight visual.</summary>
-        public Image grabMoverHighlight;
-
-        /// <summary>Movable hook foreground visual.</summary>
-        public Image grabMover;
-
-        /// <summary>Identifier for the active movable-hook drag, or -1 when idle.</summary>
-        public int moverDragging;
-
-        /// <summary>Minimum coordinate value allowed while moving along the rail.</summary>
-        public float minMoveValue;
-
-        /// <summary>Maximum coordinate value allowed while moving along the rail.</summary>
-        public float maxMoveValue;
-
-        /// <summary>Whether this grab has a spider attachment.</summary>
-        public bool hasSpider;
-
-        /// <summary>Whether the spider attachment is currently walking along the rope.</summary>
-        public bool spiderActive;
-
-        /// <summary>Spider attachment animation.</summary>
-        public Animation spider;
-
-        /// <summary>Current spider traversal distance along the rope.</summary>
-        public float spiderPos;
-
-        /// <summary>Whether the spider should activate on the next update.</summary>
-        public bool shouldActivate;
-
-        /// <summary>Whether the wheel arm scale needs to be recomputed.</summary>
-        public bool wheelDirty;
-
-        /// <summary>Whether this grab moves as a launcher.</summary>
-        public bool launcher;
-
-        /// <summary>Current launcher movement speed.</summary>
-        public float launcherSpeed;
-
-        /// <summary>Whether launcher speed is currently increasing.</summary>
-        public bool launcherIncreaseSpeed;
+        /// <summary>Gets this grab's spider, or <see langword="null"/> when it has none.</summary>
+        public SpiderRider Spider { get; internal set; }
 
         /// <summary>Initial grab rotation used when restoring state.</summary>
         public float initial_rotation;
@@ -961,59 +693,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Initial rotated-circle binding used when restoring state.</summary>
         public RotatedCircle initial_rotatedCircle;
 
-        /// <summary>Whether this grab uses survival balloon behavior.</summary>
-        public bool baloon;
+        /// <summary>Gets this grab's gun source, or <see langword="null"/> when it is not a gun.</summary>
+        public GunSource GunSource => Source as GunSource;
 
-        /// <summary>Whether this grab uses gun hook behavior.</summary>
-        public bool gun;
-
-        /// <summary>Whether the gun hook has fired its cup.</summary>
-        public bool gunFired;
-
-        /// <summary>Back visual layer for the gun hook.</summary>
-        private Image gunBack;
-
-        /// <summary>Aim arrow visual for the gun hook.</summary>
-        public Image gunArrow;
-
-        /// <summary>Front visual layer for the gun hook.</summary>
-        public Image gunFront;
-
-        /// <summary>Animated suction cup fired by the gun hook.</summary>
-        public Animation gunCup;
-
-        /// <summary>Initial gun hook rotation used when restoring state.</summary>
-        public float gunInitialRotation;
-
-        /// <summary>Initial candy rotation captured when the gun hook fires.</summary>
-        public float gunCandyInitialRotation;
-
-        /// <summary>Remaining stain marks available to the suction cup hook.</summary>
-        public int stainCounter;
-
-        /// <summary>Whether this grab uses suction cup behavior.</summary>
-        public bool kickable;
-
-        /// <summary>Whether suction cup behavior has been triggered.</summary>
-        public bool kicked;
-
-        /// <summary>Whether suction cup behavior is active.</summary>
-        public bool kickActive;
-
-        /// <summary>Whether this grab should skip drawing.</summary>
-        public bool invisible;
-
-        /// <summary>Timer used by suction cup sticking behavior.</summary>
-        public float stickTimer;
+        /// <summary>Gets this grab's suction mount, or <see langword="null"/> when it has none.</summary>
+        public SuctionMount Mount { get; internal set; }
 
         /// <summary>Bee visual attached to this grab.</summary>
         public Image bee;
-
-        /// <summary>First random fixed hook back quad.</summary>
-        private const int Hook01BackQuad = 0;
-
-        /// <summary>Second random fixed hook back quad.</summary>
-        private const int Hook02BackQuad = 2;
 
         /// <summary>Automatic-radius hook back quad.</summary>
         private const int HookAutoBackQuad = 4;
@@ -1057,22 +744,26 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Bee body quad.</summary>
         private const int BeeQuad = 1;
 
+        /// <summary>First random fixed hook back quad.</summary>
+        private const int Hook01BackQuad = 0;
+
+        /// <summary>Second random fixed hook back quad.</summary>
+        private const int Hook02BackQuad = 2;
+
         /// <summary>Gun hook back quad.</summary>
         private const int GunBackQuad = 0;
 
         /// <summary>Gun hook arrow quad.</summary>
-        private const int GunArrowQuad = 1;
+        internal const int GunArrowQuad = 1;
 
         /// <summary>Gun hook front quad.</summary>
-        private const int GunFrontQuad = 2;
+        internal const int GunFrontQuad = 2;
 
         /// <summary>Gun hook front quad used after firing and while disabled.</summary>
-        private const int GunDisabledFrontQuad = 3;
+        internal const int GunDisabledFrontQuad = 3;
 
-        /// <summary>
-        /// Selects one of the fixed hook back quad variants.
-        /// </summary>
-        /// <returns>The selected fixed hook back quad index.</returns>
+        /// <summary>Selects one of the two fixed-hook sprite pairs.</summary>
+        /// <returns>The selected back-layer quad.</returns>
         private static int RandomHookBaseQuad()
         {
             return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;

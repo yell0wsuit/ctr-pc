@@ -33,6 +33,7 @@ namespace CutTheRopeDX.GameMain
 
             // Initialize object collections
             bungees = [];
+            ropes = new RopeRegistry();
             candyConnector = null;
             candiesConnected = false;
             candiesConnectedBreakable = true;

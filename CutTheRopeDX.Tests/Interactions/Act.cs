@@ -170,7 +170,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="grab">Grab whose rope to cut.</param>
         public static void CutRope(GameScene scene, Grab grab)
         {
-            Bungee rope = grab.rope;
+            Bungee rope = grab.Rope;
             Assert.NotNull(rope);
             Assert.Equal(-1, rope.cut);
 

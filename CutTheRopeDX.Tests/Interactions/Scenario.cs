@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
         private readonly int height = DefaultHeight;
         private bool splitCandy;
 
-        private Scenario()
+        internal Scenario()
         {
         }
 
@@ -138,6 +138,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="path">Mover path string (makes it a bee), e.g. "L,60,0".</param>
         /// <param name="moveSpeed">Mover speed for <paramref name="path"/>.</param>
         /// <param name="candyNumber">Optional candy key to bind the rope to.</param>
+        /// <param name="breakable">Whether the rope can be cut by an ordinary swipe.</param>
         /// <returns>This scenario.</returns>
         public Scenario Grab(
             int x,
@@ -147,13 +148,14 @@ namespace CutTheRopeDX.Tests.Interactions
             bool wheel = false,
             bool gun = false,
             bool spider = false,
-            float moveLength = -1f,
+            float moveLength = float.NaN,
             bool moveVertical = false,
             bool kickable = false,
             bool kicked = false,
             string path = null,
             float moveSpeed = 0f,
-            string candyNumber = null)
+            string candyNumber = null,
+            bool breakable = true)
         {
             XElement grab = Node("grab", x, y);
             grab.SetAttributeValue("length", Num(length));
@@ -161,10 +163,14 @@ namespace CutTheRopeDX.Tests.Interactions
             grab.SetAttributeValue("wheel", Flag(wheel));
             grab.SetAttributeValue("gun", Flag(gun));
             grab.SetAttributeValue("spider", Flag(spider));
-            grab.SetAttributeValue("moveLength", Num(moveLength));
+            if (!float.IsNaN(moveLength))
+            {
+                grab.SetAttributeValue("moveLength", Num(moveLength));
+            }
             grab.SetAttributeValue("moveVertical", Flag(moveVertical));
             grab.SetAttributeValue("moveOffset", Num(0));
             grab.SetAttributeValue("part", "L");
+            grab.SetAttributeValue("breakable", Flag(breakable));
             if (kickable)
             {
                 grab.SetAttributeValue("kickable", Flag(true));

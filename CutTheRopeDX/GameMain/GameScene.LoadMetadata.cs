@@ -227,6 +227,7 @@ namespace CutTheRopeDX.GameMain
                     // The connecting elastic is a chain: renders as a chain and is not finger-cuttable.
                     candyConnector.SetCutOnlyByAxe();
                 }
+                ropes.RegisterConnector(candyConnector);
             }
         }
     }

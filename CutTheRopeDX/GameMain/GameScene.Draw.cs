@@ -198,10 +198,7 @@ namespace CutTheRopeDX.GameMain
                 Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                if (grab.gun)
-                {
-                    grab.SetGunDisabled(GunAvailability.IsDisabled(candies[0].inLantern));
-                }
+                grab.GunSource?.SetDisabled(candies[0].inLantern);
                 grab.DrawBack();
             }
             foreach (object bungeeObj in bungees)
@@ -219,28 +216,16 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungeeGun in bungees)
             {
                 Grab grab = (Grab)bungeeGun;
-                if (grab.gun)
+                GunSource gun = grab.GunSource;
+                if (gun == null || !gun.HasFired)
                 {
-                    if (!grab.gunFired)
-                    {
-                        // Gun arrow tracks the candy position
-                        Vector vector = VectSub(Vect(grab.x, grab.y), star.pos);
-                        grab.gunArrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
-                    }
-                    else
-                    {
-                        // Update gunCup position/rotation when fired
-                        int currentTimeline = grab.gunCup.GetCurrentTimelineIndex();
-                        if (currentTimeline != Grab.GUN_CUP_DROP_AND_HIDE)
-                        {
-                            grab.gunCup.x = star.pos.X;
-                            grab.gunCup.y = star.pos.Y;
-                            grab.gunCup.rotation = grab.gunInitialRotation + candy.rotation - grab.gunCandyInitialRotation;
-                        }
-                        grab.DrawGunCup();
-                    }
+                    continue;
                 }
+
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                gun.Cup?.Draw();
             }
+
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (LightBulb bulb in LightEmitterVisuals())
             {
@@ -332,9 +317,9 @@ namespace CutTheRopeDX.GameMain
             foreach (object bungeeSpider in bungees)
             {
                 Grab bungee3 = (Grab)bungeeSpider;
-                if (bungee3.hasSpider)
+                if (bungee3.Spider is SpiderRider drawnRider && drawnRider.IsAttached)
                 {
-                    bungee3.DrawSpider();
+                    drawnRider.Animation.Draw();
                 }
             }
             aniPool.Draw();

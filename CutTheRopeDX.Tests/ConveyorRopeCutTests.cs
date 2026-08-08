@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Tests
 {
     /// <summary>
     /// When a grab wraps around a conveyor edge, the other ropes on the SAME candy are cut. Multi-candy
-    /// identity is the rope's tail (candy physics point), not <c>Grab.candyNumber</c> — the loader hands
+    /// identity is the rope's tail (candy physics point), not a legacy candy index — the loader hands
     /// every candy-bound grab the number 0, so matching on it would cut other candies' ropes too.
     /// </summary>
     public class ConveyorRopeCutTests

@@ -270,50 +270,52 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>
+        /// Adds a rope a ghost apparition just conjured to the scene's rope index, so the merged
+        /// cut, axe and release sweeps see it like any other hook rope.
+        /// </summary>
+        /// <param name="rope">The rope that was created.</param>
+        /// <param name="owner">The hook that owns it.</param>
+        internal void RegisterRope(Bungee rope, Grab owner)
+        {
+            ropes.Register(rope, owner);
+        }
+
+        /// <summary>Drops a rope from the scene's rope index before it is disposed.</summary>
+        /// <param name="rope">The rope being destroyed.</param>
+        internal void UnregisterRope(Bungee rope)
+        {
+            ropes.Unregister(rope);
+        }
+
         /// <summary>Cuts/hides all uncut ropes whose tail is the given candy point.</summary>
         public void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
         {
-            int grabCount = bungees.Count;
-            for (int i = 0; i < grabCount; i++)
+            // One pass over every rope: RopeEntry knows which end a released candy sits on, which is
+            // the connector's one asymmetry - a hook's rope only ever holds a candy at its tail.
+            foreach (RopeEntry entry in ropes.All)
             {
-                Grab grab = bungees[i];
-                Bungee rope = grab.rope;
-                if (rope != null && rope.tail == candyPoint)
+                int? cutPart = entry.CutPartForCandy(candyPoint);
+                if (cutPart == null)
                 {
-                    if (rope.cut == -1)
-                    {
-                        rope.SetCut(rope.parts.Count - 2);
-                    }
-                    else
-                    {
-                        rope.hideTailParts = true;
-                    }
-                    if (grab.hasSpider && grab.spiderActive)
-                    {
-                        SpiderBusted(grab);
-                    }
-                    if (grab.gun && grab.gunCup != null
-                        && RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, grab.gunCup.color))
-                    {
-                        grab.gunCup.PlayTimeline(Grab.GUN_CUP_DROP_AND_HIDE);
-                    }
+                    continue;
                 }
-            }
-            // candiesConnected elastic: not in `bungees`. When one of its candy endpoints is
-            // released, cut it at the matching end (tail end vs head end), like the engine's
-            // releaseRopeForTheCandy. If already cut, hide the dangling tail segments.
-            if (candyConnector != null
-                && (candyPoint == candyConnector.tail || candyPoint == candyConnector.bungeeAnchor))
-            {
-                if (candyConnector.cut == -1)
+
+                if (entry.Rope.cut == -1)
                 {
-                    int cutPart = candyPoint == candyConnector.tail ? candyConnector.parts.Count - 2 : 0;
-                    candyConnector.SetCut(cutPart);
+                    entry.Rope.SetCut(cutPart.Value);
                 }
                 else
                 {
-                    candyConnector.hideTailParts = true;
+                    entry.Rope.hideTailParts = true;
                 }
+
+                if (entry.Owner?.Spider?.ShouldBustOnRopeCut == true)
+                {
+                    SpiderBusted(entry.Owner);
+                }
+
+                entry.Owner?.OnRopeCut(RopeCutReason.CandyReleased);
             }
         }
 
@@ -910,7 +912,7 @@ namespace CutTheRopeDX.GameMain
         /// own rope. Matches iOS destroyRopesForCandy:except:.
         /// </summary>
         /// <remarks>
-        /// Candies are identified by the rope's tail point rather than by <see cref="Grab.candyNumber"/>.
+        /// Candies are identified by the rope's tail point rather than by a legacy candy index.
         /// The legacy numbering only distinguished whole candy (0) from the split halves (1/2), so the
         /// multi-candy loader hands every candy-bound grab the same number 0 — matching on it would cut
         /// ropes belonging to *other* candies. Tail identity is exact for all three cases.
@@ -918,7 +920,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="except">Grab whose candy is targeted and whose own rope is preserved.</param>
         private void DestroyRopesForCandy(Grab except)
         {
-            ConstraintedPoint candyPoint = except?.rope?.tail;
+            ConstraintedPoint candyPoint = except?.Rope?.tail;
             if (candyPoint == null)
             {
                 return;
@@ -927,10 +929,10 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < bungees.Count; i++)
             {
                 Grab grab = bungees[i];
-                bool ropeUncut = grab.rope != null && grab.rope.cut == -1;
-                if (ConveyorRopeCut.ShouldCut(grab.rope?.tail, candyPoint, grab == except, ropeUncut))
+                bool ropeUncut = grab.Attachment.IsIntact;
+                if (ConveyorRopeCut.ShouldCut(grab.Rope?.tail, candyPoint, grab == except, ropeUncut))
                 {
-                    grab.rope.SetCut(grab.rope.parts.Count - 2);
+                    grab.Rope.SetCut(grab.Rope.parts.Count - 2);
                 }
             }
         }
@@ -942,8 +944,8 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < bungees.Count; i++)
             {
-                Bungee rope = bungees[i].rope;
-                if (rope != null && rope.cut == -1)
+                Bungee rope = bungees[i].Rope;
+                if (bungees[i].Attachment.IsIntact)
                 {
                     rope.highlighted = false;
                 }
