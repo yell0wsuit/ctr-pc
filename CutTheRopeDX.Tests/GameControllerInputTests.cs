@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
 
 using Xunit;
 
