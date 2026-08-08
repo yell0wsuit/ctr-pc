@@ -1,3 +1,5 @@
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -11,6 +13,65 @@ namespace CutTheRopeDX.Tests
             _ = HeadlessGame.Boot();
             GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
             return (controller, (GameScene)controller.GetView(0).GetChild(0));
+        }
+
+        private static Text PauseMapNameLabel(GameController controller)
+        {
+            return (Text)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).GetChildWithName("mapNameLabel");
+        }
+
+        [Fact]
+        public void PausingNamedCustomLevelShowsResolvedLevelName()
+        {
+            (GameController controller, GameScene scene) = Load();
+            scene.levelName = "My Custom Level";
+
+            try
+            {
+                CustomLevelSession.Activate("pause-name-test.xml");
+
+                controller.SetPaused(true);
+
+                Assert.Equal("My Custom Level", PauseMapNameLabel(controller).GetString());
+            }
+            finally
+            {
+                CustomLevelSession.Clear();
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("   ")]
+        public void PausingUnnamedCustomLevelShowsBlankLabel(string levelName)
+        {
+            (GameController controller, GameScene scene) = Load();
+            scene.levelName = levelName;
+
+            try
+            {
+                CustomLevelSession.Activate("pause-name-test.xml");
+
+                controller.SetPaused(true);
+
+                Assert.Equal(string.Empty, PauseMapNameLabel(controller).GetString());
+            }
+            finally
+            {
+                CustomLevelSession.Clear();
+            }
+        }
+
+        [Fact]
+        public void PausingNormalLevelShowsBestScore()
+        {
+            (GameController controller, _) = Load();
+            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            int score = CTRPreferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
+
+            controller.SetPaused(true);
+
+            Assert.Equal(Application.GetString("BEST_SCORE") + ": " + score, PauseMapNameLabel(controller).GetString());
         }
 
         [Fact]

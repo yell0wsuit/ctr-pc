@@ -657,6 +657,12 @@ namespace CutTheRopeDX.GameMain
                 mapNameLabel.SetString("");
                 return;
             }
+            if (CustomLevelSession.IsActive)
+            {
+                GameScene gameScene = (GameScene)view.GetChild(0);
+                mapNameLabel.SetString(gameScene.ResolveLevelDisplayName() ?? string.Empty);
+                return;
+            }
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
         }
