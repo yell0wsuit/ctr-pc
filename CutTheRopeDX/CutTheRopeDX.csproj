@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
     <RootNamespace>CutTheRopeDX</RootNamespace>
     <AssemblyName>CutTheRope-DX</AssemblyName>
 
@@ -109,11 +108,6 @@
     <PackageReference Include="FFmpeg.AutoGen" />
   </ItemGroup>
 
-  <!-- Windows: bundled native FFmpeg libraries -->
-  <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) OR ( '$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOsPlatform('Windows')) )">
-    <PackageReference Include="FFmpeg.LGPL" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(GraphicsBackend)' == 'VK'">
     <MonoGamePlatform>DesktopVK</MonoGamePlatform>
     <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPVK</DefineConstants>
@@ -131,7 +125,7 @@
 
   <!-- FFmpeg for cross-platform -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
-    <DefineConstants>$(DefineConstants);DESKTOPVK_FFMPEG</DefineConstants>
+    <DefineConstants>$(DefineConstants);FFMPEG_BACKEND</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -170,16 +164,6 @@
 
     <!-- Sign the bundle itself -->
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
-  </Target>
-
-  <!-- Windows: move FFmpeg DLLs into ffmpeg/ subfolder after publish -->
-  <Target Name="MoveFfmpegToSubfolder" AfterTargets="Publish" Condition="$(RuntimeIdentifier.StartsWith('win'))">
-    <ItemGroup>
-      <FfmpegDlls Include="$(PublishDir)avcodec-*.dll;$(PublishDir)avformat-*.dll;$(PublishDir)avutil-*.dll;$(PublishDir)swresample-*.dll;$(PublishDir)swscale-*.dll;$(PublishDir)avdevice-*.dll;$(PublishDir)avfilter-*.dll;$(PublishDir)postproc-*.dll" />
-    </ItemGroup>
-
-    <MakeDir Directories="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
-    <Move SourceFiles="@(FfmpegDlls)" DestinationFolder="$(PublishDir)ffmpeg" Condition="@(FfmpegDlls) != ''" />
   </Target>
 
   <Target Name="MoveMacOSAppToPublish" AfterTargets="Publish" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
