@@ -99,12 +99,10 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.WholeBody.Point))
                 {
-                    _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.OffScreen);
-                    // A light emitter leaving the screen is a non-candy object escaping: release its
-                    // rope and exhaust its bound rocket, matching C's generic-object off-screen loop.
-                    ExhaustRocketForCandy(ctx);
-                    ReleaseRopesForPoint(ctx.WholeBody.Point);
-                    ctx.lightBulb?.SyncFromContext(ctx);
+                    if (TryRetireCandyBody(ctx.WholeBody, CandyRemovalReason.OffScreen))
+                    {
+                        ctx.lightBulb?.SyncFromContext(ctx);
+                    }
                 }
                 // A bulb mid-teleport is Hidden for the brief transport window but is not lost: count
                 // it as active so a lone emitter in a bamboo tube or hat does not trip the lights-out

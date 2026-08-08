@@ -488,32 +488,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="sg">Grab whose spider captured the candy.</param>
         public void SpiderWon(Grab sg)
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
             ConstraintedPoint capturedStar = sg.Rope?.tail;
-            int grabCount = bungees.Count;
-            for (int i = 0; i < grabCount; i++)
-            {
-                Grab grab = bungees[i];
-                Bungee rope = grab.Rope;
-                if (rope != null && rope.tail == capturedStar)
-                {
-                    if (rope.cut == -1)
-                    {
-                        rope.SetCut(rope.parts.Count - 2);
-                    }
-                    int tailPart = rope.parts.Count - 2;
-                    if (rope.tail.HasConstraintTo(rope.parts[tailPart]))
-                    {
-                        rope.RemovePart(tailPart);
-                    }
-                    if (grab.Spider?.ShouldBustOnRopeCut == true && sg != grab)
-                    {
-                        SpiderBusted(grab);
-                    }
-                    grab.OnRopeCut(RopeCutReason.Severed);
-                }
-            }
-            sg.Spider.Win();
             // spiderTookCandy = true;
             // The spider takes whichever body its rope ends on - a whole candy or one split half. A
             // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
@@ -523,7 +498,15 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            _ = TryRemoveBody(capturedBody, CandyRemovalReason.Spider);
+            // Generic rope retirement busts every rider whose rope is cut. Mark this rider first so
+            // it is recognized as the winner while the other riders on this body are busted.
+            sg.Spider.Win();
+            if (!TryRetireCandyBody(capturedBody, CandyRemovalReason.Spider))
+            {
+                return;
+            }
+
+            CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
             GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();
@@ -551,8 +534,6 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(image);
-            ExhaustRocketForCandy(capturedBody.Owner);
-            DetachSnailsForPoint(capturedStar);
             if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(2);

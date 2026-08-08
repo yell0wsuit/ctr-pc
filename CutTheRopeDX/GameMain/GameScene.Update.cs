@@ -379,6 +379,7 @@ namespace CutTheRopeDX.GameMain
                         GameObject leftBubble = leftBody.Bubble;
                         GameObject rightBubble = rightBody.Bubble;
                         pendingSecondGhostBubble = null;
+                        pendingSecondGhostBubbleOwner = null;
                         if (leftBubble != null || rightBubble != null)
                         {
                             bool leftHasGhost = leftBubble != null && DisableGhostCycleForBubble(leftBubble);
@@ -387,6 +388,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 mergedBody.Bubble = leftBubble;
                                 pendingSecondGhostBubble = rightBubble;
+                                pendingSecondGhostBubbleOwner = mergedBody;
                             }
                             else if (leftHasGhost)
                             {
@@ -601,11 +603,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         PopBubbleAtXY(bubble3.x, bubble3.y);
                         EnableGhostCycleForBubble(body.Bubble);
-                        if (pendingSecondGhostBubble != null && body.Role == CandyBodyRole.Whole)
-                        {
-                            EnableGhostCycleForBubble(pendingSecondGhostBubble);
-                            pendingSecondGhostBubble = null;
-                        }
+                        ReleasePendingSecondGhostBubbleForBody(body);
                     }
 
                     bool hasGhost = DisableGhostCycleForBubble(bubble3);
@@ -777,7 +775,9 @@ namespace CutTheRopeDX.GameMain
                     }
                     DetachCandyFromConveyor(ctx);
                     PopCandyBubble(body);
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), body.Point, 0.05f);
+                    pendingLanternCapturePoint = body.Point;
+                    pendingLanternCapture = lantern;
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(CompletePendingLanternCapture), body.Point, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);
@@ -1464,15 +1464,11 @@ namespace CutTheRopeDX.GameMain
                         body.Visual.y = body.Point.pos.Y;
                         if (GameObject.ObjectsIntersect(body.Visual, t.targetObject))
                         {
-                            _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.Eaten);
-                            ExhaustRocketForCandy(ctx);
-                            ReleaseRopesForPoint(body.Point);
-                            // Drop this candy's riders here, not at GameWon(). With one candy the
-                            // reference engine went straight from "eaten" to gameWon(), which tore
-                            // them down; now the other candies keep the level running, so a snail
-                            // would stay riding an eaten candy's invisible point until the last one
-                            // is eaten.
-                            DetachSnailsForPoint(body.Point);
+                            if (!TryRetireCandyBody(body, CandyRemovalReason.Eaten))
+                            {
+                                continue;
+                            }
+
                             body.Visual.visible = false;
                             t.asleep = true;
                             t.mouthOpen = false;
@@ -1509,17 +1505,14 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 CandyContext ctx = body.Owner;
-                _ = TryRemoveBody(body, CandyRemovalReason.OffScreen);
-                ExhaustRocketForCandy(ctx);
-                if (body.Role == CandyBodyRole.Whole)
+                if (!TryRetireCandyBody(body, CandyRemovalReason.OffScreen))
                 {
-                    ReleaseRopesForBody(body);
-                    anyLeft = anyLeft || ctx.Capabilities.CanLoseLevelWhenOffScreen;
+                    continue;
                 }
-                else
-                {
-                    anyLeft = true;
-                }
+
+                anyLeft = anyLeft
+                    || body.Role != CandyBodyRole.Whole
+                    || ctx.Capabilities.CanLoseLevelWhenOffScreen;
             }
             if (anyLeft)
             {

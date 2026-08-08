@@ -78,6 +78,20 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(candy);
         }
 
+        /// <summary>Adds a numbered light-emitting candy body.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="number">Bulb key used by authored ropes.</param>
+        /// <param name="litRadius">Illumination radius in level units.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario LightBulb(int x, int y, string number = "first", int litRadius = 100)
+        {
+            XElement bulb = Node("lightBulb", x, y);
+            bulb.SetAttributeValue("bulbNumber", number);
+            bulb.SetAttributeValue("litRadius", Num(litRadius));
+            return Add(bulb);
+        }
+
         /// <summary>
         /// Makes the primary candy a split candy: turns on the level's <c>twoParts</c> design flag
         /// and emits the <c>&lt;candyL&gt;</c>/<c>&lt;candyR&gt;</c> halves that the loader hands to
@@ -138,6 +152,8 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="path">Mover path string (makes it a bee), e.g. "L,60,0".</param>
         /// <param name="moveSpeed">Mover speed for <paramref name="path"/>.</param>
         /// <param name="candyNumber">Optional candy key to bind the rope to.</param>
+        /// <param name="bindBulb">Whether this rope binds a numbered light emitter.</param>
+        /// <param name="bulbNumber">Light-emitter key when <paramref name="bindBulb"/> is true.</param>
         /// <param name="breakable">Whether the rope can be cut by an ordinary swipe.</param>
         /// <returns>This scenario.</returns>
         public Scenario Grab(
@@ -155,6 +171,8 @@ namespace CutTheRopeDX.Tests.Interactions
             string path = null,
             float moveSpeed = 0f,
             string candyNumber = null,
+            bool bindBulb = false,
+            string bulbNumber = null,
             bool breakable = true)
         {
             XElement grab = Node("grab", x, y);
@@ -171,6 +189,11 @@ namespace CutTheRopeDX.Tests.Interactions
             grab.SetAttributeValue("moveOffset", Num(0));
             grab.SetAttributeValue("part", "L");
             grab.SetAttributeValue("breakable", Flag(breakable));
+            grab.SetAttributeValue("bindBulb", Flag(bindBulb));
+            if (bulbNumber != null)
+            {
+                grab.SetAttributeValue("bulbNumber", bulbNumber);
+            }
             if (kickable)
             {
                 grab.SetAttributeValue("kickable", Flag(true));

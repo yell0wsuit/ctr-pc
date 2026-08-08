@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+
+using Xunit;
 
 namespace CutTheRopeDX.Tests.Interactions
 {
@@ -241,10 +246,19 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The number of uncut ropes whose tail is this candy.</returns>
         public static int AttachedRopeCount(this GameScene scene, CandyContext candy)
         {
+            return scene.AttachedRopeCount(candy.WholeBody);
+        }
+
+        /// <summary>Ropes still attached (uncut) to the exact candy body.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="body">Body to inspect.</param>
+        /// <returns>The number of uncut ropes whose tail is this body's point.</returns>
+        public static int AttachedRopeCount(this GameScene scene, CandyBody body)
+        {
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.Rope != null && grab.Rope.tail == candy.WholeBody.Point && grab.Rope.cut == -1)
+                if (grab.Rope != null && grab.Rope.tail == body.Point && grab.Rope.cut == -1)
                 {
                     count++;
                 }
@@ -271,6 +285,89 @@ namespace CutTheRopeDX.Tests.Interactions
             MiceObject mice = Field<MiceObject>(scene, "miceManager");
             ConstraintedPoint carried = mice?.ActiveMouseCarriedStar();
             return carried != null && carried == candy.WholeBody.Point;
+        }
+
+        /// <summary>Asserts that a retired whole candy has no observable live attachment owner.</summary>
+        /// <param name="scene">Scene that owned the candy.</param>
+        /// <param name="candy">Retired candy to inspect.</param>
+        public static void AssertNoLiveAttachments(this GameScene scene, CandyContext candy)
+        {
+            Assert.Equal(0, scene.AttachedRopeCount(candy));
+            Assert.Null(candy.WholeBody.Bubble);
+            Assert.Null(candy.activeRocket);
+            Assert.Null(candy.capturingHand);
+            Assert.False(scene.MouseCarries(candy));
+            Assert.False(candy.carriedByMouse);
+            Assert.Null(candy.antSegment);
+            Assert.Null(candy.lastAntSegment);
+            Assert.Equal(0, scene.SnailCount(candy));
+            Assert.False(candy.inLantern);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+        }
+
+        /// <summary>Invokes the scene's hazard entry point to model repeated overlap in one update.</summary>
+        /// <param name="scene">Scene whose hazard path is invoked.</param>
+        /// <param name="body">Body intersecting the hazard.</param>
+        public static void BreakCandyBody(this GameScene scene, CandyBody body)
+        {
+            MethodInfo method = typeof(GameScene).GetMethod("BreakCandyBody", Instance)
+                ?? throw new MissingMethodException(nameof(GameScene), "BreakCandyBody");
+            _ = method.Invoke(scene, [body]);
+        }
+
+        /// <summary>Number of live candy-break particle systems in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live candy-break effect count.</returns>
+        public static int CandyBreakEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            return pool.GetChilds().Values.OfType<CandyBreak>().Count();
+        }
+
+        /// <summary>Number of live bubble-pop animations in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live bubble-pop effect count.</returns>
+        public static int BubblePopEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            CTRTexture2D bubbleTexture = Application.GetTexture(Resources.Img.ObjBubble);
+            return pool.GetChilds().Values
+                .OfType<Animation>()
+                .Count(animation => ReferenceEquals(animation.texture, bubbleTexture));
+        }
+
+        /// <summary>Number of live spider victory images in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live spider victory-image count.</returns>
+        public static int SpiderVictoryEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            CTRTexture2D spiderTexture = Application.GetTexture(Resources.Img.ObjSpider);
+            return pool.GetChilds().Values
+                .OfType<Image>()
+                .Count(effect => ReferenceEquals(effect.texture, spiderTexture) && effect.GetChilds().Count > 0);
+        }
+
+        /// <summary>
+        /// Parks a second merged ghost bubble for an owner. Scenario XML cannot directly author the
+        /// transient two-ghost post-merge state, so this probe establishes only that private state.
+        /// </summary>
+        public static void ParkSecondGhostBubble(this GameScene scene, CandyBody owner, GameObject bubble)
+        {
+            FieldInfo bubbleField = typeof(GameScene).GetField("pendingSecondGhostBubble", Instance)
+                ?? throw new MissingFieldException(nameof(GameScene), "pendingSecondGhostBubble");
+            bubbleField.SetValue(scene, bubble);
+
+            // The owner field is introduced by the invariant fix. Keeping this setup compatible
+            // with the pre-fix shape lets the isolation test first demonstrate the failure.
+            FieldInfo ownerField = typeof(GameScene).GetField("pendingSecondGhostBubbleOwner", Instance);
+            ownerField?.SetValue(scene, owner);
+        }
+
+        /// <summary>Gets the ghost bubble parked behind a merged candy's active ghost bubble.</summary>
+        public static GameObject PendingSecondGhostBubble(this GameScene scene)
+        {
+            return Field<GameObject>(scene, "pendingSecondGhostBubble");
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>
