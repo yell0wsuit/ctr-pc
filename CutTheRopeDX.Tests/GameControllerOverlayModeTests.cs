@@ -91,6 +91,18 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void EnteringResultsFromPauseReleasesTheControllerAudioPause()
+        {
+            (GameController controller, _) = Load();
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+            Assert.Equal(1, AudioPauseDepth());
+
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+            Assert.Equal(0, AudioPauseDepth());
+        }
+
+        [Fact]
         public void EnteringPausedReleasesSceneGesturesOnlyOnTheTransition()
         {
             (GameController controller, _) = Load();

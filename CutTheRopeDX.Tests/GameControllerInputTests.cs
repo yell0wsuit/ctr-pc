@@ -155,9 +155,11 @@ namespace CutTheRopeDX.Tests
             controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
 
             _ = controller.BackButtonPressed();
+            Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT, controller.exitCode);
+            controller.exitCode = 42;
             _ = controller.BackButtonPressed();
 
-            Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT, controller.exitCode);
+            Assert.Equal(42, controller.exitCode);
         }
 
         [Fact]
@@ -224,6 +226,22 @@ namespace CutTheRopeDX.Tests
             Assert.True(scene.touchable);
             Assert.True(scene.updateable);
             Assert.False(PauseMenu(controller).IsEnabled());
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void BackAndMenuCannotReplaceAnExitRouteDuringLevelQuit(bool useBack)
+        {
+            (GameController controller, _) = Load();
+            controller.OnButtonPressed(GameControllerButtonId.MainMenu);
+            Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
+
+            _ = useBack
+                ? controller.BackButtonPressed()
+                : controller.MenuButtonPressed();
+
+            Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
         }
     }
 }

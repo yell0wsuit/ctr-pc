@@ -100,6 +100,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
+        public override void Deactivate()
+        {
+            navigationExitActive = true;
+            base.Deactivate();
+        }
+
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -211,6 +218,7 @@ namespace CutTheRopeDX.GameMain
         public void LevelFirstStart()
         {
             View view = GetView(0);
+            navigationExitActive = false;
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
         }
@@ -221,6 +229,7 @@ namespace CutTheRopeDX.GameMain
         public void LevelStart()
         {
             View view = GetView(0);
+            navigationExitActive = false;
             ((BoxOpenClose)view.GetChild(4)).LevelStart();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
         }
@@ -231,6 +240,7 @@ namespace CutTheRopeDX.GameMain
         public void LevelQuit()
         {
             View view = GetView(0);
+            navigationExitActive = true;
             EnterOverlayMode(GameControllerOverlayMode.Results);
             ((BoxOpenClose)view.GetChild(4)).LevelQuit();
         }
@@ -591,6 +601,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The semantic command allowed in the current state.</returns>
         private GameControllerInputCommand ResolveInput(GameControllerInputKind input)
         {
+            if (navigationExitActive)
+            {
+                return GameControllerInputCommand.Ignore;
+            }
+
             GameScene gameScene = (GameScene)GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
             return GameControllerInput.Resolve(
                 input,
@@ -619,6 +634,7 @@ namespace CutTheRopeDX.GameMain
                     CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case GameControllerInputCommand.ExitResults:
+                    navigationExitActive = true;
                     CTRSoundMgr.PlaySound(Resources.Snd.Tap);
                     exitCode = EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT;
                     CTRSoundMgr.StopAll();
@@ -977,6 +993,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether the initial overlay presentation has been applied to the created view.</summary>
         private bool overlayModeApplied;
+
+        /// <summary>Whether controller navigation has begun and further Back/Menu input must be ignored.</summary>
+        private bool navigationExitActive;
 
         /// <summary>Exit code describing the selected controller deactivation route.</summary>
         public int exitCode;
