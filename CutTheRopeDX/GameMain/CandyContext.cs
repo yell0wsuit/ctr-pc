@@ -98,8 +98,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Optional light-bulb identifier from XML.</summary>
         public string lightBulbNumber;
 
-        /// <summary>Transitional light-bulb visual root while bulb visuals migrate into candy contexts.</summary>
-        public LightBulb lightBulb;
+        /// <summary>Gets the light-bulb visual root when this context owns one.</summary>
+        public LightBulb LightBulb => WholeBody.Visual as LightBulb;
 
         /// <summary>Optional axe identifier from XML.</summary>
         public string axeNumber;
@@ -208,6 +208,11 @@ namespace CutTheRopeDX.GameMain
             WholeBody = wholeBody;
             wholeBody.AttachTo(this);
             Lifecycle = CandyLifecycle.CreatePresent(wholeBody);
+
+            if (wholeBody.Visual is LightBulb bulb)
+            {
+                bulb.AttachTo(this);
+            }
         }
 
         /// <summary>

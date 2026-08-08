@@ -23,7 +23,6 @@ namespace CutTheRopeDX.GameMain
             {
                 candyNumber = null,
                 lightBulbNumber = bulb.bulbNumber,
-                lightBulb = bulb,
                 Capabilities = LightBulbDefinition.Capabilities,
                 lightRadius = lightRadius,
                 emitsLight = LightBulbDefinition.EmitsLight,

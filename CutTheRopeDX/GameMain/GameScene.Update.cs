@@ -609,10 +609,9 @@ namespace CutTheRopeDX.GameMain
                     bool hasGhost = DisableGhostCycleForBubble(bubble3);
                     body.Bubble = bubble3;
                     body.BubbleHasGhost = hasGhost;
-                    if (ctx.lightBulb != null)
+                    if (ctx.LightBulb != null)
                     {
                         bubble3.capturedByBulb = !hasGhost;
-                        ctx.lightBulb.SyncFromContext(ctx);
                     }
                     else
                     {
@@ -934,7 +933,6 @@ namespace CutTheRopeDX.GameMain
                             {
                                 ctx.activeRocket.visible = false;
                             }
-                            ctx.lightBulb?.SyncFromContext(ctx);
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
 
