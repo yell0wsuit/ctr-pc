@@ -37,6 +37,30 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void EatingOneOfTwoCandiesImmediatelyDetachesItsAntCarrier()
+        {
+            AssertPreWinEatenCleanup(
+                s => s.Ants(20, 200, path: "80,0"),
+                Act.CarryByAnts);
+        }
+
+        [Fact]
+        public void EatingOneOfTwoCandiesImmediatelyDetachesItsHand()
+        {
+            AssertPreWinEatenCleanup(
+                s => s.Hand(60, 120, segmentLength: 20, segmentAngle: 90f),
+                (scene, candy) => _ = Act.GrabWithHand(scene, candy));
+        }
+
+        [Fact]
+        public void EatingOneOfTwoCandiesImmediatelyDropsItsMouseCarrier()
+        {
+            AssertPreWinEatenCleanup(
+                s => s.Mouse(60, 200),
+                (scene, candy) => _ = Act.CarryByMouse(scene, candy));
+        }
+
+        [Fact]
         public void LanternCapturingOneCandyLeavesTheOtherCandysBubble()
         {
             (GameScene scene, CandyContext captured, CandyContext kept) = TwoCandies(s => s
@@ -109,6 +133,30 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(first);
             Interaction.Hover(second);
             return (scene, first, second);
+        }
+
+        private static void AssertPreWinEatenCleanup(
+            System.Func<Scenario, Scenario> extras,
+            System.Action<GameScene, CandyContext> attach)
+        {
+            GameScene scene = extras(
+                    Scenario.New()
+                        .Candy(60, 200, number: "1")
+                        .Candy(260, 200, number: "2")
+                        .OmNom(20, 460)
+                        .OmNom(300, 460))
+                .Build();
+            CandyContext eaten = scene.Candies()[0];
+            CandyContext remaining = scene.Candies()[1];
+            Interaction.Hover(eaten);
+            Interaction.Hover(remaining);
+            attach(scene, eaten);
+
+            Act.Eat(scene, eaten);
+
+            Assert.Equal(0, scene.Outcomes().WonCount);
+            Assert.Equal(CandyPresence.Present, remaining.Lifecycle.Presence);
+            scene.AssertNoLiveAttachments(eaten);
         }
     }
 }

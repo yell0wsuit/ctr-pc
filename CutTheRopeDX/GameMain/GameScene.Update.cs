@@ -1464,15 +1464,11 @@ namespace CutTheRopeDX.GameMain
                         body.Visual.y = body.Point.pos.Y;
                         if (GameObject.ObjectsIntersect(body.Visual, t.targetObject))
                         {
-                            _ = ctx.Lifecycle.TryRemove(CandyRemovalReason.Eaten);
-                            ExhaustRocketForCandy(ctx);
-                            ReleaseRopesForPoint(body.Point);
-                            // Drop this candy's riders here, not at GameWon(). With one candy the
-                            // reference engine went straight from "eaten" to gameWon(), which tore
-                            // them down; now the other candies keep the level running, so a snail
-                            // would stay riding an eaten candy's invisible point until the last one
-                            // is eaten.
-                            DetachSnailsForPoint(body.Point);
+                            if (!TryRetireCandyBody(body, CandyRemovalReason.Eaten))
+                            {
+                                continue;
+                            }
+
                             body.Visual.visible = false;
                             t.asleep = true;
                             t.mouthOpen = false;
