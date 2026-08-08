@@ -338,6 +338,20 @@ namespace CutTheRopeDX.GameMain
                 front.visible = false;
                 UpdateKickState();
             }
+            else if (Source is PreAttachedSource)
+            {
+                string hookTexture = GetHookTextureResource();
+                int hookBaseQuad = hookTexture == Resources.Img.ObjHookChain ? Hook01BackQuad : RandomHookBaseQuad();
+                back = Image_createWithResIDQuad(hookTexture, hookBaseQuad);
+                back.DoRestoreCutTransparency();
+                back.anchor = back.parentAnchor = 18;
+                front = Image_createWithResIDQuad(hookTexture, hookBaseQuad + 1);
+                front.anchor = front.parentAnchor = 18;
+                _ = AddChild(back);
+                _ = AddChild(front);
+                back.visible = false;
+                front.visible = false;
+            }
             else
             {
                 // A chain auto-hook (breakable="false") uses the dedicated chain auto-hook atlas.
@@ -730,6 +744,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Bee body quad.</summary>
         private const int BeeQuad = 1;
 
+        /// <summary>First random fixed hook back quad.</summary>
+        private const int Hook01BackQuad = 0;
+
+        /// <summary>Second random fixed hook back quad.</summary>
+        private const int Hook02BackQuad = 2;
+
         /// <summary>Gun hook back quad.</summary>
         private const int GunBackQuad = 0;
 
@@ -741,6 +761,13 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gun hook front quad used after firing and while disabled.</summary>
         internal const int GunDisabledFrontQuad = 3;
+
+        /// <summary>Selects one of the two fixed-hook sprite pairs.</summary>
+        /// <returns>The selected back-layer quad.</returns>
+        private static int RandomHookBaseQuad()
+        {
+            return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;
+        }
 
         /// <summary>
         /// Spider animation identifiers.
