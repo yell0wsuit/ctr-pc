@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Framework.Visual;
 
@@ -19,56 +21,63 @@ namespace CutTheRopeDX.Tests
             return controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU);
         }
 
-        [Fact]
-        public void CanPauseFromGameplayFalseDuringOutcomeTransition()
+        public static IEnumerable<object[]> StableInputCases()
         {
-            Assert.False(GameControllerInput.CanPauseFromGameplay(
-                gameplayHudTouchable: true,
-                outcomeTransitionActive: true,
-                restartDimActive: false));
+            yield return [(int)GameControllerInputKind.Back, (int)GameControllerOverlayMode.Gameplay, (int)GameControllerInputCommand.OpenPause];
+            yield return [(int)GameControllerInputKind.Menu, (int)GameControllerOverlayMode.Gameplay, (int)GameControllerInputCommand.OpenPause];
+            yield return [(int)GameControllerInputKind.PauseButton, (int)GameControllerOverlayMode.Gameplay, (int)GameControllerInputCommand.OpenPause];
+            yield return [(int)GameControllerInputKind.Back, (int)GameControllerOverlayMode.Paused, (int)GameControllerInputCommand.Resume];
+            yield return [(int)GameControllerInputKind.Menu, (int)GameControllerOverlayMode.Paused, (int)GameControllerInputCommand.Resume];
+            yield return [(int)GameControllerInputKind.PauseButton, (int)GameControllerOverlayMode.Paused, (int)GameControllerInputCommand.Ignore];
+            yield return [(int)GameControllerInputKind.Back, (int)GameControllerOverlayMode.Results, (int)GameControllerInputCommand.ExitResults];
+            yield return [(int)GameControllerInputKind.Menu, (int)GameControllerOverlayMode.Results, (int)GameControllerInputCommand.Ignore];
+            yield return [(int)GameControllerInputKind.PauseButton, (int)GameControllerOverlayMode.Results, (int)GameControllerInputCommand.Ignore];
         }
 
-        [Fact]
-        public void CanPauseFromGameplayTrueWhenOutcomeTransitionInactive()
+        public static IEnumerable<object[]> GatedInputCases()
         {
-            Assert.True(GameControllerInput.CanPauseFromGameplay(
-                gameplayHudTouchable: true,
-                outcomeTransitionActive: false,
-                restartDimActive: false));
+            foreach (GameControllerInputKind input in System.Enum.GetValues<GameControllerInputKind>())
+            {
+                foreach (GameControllerOverlayMode overlay in System.Enum.GetValues<GameControllerOverlayMode>())
+                {
+                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingOut, false];
+                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingIn, false];
+                    yield return [(int)input, (int)overlay, (int)RestartPhase.Playing, true];
+                }
+            }
         }
 
-        [Fact]
-        public void CannotPauseWhileRestartDimIsPlaying()
+        [Theory]
+        [MemberData(nameof(StableInputCases))]
+        public void ResolveMapsStableInputByOverlayMode(
+            int input,
+            int overlay,
+            int expected)
         {
-            Assert.False(GameControllerInput.CanPauseFromGameplay(
-                gameplayHudTouchable: true,
-                outcomeTransitionActive: false,
-                restartDimActive: true));
+            Assert.Equal(
+                (GameControllerInputCommand)expected,
+                GameControllerInput.Resolve(
+                    (GameControllerInputKind)input,
+                    (GameControllerOverlayMode)overlay,
+                    RestartPhase.Playing,
+                    outcomeTransitionActive: false));
         }
 
-        [Fact]
-        public void CanPauseOnceRestartDimHasFinished()
+        [Theory]
+        [MemberData(nameof(GatedInputCases))]
+        public void ResolveIgnoresInputDuringRestartOrOutcomeTransition(
+            int input,
+            int overlay,
+            int restartPhase,
+            bool outcomeTransitionActive)
         {
-            Assert.True(GameControllerInput.CanPauseFromGameplay(
-                gameplayHudTouchable: true,
-                outcomeTransitionActive: false,
-                restartDimActive: false));
-        }
-
-        [Fact]
-        public void CanExitResultWithBackFalseDuringOutcomeTransition()
-        {
-            Assert.False(GameControllerInput.CanExitResultWithBack(
-                resultTouchable: true,
-                outcomeTransitionActive: true));
-        }
-
-        [Fact]
-        public void CanExitResultWithBackTrueAfterTransition()
-        {
-            Assert.True(GameControllerInput.CanExitResultWithBack(
-                resultTouchable: true,
-                outcomeTransitionActive: false));
+            Assert.Equal(
+                GameControllerInputCommand.Ignore,
+                GameControllerInput.Resolve(
+                    (GameControllerInputKind)input,
+                    (GameControllerOverlayMode)overlay,
+                    (RestartPhase)restartPhase,
+                    outcomeTransitionActive));
         }
 
         [Fact]
