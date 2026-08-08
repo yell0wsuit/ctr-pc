@@ -321,7 +321,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Updates level result UI, persists improved score data, and starts the level-won result flow.
         /// </summary>
-        public void LevelWon()
+        /// <param name="result">The completed level's immutable result.</param>
+        public void LevelWon(LevelResult result)
         {
             boxCloseHandled = false;
             _ = Application.SharedPreferences();
@@ -349,10 +350,6 @@ namespace CutTheRopeDX.GameMain
                 _ => "LEVEL_CLEARED1"
             };
             ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(clearText));
-            boxOpenClose.time = gameScene.time;
-            boxOpenClose.starBonus = gameScene.starBonus;
-            boxOpenClose.timeBonus = gameScene.timeBonus;
-            boxOpenClose.score = gameScene.score;
             isGamePaused = true;
             gameScene.touchable = false;
             view.GetChild(2).touchable = false;
@@ -395,7 +392,7 @@ namespace CutTheRopeDX.GameMain
                     gameScene,
                     0.5f);
             };
-            boxOpenClose.LevelWon();
+            boxOpenClose.LevelWon(result);
 
             // Update RPC to show win state with stars and score
             CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
@@ -422,7 +419,7 @@ namespace CutTheRopeDX.GameMain
         public void GameWon(LevelResult result)
         {
             PostFlurryLevelEvent("LEVEL_WON");
-            LevelWon();
+            LevelWon(result);
         }
 
         /// <summary>
