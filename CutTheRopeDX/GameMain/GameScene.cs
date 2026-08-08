@@ -1021,6 +1021,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private GameObject pendingSecondGhostBubble;
 
+        /// <summary>The whole body that owns <see cref="pendingSecondGhostBubble"/>.</summary>
+        private CandyBody pendingSecondGhostBubbleOwner;
+
+        /// <summary>Candy point waiting for the lantern's delayed capture callback.</summary>
+        private ConstraintedPoint pendingLanternCapturePoint;
+
+        /// <summary>Lantern assigned to <see cref="pendingLanternCapturePoint"/>.</summary>
+        private Lantern pendingLanternCapture;
+
         /// <summary>
         /// The number of ropes cut within the active combo window.
         /// </summary>

@@ -379,6 +379,7 @@ namespace CutTheRopeDX.GameMain
                         GameObject leftBubble = leftBody.Bubble;
                         GameObject rightBubble = rightBody.Bubble;
                         pendingSecondGhostBubble = null;
+                        pendingSecondGhostBubbleOwner = null;
                         if (leftBubble != null || rightBubble != null)
                         {
                             bool leftHasGhost = leftBubble != null && DisableGhostCycleForBubble(leftBubble);
@@ -387,6 +388,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 mergedBody.Bubble = leftBubble;
                                 pendingSecondGhostBubble = rightBubble;
+                                pendingSecondGhostBubbleOwner = mergedBody;
                             }
                             else if (leftHasGhost)
                             {
@@ -601,11 +603,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         PopBubbleAtXY(bubble3.x, bubble3.y);
                         EnableGhostCycleForBubble(body.Bubble);
-                        if (pendingSecondGhostBubble != null && body.Role == CandyBodyRole.Whole)
-                        {
-                            EnableGhostCycleForBubble(pendingSecondGhostBubble);
-                            pendingSecondGhostBubble = null;
-                        }
+                        ReleasePendingSecondGhostBubbleForBody(body);
                     }
 
                     bool hasGhost = DisableGhostCycleForBubble(bubble3);
@@ -777,7 +775,9 @@ namespace CutTheRopeDX.GameMain
                     }
                     DetachCandyFromConveyor(ctx);
                     PopCandyBubble(body);
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(lantern.CaptureCandyFromDispatcher), body.Point, 0.05f);
+                    pendingLanternCapturePoint = body.Point;
+                    pendingLanternCapture = lantern;
+                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(CompletePendingLanternCapture), body.Point, 0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);

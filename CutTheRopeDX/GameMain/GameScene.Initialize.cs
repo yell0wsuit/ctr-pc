@@ -77,6 +77,9 @@ namespace CutTheRopeDX.GameMain
             earthAnims = null;
             pollenDrawer = new PollenDrawer();
             pendingSecondGhostBubble = null;
+            pendingSecondGhostBubbleOwner = null;
+            pendingLanternCapturePoint = null;
+            pendingLanternCapture = null;
             targets.Clear();
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;

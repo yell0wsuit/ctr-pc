@@ -222,20 +222,25 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ctx">The candy to detach from the conveyor.</param>
         private static void DetachCandyFromConveyor(CandyContext ctx)
         {
-            if (ctx?.antSegment == null)
+            if (ctx == null)
             {
                 return;
             }
 
-            PlayAntConveyorDetachSound();
+            if (ctx.antSegment != null)
+            {
+                PlayAntConveyorDetachSound();
 
-            // A candy can only hold a segment if it had a point when it attached.
-            ctx.WholeBody.Point.disableGravity = ctx.HasActiveRocket;
+                // A candy can only hold a segment if it had a point when it attached.
+                ctx.WholeBody.Point.disableGravity = ctx.HasActiveRocket;
+            }
 
             ctx.antWaitForFly = false;
             ctx.antSegment = null;
             ctx.lastAntSegment = null;
             ctx.antCooldown = 0f;
+            ctx.antInteractionPoint = default;
+            ctx.antInteractionTime = 0f;
         }
 
         /// <summary>

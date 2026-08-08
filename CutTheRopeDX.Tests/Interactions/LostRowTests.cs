@@ -124,6 +124,70 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void HazardRetirementClearsAntCooldownStateAfterTheCarrierLetsGo()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Ants(150, 200, path: "20,0", moveSpeed: 600f));
+            Act.CarryByAnts(scene, candy);
+            Assert.True(
+                Interaction.StepUntil(scene, () => candy.antSegment == null && candy.lastAntSegment != null),
+                "the candy never entered the ant reattachment-cooldown state");
+
+            scene.BreakCandyBody(candy.WholeBody);
+
+            Assert.Null(candy.antSegment);
+            Assert.Null(candy.lastAntSegment);
+            Assert.False(candy.antWaitForFly);
+            Assert.Equal(0f, candy.antCooldown);
+        }
+
+        [Fact]
+        public void HazardRetirementClearsMouseContextOwnershipImmediately()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
+            _ = Act.CarryByMouse(scene, candy);
+
+            scene.BreakCandyBody(candy.WholeBody);
+
+            Assert.False(scene.MouseCarries(candy));
+            Assert.False(candy.carriedByMouse);
+        }
+
+        [Fact]
+        public void HazardRetirementCancelsPendingLanternCapture()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Lantern(20, 40));
+            Lantern lantern = Lantern.GetAllLanterns()[0];
+            Assert.True(
+                Interaction.StepUntil(
+                    scene,
+                    () => Act.MoveTo(lantern, candy.WholeBody.Point.pos),
+                    () => candy.inLantern),
+                "the lantern never began capturing the candy");
+
+            scene.BreakCandyBody(candy.WholeBody);
+
+            Assert.False(candy.inLantern);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+            HeadlessGame.StepFrames(scene, 10);
+            Assert.False(candy.inLantern);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+        }
+
+        [Fact]
+        public void HazardRetirementCancelsCompletedLanternCapture()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Lantern(20, 40));
+            Act.CaptureInLantern(scene, candy);
+
+            scene.BreakCandyBody(candy.WholeBody);
+
+            Assert.False(candy.inLantern);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+            HeadlessGame.StepFrames(scene, 10);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+        }
+
+        [Fact]
         public void LostOffScreenExhaustsItsRocket()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));

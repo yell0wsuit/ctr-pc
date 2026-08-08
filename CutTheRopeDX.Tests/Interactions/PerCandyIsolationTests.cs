@@ -37,6 +37,21 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void RetiringAnotherCandyDoesNotReleaseThePrimarysParkedGhostBubble()
+        {
+            (GameScene scene, CandyContext primary, CandyContext removed) = TwoCandies(s => s
+                .Bubble(260, 200)
+                .Bubble(20, 40));
+            _ = Act.CaptureInBubble(scene, removed, bubbleIndex: 0);
+            Bubble parked = scene.Bubbles()[1];
+            scene.ParkSecondGhostBubble(primary.WholeBody, parked);
+
+            scene.BreakCandyBody(removed.WholeBody);
+
+            Assert.Same(parked, scene.PendingSecondGhostBubble());
+        }
+
+        [Fact]
         public void EatingOneOfTwoCandiesImmediatelyDetachesItsAntCarrier()
         {
             AssertPreWinEatenCleanup(

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
@@ -345,6 +346,28 @@ namespace CutTheRopeDX.Tests.Interactions
             return pool.GetChilds().Values
                 .OfType<Image>()
                 .Count(effect => ReferenceEquals(effect.texture, spiderTexture) && effect.GetChilds().Count > 0);
+        }
+
+        /// <summary>
+        /// Parks a second merged ghost bubble for an owner. Scenario XML cannot directly author the
+        /// transient two-ghost post-merge state, so this probe establishes only that private state.
+        /// </summary>
+        public static void ParkSecondGhostBubble(this GameScene scene, CandyBody owner, GameObject bubble)
+        {
+            FieldInfo bubbleField = typeof(GameScene).GetField("pendingSecondGhostBubble", Instance)
+                ?? throw new MissingFieldException(nameof(GameScene), "pendingSecondGhostBubble");
+            bubbleField.SetValue(scene, bubble);
+
+            // The owner field is introduced by the invariant fix. Keeping this setup compatible
+            // with the pre-fix shape lets the isolation test first demonstrate the failure.
+            FieldInfo ownerField = typeof(GameScene).GetField("pendingSecondGhostBubbleOwner", Instance);
+            ownerField?.SetValue(scene, owner);
+        }
+
+        /// <summary>Gets the ghost bubble parked behind a merged candy's active ghost bubble.</summary>
+        public static GameObject PendingSecondGhostBubble(this GameScene scene)
+        {
+            return Field<GameObject>(scene, "pendingSecondGhostBubble");
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>

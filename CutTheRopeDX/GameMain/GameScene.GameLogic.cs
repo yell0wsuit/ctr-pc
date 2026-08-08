@@ -639,11 +639,7 @@ namespace CutTheRopeDX.GameMain
 
             // A merge can fold both halves' ghost bubbles onto the merged candy, parking the second
             // one behind the first. Popping the survivor releases the ghost that was parked with it.
-            if (pendingSecondGhostBubble != null && body.Role == CandyBodyRole.Whole)
-            {
-                EnableGhostCycleForBubble(pendingSecondGhostBubble);
-                pendingSecondGhostBubble = null;
-            }
+            ReleasePendingSecondGhostBubbleForBody(body);
 
             if (popped is Bubble bubble)
             {
@@ -863,13 +859,13 @@ namespace CutTheRopeDX.GameMain
         private void BreakCandyBody(CandyBody body)
         {
             Vector breakPosition = body.Point.pos;
-            body.Visual.x = breakPosition.X;
-            body.Visual.y = breakPosition.Y;
             if (!TryRetireCandyBody(body, CandyRemovalReason.Hazard))
             {
                 return;
             }
 
+            body.Visual.x = breakPosition.X;
+            body.Visual.y = breakPosition.Y;
             SpawnCandyBreakParticles(breakPosition.X, breakPosition.Y);
             if (gameplayFlow.CanTriggerOutcome)
             {

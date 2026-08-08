@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 
@@ -51,17 +52,43 @@ namespace CutTheRopeDX.GameMain
                 DetachHandsForPoint(body.Point);
                 DetachSnailsForPoint(body.Point);
                 DropMouseCandyForPoint(body.Point);
+                ctx.carriedByMouse = false;
                 DetachCandyFromConveyor(ctx);
                 ExhaustRocketForCandy(ctx);
-                if (Lantern.CancelCandyCaptureForRemoval(body.Point))
-                {
-                    ctx.inLantern = false;
-                }
+                CancelPendingLanternCaptureForRemoval(body.Point);
+                _ = Lantern.CancelCandyCaptureForRemoval(body.Point);
+                ctx.inLantern = false;
             }
 
             // Carrier release ordering is deliberately closed here: no owner may leave a retired
             // point gravity-suppressed. Authored/device-specific weight is preserved.
             body.Point.disableGravity = false;
+        }
+
+        private void CancelPendingLanternCaptureForRemoval(ConstraintedPoint point)
+        {
+            if (pendingLanternCapturePoint == point)
+            {
+                pendingLanternCapturePoint = null;
+                pendingLanternCapture = null;
+            }
+        }
+
+        private void CompletePendingLanternCapture(FrameworkTypes value)
+        {
+            if (value is not ConstraintedPoint point || pendingLanternCapturePoint != point)
+            {
+                return;
+            }
+
+            Lantern lantern = pendingLanternCapture;
+            pendingLanternCapturePoint = null;
+            pendingLanternCapture = null;
+            CandyContext ctx = CandyForPointOrNull(point);
+            if (lantern != null && ctx?.inLantern == true)
+            {
+                lantern.CaptureCandy(point);
+            }
         }
 
         private void DetachRopeConstraintsForPoint(ConstraintedPoint point)
@@ -90,7 +117,13 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (reason is CandyRemovalReason.Eaten or CandyRemovalReason.Hazard)
+            if (reason == CandyRemovalReason.Hazard)
+            {
+                PopCandyBubbleAt(body, body.Point.pos);
+                return;
+            }
+
+            if (reason == CandyRemovalReason.Eaten)
             {
                 PopCandyBubble(body);
                 return;
@@ -98,11 +131,7 @@ namespace CutTheRopeDX.GameMain
 
             GameObject released = body.Bubble;
             EnableGhostCycleForBubble(released);
-            if (pendingSecondGhostBubble != null && body.Role == CandyBodyRole.Whole)
-            {
-                EnableGhostCycleForBubble(pendingSecondGhostBubble);
-                pendingSecondGhostBubble = null;
-            }
+            ReleasePendingSecondGhostBubbleForBody(body);
 
             if (released is Bubble bubble)
             {
@@ -114,6 +143,18 @@ namespace CutTheRopeDX.GameMain
             body.Owner.lightBulb?.SyncFromContext(body.Owner);
             _ = (body.BubbleAnimation?.visible = false);
             _ = (body.GhostBubbleAnimation?.visible = false);
+        }
+
+        private void ReleasePendingSecondGhostBubbleForBody(CandyBody body)
+        {
+            if (pendingSecondGhostBubble == null || pendingSecondGhostBubbleOwner != body)
+            {
+                return;
+            }
+
+            EnableGhostCycleForBubble(pendingSecondGhostBubble);
+            pendingSecondGhostBubble = null;
+            pendingSecondGhostBubbleOwner = null;
         }
     }
 }
