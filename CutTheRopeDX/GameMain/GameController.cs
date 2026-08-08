@@ -22,7 +22,7 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float t)
         {
             // XnaGame is the desktop host and is absent headless, where there is no keyboard.
-            if (!isGamePaused && Global.XnaGame?.IsKeyPressed(Keys.F5) == true)
+            if (overlayMode == GameControllerOverlayMode.Gameplay && Global.XnaGame?.IsKeyPressed(Keys.F5) == true)
             {
                 OnButtonPressed(GameControllerButtonId.Restart);
             }
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.GameMain
                 // external edit reads as a deliberate restart rather than a glitch.
                 scene.animateRestartDim = true;
                 scene.Reload();
-                SetPaused(false);
+                EnterOverlayMode(GameControllerOverlayMode.Gameplay);
                 return;
             }
 
@@ -202,7 +202,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void InitGameView()
         {
-            SetPaused(false);
             LevelFirstStart();
         }
 
@@ -213,11 +212,7 @@ namespace CutTheRopeDX.GameMain
         {
             View view = GetView(0);
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
-            isGamePaused = false;
-            view.GetChild(0).touchable = true;
-            view.GetChild(0).updateable = true;
-            view.GetChild(1).touchable = true;
-            view.GetChild(2).touchable = true;
+            EnterOverlayMode(GameControllerOverlayMode.Gameplay);
         }
 
         /// <summary>
@@ -227,12 +222,7 @@ namespace CutTheRopeDX.GameMain
         {
             View view = GetView(0);
             ((BoxOpenClose)view.GetChild(4)).LevelStart();
-            isGamePaused = false;
-            view.GetChild(0).touchable = true;
-            view.GetChild(0).updateable = true;
-            view.GetChild(1).touchable = true;
-            view.GetChild(2).touchable = true;
-            view.GetChild(4).touchable = false;
+            EnterOverlayMode(GameControllerOverlayMode.Gameplay);
         }
 
         /// <summary>
@@ -241,8 +231,8 @@ namespace CutTheRopeDX.GameMain
         public void LevelQuit()
         {
             View view = GetView(0);
+            EnterOverlayMode(GameControllerOverlayMode.Results);
             ((BoxOpenClose)view.GetChild(4)).LevelQuit();
-            view.GetChild(0).touchable = false;
         }
 
         /// <summary>
@@ -333,7 +323,6 @@ namespace CutTheRopeDX.GameMain
             //}
             CTRSoundMgr.PlaySound(Resources.Snd.Win);
             View view = GetView(0);
-            view.GetChild(4).touchable = true;
             GameScene gameScene = (GameScene)view.GetChild(0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);
             Image image = (Image)boxOpenClose.result.GetChildWithName("star1");
@@ -350,10 +339,7 @@ namespace CutTheRopeDX.GameMain
                 _ => "LEVEL_CLEARED1"
             };
             ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(clearText));
-            isGamePaused = true;
-            gameScene.touchable = false;
-            view.GetChild(2).touchable = false;
-            view.GetChild(1).touchable = false;
+            EnterOverlayMode(GameControllerOverlayMode.Results);
             int box = cTRRootController.GetBox();
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
@@ -384,7 +370,7 @@ namespace CutTheRopeDX.GameMain
                     (_) =>
                     {
                         // Only freeze if still in result screen (not when replaying/moving to next level)
-                        if (isGamePaused)
+                        if (overlayMode == GameControllerOverlayMode.Results)
                         {
                             gameScene.updateable = false;
                         }
@@ -410,6 +396,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void LevelLost()
         {
+            EnterOverlayMode(GameControllerOverlayMode.Results);
             ((BoxOpenClose)GetView(0).GetChild(4)).LevelLost();
         }
 
@@ -474,12 +461,12 @@ namespace CutTheRopeDX.GameMain
             switch (n)
             {
                 case var id when id == GameControllerButtonId.Continue:
-                    SetPaused(false);
+                    EnterOverlayMode(GameControllerOverlayMode.Gameplay);
                     CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case var id when id == GameControllerButtonId.Restart:
                     GameScene restartScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
-                    if (isGamePaused
+                    if (overlayMode != GameControllerOverlayMode.Gameplay
                         || !view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).touchable
                         || restartScene.gameplayFlow.Phase != RestartPhase.Playing)
                     {
@@ -494,7 +481,7 @@ namespace CutTheRopeDX.GameMain
                         return;
                     }
                     UnlockNextLevel();
-                    SetPaused(false);
+                    EnterOverlayMode(GameControllerOverlayMode.Gameplay);
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     CTRRootController.LogEvent("IM_SKIP_PRESSED");
                     return;
@@ -536,7 +523,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             return;
                         }
-                        SetPaused(true);
+                        EnterOverlayMode(GameControllerOverlayMode.Paused);
                         CTRRootController.LogEvent("IG_MENU_PRESSED");
                         CTRRootController.LogEvent("IM_SHOWN");
                         return;
@@ -549,7 +536,6 @@ namespace CutTheRopeDX.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
-                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ExitFromLose:
                     if (!boxCloseHandled)
@@ -571,7 +557,6 @@ namespace CutTheRopeDX.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
-                    SetPaused(false);
                     return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
@@ -611,7 +596,7 @@ namespace CutTheRopeDX.GameMain
             }
             gameScene5.animateRestartDim = n == GameControllerButtonId.Restart;
             gameScene5.Reload();
-            SetPaused(false);
+            EnterOverlayMode(GameControllerOverlayMode.Gameplay);
             CTRRootController.LogEvent(n != GameControllerButtonId.ExitFromLose ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
         }
 
@@ -622,35 +607,57 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Sets pause state, toggles HUD/menu visibility, and updates audio pause state.
+        /// Applies the complete scene, HUD, menu, gesture, and audio policy for an overlay mode.
         /// </summary>
-        /// <param name="p"><see langword="true"/> to pause the game; <see langword="false"/> to resume it.</param>
-        public void SetPaused(bool p)
+        /// <param name="mode">Overlay mode to enter.</param>
+        private void EnterOverlayMode(GameControllerOverlayMode mode)
         {
+            if (overlayModeApplied && overlayMode == mode)
+            {
+                return;
+            }
+
             View view = GetView(0);
-            if (!p)
+            GameScene gameScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            GameControllerOverlayMode previousMode = overlayMode;
+            overlayMode = mode;
+            overlayModeApplied = true;
+
+            if (mode == GameControllerOverlayMode.Gameplay)
             {
                 DeactivateAllButtons();
             }
-            else
+            else if (mode == GameControllerOverlayMode.Paused)
             {
                 // Cancel any in-progress game-scene gesture
                 // before the scene stops receiving input. Otherwise the matching touch-up is
                 // dropped while paused, stranding the button in its pressed state until restart.
-                ReleaseAllTouches((GameScene)view.GetChild(0));
+                ReleaseAllTouches(gameScene);
             }
-            isGamePaused = p;
-            view.GetChild(3).SetEnabled(p);
-            view.GetChild(1).SetEnabled(!p);
-            view.GetChild(2).SetEnabled(!p);
-            view.GetChild(0).touchable = !p;
-            view.GetChild(0).updateable = !p;
-            if (!isGamePaused)
+
+            bool gameplay = mode == GameControllerOverlayMode.Gameplay;
+            bool paused = mode == GameControllerOverlayMode.Paused;
+            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
+            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).SetEnabled(gameplay);
+            view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
+            view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
+            gameScene.touchable = gameplay;
+            gameScene.updateable = gameplay;
+
+            if (previousMode == GameControllerOverlayMode.Paused && mode != GameControllerOverlayMode.Paused)
             {
                 CTRSoundMgr.Unpause();
+            }
+            else if (previousMode != GameControllerOverlayMode.Paused && mode == GameControllerOverlayMode.Paused)
+            {
+                CTRSoundMgr.Pause();
+            }
+
+            if (!paused)
+            {
                 return;
             }
-            CTRSoundMgr.Pause();
+
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
@@ -659,7 +666,6 @@ namespace CutTheRopeDX.GameMain
             }
             if (CustomLevelSession.IsActive)
             {
-                GameScene gameScene = (GameScene)view.GetChild(0);
                 mapNameLabel.SetString(gameScene.ResolveLevelDisplayName() ?? string.Empty);
                 return;
             }
@@ -850,7 +856,6 @@ namespace CutTheRopeDX.GameMain
             }
             ((GameScene)view.GetChild(0)).LoadNextMap();
             LevelStart();
-            SetPaused(false);
         }
 
         /// <summary>
@@ -967,8 +972,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Watches the custom level file for external edits, or <see langword="null"/> in normal play.</summary>
         private CustomLevelWatcher levelWatcher;
 
-        /// <summary>Whether gameplay is currently paused.</summary>
-        private bool isGamePaused;
+        /// <summary>Authoritative controller overlay mode.</summary>
+        private GameControllerOverlayMode overlayMode = GameControllerOverlayMode.Gameplay;
+
+        /// <summary>Whether the initial overlay presentation has been applied to the created view.</summary>
+        private bool overlayModeApplied;
 
         /// <summary>Exit code describing the selected controller deactivation route.</summary>
         public int exitCode;

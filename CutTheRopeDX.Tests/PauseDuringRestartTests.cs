@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
             {
                 CustomLevelSession.Activate("pause-name-test.xml");
 
-                controller.SetPaused(true);
+                controller.OnButtonPressed(GameControllerButtonId.Pause);
 
                 Assert.Equal("My Custom Level", PauseMapNameLabel(controller).GetString());
             }
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests
             {
                 CustomLevelSession.Activate("pause-name-test.xml");
 
-                controller.SetPaused(true);
+                controller.OnButtonPressed(GameControllerButtonId.Pause);
 
                 Assert.Equal(string.Empty, PauseMapNameLabel(controller).GetString());
             }
@@ -69,7 +69,7 @@ namespace CutTheRopeDX.Tests
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             int score = CTRPreferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
 
-            controller.SetPaused(true);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
 
             Assert.Equal(Application.GetString("BEST_SCORE") + ": " + score, PauseMapNameLabel(controller).GetString());
         }
@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests
             scene.AnimateLevelRestart();
             controller.OnButtonPressed(GameControllerButtonId.Pause);
 
-            // SetPaused freezes the scene via updateable; still true means the pause was refused.
+            // Entering pause freezes the scene via updateable; still true means the pause was refused.
             Assert.True(scene.updateable);
         }
 
