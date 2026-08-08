@@ -854,29 +854,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Permanently removes one active body for the given reason, routing the removal to whichever
-        /// owner actually holds that body's state: a whole body's own lifecycle, or the matching half
-        /// of its logical candy's split state.
-        /// </summary>
-        /// <param name="body">The body being removed.</param>
-        /// <param name="reason">The reason the body is removed.</param>
-        /// <returns>
-        /// <see langword="true"/> when the body transitioned to removed; otherwise,
-        /// <see langword="false"/> when it was already removed or the transition is illegal.
-        /// </returns>
-        private static bool TryRemoveBody(CandyBody body, CandyRemovalReason reason)
-        {
-            SplitCandyState split = body.Owner.Lifecycle.Split;
-            return body.Role switch
-            {
-                CandyBodyRole.LeftHalf => split?.Left.TryRemove(reason) == true,
-                CandyBodyRole.RightHalf => split?.Right.TryRemove(reason) == true,
-                CandyBodyRole.Whole => body.Owner.Lifecycle.TryRemove(reason),
-                _ => false,
-            };
-        }
-
-        /// <summary>
         /// Destroys one candy body that touched a hazard (spike, axe, ...): pops its bubble, removes
         /// it as a hazard loss, releases its ropes, detaches its carriers, schedules the loss, and
         /// flags ghosts. A split half loses only itself; its sibling keeps playing until the
@@ -885,20 +862,15 @@ namespace CutTheRopeDX.GameMain
         /// <param name="body">The body being destroyed.</param>
         private void BreakCandyBody(CandyBody body)
         {
-            CandyContext ctx = body.Owner;
-            PopCandyBubble(body);
-            body.Visual.x = body.Point.pos.X;
-            body.Visual.y = body.Point.pos.Y;
-            _ = TryRemoveBody(body, CandyRemovalReason.Hazard);
-            ExhaustRocketForCandy(ctx);
-            SpawnCandyBreakParticles(body.Visual.x, body.Visual.y);
-            ReleaseRopesForBody(body);
-            // Carriers only ever hold a whole body, so they are always detached from the logical
-            // candy's whole point - which for a whole body is this body's own point.
-            ConstraintedPoint carrierPoint = ctx.WholeBody.Point;
-            DetachHandsForPoint(carrierPoint);
-            DetachSnailsForPoint(carrierPoint);
-            DropMouseCandyForPoint(carrierPoint);
+            Vector breakPosition = body.Point.pos;
+            body.Visual.x = breakPosition.X;
+            body.Visual.y = breakPosition.Y;
+            if (!TryRetireCandyBody(body, CandyRemovalReason.Hazard))
+            {
+                return;
+            }
+
+            SpawnCandyBreakParticles(breakPosition.X, breakPosition.Y);
             if (gameplayFlow.CanTriggerOutcome)
             {
                 ScheduleGameLost(0.3f);

@@ -191,6 +191,33 @@ namespace CutTheRopeDX.GameMain
             GetAllLanterns().Clear();
         }
 
+        /// <summary>
+        /// Cancels lantern ownership when the exact captured candy point is permanently removed.
+        /// Pending release callbacks are discarded and every lantern returns to its inactive visual.
+        /// </summary>
+        /// <param name="point">Point being permanently removed.</param>
+        /// <returns><see langword="true"/> when this was the captured lantern point.</returns>
+        public static bool CancelCandyCaptureForRemoval(ConstraintedPoint point)
+        {
+            if (point == null || SharedCandyPoint != point)
+            {
+                return false;
+            }
+
+            SharedCandyPoint = null;
+            foreach (Lantern lantern in GetAllLanterns())
+            {
+                lantern.delayedDispatcher.CancelAllDispatches();
+                lantern.lanternState = LanternStateInactive;
+                lantern.idleForm.color = RGBAColor.solidOpaqueRGBA;
+                lantern.activeForm.color = RGBAColor.transparentRGBA;
+                lantern.innerCandy.color = RGBAColor.transparentRGBA;
+                lantern.fire.color = RGBAColor.transparentRGBA;
+            }
+
+            return true;
+        }
+
         /// <inheritdoc />
         public override void Update(float delta)
         {

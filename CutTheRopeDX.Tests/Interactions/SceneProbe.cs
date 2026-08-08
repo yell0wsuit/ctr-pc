@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -291,6 +293,25 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Equal(0, scene.SnailCount(candy));
             Assert.False(candy.inLantern);
             Assert.False(candy.WholeBody.Point.disableGravity);
+        }
+
+        /// <summary>Invokes the scene's hazard entry point to model repeated overlap in one update.</summary>
+        /// <param name="scene">Scene whose hazard path is invoked.</param>
+        /// <param name="body">Body intersecting the hazard.</param>
+        public static void BreakCandyBody(this GameScene scene, CandyBody body)
+        {
+            MethodInfo method = typeof(GameScene).GetMethod("BreakCandyBody", Instance)
+                ?? throw new MissingMethodException(nameof(GameScene), "BreakCandyBody");
+            _ = method.Invoke(scene, [body]);
+        }
+
+        /// <summary>Number of live candy-break particle systems in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live candy-break effect count.</returns>
+        public static int CandyBreakEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            return pool.GetChilds().Values.OfType<CandyBreak>().Count();
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>

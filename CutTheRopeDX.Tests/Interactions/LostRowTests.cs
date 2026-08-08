@@ -102,6 +102,28 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void RepeatedHazardOverlapRetiresAndPresentsTheCandyOnlyOnce()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
+            Act.CarryByAnts(scene, candy);
+
+            // Two hazards may discover the same body before the next active-body enumeration. Drive
+            // the real hazard entry point twice to require its lifecycle transition to be the gate
+            // for cleanup, break presentation, and delayed loss scheduling.
+            scene.BreakCandyBody(candy.WholeBody);
+            scene.BreakCandyBody(candy.WholeBody);
+
+            Assert.Equal(CandyRemovalReason.Hazard, candy.Lifecycle.RemovalReason);
+            Assert.Equal(1, scene.CandyBreakEffectCount());
+            scene.AssertNoLiveAttachments(candy);
+            Assert.True(
+                Interaction.StepUntil(scene, () => scene.Outcomes().LostCount > 0),
+                "the broken candy never lost the level");
+            HeadlessGame.StepFrames(scene, 60);
+            Assert.Equal(1, scene.Outcomes().LostCount);
+        }
+
+        [Fact]
         public void LostOffScreenExhaustsItsRocket()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
