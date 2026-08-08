@@ -23,6 +23,7 @@ and are built by their own scripts. Only Windows has hardware old enough to
 need the fallback.
 """
 
+import hashlib
 import shutil
 import subprocess
 import sys
@@ -108,10 +109,10 @@ def publish(
 
 def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
     """Download BtbN FFmpeg LGPL shared libraries for one Windows architecture."""
-    ffmpeg_url = (
-        "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/"
-        f"ffmpeg-n8.1-latest-{btbn_arch}-lgpl-shared-8.1.zip"
-    )
+    release_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
+    archive_name = f"ffmpeg-n8.1-latest-{btbn_arch}-lgpl-shared-8.1.zip"
+    ffmpeg_url = f"{release_url}/{archive_name}"
+    checksums_url = f"{release_url}/checksums.sha256"
     destination = output_dir / FFMPEG_DIRECTORY
     if destination.is_dir() and any(destination.glob("avcodec-*.dll")):
         print(f"FFmpeg shared libraries already present in {destination}")
@@ -122,8 +123,27 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
 
     with tempfile.TemporaryDirectory() as temp_dir_name:
         temp_dir = Path(temp_dir_name)
-        archive_path = temp_dir / f"ffmpeg-{btbn_arch}-lgpl-shared.zip"
+        archive_path = temp_dir / archive_name
+        checksums_path = temp_dir / "checksums.sha256"
         urllib.request.urlretrieve(ffmpeg_url, archive_path)
+        urllib.request.urlretrieve(checksums_url, checksums_path)
+
+        expected_checksum = None
+        for line in checksums_path.read_text(encoding="utf-8").splitlines():
+            parts = line.split(maxsplit=1)
+            if len(parts) == 2 and parts[1].lstrip("*") == archive_name:
+                expected_checksum = parts[0].lower()
+                break
+
+        digest = hashlib.sha256()
+        with archive_path.open("rb") as archive_file:
+            for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
+                digest.update(chunk)
+        actual_checksum = digest.hexdigest()
+
+        if expected_checksum is None or actual_checksum != expected_checksum:
+            print(f"FFmpeg checksum verification failed for {archive_name}", file=sys.stderr)
+            sys.exit(1)
 
         with zipfile.ZipFile(archive_path) as archive:
             archive.extractall(temp_dir / "extracted")
