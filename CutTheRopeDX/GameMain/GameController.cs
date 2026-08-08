@@ -693,7 +693,7 @@ namespace CutTheRopeDX.GameMain
             view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
             gameScene.touchable = gameplay;
-            gameScene.updateable = gameplay;
+            gameScene.updateable = !paused;
 
             if (previousMode == GameControllerOverlayMode.Paused && mode != GameControllerOverlayMode.Paused)
             {

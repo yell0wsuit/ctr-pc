@@ -4,6 +4,7 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Helpers;
 
 using Xunit;
 
@@ -75,7 +76,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ResultsModeFreezesSceneAndHudWithoutPausingResultAudio()
+        public void ResultsModeBlocksTouchButKeepsSceneUpdatingDuringCloseAnimation()
         {
             (GameController controller, GameScene scene) = Load();
             View view = controller.GetView(0);
@@ -83,11 +84,24 @@ namespace CutTheRopeDX.Tests
             controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
 
             Assert.False(scene.touchable);
-            Assert.False(scene.updateable);
+            Assert.True(scene.updateable);
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
             Assert.Equal(0, AudioPauseDepth());
+        }
+
+        [Fact]
+        public void ResultsModeFreezesSceneAfterBoxCloseDelay()
+        {
+            (GameController controller, GameScene scene) = Load();
+            BoxOpenClose box = (BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS);
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+            box.PostBoxClosed();
+            TimerManager.Update(0.51f);
+
+            Assert.False(scene.updateable);
         }
 
         [Fact]
