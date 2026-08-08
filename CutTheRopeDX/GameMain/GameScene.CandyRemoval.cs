@@ -1,4 +1,5 @@
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -34,15 +35,14 @@ namespace CutTheRopeDX.GameMain
             };
         }
 
-        // Temporary low-level compatibility for removal callers migrated by the later plan tasks.
-        private static bool TryRemoveBody(CandyBody body, CandyRemovalReason reason)
-        {
-            return body?.Owner != null && TryCommitCandyRemoval(body, reason);
-        }
-
         private void ReleaseRemovalOwnership(CandyBody body, CandyRemovalReason reason)
         {
             ReleaseRopesForBody(body);
+            DetachRopeConstraintsForPoint(body.Point);
+            if (body.Role != CandyBodyRole.Whole)
+            {
+                DetachRopeConstraintsForPoint(body.Owner.WholeBody.Point);
+            }
             ReleaseBubbleForRemoval(body, reason);
 
             if (body.Role == CandyBodyRole.Whole)
@@ -62,6 +62,25 @@ namespace CutTheRopeDX.GameMain
             // Carrier release ordering is deliberately closed here: no owner may leave a retired
             // point gravity-suppressed. Authored/device-specific weight is preserved.
             body.Point.disableGravity = false;
+        }
+
+        private void DetachRopeConstraintsForPoint(ConstraintedPoint point)
+        {
+            foreach (RopeEntry entry in ropes.All)
+            {
+                int? cutPart = entry.CutPartForCandy(point);
+                if (cutPart == null)
+                {
+                    continue;
+                }
+
+                ConstraintedPoint ropeEnd = entry.Rope.parts[cutPart.Value];
+                ConstraintedPoint attachedPoint = entry.Rope.parts[cutPart.Value + 1];
+                if (attachedPoint.HasConstraintTo(ropeEnd))
+                {
+                    entry.Rope.RemovePart(cutPart.Value);
+                }
+            }
         }
 
         private void ReleaseBubbleForRemoval(CandyBody body, CandyRemovalReason reason)

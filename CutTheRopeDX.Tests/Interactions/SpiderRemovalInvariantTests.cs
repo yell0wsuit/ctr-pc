@@ -113,6 +113,53 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Equal(1, scene.AttachedRopeCount(other));
         }
 
+        [Fact]
+        public void WinningSpiderSurvivesRopeRetirementWhileOtherSpidersBust()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .Grab(120, 120, length: 100, spider: true)
+                .Grab(200, 120, length: 100, spider: true)
+                .OmNom(20, 460)
+                .Build();
+            Grab winner = scene.Grabs()[0];
+            Grab other = scene.Grabs()[1];
+            HeadlessGame.StepFrames(scene, 1);
+            Assert.True(winner.Spider.ShouldBustOnRopeCut);
+            Assert.True(other.Spider.ShouldBustOnRopeCut);
+
+            scene.SpiderWon(winner);
+
+            Assert.Equal(SpiderRiderState.Won, winner.Spider.State);
+            Assert.Equal(SpiderRiderState.Busted, other.Spider.State);
+        }
+
+        [Fact]
+        public void SpiderOnAnAlreadyRemovedBodyCreatesNoVictoryOrCrossCandyDamage()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(60, 200, number: "1")
+                .Candy(260, 200, number: "2")
+                .Rope(60, 120, length: 100, candyNumber: "1")
+                .Grab(260, 120, length: 100, spider: true, candyNumber: "2")
+                .OmNom(20, 460)
+                .Build();
+            CandyContext kept = scene.Candies()[0];
+            CandyContext removed = scene.Candies()[1];
+            Grab staleSpider = scene.Grabs()[1];
+            Interaction.Hover(removed);
+            Act.LoseOffScreen(scene, removed);
+            int victoryEffects = scene.SpiderVictoryEffectCount();
+            Assert.Equal(1, scene.AttachedRopeCount(kept));
+
+            scene.SpiderWon(staleSpider);
+
+            Assert.Equal(victoryEffects, scene.SpiderVictoryEffectCount());
+            Assert.Equal(CandyRemovalReason.OffScreen, removed.Lifecycle.RemovalReason);
+            Assert.Equal(CandyPresence.Present, kept.Lifecycle.Presence);
+            Assert.Equal(1, scene.AttachedRopeCount(kept));
+        }
+
         private static void AssertSpiderRetires(
             Func<Scenario, Scenario> addAttachment,
             Action<GameScene, CandyContext> attach)

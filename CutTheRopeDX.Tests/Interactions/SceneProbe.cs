@@ -335,6 +335,18 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Count(animation => ReferenceEquals(animation.texture, bubbleTexture));
         }
 
+        /// <summary>Number of live spider victory images in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live spider victory-image count.</returns>
+        public static int SpiderVictoryEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            CTRTexture2D spiderTexture = Application.GetTexture(Resources.Img.ObjSpider);
+            return pool.GetChilds().Values
+                .OfType<Image>()
+                .Count(effect => ReferenceEquals(effect.texture, spiderTexture) && effect.GetChilds().Count > 0);
+        }
+
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <param name="grab">Grab to inspect.</param>
