@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ResultsModeBlocksTouchButKeepsSceneUpdatingDuringCloseAnimation()
+        public void ResultsModeKeepsSceneUpdatingDuringCloseAnimation()
         {
             (GameController controller, GameScene scene) = Load();
             View view = controller.GetView(0);
@@ -85,6 +85,10 @@ namespace CutTheRopeDX.Tests
 
             Assert.False(scene.touchable);
             Assert.True(scene.updateable);
+            BoxOpenClose results = Assert.IsType<BoxOpenClose>(view.GetChild(GameView.VIEW_ELEMENT_RESULTS));
+            Assert.True(results.updateable);
+            controller.Update(0.1f);
+            Assert.Equal(1, results.raState);
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
@@ -105,14 +109,69 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void EnteringResultsFromPauseReleasesTheControllerAudioPause()
+        public void DelayedResultFreezeDoesNotRefreezeReplayedLevel()
         {
-            (GameController controller, _) = Load();
+            (GameController controller, GameScene scene) = Load();
+            BoxOpenClose box = (BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS);
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+            box.PostBoxClosed();
+            controller.OnButtonPressed(GameControllerButtonId.ExitFromLose);
+            Assert.True(scene.updateable);
+            TimerManager.Update(0.51f);
+
+            Assert.True(scene.updateable);
+        }
+
+        [Fact]
+        public void EnteringResultsFromPauseKeepsGameplaySuspended()
+        {
+            (GameController controller, GameScene scene) = Load();
             controller.OnButtonPressed(GameControllerButtonId.Pause);
             Assert.Equal(1, AudioPauseDepth());
 
             controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
 
+            Assert.False(scene.updateable);
+            Assert.Equal(1, AudioPauseDepth());
+        }
+
+        [Fact]
+        public void LeavingPausedGameplayForMenuDoesNotRestartSceneDuringCloseAnimation()
+        {
+            (GameController controller, GameScene scene) = Load();
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            controller.OnButtonPressed(GameControllerButtonId.MainMenu);
+
+            Assert.False(scene.touchable);
+            Assert.False(scene.updateable);
+            Assert.Equal(0, AudioPauseDepth());
+        }
+
+        [Fact]
+        public void LeavingActiveGameplayForMenuDoesNotCreateANewAudioPause()
+        {
+            (GameController controller, GameScene scene) = Load();
+
+            controller.OnButtonPressed(GameControllerButtonId.MainMenu);
+
+            Assert.False(scene.touchable);
+            Assert.False(scene.updateable);
+            Assert.Equal(0, AudioPauseDepth());
+        }
+
+        [Fact]
+        public void ExitingResultsDirectlyFreezesSceneAndClearsAudioPauseOwnership()
+        {
+            (GameController controller, GameScene scene) = Load();
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+            Assert.True(scene.updateable);
+
+            controller.OnButtonPressed(GameControllerButtonId.ExitFromWin);
+
+            Assert.False(scene.touchable);
+            Assert.False(scene.updateable);
             Assert.Equal(0, AudioPauseDepth());
         }
 

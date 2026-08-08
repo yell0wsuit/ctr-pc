@@ -103,6 +103,12 @@ namespace CutTheRopeDX.GameMain
         public override void Deactivate()
         {
             navigationExitActive = true;
+            gameplayAudioPaused = false;
+            if (GetView(0)?.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE) is GameScene gameScene)
+            {
+                gameScene.touchable = false;
+                gameScene.updateable = false;
+            }
             base.Deactivate();
         }
 
@@ -688,20 +694,31 @@ namespace CutTheRopeDX.GameMain
 
             bool gameplay = mode == GameControllerOverlayMode.Gameplay;
             bool paused = mode == GameControllerOverlayMode.Paused;
+            bool resultCloseAnimation = mode == GameControllerOverlayMode.Results
+                && previousMode == GameControllerOverlayMode.Gameplay
+                && !navigationExitActive;
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).SetEnabled(gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
             gameScene.touchable = gameplay;
-            gameScene.updateable = !paused;
+            gameScene.updateable = gameplay || resultCloseAnimation;
 
-            if (previousMode == GameControllerOverlayMode.Paused && mode != GameControllerOverlayMode.Paused)
+            if (mode == GameControllerOverlayMode.Results && navigationExitActive)
             {
-                CTRSoundMgr.Unpause();
+                // Navigation callers stop all audio before starting the quit animation, which
+                // also resets the global pause depth. Do not leave stale controller ownership.
+                gameplayAudioPaused = false;
             }
-            else if (previousMode != GameControllerOverlayMode.Paused && mode == GameControllerOverlayMode.Paused)
+            else if (paused && !gameplayAudioPaused)
             {
                 CTRSoundMgr.Pause();
+                gameplayAudioPaused = true;
+            }
+            else if (gameplay && gameplayAudioPaused)
+            {
+                CTRSoundMgr.Unpause();
+                gameplayAudioPaused = false;
             }
 
             if (!paused)
@@ -997,6 +1014,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether controller navigation has begun and further Back/Menu input must be ignored.</summary>
         private bool navigationExitActive;
+
+        /// <summary>Whether this controller currently owns one pause on the shared audio manager.</summary>
+        private bool gameplayAudioPaused;
 
         /// <summary>Exit code describing the selected controller deactivation route.</summary>
         public int exitCode;
