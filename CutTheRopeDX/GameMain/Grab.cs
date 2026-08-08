@@ -77,7 +77,6 @@ namespace CutTheRopeDX.GameMain
         {
             base.Update(delta);
             Source.Update(delta);
-            Mount?.SyncPositions(this);
             // Transported grabs keep their rope anchor pinned to grab position.
             if (IsDrawnByTransporter)
             {
@@ -111,8 +110,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (Mount?.IsMounted == false)
             {
-                x = Mount.BackLayerPosition.X;
-                y = Mount.BackLayerPosition.Y;
+                Mount.SyncBackPosition(this);
             }
             if (GunSource != null)
             {
@@ -154,8 +152,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (Mount?.IsMounted == false)
             {
-                x = Mount.AnchorPosition.X;
-                y = Mount.AnchorPosition.Y;
+                Mount.SyncFrontPosition(this);
             }
             PreDraw();
             Renderer.Enable(Renderer.GL_TEXTURE_2D);

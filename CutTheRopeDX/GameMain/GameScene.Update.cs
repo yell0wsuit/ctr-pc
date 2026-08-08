@@ -1663,6 +1663,7 @@ namespace CutTheRopeDX.GameMain
             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 null, grab.x, grab.y, body.Point, body.Point.pos.X, body.Point.pos.Y,
                 source.Radius + ActivePhysicsConstants.CandyGrabPadding);
+            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
 
             if (grab.IsChainAnchor)
             {

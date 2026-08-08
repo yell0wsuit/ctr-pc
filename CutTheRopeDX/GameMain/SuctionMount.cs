@@ -37,16 +37,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the elapsed sticking time, or -1 when not trying to stick.</summary>
         public float StickTimer { get; private set; } = -1f;
 
-        /// <summary>
-        /// Gets the position the hook's back layer is drawn at. While falling this lags the front by
-        /// one frame's worth of easing, which is a real visual difference the original produced by
-        /// computing it inside <c>DrawBack</c>.
-        /// </summary>
-        public Vector BackLayerPosition { get; private set; }
-
-        /// <summary>Gets the position the hook and its front layer are drawn at.</summary>
-        public Vector AnchorPosition { get; private set; }
-
         /// <summary>Gets whether a platform should drive this hook this frame.</summary>
         public bool FollowsPlatform => IsMounted;
 
@@ -127,26 +117,33 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Recomputes the two draw positions from the rope anchor. Called once per frame from
-        /// <see cref="Grab.Update"/>, in the order the two draw passes used to run: the back layer
-        /// eases toward the anchor from where the front layer was left last frame, then the front
-        /// snaps to the anchor.
+        /// Eases the hook toward the rope anchor for the back draw pass. Position synchronization
+        /// deliberately remains in the draw path: headless updates never moved the hook, and the
+        /// front draw pass supplies the starting position for the next frame's easing.
         /// </summary>
         /// <param name="grab">The hook this mount belongs to.</param>
-        public void SyncPositions(Grab grab)
+        public void SyncBackPosition(Grab grab)
         {
             if (IsMounted || grab.Rope == null)
             {
                 return;
             }
 
-            // The ease starts from where the hook currently sits - which the front pass left at last
-            // frame's anchor - so the first frame after a kick eases from the wall, not from origin.
             Vector anchor = grab.Rope.bungeeAnchor.pos;
-            BackLayerPosition = Vect(
-                (anchor.X * BackLayerFollow) + (grab.x * (1f - BackLayerFollow)),
-                (anchor.Y * BackLayerFollow) + (grab.y * (1f - BackLayerFollow)));
-            AnchorPosition = anchor;
+            grab.x = (anchor.X * BackLayerFollow) + (grab.x * (1f - BackLayerFollow));
+            grab.y = (anchor.Y * BackLayerFollow) + (grab.y * (1f - BackLayerFollow));
+        }
+
+        /// <summary>Snaps the hook to the rope anchor for the front draw pass.</summary>
+        /// <param name="grab">The hook this mount belongs to.</param>
+        public void SyncFrontPosition(Grab grab)
+        {
+            if (IsMounted || grab.Rope == null)
+            {
+                return;
+            }
+
+            Vector anchor = grab.Rope.bungeeAnchor.pos;
             grab.x = anchor.X;
             grab.y = anchor.Y;
         }
