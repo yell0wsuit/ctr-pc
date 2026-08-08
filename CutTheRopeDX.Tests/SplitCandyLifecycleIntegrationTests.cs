@@ -103,6 +103,30 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AHalfLostOffScreenReleasesOnlyItsOwnBubbleAndRopes()
+        {
+            (GameScene scene, CandyContext primary) = SplitLevel();
+            SplitCandyState split = primary.Lifecycle.Split;
+            Assert.True(
+                Interaction.StepUntil(
+                    scene,
+                    () => split.Left.Body.Bubble != null || split.Right.Body.Bubble != null),
+                "no half ever picked up one of the level's bubbles");
+            CandyHalf removed = split.Left.Body.Bubble != null ? split.Left : split.Right;
+            CandyHalf surviving = removed == split.Left ? split.Right : split.Left;
+            int survivingRopes = scene.AttachedRopeCount(surviving.Body);
+            Assert.True(scene.AttachedRopeCount(removed.Body) > 0);
+            Assert.True(survivingRopes > 0);
+
+            DropHalfOffScreen(scene, removed);
+
+            Assert.Null(removed.Body.Bubble);
+            Assert.Equal(0, scene.AttachedRopeCount(removed.Body));
+            Assert.Null(surviving.RemovalReason);
+            Assert.Equal(survivingRopes, scene.AttachedRopeCount(surviving.Body));
+        }
+
+        [Fact]
         public void ALostHalfBlocksTheMerge()
         {
             (GameScene scene, CandyContext primary) = SplitLevel();

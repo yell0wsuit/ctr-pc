@@ -245,10 +245,19 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The number of uncut ropes whose tail is this candy.</returns>
         public static int AttachedRopeCount(this GameScene scene, CandyContext candy)
         {
+            return scene.AttachedRopeCount(candy.WholeBody);
+        }
+
+        /// <summary>Ropes still attached (uncut) to the exact candy body.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="body">Body to inspect.</param>
+        /// <returns>The number of uncut ropes whose tail is this body's point.</returns>
+        public static int AttachedRopeCount(this GameScene scene, CandyBody body)
+        {
             int count = 0;
             foreach (Grab grab in scene.Grabs())
             {
-                if (grab.Rope != null && grab.Rope.tail == candy.WholeBody.Point && grab.Rope.cut == -1)
+                if (grab.Rope != null && grab.Rope.tail == body.Point && grab.Rope.cut == -1)
                 {
                     count++;
                 }
@@ -312,6 +321,18 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
             return pool.GetChilds().Values.OfType<CandyBreak>().Count();
+        }
+
+        /// <summary>Number of live bubble-pop animations in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live bubble-pop effect count.</returns>
+        public static int BubblePopEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            CTRTexture2D bubbleTexture = Application.GetTexture(Resources.Img.ObjBubble);
+            return pool.GetChilds().Values
+                .OfType<Animation>()
+                .Count(animation => ReferenceEquals(animation.texture, bubbleTexture));
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>

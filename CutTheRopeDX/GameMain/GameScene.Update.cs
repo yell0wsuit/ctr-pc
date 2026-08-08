@@ -1505,17 +1505,14 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 CandyContext ctx = body.Owner;
-                _ = TryRemoveBody(body, CandyRemovalReason.OffScreen);
-                ExhaustRocketForCandy(ctx);
-                if (body.Role == CandyBodyRole.Whole)
+                if (!TryRetireCandyBody(body, CandyRemovalReason.OffScreen))
                 {
-                    ReleaseRopesForBody(body);
-                    anyLeft = anyLeft || ctx.Capabilities.CanLoseLevelWhenOffScreen;
+                    continue;
                 }
-                else
-                {
-                    anyLeft = true;
-                }
+
+                anyLeft = anyLeft
+                    || body.Role != CandyBodyRole.Whole
+                    || ctx.Capabilities.CanLoseLevelWhenOffScreen;
             }
             if (anyLeft)
             {

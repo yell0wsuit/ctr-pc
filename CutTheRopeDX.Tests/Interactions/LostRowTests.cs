@@ -148,6 +148,18 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void LostOffScreenClearsItsBubbleOwnership()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
+            _ = Act.CaptureInBubble(scene, candy);
+
+            Act.LoseOffScreen(scene, candy);
+
+            Assert.Null(candy.WholeBody.Bubble);
+            Assert.False(candy.WholeBody.Point.disableGravity);
+        }
+
+        [Fact]
         public void LostOffScreenDetachesItsSnail()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
@@ -156,6 +168,30 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.LoseOffScreen(scene, candy);
 
             Assert.Equal(0, scene.SnailCount(candy));
+        }
+
+        [Fact]
+        public void LosingOneCandyOffScreenDoesNotAlterAnotherCandysBubble()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(60, 200, number: "1")
+                .Candy(260, 200, number: "2")
+                .Snail(60, 200)
+                .Bubble(260, 200)
+                .OmNom(20, 460)
+                .Build();
+            CandyContext lost = scene.Candies()[0];
+            CandyContext kept = scene.Candies()[1];
+            Interaction.Hover(lost);
+            Interaction.Hover(kept);
+            _ = Act.RideSnail(scene, lost);
+            Bubble bubble = Act.CaptureInBubble(scene, kept);
+
+            Act.LoseOffScreen(scene, lost);
+
+            Assert.Equal(0, scene.SnailCount(lost));
+            Assert.Same(bubble, kept.WholeBody.Bubble);
+            Assert.Equal(CandyPresence.Present, kept.Lifecycle.Presence);
         }
 
         [Fact]
