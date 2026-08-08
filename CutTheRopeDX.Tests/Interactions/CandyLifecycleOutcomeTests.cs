@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -121,6 +122,26 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(candy.HasNoWholeBodyInPlay);
             Assert.Empty(candy.Lifecycle.ActiveBodies);
             Assert.True(candy.Lifecycle.HasFailedRemoval);
+        }
+
+        [Fact]
+        public void ASpiderStealingCandyImmediatelyFreesEveryRopeFromItsPoint()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .Grab(120, 120, length: 100, spider: true)
+                .Grab(200, 120, length: 100)
+                .OmNom(30, 440)
+                .Build();
+            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            Bungee[] ropes = [scene.Grabs()[0].RopeOf(), scene.Grabs()[1].RopeOf()];
+            ConstraintedPoint[] ropeEnds = [ropes[0].parts[^2], ropes[1].parts[^2]];
+            Assert.All(ropeEnds, ropeEnd => Assert.True(candyPoint.HasConstraintTo(ropeEnd)));
+
+            scene.SpiderWon(scene.Grabs()[0]);
+
+            Assert.All(ropes, rope => Assert.NotEqual(-1, rope.cut));
+            Assert.All(ropeEnds, ropeEnd => Assert.False(candyPoint.HasConstraintTo(ropeEnd)));
         }
 
         /// <summary>

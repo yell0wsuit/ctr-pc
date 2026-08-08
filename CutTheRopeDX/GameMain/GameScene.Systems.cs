@@ -500,7 +500,11 @@ namespace CutTheRopeDX.GameMain
                     if (rope.cut == -1)
                     {
                         rope.SetCut(rope.parts.Count - 2);
-                        rope.forceWhite = false;
+                    }
+                    int tailPart = rope.parts.Count - 2;
+                    if (rope.tail.HasConstraintTo(rope.parts[tailPart]))
+                    {
+                        rope.RemovePart(tailPart);
                     }
                     if (grab.Spider?.IsWalking == true && sg != grab)
                     {
