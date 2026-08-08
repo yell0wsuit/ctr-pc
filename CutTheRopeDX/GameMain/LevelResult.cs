@@ -30,4 +30,19 @@ namespace CutTheRopeDX.GameMain
             return new LevelResult(elapsedTime, starsCollected, starBonus, timeBonus, finalScore);
         }
     }
+
+    /// <summary>Projects a completed-level result into the values sent to RPC.</summary>
+    /// <param name="Stars">Number of collected stars.</param>
+    /// <param name="Score">Final level score.</param>
+    /// <param name="ElapsedSeconds">Whole elapsed seconds.</param>
+    internal readonly record struct LevelResultRpcPayload(int Stars, int Score, int ElapsedSeconds)
+    {
+        /// <summary>Creates an RPC payload from an immutable level result.</summary>
+        /// <param name="result">The completed level's immutable result.</param>
+        /// <returns>The RPC values projected from <paramref name="result"/>.</returns>
+        public static LevelResultRpcPayload From(LevelResult result)
+        {
+            return new LevelResultRpcPayload(result.StarsCollected, result.FinalScore, (int)result.ElapsedTime);
+        }
+    }
 }

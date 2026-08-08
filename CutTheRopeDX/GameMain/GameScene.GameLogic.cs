@@ -501,10 +501,6 @@ namespace CutTheRopeDX.GameMain
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(candy);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
-            LevelResult result = pendingLevelResult.Value;
-            timeBonus = result.TimeBonus;
-            starBonus = result.StarBonus;
-            score = result.FinalScore;
             ReleaseRopesForBody(candies[0].WholeBody);
             ExhaustAllActiveRockets();
             DetachActiveSnails();

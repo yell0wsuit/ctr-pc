@@ -67,7 +67,6 @@ namespace CutTheRopeDX.GameMain
             }
             // spiderTookCandy = false;
             time = 0f;
-            score = 0;
             gravityNormal = true;
             MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
             MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);

@@ -1042,21 +1042,6 @@ namespace CutTheRopeDX.GameMain
         public int starsCollected;
 
         /// <summary>
-        /// The score bonus awarded from collected stars.
-        /// </summary>
-        public int starBonus;
-
-        /// <summary>
-        /// The score bonus awarded from remaining time.
-        /// </summary>
-        public float timeBonus;
-
-        /// <summary>
-        /// The current total score.
-        /// </summary>
-        public int score;
-
-        /// <summary>
         /// The elapsed level time.
         /// </summary>
         public float time;
