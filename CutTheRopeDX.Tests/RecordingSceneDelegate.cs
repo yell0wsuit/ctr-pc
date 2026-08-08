@@ -11,10 +11,14 @@ namespace CutTheRopeDX.Tests
         /// <summary>Number of times the level was lost.</summary>
         public int LostCount { get; private set; }
 
+        /// <summary>The most recently delivered completed-level result.</summary>
+        public LevelResult? LastResult { get; private set; }
+
         /// <inheritdoc />
-        public void GameWon()
+        public void GameWon(LevelResult result)
         {
             WonCount++;
+            LastResult = result;
         }
 
         /// <inheritdoc />

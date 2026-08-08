@@ -418,7 +418,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Handles the game-scene win callback.
         /// </summary>
-        public void GameWon()
+        /// <param name="result">The completed level's immutable result.</param>
+        public void GameWon(LevelResult result)
         {
             PostFlurryLevelEvent("LEVEL_WON");
             LevelWon();

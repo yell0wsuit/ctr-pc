@@ -430,11 +430,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Calculates time, star, and total score bonuses for the completed level.
         /// </summary>
-        public void CalculateScore()
+        /// <returns>The immutable result calculated from the scene's current gameplay state.</returns>
+        public LevelResult CalculateScore()
         {
-            timeBonus = MAX(0f, 30f - time) * 100f;
-            starBonus = 1000 * starsCollected;
-            score = (int)Ceil(timeBonus + starBonus);
+            return LevelResultCalculator.Calculate(time, starsCollected);
         }
 
         /// <summary>
@@ -447,6 +446,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             gameplayFlow.MarkWon();
+            pendingLevelResult = CalculateScore();
 
             EndActiveFingerTraces();
             conveyors?.CancelAllDrags();
@@ -501,7 +501,10 @@ namespace CutTheRopeDX.GameMain
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(candy);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
-            CalculateScore();
+            LevelResult result = pendingLevelResult.Value;
+            timeBonus = result.TimeBonus;
+            starBonus = result.StarBonus;
+            score = result.FinalScore;
             ReleaseRopesForBody(candies[0].WholeBody);
             ExhaustAllActiveRockets();
             DetachActiveSnails();

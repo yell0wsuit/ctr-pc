@@ -314,7 +314,11 @@ namespace CutTheRopeDX.GameMain
         {
             CTRSoundMgr.EnableLoopedSounds(false);
             gameplayFlow.EndTransition();
-            gameSceneDelegate?.GameWon();
+            if (pendingLevelResult is LevelResult result)
+            {
+                pendingLevelResult = null;
+                gameSceneDelegate?.GameWon(result);
+            }
         }
 
         /// <summary>
@@ -1056,6 +1060,9 @@ namespace CutTheRopeDX.GameMain
         /// The elapsed level time.
         /// </summary>
         public float time;
+
+        /// <summary>The completed result awaiting the delayed win callback.</summary>
+        private LevelResult? pendingLevelResult;
 
         /// <summary>
         /// The initial camera distance to the candy anchor.
