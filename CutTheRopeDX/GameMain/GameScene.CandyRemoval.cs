@@ -140,7 +140,6 @@ namespace CutTheRopeDX.GameMain
 
             body.Bubble = null;
             body.BubbleHasGhost = false;
-            body.Owner.lightBulb?.SyncFromContext(body.Owner);
             _ = (body.BubbleAnimation?.visible = false);
             _ = (body.GhostBubbleAnimation?.visible = false);
         }

@@ -64,28 +64,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public readonly string bulbNumber;
 
-        /// <summary>
-        /// Reference to a hat/sock that has captured this light bulb.
-        /// When not <see langword="null"/>, the light bulb becomes invisible.
-        /// </summary>
-        public Sock attachedSock;
-
-        /// <summary>
-        /// Reference to a bubble that is currently capturing or carrying the light bulb.
-        /// </summary>
-        public Bubble capturingBubble;
-
-        /// <summary>
-        /// Indicates whether the capturing bubble is a ghost bubble variant,
-        /// which uses a different visual animation.
-        /// </summary>
-        public bool capturingGhostBubble;
-
-        /// <summary>
-        /// Speed at which the attached hat/sock moves, used for physics calculations.
-        /// </summary>
-        public float sockSpeed;
-
+        /// <summary>The logical candy whose authoritative body and lifecycle this visual presents.</summary>
+        private CandyContext owner;
 
         /// <summary>The additive-blended light glow halo effect.</summary>
         private readonly GameObject lightGlow;
@@ -117,10 +97,6 @@ namespace CutTheRopeDX.GameMain
             this.lightRadius = lightRadius;
             this.constraint = constraint;
             this.bulbNumber = bulbNumber ?? string.Empty;
-            attachedSock = null;
-            capturingBubble = null;
-            capturingGhostBubble = false;
-            sockSpeed = 0f;
             scaleX = scaleY = LightBulbRootScale;
 
             // Create light glow with additive blending for a soft halo effect
@@ -213,22 +189,17 @@ namespace CutTheRopeDX.GameMain
             CalculateTopLeft(this);
         }
 
-        /// <summary>Mirrors one candy context's carrier and presence state onto this bulb's visuals.</summary>
-        /// <param name="ctx">The logical candy context whose whole body this bulb represents.</param>
-        public void SyncFromContext(CandyContext ctx)
+        /// <summary>Connects this visual to the logical candy that owns it.</summary>
+        /// <param name="context">The owning logical candy.</param>
+        internal void AttachTo(CandyContext context)
         {
-            CandyTransportSession transport = ctx.Lifecycle.Transport;
-            visible = !ctx.HasNoWholeBodyInPlay && transport?.Sock == null;
-            capturingBubble = ctx.WholeBody.Bubble as Bubble;
-            capturingGhostBubble = ctx.WholeBody.BubbleHasGhost;
-            sockSpeed = transport?.SavedExitSpeed ?? 0f;
-            attachedSock = transport?.Sock;
-            SyncToConstraint();
+            owner = context;
         }
 
         /// <inheritdoc />
         public override void Draw()
         {
+            PrepareToDraw();
             if (!visible)
             {
                 return;
@@ -248,6 +219,7 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         public void DrawLight()
         {
+            PrepareToDraw();
             if (!visible)
             {
                 return;
@@ -271,6 +243,7 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         public void DrawBottleAndFirefly()
         {
+            PrepareToDraw();
             if (!visible)
             {
                 return;
@@ -347,15 +320,24 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
+            RefreshPresentation();
             base.Update(delta);
+        }
 
-            // Hide when attached to a hat/sock (hat/sock draws the captured object)
-            visible = attachedSock == null;
+        /// <summary>Refreshes the view from authoritative state immediately before rendering.</summary>
+        internal void PrepareToDraw()
+        {
+            RefreshPresentation();
+        }
 
-            // Show appropriate bubble animation based on capture state
-            bool hasBubble = capturingBubble != null && attachedSock == null;
-            bubbleAnimation.visible = hasBubble && !capturingGhostBubble;
-            ghostBubbleAnimation.visible = hasBubble && capturingGhostBubble;
+        private void RefreshPresentation()
+        {
+            CandyTransportSession transport = owner.Lifecycle.Transport;
+            visible = !owner.HasNoWholeBodyInPlay && transport?.Sock == null;
+
+            bool hasBubble = visible && owner.WholeBody.Bubble != null;
+            bubbleAnimation.visible = hasBubble && !owner.WholeBody.BubbleHasGhost;
+            ghostBubbleAnimation.visible = hasBubble && owner.WholeBody.BubbleHasGhost;
         }
     }
 }

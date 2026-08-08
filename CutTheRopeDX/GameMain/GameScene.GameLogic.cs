@@ -135,9 +135,9 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (CandyContext ctx in LightEmitters())
             {
-                if (ctx.lightBulb != null)
+                if (ctx.LightBulb != null)
                 {
-                    yield return ctx.lightBulb;
+                    yield return ctx.LightBulb;
                 }
             }
         }
@@ -148,7 +148,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (!ctx.emitsLight || ctx.lightBulb == null)
+                if (!ctx.emitsLight || ctx.LightBulb == null)
                 {
                     continue;
                 }
@@ -242,8 +242,6 @@ namespace CutTheRopeDX.GameMain
                     ctx.activeRocket.additionalAngle = 0f;
                     ctx.activeRocket.UpdateRotation();
                 }
-
-                ctx.lightBulb?.SyncFromContext(ctx);
             }
         }
 
@@ -648,7 +646,6 @@ namespace CutTheRopeDX.GameMain
 
             body.Bubble = null;
             body.BubbleHasGhost = false;
-            body.Owner.lightBulb?.SyncFromContext(body.Owner);
             _ = (body.BubbleAnimation?.visible = false);
             _ = (body.GhostBubbleAnimation?.visible = false);
             PopBubbleAtXY(effectPosition.X, effectPosition.Y);

@@ -57,7 +57,6 @@ namespace CutTheRopeDX.GameMain
         /// shared candy path (main candy loop + <see cref="ResolveCandyCollisions"/>). This method
         /// only handles:
         /// <list type="bullet">
-        ///   <item><description>Syncing capture/sock state from the context onto the bulb visual</description></item>
         ///   <item><description>Collision between light emitters and the legacy split-candy halves</description></item>
         ///   <item><description>Removal of light emitters that fall off screen</description></item>
         ///   <item><description>Game over trigger when all light emitters are lost (night levels only)</description></item>
@@ -65,17 +64,6 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         private void UpdateLightEmitterPhysics()
         {
-            // Integration, whole-body collision, and the bulb visual's own Update() are all owned by
-            // the shared candy path now: the main candy loop integrates the point and calls
-            // ctx.candy.Update(delta) (ctx.candy IS the bulb), and ResolveCandyCollisions() handles
-            // collision. Re-stepping the point here double-integrated it (erratic swing); calling
-            // Update() here too double-advanced the bulb's animations (bubble/firefly ran ~2x fast).
-            // This loop only syncs capture/sock state from the context onto the bulb visual.
-            foreach (CandyContext ctx in LightEmitters())
-            {
-                ctx.lightBulb?.SyncFromContext(ctx);
-            }
-
             // ResolveCandyCollisions pairs logical candies, so it never sees a split half. Each
             // surviving half still has to collide with every light emitter.
             foreach (CandyContext ctx in LightEmitters())
@@ -99,10 +87,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (!ctx.HasNoWholeBodyInPlay && PointOutOfScreen(ctx.WholeBody.Point))
                 {
-                    if (TryRetireCandyBody(ctx.WholeBody, CandyRemovalReason.OffScreen))
-                    {
-                        ctx.lightBulb?.SyncFromContext(ctx);
-                    }
+                    _ = TryRetireCandyBody(ctx.WholeBody, CandyRemovalReason.OffScreen);
                 }
                 // A bulb mid-teleport is Hidden for the brief transport window but is not lost: count
                 // it as active so a lone emitter in a bamboo tube or hat does not trip the lights-out
