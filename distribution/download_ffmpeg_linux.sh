@@ -16,8 +16,10 @@ if [ -z "$OUTPUT_DIR" ]; then
     exit 1
 fi
 
-FFMPEG_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1.tar.xz"
-ARCHIVE_NAME="ffmpeg-linux64-lgpl-shared.tar.xz"
+RELEASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
+ARCHIVE_NAME="ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1.tar.xz"
+FFMPEG_URL="$RELEASE_URL/$ARCHIVE_NAME"
+CHECKSUMS_URL="$RELEASE_URL/checksums.sha256"
 FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
 
 # Check if FFmpeg libraries already exist
@@ -28,6 +30,7 @@ if [ -d "$FFMPEG_SUBDIR" ] && [ -n "$(ls -A "$FFMPEG_SUBDIR"/lib*.so* 2>/dev/nul
 fi
 
 TEMP_DIR=$(mktemp -d)
+CHECKSUMS_PATH="$TEMP_DIR/checksums.sha256"
 
 cleanup() {
     rm -rf "$TEMP_DIR"
@@ -42,6 +45,25 @@ if ! wget --timeout=30 --tries=3 -q --show-progress -O "$TEMP_DIR/$ARCHIVE_NAME"
     exit 1
 fi
 
+echo "Downloading FFmpeg checksums..."
+if ! wget --timeout=30 --tries=3 -q -O "$CHECKSUMS_PATH" "$CHECKSUMS_URL"; then
+    echo "Error: Failed to download FFmpeg checksums from $CHECKSUMS_URL"
+    exit 1
+fi
+
+EXPECTED_CHECKSUM=$(awk -v archive="$ARCHIVE_NAME" '$2 == archive { print $1; exit }' "$CHECKSUMS_PATH")
+if [ -z "$EXPECTED_CHECKSUM" ]; then
+    echo "Error: No checksum found for $ARCHIVE_NAME"
+    exit 1
+fi
+
+ACTUAL_CHECKSUM=$(sha256sum "$TEMP_DIR/$ARCHIVE_NAME" | awk '{ print $1 }')
+if [ "$ACTUAL_CHECKSUM" != "$EXPECTED_CHECKSUM" ]; then
+    echo "Error: FFmpeg checksum verification failed for $ARCHIVE_NAME"
+    exit 1
+fi
+
+echo "FFmpeg checksum verified."
 echo "Extracting shared libraries..."
 tar -xf "$TEMP_DIR/$ARCHIVE_NAME" -C "$TEMP_DIR"
 
