@@ -21,6 +21,24 @@ namespace CutTheRopeDX.Tests
             return controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU);
         }
 
+        private static void Press(GameController controller, int input)
+        {
+            switch ((GameControllerInputKind)input)
+            {
+                case GameControllerInputKind.Back:
+                    _ = controller.BackButtonPressed();
+                    break;
+                case GameControllerInputKind.Menu:
+                    _ = controller.MenuButtonPressed();
+                    break;
+                case GameControllerInputKind.PauseButton:
+                    controller.OnButtonPressed(GameControllerButtonId.Pause);
+                    break;
+                default:
+                    throw new System.ArgumentOutOfRangeException(nameof(input));
+            }
+        }
+
         public static IEnumerable<object[]> StableInputCases()
         {
             yield return [(int)GameControllerInputKind.Back, (int)GameControllerOverlayMode.Gameplay, (int)GameControllerInputCommand.OpenPause];
@@ -171,6 +189,41 @@ namespace CutTheRopeDX.Tests
             Assert.True(scene.updateable);
             Assert.False(PauseMenu(controller).IsEnabled());
             Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
+        }
+
+        [Theory]
+        [InlineData((int)GameControllerInputKind.Back)]
+        [InlineData((int)GameControllerInputKind.Menu)]
+        [InlineData((int)GameControllerInputKind.PauseButton)]
+        public void EveryPauseInputEntersTheSamePausedPresentation(int input)
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+
+            Press(controller, input);
+
+            Assert.False(scene.touchable);
+            Assert.False(scene.updateable);
+            Assert.True(PauseMenu(controller).IsEnabled());
+            Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
+            Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
+        }
+
+        [Theory]
+        [InlineData((int)GameControllerInputKind.Back)]
+        [InlineData((int)GameControllerInputKind.Menu)]
+        [InlineData((int)GameControllerInputKind.PauseButton)]
+        public void EveryPauseInputIsIgnoredDuringOutcomeTransition(int input)
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            scene.gameplayFlow.MarkTransitionActive();
+
+            Press(controller, input);
+
+            Assert.True(scene.touchable);
+            Assert.True(scene.updateable);
+            Assert.False(PauseMenu(controller).IsEnabled());
         }
     }
 }

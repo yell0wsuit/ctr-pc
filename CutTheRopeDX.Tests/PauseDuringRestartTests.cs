@@ -197,5 +197,34 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(RestartPhase.FadingIn, scene.gameplayFlow.Phase);
             Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
         }
+
+        [Fact]
+        public void PauseButtonInputDuringRestartFadeOutIsIgnored()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            Assert.True(scene.updateable);
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
+            Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
+
+        [Fact]
+        public void PauseButtonInputDuringRestartFadeInIsIgnored()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            scene.gameplayFlow.BeginRestartDim();
+            Assert.Equal(RestartStep.SwapScene, scene.gameplayFlow.Advance(1f));
+
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            Assert.True(scene.updateable);
+            Assert.Equal(RestartPhase.FadingIn, scene.gameplayFlow.Phase);
+            Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
     }
 }

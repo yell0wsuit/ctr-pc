@@ -455,19 +455,30 @@ namespace CutTheRopeDX.GameMain
         /// <param name="n">Game controller button identifier.</param>
         public void OnButtonPressed(GameControllerButtonId n)
         {
+            if (n == GameControllerButtonId.Pause)
+            {
+                ExecuteInputCommand(ResolveInput(GameControllerInputKind.PauseButton));
+                return;
+            }
+            if (n == GameControllerButtonId.Continue)
+            {
+                ExecuteInputCommand(GameControllerInputCommand.Resume);
+                return;
+            }
+            if (n == GameControllerButtonId.ExitFromWin)
+            {
+                ExecuteInputCommand(GameControllerInputCommand.ExitResults);
+                return;
+            }
+
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             CTRSoundMgr.PlaySound(Resources.Snd.Tap);
             View view = GetView(0);
             switch (n)
             {
-                case var id when id == GameControllerButtonId.Continue:
-                    EnterOverlayMode(GameControllerOverlayMode.Gameplay);
-                    CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
-                    return;
                 case var id when id == GameControllerButtonId.Restart:
                     GameScene restartScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
                     if (overlayMode != GameControllerOverlayMode.Gameplay
-                        || !view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).touchable
                         || restartScene.gameplayFlow.Phase != RestartPhase.Playing)
                     {
                         return;
@@ -503,31 +514,6 @@ namespace CutTheRopeDX.GameMain
                     LevelQuit();
                     CTRRootController.LogEvent("IM_MAIN_MENU");
                     return;
-                case var id when id == GameControllerButtonId.ExitFromWin:
-                    exitCode = 1;
-                    CTRSoundMgr.StopAll();
-                    if (!boxCloseHandled)
-                    {
-                        BoxClosed();
-                    }
-                    CTRRootController.LogEvent("LC_MENU_PRESSED");
-                    Deactivate();
-                    return;
-                case var id when id == GameControllerButtonId.Pause:
-                    {
-                        GameScene gameScene4 = (GameScene)view.GetChild(0);
-                        if (!GameControllerInput.CanPauseFromGameplay(
-                            view.GetChild(1).touchable,
-                            gameScene4.gameplayFlow.TransitionActive,
-                            gameScene4.gameplayFlow.IsFadingOut))
-                        {
-                            return;
-                        }
-                        EnterOverlayMode(GameControllerOverlayMode.Paused);
-                        CTRRootController.LogEvent("IG_MENU_PRESSED");
-                        CTRRootController.LogEvent("IM_SHOWN");
-                        return;
-                    }
                 case var id when id == GameControllerButtonId.WinContinue:
                     if (LastLevelInPack() && !cTRRootController.IsPicker())
                     {
@@ -590,7 +576,7 @@ namespace CutTheRopeDX.GameMain
                     return;
             }
             GameScene gameScene5 = (GameScene)view.GetChild(0);
-            if (!gameScene5.IsEnabled())
+            if (overlayMode != GameControllerOverlayMode.Gameplay)
             {
                 LevelStart();
             }
@@ -598,6 +584,54 @@ namespace CutTheRopeDX.GameMain
             gameScene5.Reload();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
             CTRRootController.LogEvent(n != GameControllerButtonId.ExitFromLose ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
+        }
+
+        /// <summary>Resolves an input source against the authoritative controller and level-flow state.</summary>
+        /// <param name="input">Input source to resolve.</param>
+        /// <returns>The semantic command allowed in the current state.</returns>
+        private GameControllerInputCommand ResolveInput(GameControllerInputKind input)
+        {
+            GameScene gameScene = (GameScene)GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            return GameControllerInput.Resolve(
+                input,
+                overlayMode,
+                gameScene.gameplayFlow.Phase,
+                gameScene.gameplayFlow.TransitionActive);
+        }
+
+        /// <summary>Executes one semantic controller input command.</summary>
+        /// <param name="command">Command selected by the pure input resolver.</param>
+        private void ExecuteInputCommand(GameControllerInputCommand command)
+        {
+            switch (command)
+            {
+                case GameControllerInputCommand.Ignore:
+                    return;
+                case GameControllerInputCommand.OpenPause:
+                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    EnterOverlayMode(GameControllerOverlayMode.Paused);
+                    CTRRootController.LogEvent("IG_MENU_PRESSED");
+                    CTRRootController.LogEvent("IM_SHOWN");
+                    return;
+                case GameControllerInputCommand.Resume:
+                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    EnterOverlayMode(GameControllerOverlayMode.Gameplay);
+                    CTRRootController.LogEvent("IM_CONTINUE_PRESSED");
+                    return;
+                case GameControllerInputCommand.ExitResults:
+                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    exitCode = EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT;
+                    CTRSoundMgr.StopAll();
+                    if (!boxCloseHandled)
+                    {
+                        BoxClosed();
+                    }
+                    CTRRootController.LogEvent("LC_MENU_PRESSED");
+                    Deactivate();
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(command));
+            }
         }
 
         /// <inheritdoc />
@@ -796,48 +830,14 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool BackButtonPressed()
         {
-            View view = GetView(0);
-            GameScene gameScene = (GameScene)view.GetChild(0);
-            if (gameScene.gameplayFlow.Phase != RestartPhase.Playing)
-            {
-                return true;
-            }
-            if (GameControllerInput.CanPauseFromGameplay(
-                view.GetChild(1).touchable,
-                gameScene.gameplayFlow.TransitionActive,
-                gameScene.gameplayFlow.IsFadingOut))
-            {
-                OnButtonPressed(GameControllerButtonId.Pause);
-            }
-            else if (view.GetChild(3).IsEnabled())
-            {
-                OnButtonPressed(GameControllerButtonId.Continue);
-            }
-            else if (GameControllerInput.CanExitResultWithBack(
-                view.GetChild(4).touchable,
-                gameScene.gameplayFlow.TransitionActive))
-            {
-                OnButtonPressed(GameControllerButtonId.ExitFromWin);
-            }
+            ExecuteInputCommand(ResolveInput(GameControllerInputKind.Back));
             return true;
         }
 
         /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
-            View view = GetView(0);
-            GameScene gameScene = (GameScene)view.GetChild(0);
-            if (GameControllerInput.CanPauseFromGameplay(
-                view.GetChild(1).touchable,
-                gameScene.gameplayFlow.TransitionActive,
-                gameScene.gameplayFlow.IsFadingOut))
-            {
-                OnButtonPressed(GameControllerButtonId.Pause);
-            }
-            else if (view.GetChild(3).IsEnabled())
-            {
-                OnButtonPressed(GameControllerButtonId.Continue);
-            }
+            ExecuteInputCommand(ResolveInput(GameControllerInputKind.Menu));
             return true;
         }
 
