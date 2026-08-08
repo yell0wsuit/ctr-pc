@@ -310,7 +310,7 @@ namespace CutTheRopeDX.GameMain
                     entry.Rope.hideTailParts = true;
                 }
 
-                if (entry.Owner?.Spider?.IsWalking == true)
+                if (entry.Owner?.Spider?.ShouldBustOnRopeCut == true)
                 {
                     SpiderBusted(entry.Owner);
                 }

@@ -243,7 +243,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="reason">Why the rope was cut.</param>
         public void OnRopeCut(RopeCutReason reason)
         {
-            if (Spider?.IsWalking == true)
+            if (Spider?.ShouldBustOnRopeCut == true)
             {
                 Spider.Bust();
             }

@@ -39,6 +39,13 @@ namespace CutTheRopeDX.GameMain
         public bool IsWalking => State == SpiderRiderState.Walking;
 
         /// <summary>
+        /// Gets whether cutting this spider's rope should knock it off the hook. An armed spider has
+        /// already committed to starting on the next update, so it must fall just like one that is
+        /// already walking.
+        /// </summary>
+        public bool ShouldBustOnRopeCut => State is SpiderRiderState.Arming or SpiderRiderState.Walking;
+
+        /// <summary>
         /// Gets whether the spider is still on its hook. A won or busted spider has left: it is no
         /// longer drawn or updated, which is what clearing the old <c>hasSpider</c> flag did.
         /// </summary>

@@ -352,7 +352,7 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     ropesCutCount++;
-                    if (entry.Owner?.Spider?.IsWalking == true)
+                    if (entry.Owner?.Spider?.ShouldBustOnRopeCut == true)
                     {
                         SpiderBusted(entry.Owner);
                     }
@@ -506,7 +506,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         rope.RemovePart(tailPart);
                     }
-                    if (grab.Spider?.IsWalking == true && sg != grab)
+                    if (grab.Spider?.ShouldBustOnRopeCut == true && sg != grab)
                     {
                         SpiderBusted(grab);
                     }
