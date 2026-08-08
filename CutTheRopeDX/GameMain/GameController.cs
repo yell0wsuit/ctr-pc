@@ -52,7 +52,7 @@ namespace CutTheRopeDX.GameMain
             if (kind == CustomLevelReloadKind.Instant)
             {
                 GameScene scene = (GameScene)GetView(0).GetChild(0);
-                if (!scene.IsEnabled())
+                if (overlayMode != GameControllerOverlayMode.Gameplay)
                 {
                     LevelStart();
                 }
