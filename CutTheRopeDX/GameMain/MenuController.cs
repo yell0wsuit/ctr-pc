@@ -1620,6 +1620,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void PreLevelSelect()
         {
+            levelLaunchPending = false;
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
             string[] array = PackConfig.GetBoxCovers(pack);
             cTRResourceMgr.InitLoading();
@@ -1669,6 +1670,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="n">Menu button identifier that was pressed.</param>
         public void OnButtonPressed(MenuButtonId n)
         {
+            if (n.IsLevelButton() && levelLaunchPending)
+            {
+                return;
+            }
+
             if (n.Value != -1)
             {
                 CTRSoundMgr.PlaySound(Resources.Snd.Tap);
@@ -1676,6 +1682,7 @@ namespace CutTheRopeDX.GameMain
 
             if (n.IsLevelButton())
             {
+                levelLaunchPending = true;
                 level = n.GetLevelIndex();
                 ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
                 ActiveView().GetChildWithName("shadow").PlayTimeline(0);
@@ -2366,6 +2373,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Current level index used for gameplay launch.</summary>
         private int level;
+
+        /// <summary>Whether a level selection is already transitioning into its launch flow.</summary>
+        private bool levelLaunchPending;
 
         /// <summary>View identifier to show when the menu controller is activated.</summary>
         public int viewToShow;
