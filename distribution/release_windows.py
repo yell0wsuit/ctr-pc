@@ -30,6 +30,7 @@ import sys
 import tempfile
 import urllib.request
 import zipfile
+from http.client import HTTPException
 from pathlib import Path
 
 try:
@@ -64,6 +65,7 @@ LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
+FFMPEG_DOWNLOAD_ATTEMPTS = 5
 FFMPEG_DLL_GLOBS = (
     "avcodec-*.dll",
     "avdevice-*.dll",
@@ -125,25 +127,43 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
         temp_dir = Path(temp_dir_name)
         archive_path = temp_dir / archive_name
         checksums_path = temp_dir / "checksums.sha256"
-        urllib.request.urlretrieve(ffmpeg_url, archive_path)
-        urllib.request.urlretrieve(checksums_url, checksums_path)
 
-        expected_checksum = None
-        for line in checksums_path.read_text(encoding="utf-8").splitlines():
-            parts = line.split(maxsplit=1)
-            if len(parts) == 2 and parts[1].lstrip("*") == archive_name:
-                expected_checksum = parts[0].lower()
+        for attempt in range(1, FFMPEG_DOWNLOAD_ATTEMPTS + 1):
+            try:
+                urllib.request.urlretrieve(ffmpeg_url, archive_path)
+                urllib.request.urlretrieve(checksums_url, checksums_path)
+
+                expected_checksum = None
+                for line in checksums_path.read_text(encoding="utf-8").splitlines():
+                    parts = line.split(maxsplit=1)
+                    if len(parts) == 2 and parts[1].lstrip("*") == archive_name:
+                        expected_checksum = parts[0].lower()
+                        break
+
+                digest = hashlib.sha256()
+                with archive_path.open("rb") as archive_file:
+                    for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
+                        digest.update(chunk)
+                actual_checksum = digest.hexdigest()
+
+                if expected_checksum is None:
+                    raise ValueError(f"No checksum found for {archive_name}")
+                if actual_checksum != expected_checksum:
+                    raise ValueError(f"Checksum mismatch for {archive_name}")
+            except (OSError, HTTPException, ValueError) as error:
+                if attempt == FFMPEG_DOWNLOAD_ATTEMPTS:
+                    print(
+                        f"FFmpeg download or verification failed after "
+                        f"{FFMPEG_DOWNLOAD_ATTEMPTS} attempts: {error}",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                print(
+                    f"FFmpeg download or verification failed: {error}; "
+                    f"retrying ({attempt + 1}/{FFMPEG_DOWNLOAD_ATTEMPTS})..."
+                )
+            else:
                 break
-
-        digest = hashlib.sha256()
-        with archive_path.open("rb") as archive_file:
-            for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
-                digest.update(chunk)
-        actual_checksum = digest.hexdigest()
-
-        if expected_checksum is None or actual_checksum != expected_checksum:
-            print(f"FFmpeg checksum verification failed for {archive_name}", file=sys.stderr)
-            sys.exit(1)
 
         with zipfile.ZipFile(archive_path) as archive:
             archive.extractall(temp_dir / "extracted")
