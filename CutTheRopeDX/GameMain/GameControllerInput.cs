@@ -39,12 +39,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="overlay">Current controller overlay.</param>
         /// <param name="restartPhase">Authoritative restart phase.</param>
         /// <param name="outcomeTransitionActive">Whether a win/loss transition is active.</param>
+        /// <param name="resultExitAllowed">Whether Back may leave a stable result screen.</param>
         /// <returns>The semantic command allowed by the current state.</returns>
         public static GameControllerInputCommand Resolve(
             GameControllerInputKind input,
             GameControllerOverlayMode overlay,
             RestartPhase restartPhase,
-            bool outcomeTransitionActive)
+            bool outcomeTransitionActive,
+            bool resultExitAllowed)
         {
             return restartPhase != RestartPhase.Playing || outcomeTransitionActive
                 ? GameControllerInputCommand.Ignore
@@ -52,7 +54,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     (GameControllerOverlayMode.Gameplay, _) => GameControllerInputCommand.OpenPause,
                     (GameControllerOverlayMode.Paused, GameControllerInputKind.Back or GameControllerInputKind.Menu) => GameControllerInputCommand.Resume,
-                    (GameControllerOverlayMode.Results, GameControllerInputKind.Back) => GameControllerInputCommand.ExitResults,
+                    (GameControllerOverlayMode.Results, GameControllerInputKind.Back) when resultExitAllowed => GameControllerInputCommand.ExitResults,
                     _ => GameControllerInputCommand.Ignore,
                 };
         }

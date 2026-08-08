@@ -78,7 +78,8 @@ namespace CutTheRopeDX.Tests
                     (GameControllerInputKind)input,
                     (GameControllerOverlayMode)overlay,
                     RestartPhase.Playing,
-                    outcomeTransitionActive: false));
+                    outcomeTransitionActive: false,
+                    resultExitAllowed: true));
         }
 
         [Theory]
@@ -95,7 +96,21 @@ namespace CutTheRopeDX.Tests
                     (GameControllerInputKind)input,
                     (GameControllerOverlayMode)overlay,
                     (RestartPhase)restartPhase,
-                    outcomeTransitionActive));
+                    outcomeTransitionActive,
+                    resultExitAllowed: true));
+        }
+
+        [Fact]
+        public void ResolveIgnoresResultBackWhenResultExitIsDisallowed()
+        {
+            Assert.Equal(
+                GameControllerInputCommand.Ignore,
+                GameControllerInput.Resolve(
+                    GameControllerInputKind.Back,
+                    GameControllerOverlayMode.Results,
+                    RestartPhase.Playing,
+                    outcomeTransitionActive: false,
+                    resultExitAllowed: false));
         }
 
         [Fact]
@@ -173,6 +188,26 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
             Assert.False(scene.touchable);
             Assert.False(PauseMenu(controller).IsEnabled());
+        }
+
+        [Fact]
+        public void BackIsIgnoredOnCustomLevelResults()
+        {
+            (GameController controller, _) = Load();
+
+            try
+            {
+                CustomLevelSession.Activate("custom-result-input-test.xml");
+                controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+                _ = controller.BackButtonPressed();
+
+                Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
+            }
+            finally
+            {
+                CustomLevelSession.Clear();
+            }
         }
 
         [Theory]
