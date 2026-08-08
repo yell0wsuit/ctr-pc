@@ -67,7 +67,6 @@ namespace CutTheRopeDX.GameMain
             }
             // spiderTookCandy = false;
             time = 0f;
-            score = 0;
             gravityNormal = true;
             MaterialPoint.globalGravity = Vect(globalGravityX, globalGravityY);
             MaterialPoint.globalDisableGravity = VectEqual(MaterialPoint.globalGravity, vectZero);
@@ -131,7 +130,7 @@ namespace CutTheRopeDX.GameMain
         /// entry in the string tables and fall through <see cref="Application.GetString"/> verbatim.
         /// </remarks>
         /// <returns>The name to display, or <see langword="null"/> when the level has none.</returns>
-        private string ResolveLevelDisplayName()
+        internal string ResolveLevelDisplayName()
         {
             return string.IsNullOrWhiteSpace(levelName) ? null : Application.GetString(levelName);
         }

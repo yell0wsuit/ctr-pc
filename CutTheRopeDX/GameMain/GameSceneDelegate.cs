@@ -6,7 +6,8 @@ namespace CutTheRopeDX.GameMain
     internal interface IGameSceneDelegate
     {
         /// <summary>Called when the player wins the level.</summary>
-        void GameWon();
+        /// <param name="result">The completed level's immutable result.</param>
+        void GameWon(LevelResult result);
 
         /// <summary>Called when the player loses the level.</summary>
         void GameLost();

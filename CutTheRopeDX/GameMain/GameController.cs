@@ -321,7 +321,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Updates level result UI, persists improved score data, and starts the level-won result flow.
         /// </summary>
-        public void LevelWon()
+        /// <param name="result">The completed level's immutable result.</param>
+        public void LevelWon(LevelResult result)
         {
             boxCloseHandled = false;
             _ = Application.SharedPreferences();
@@ -338,10 +339,10 @@ namespace CutTheRopeDX.GameMain
             Image image = (Image)boxOpenClose.result.GetChildWithName("star1");
             Image image2 = (Image)boxOpenClose.result.GetChildWithName("star2");
             Image image3 = (Image)boxOpenClose.result.GetChildWithName("star3");
-            image.SetDrawQuad(gameScene.starsCollected > 0 ? 13 : 14);
-            image2.SetDrawQuad(gameScene.starsCollected > 1 ? 13 : 14);
-            image3.SetDrawQuad(gameScene.starsCollected > 2 ? 13 : 14);
-            string clearText = gameScene.starsCollected switch
+            image.SetDrawQuad(result.StarsCollected > 0 ? 13 : 14);
+            image2.SetDrawQuad(result.StarsCollected > 1 ? 13 : 14);
+            image3.SetDrawQuad(result.StarsCollected > 2 ? 13 : 14);
+            string clearText = result.StarsCollected switch
             {
                 1 => "LEVEL_CLEARED2",
                 2 => "LEVEL_CLEARED3",
@@ -349,10 +350,6 @@ namespace CutTheRopeDX.GameMain
                 _ => "LEVEL_CLEARED1"
             };
             ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(clearText));
-            boxOpenClose.time = gameScene.time;
-            boxOpenClose.starBonus = gameScene.starBonus;
-            boxOpenClose.timeBonus = gameScene.timeBonus;
-            boxOpenClose.score = gameScene.score;
             isGamePaused = true;
             gameScene.touchable = false;
             view.GetChild(2).touchable = false;
@@ -363,23 +360,23 @@ namespace CutTheRopeDX.GameMain
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(box, pack, level);
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(box, pack, level);
             boxOpenClose.shouldShowImprovedResult = false;
-            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, gameScene.score, scoreForPackLevel))
+            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, result.FinalScore, scoreForPackLevel))
             {
-                CTRPreferences.SetScoreForPackLevel(box, gameScene.score, pack, level);
+                CTRPreferences.SetScoreForPackLevel(box, result.FinalScore, pack, level);
                 if (scoreForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
                 }
             }
-            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, gameScene.starsCollected, starsForPackLevel))
+            if (LevelProgressPersistence.ShouldPersist(CustomLevelSession.IsActive, result.StarsCollected, starsForPackLevel))
             {
-                CTRPreferences.SetStarsForPackLevel(box, gameScene.starsCollected, pack, level);
+                CTRPreferences.SetStarsForPackLevel(box, result.StarsCollected, pack, level);
                 if (starsForPackLevel > 0)
                 {
                     boxOpenClose.shouldShowImprovedResult = true;
                 }
             }
-            boxOpenClose.shouldShowConfetti = gameScene.starsCollected == 3;
+            boxOpenClose.shouldShowConfetti = result.StarsCollected == 3;
             boxOpenClose.delegateboxClosed = () =>
             {
                 // Freeze the game scene a bit after the door closing animation finishes
@@ -395,11 +392,12 @@ namespace CutTheRopeDX.GameMain
                     gameScene,
                     0.5f);
             };
-            boxOpenClose.LevelWon();
+            boxOpenClose.LevelWon(result);
 
             // Update RPC to show win state with stars and score
             CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
-            Game1.RPC?.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), gameScene.starsCollected, true, gameScene.levelName, gameScene.score, (int)gameScene.time);
+            LevelResultRpcPayload rpcPayload = LevelResultRpcPayload.From(result);
+            Game1.RPC?.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), rpcPayload.Stars, true, gameScene.levelName, rpcPayload.Score, rpcPayload.ElapsedSeconds);
 
             if (!CustomLevelSession.IsActive)
             {
@@ -418,10 +416,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Handles the game-scene win callback.
         /// </summary>
-        public void GameWon()
+        /// <param name="result">The completed level's immutable result.</param>
+        public void GameWon(LevelResult result)
         {
             PostFlurryLevelEvent("LEVEL_WON");
-            LevelWon();
+            LevelWon(result);
         }
 
         /// <summary>
@@ -656,6 +655,12 @@ namespace CutTheRopeDX.GameMain
             if (cTRRootController.IsPicker())
             {
                 mapNameLabel.SetString("");
+                return;
+            }
+            if (CustomLevelSession.IsActive)
+            {
+                GameScene gameScene = (GameScene)view.GetChild(0);
+                mapNameLabel.SetString(gameScene.ResolveLevelDisplayName() ?? string.Empty);
                 return;
             }
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());

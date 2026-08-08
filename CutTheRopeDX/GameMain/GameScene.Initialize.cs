@@ -81,6 +81,7 @@ namespace CutTheRopeDX.GameMain
             targetBaseScaleX = 1f;
             targetBaseScaleY = 1f;
             gameplayFlow.ResetOutcome();
+            pendingLevelResult = null;
             levelName = null;
         }
 

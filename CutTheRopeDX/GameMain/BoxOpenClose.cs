@@ -28,8 +28,8 @@ namespace CutTheRopeDX.GameMain
                 case -1:
                     {
                         cscore = 0;
-                        ctime = time;
-                        cstarBonus = starBonus;
+                        ctime = ActiveResult.ElapsedTime;
+                        cstarBonus = ActiveResult.StarBonus;
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         Text text27 = (Text)result.GetChildWithName("dataTitle");
                         Image.SetElementPositionWithQuadOffset(text27, Resources.Img.MenuResults, 5);
@@ -66,8 +66,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 2:
                     {
-                        cstarBonus = (int)(starBonus * raDelay);
-                        cscore = (int)((1f - raDelay) * starBonus);
+                        cstarBonus = (int)(ActiveResult.StarBonus * raDelay);
+                        cscore = (int)((1f - raDelay) * ActiveResult.StarBonus);
                         ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
                         Text text29 = (Text)result.GetChildWithName("scoreValue");
                         text29.SetEnabled(true);
@@ -89,8 +89,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             raState = 4;
                             raDelay = 0.2f;
-                            int minutes = (int)MathF.Floor(Round(time) / 60f);
-                            int seconds = (int)(Round(time) - (minutes * 60f));
+                            int minutes = (int)MathF.Floor(Round(ActiveResult.ElapsedTime) / 60f);
+                            int seconds = (int)(Round(ActiveResult.ElapsedTime) - (minutes * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString("TIME"));
                             ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                             return;
@@ -112,14 +112,16 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 5:
                     {
-                        ctime = time * raDelay;
-                        cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
+                        ctime = ActiveResult.ElapsedTime * raDelay;
+                        cscore = (int)(ActiveResult.StarBonus + ((1f - raDelay) * ActiveResult.TimeBonus));
                         int minutes = (int)MathF.Floor(Round(ctime) / 60);
                         int seconds = (int)(Round(ctime) - (minutes * 60));
                         ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (flag)
                         {
+                            cscore = ActiveResult.FinalScore;
+                            ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                             raState = 6;
                             raDelay = 0.2f;
                             return;
@@ -335,8 +337,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Starts the closing transition for a won level and prepares the result panel countdown.
         /// </summary>
-        public void LevelWon()
+        /// <param name="levelResult">The immutable result that drives the presentation.</param>
+        public void LevelWon(LevelResult levelResult)
         {
+            ActiveResult = levelResult;
             boxAnim = 2;
             raState = -1;
             RemoveOpenCloseAnims();
@@ -724,17 +728,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Current result panel countdown state.</summary>
         public int raState;
 
-        /// <summary>Time bonus score used by the result countdown.</summary>
-        public float timeBonus;
-
-        /// <summary>Star bonus score used by the result countdown.</summary>
-        public int starBonus;
-
-        /// <summary>Base score before result countdown bonuses are applied.</summary>
-        public int score;
-
-        /// <summary>Level completion time used by the result countdown.</summary>
-        public float time;
+        /// <summary>The immutable result driving the active result presentation.</summary>
+        internal LevelResult ActiveResult { get; private set; }
 
         /// <summary>Displayed countdown time value.</summary>
         public float ctime;
