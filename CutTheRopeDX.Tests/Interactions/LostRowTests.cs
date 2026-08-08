@@ -9,10 +9,7 @@ namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
     /// Interaction matrix, "Lost" row: a candy destroyed on spikes takes its attachments down with
-    /// it, partly through the break itself and partly through the GameLost that follows. The row
-    /// names a second trigger - leaving the screen - which runs a thinner path of its own: it cuts
-    /// the ropes and exhausts the rocket like the break does, but leaves the snail riding, exactly
-    /// as iOS does (breakCandy: detaches snails and hands; the off-screen block does neither).
+    /// it. Both spikes and leaving the screen must retire every attachment owned by that candy.
     /// </summary>
     public sealed class LostRowTests
     {
@@ -79,14 +76,17 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LostLeavesTheBrokenCandyRidingTheAntLane()
+        public void LostDetachesTheBrokenCandyFromTheAntLane()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
 
             Act.BreakOnSpikes(scene, candy);
 
-            Assert.NotNull(candy.antSegment);
+            Assert.Null(candy.antSegment);
+            Assert.Null(candy.lastAntSegment);
+            Assert.False(candy.antWaitForFly);
+            Assert.Equal(0f, candy.antCooldown);
         }
 
         [Fact]
@@ -126,16 +126,14 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void LostOffScreenLeavesItsSnailAttached()
+        public void LostOffScreenDetachesItsSnail()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Snail(160, 200));
             _ = Act.RideSnail(scene, candy);
 
             Act.LoseOffScreen(scene, candy);
 
-            // Same split as the rope: the off-screen path never calls DetachSnailsForPoint, and
-            // GameLost only tears down hands and mice.
-            Assert.Equal(1, scene.SnailCount(candy));
+            Assert.Equal(0, scene.SnailCount(candy));
         }
 
         [Fact]

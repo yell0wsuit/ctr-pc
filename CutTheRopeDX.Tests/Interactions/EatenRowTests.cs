@@ -63,12 +63,15 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void EatenLeavesTheEatenCandyRidingTheAntLane()
+        public void EatenDetachesTheCandyFromTheAntLane()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
             Act.Eat(scene, candy);
-            Assert.NotNull(candy.antSegment);
+            Assert.Null(candy.antSegment);
+            Assert.Null(candy.lastAntSegment);
+            Assert.False(candy.antWaitForFly);
+            Assert.Equal(0f, candy.antCooldown);
         }
 
         [Fact]

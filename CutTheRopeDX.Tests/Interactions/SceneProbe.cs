@@ -6,6 +6,8 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
 
+using Xunit;
+
 namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
@@ -271,6 +273,24 @@ namespace CutTheRopeDX.Tests.Interactions
             MiceObject mice = Field<MiceObject>(scene, "miceManager");
             ConstraintedPoint carried = mice?.ActiveMouseCarriedStar();
             return carried != null && carried == candy.WholeBody.Point;
+        }
+
+        /// <summary>Asserts that a retired whole candy has no observable live attachment owner.</summary>
+        /// <param name="scene">Scene that owned the candy.</param>
+        /// <param name="candy">Retired candy to inspect.</param>
+        public static void AssertNoLiveAttachments(this GameScene scene, CandyContext candy)
+        {
+            Assert.Equal(0, scene.AttachedRopeCount(candy));
+            Assert.Null(candy.WholeBody.Bubble);
+            Assert.Null(candy.activeRocket);
+            Assert.Null(candy.capturingHand);
+            Assert.False(scene.MouseCarries(candy));
+            Assert.False(candy.carriedByMouse);
+            Assert.Null(candy.antSegment);
+            Assert.Null(candy.lastAntSegment);
+            Assert.Equal(0, scene.SnailCount(candy));
+            Assert.False(candy.inLantern);
+            Assert.False(candy.WholeBody.Point.disableGravity);
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>
