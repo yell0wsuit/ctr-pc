@@ -1,3 +1,5 @@
+using CutTheRopeDX.Framework.Visual;
+
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -12,5 +14,7 @@ namespace CutTheRopeDX.GameMain
     /// </remarks>
     internal interface IGhostApparition
     {
+        /// <summary>Visual element whose morph timeline controls this apparition's lifetime.</summary>
+        BaseElement Element { get; }
     }
 }

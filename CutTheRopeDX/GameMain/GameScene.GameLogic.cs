@@ -102,6 +102,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Whether a candy body or the merged-candy parking ticket currently owns a bubble.
+        /// </summary>
+        internal bool IsBubbleClaimedByCandy(GameObject bubbleObj)
+        {
+            return CandyBodyForBubbleOrNull(bubbleObj) != null
+                || parkedGhostBubble?.Bubble == bubbleObj;
+        }
+
+        /// <summary>
         /// The point the camera follows: the primary candy's first active body, which is its left
         /// half while it is split and its whole body otherwise. Falls back to the whole body's point
         /// when the primary has no active body at all, so the camera never loses its target.
@@ -629,7 +638,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             GameObject popped = body.Bubble;
-            EnableGhostCycleForBubble(popped);
+            ReleaseGhostForBubble(popped);
 
             // A merge can fold both halves' ghost bubbles onto the merged candy, parking the second
             // one behind the first. Popping the survivor releases the ghost that was parked with it.
@@ -814,22 +823,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Flags every ghost so its captured-candy reacts to a candy break this frame.
-        /// </summary>
-        private void MarkGhostsCandyBreak()
-        {
-            if (ghosts == null)
-            {
-                return;
-            }
-            foreach (object objGhost in ghosts)
-            {
-                Ghost ghost = (Ghost)objGhost;
-                _ = (ghost?.candyBreak = true);
-            }
-        }
-
-        /// <summary>
         /// Schedules the loss sequence after a delay (e.g. while a candy-break animation plays) and
         /// immediately marks the outcome transition active. A destroyed candy is removed at once but
         /// defers <see cref="GameLost"/>; without marking the transition, another candy eaten during
@@ -845,8 +838,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Destroys one candy body that touched a hazard (spike, axe, ...): pops its bubble, removes
         /// it as a hazard loss, releases its ropes, detaches its carriers, schedules the loss, and
-        /// flags ghosts. A split half loses only itself; its sibling keeps playing until the
-        /// scheduled loss lands.
+        /// begins the authoritative loss transition. A split half loses only itself; its sibling
+        /// keeps playing until the scheduled loss lands.
         /// </summary>
         /// <param name="body">The body being destroyed.</param>
         private void BreakCandyBody(CandyBody body)
@@ -864,7 +857,6 @@ namespace CutTheRopeDX.GameMain
             {
                 ScheduleGameLost(0.3f);
             }
-            MarkGhostsCandyBreak();
         }
 
         /// <summary>
@@ -1107,48 +1099,40 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Re-enables ghost cycling for any ghost that owns the specified bubble.
+        /// Returns the ghost that owns the specified apparition bubble.
         /// </summary>
-        /// <param name="bubbleObj">Bubble object whose owning ghost should resume cycling.</param>
-        private void EnableGhostCycleForBubble(GameObject bubbleObj)
+        private Ghost GhostForBubble(GameObject bubbleObj)
         {
             if (bubbleObj is not Bubble bubble || ghosts == null)
             {
-                return;
+                return null;
             }
             foreach (object obj in ghosts)
             {
                 Ghost ghost = (Ghost)obj;
-                if (ghost != null && ghost.bubble == bubble)
+                if (ghost?.OwnsBubble(bubble) == true)
                 {
-                    ghost.cyclingEnabled = true;
-                    ghost.ResetToState(1);
+                    return ghost;
                 }
             }
+            return null;
         }
 
         /// <summary>
-        /// Disables ghost cycling for any ghost that owns the specified bubble.
+        /// Releases the ghost that owns a captured or parked apparition bubble.
         /// </summary>
-        /// <param name="bubbleObj">Bubble object whose owning ghost should stop cycling.</param>
-        /// <returns><see langword="true"/> if at least one ghost was affected; otherwise, <see langword="false"/>.</returns>
-        private bool DisableGhostCycleForBubble(GameObject bubbleObj)
+        private void ReleaseGhostForBubble(GameObject bubbleObj)
         {
-            if (bubbleObj is not Bubble bubble || ghosts == null)
+            if (bubbleObj is Bubble bubble)
             {
-                return false;
+                _ = GhostForBubble(bubble)?.ReleaseBubble(bubble);
             }
-            bool affected = false;
-            foreach (object obj in ghosts)
-            {
-                Ghost ghost = (Ghost)obj;
-                if (ghost != null && ghost.bubble == bubble)
-                {
-                    ghost.cyclingEnabled = false;
-                    affected = true;
-                }
-            }
-            return affected;
+        }
+
+        /// <summary>Whether the specified bubble is the current apparition of a ghost.</summary>
+        private bool IsGhostApparitionBubble(GameObject bubbleObj)
+        {
+            return GhostForBubble(bubbleObj) != null;
         }
     }
 }

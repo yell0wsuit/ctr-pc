@@ -194,7 +194,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             GameObject released = body.Bubble;
-            EnableGhostCycleForBubble(released);
+            ReleaseGhostForBubble(released);
             ReleasePendingSecondGhostBubbleForBody(body);
 
             if (released is Bubble bubble)
@@ -220,7 +220,7 @@ namespace CutTheRopeDX.GameMain
 
         private void CancelParkedGhostBubble()
         {
-            parkedGhostBubble = parkedGhostBubble?.ReplaceWith(null, EnableGhostCycleForBubble);
+            parkedGhostBubble = parkedGhostBubble?.ReplaceWith(null, ReleaseGhostForBubble);
         }
     }
 }

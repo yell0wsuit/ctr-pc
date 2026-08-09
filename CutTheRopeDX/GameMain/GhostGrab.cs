@@ -12,6 +12,9 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class GhostGrab : Grab, IGhostApparition
     {
+        /// <inheritdoc />
+        BaseElement IGhostApparition.Element => this;
+
         /// <summary>
         /// Initializes the ghost grab at a level position and creates its supporting cloud visuals.
         /// </summary>

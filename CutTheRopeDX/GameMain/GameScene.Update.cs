@@ -358,8 +358,8 @@ namespace CutTheRopeDX.GameMain
                         CancelParkedGhostBubble();
                         if (leftBubble != null || rightBubble != null)
                         {
-                            bool leftHasGhost = leftBubble != null && DisableGhostCycleForBubble(leftBubble);
-                            bool rightHasGhost = rightBubble != null && DisableGhostCycleForBubble(rightBubble);
+                            bool leftHasGhost = leftBubble != null && IsGhostApparitionBubble(leftBubble);
+                            bool rightHasGhost = rightBubble != null && IsGhostApparitionBubble(rightBubble);
                             if (leftHasGhost && rightHasGhost)
                             {
                                 mergedBody.Bubble = leftBubble;
@@ -376,8 +376,8 @@ namespace CutTheRopeDX.GameMain
                             else
                             {
                                 mergedBody.Bubble = leftBubble ?? rightBubble;
-                                EnableGhostCycleForBubble(leftBubble);
-                                EnableGhostCycleForBubble(rightBubble);
+                                ReleaseGhostForBubble(leftBubble);
+                                ReleaseGhostForBubble(rightBubble);
                             }
                             mergedBody.BubbleHasGhost = leftHasGhost || rightHasGhost;
                             mergedBody.BubbleAnimation.visible = !mergedBody.BubbleHasGhost;
@@ -577,11 +577,11 @@ namespace CutTheRopeDX.GameMain
                     if (body.Bubble != null && body.Bubble != bubble3)
                     {
                         PopBubbleAtXY(bubble3.x, bubble3.y);
-                        EnableGhostCycleForBubble(body.Bubble);
+                        ReleaseGhostForBubble(body.Bubble);
                         ReleasePendingSecondGhostBubbleForBody(body);
                     }
 
-                    bool hasGhost = DisableGhostCycleForBubble(bubble3);
+                    bool hasGhost = IsGhostApparitionBubble(bubble3);
                     body.Bubble = bubble3;
                     body.BubbleHasGhost = hasGhost;
                     if (ctx.LightBulb != null)
