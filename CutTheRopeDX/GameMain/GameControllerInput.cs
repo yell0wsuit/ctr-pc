@@ -38,17 +38,20 @@ namespace CutTheRopeDX.GameMain
         /// <param name="input">Input source.</param>
         /// <param name="overlay">Current controller overlay.</param>
         /// <param name="restartPhase">Authoritative restart phase.</param>
-        /// <param name="outcomeTransitionActive">Whether a win/loss transition is active.</param>
         /// <param name="resultExitAllowed">Whether Back may leave a stable result screen.</param>
         /// <returns>The semantic command allowed by the current state.</returns>
+        /// <remarks>
+        /// An outcome presentation does not gate input. Pausing mid-cutscene is safe because the
+        /// pause overlay clears <c>updateable</c>, and the scene's update is the only thing that
+        /// pumps the delayed dispatcher, so the win/loss sequence freezes with it.
+        /// </remarks>
         public static GameControllerInputCommand Resolve(
             GameControllerInputKind input,
             GameControllerOverlayMode overlay,
             RestartPhase restartPhase,
-            bool outcomeTransitionActive,
             bool resultExitAllowed)
         {
-            return restartPhase != RestartPhase.Playing || outcomeTransitionActive
+            return restartPhase != RestartPhase.Playing
                 ? GameControllerInputCommand.Ignore
                 : (overlay, input) switch
                 {

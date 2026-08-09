@@ -134,12 +134,12 @@ namespace CutTheRopeDX.Tests
             PointerGestureState gesture = GetPointerGesture(scene, 0);
             if (won)
             {
-                scene.gameplayFlow.MarkWon();
-                scene.gameplayFlow.EndTransition();
+                Assert.True(scene.gameplayFlow.TryBeginWin());
+                Assert.True(scene.gameplayFlow.CompleteWinTransition());
             }
             else
             {
-                scene.gameplayFlow.MarkLost();
+                Assert.True(scene.gameplayFlow.TryBeginLoss());
             }
 
             Assert.True(scene.TouchDownXYIndex(10_000f, 10_000f, 0));
@@ -161,8 +161,8 @@ namespace CutTheRopeDX.Tests
             GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
             HeadlessGame.StepFrames(scene, 60);
             PointerGestureState gesture = GetPointerGesture(scene, 0);
-            scene.gameplayFlow.MarkWon();
-            scene.gameplayFlow.EndTransition();
+            Assert.True(scene.gameplayFlow.TryBeginWin());
+            Assert.True(scene.gameplayFlow.CompleteWinTransition());
             controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
 
             _ = controller.TouchesBeganwithEvent([

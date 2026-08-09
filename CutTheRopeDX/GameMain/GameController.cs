@@ -501,7 +501,7 @@ namespace CutTheRopeDX.GameMain
                 case var id when id == GameControllerButtonId.Restart:
                     GameScene restartScene = (GameScene)view.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
                     if (overlayMode != GameControllerOverlayMode.Gameplay
-                        || restartScene.gameplayFlow.Phase != RestartPhase.Playing)
+                        || !restartScene.gameplayFlow.CanRestart)
                     {
                         return;
                     }
@@ -623,7 +623,6 @@ namespace CutTheRopeDX.GameMain
                 input,
                 overlayMode,
                 gameScene.gameplayFlow.Phase,
-                gameScene.gameplayFlow.TransitionActive,
                 resultExitAllowed: !CustomLevelSession.IsActive);
         }
 

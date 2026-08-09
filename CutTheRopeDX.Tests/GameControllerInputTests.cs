@@ -58,9 +58,8 @@ namespace CutTheRopeDX.Tests
             {
                 foreach (GameControllerOverlayMode overlay in System.Enum.GetValues<GameControllerOverlayMode>())
                 {
-                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingOut, false];
-                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingIn, false];
-                    yield return [(int)input, (int)overlay, (int)RestartPhase.Playing, true];
+                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingOut];
+                    yield return [(int)input, (int)overlay, (int)RestartPhase.FadingIn];
                 }
             }
         }
@@ -78,17 +77,15 @@ namespace CutTheRopeDX.Tests
                     (GameControllerInputKind)input,
                     (GameControllerOverlayMode)overlay,
                     RestartPhase.Playing,
-                    outcomeTransitionActive: false,
                     resultExitAllowed: true));
         }
 
         [Theory]
         [MemberData(nameof(GatedInputCases))]
-        public void ResolveIgnoresInputDuringRestartOrOutcomeTransition(
+        public void ResolveIgnoresInputDuringRestart(
             int input,
             int overlay,
-            int restartPhase,
-            bool outcomeTransitionActive)
+            int restartPhase)
         {
             Assert.Equal(
                 GameControllerInputCommand.Ignore,
@@ -96,7 +93,6 @@ namespace CutTheRopeDX.Tests
                     (GameControllerInputKind)input,
                     (GameControllerOverlayMode)overlay,
                     (RestartPhase)restartPhase,
-                    outcomeTransitionActive,
                     resultExitAllowed: true));
         }
 
@@ -109,7 +105,6 @@ namespace CutTheRopeDX.Tests
                     GameControllerInputKind.Back,
                     GameControllerOverlayMode.Results,
                     RestartPhase.Playing,
-                    outcomeTransitionActive: false,
                     resultExitAllowed: false));
         }
 
@@ -213,19 +208,44 @@ namespace CutTheRopeDX.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void BackAndMenuAreIgnoredDuringOutcomeTransition(bool useBack)
+        public void BackAndMenuOpenPauseDuringOutcomeTransition(bool useBack)
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.MarkTransitionActive();
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
 
             _ = useBack
                 ? controller.BackButtonPressed()
                 : controller.MenuButtonPressed();
 
-            Assert.True(scene.updateable);
-            Assert.False(PauseMenu(controller).IsEnabled());
+            Assert.False(scene.updateable);
+            Assert.True(PauseMenu(controller).IsEnabled());
             Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
+        }
+
+        [Fact]
+        public void RestartBailsOutOfTheWinPresentation()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            Assert.True(scene.gameplayFlow.TryBeginWin());
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
+            Assert.False(scene.gameplayFlow.CompleteWinTransition());
+        }
+
+        [Fact]
+        public void RestartBailsOutOfTheLossPresentation()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
         }
 
         [Theory]
@@ -250,17 +270,17 @@ namespace CutTheRopeDX.Tests
         [InlineData((int)GameControllerInputKind.Back)]
         [InlineData((int)GameControllerInputKind.Menu)]
         [InlineData((int)GameControllerInputKind.PauseButton)]
-        public void EveryPauseInputIsIgnoredDuringOutcomeTransition(int input)
+        public void EveryPauseInputOpensPauseDuringOutcomeTransition(int input)
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.MarkTransitionActive();
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
 
             Press(controller, input);
 
-            Assert.True(scene.touchable);
-            Assert.True(scene.updateable);
-            Assert.False(PauseMenu(controller).IsEnabled());
+            Assert.False(scene.touchable);
+            Assert.False(scene.updateable);
+            Assert.True(PauseMenu(controller).IsEnabled());
         }
 
         [Theory]

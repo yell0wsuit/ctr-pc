@@ -32,8 +32,11 @@ namespace CutTheRopeDX.GameMain
             }
 
             TargetContext target = request.Target;
+            // Any outcome owning the level cancels the nap, including one that finished during the
+            // delay. Not CanReactToCandy: this target is mid-chew, so it is already fed, and that
+            // predicate answers a different question (may Om Nom react to a *new* candy).
             if (target == null
-                || gameplayFlow.TransitionActive
+                || gameplayFlow.HasOutcome
                 || !GameWinChewing.ShouldSchedulePostEatSleep(
                     targets.Count,
                     nightLevel,
