@@ -1,5 +1,7 @@
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework.Visual;
+
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
 namespace CutTheRopeDX.GameMain
@@ -18,11 +20,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadGravityButton(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            if (globalGravityY == 0f)
+            if (gravityState.BaseVector.Y == 0f)
             {
                 return;
             }
-            gravityButton = CreateGravityButtonWithDelegate(this);
+            ToggleButton gravityButton = CreateGravityButtonWithDelegate(this);
+            gravityState.AttachButton(gravityButton);
             gravityButton.visible = false;
             gravityButton.touchable = false;
             _ = AddChild(gravityButton);

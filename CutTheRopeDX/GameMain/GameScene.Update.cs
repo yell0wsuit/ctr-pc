@@ -30,13 +30,7 @@ namespace CutTheRopeDX.GameMain
             pollenDrawer.Update(delta);
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             UpdatePointerGestureVisuals(delta);
-            if (earthAnims != null)
-            {
-                foreach (object obj in earthAnims)
-                {
-                    ((Image)obj).Update(delta);
-                }
-            }
+            gravityState.UpdateEarthAnimations(delta);
             decalsLayer?.Update(delta);
             if (waterLayer != null)
             {
@@ -1327,7 +1321,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                float lift = (gravityButton != null && !gravityNormal) ? -bubbleLift : bubbleLift;
+                float lift = gravityState.IsInverted ? -bubbleLift : bubbleLift;
                 body.Point.ApplyImpulseDelta(
                     Vect((0f - body.Point.v.X) / bubbleDamping, ((0f - body.Point.v.Y) / bubbleDamping) + lift),
                     delta);
@@ -1524,7 +1518,7 @@ namespace CutTheRopeDX.GameMain
                 ResetBungeeHighlight();
                 bool flag12 = false;
                 Vector p = VectAdd(slastTouch, camera.pos);
-                if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(p.X, p.Y, true))
+                if (gravityState.IsInToggleTouchZone(p.X, p.Y))
                 {
                     flag12 = true;
                 }
