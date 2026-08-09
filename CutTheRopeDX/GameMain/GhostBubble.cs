@@ -8,6 +8,9 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class GhostBubble : Bubble, IGhostApparition
     {
+        /// <inheritdoc />
+        BaseElement IGhostApparition.Element => this;
+
         /// <summary>
         /// Creates a ghost bubble from a texture.
         /// </summary>

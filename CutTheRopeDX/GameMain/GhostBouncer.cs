@@ -11,6 +11,9 @@ namespace CutTheRopeDX.GameMain
     internal sealed class GhostBouncer : Bouncer, IGhostApparition
     {
         /// <inheritdoc />
+        BaseElement IGhostApparition.Element => this;
+
+        /// <inheritdoc />
         public override Bouncer InitWithPosXYWidthAndAngle(float px, float py, int width, float angle)
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)

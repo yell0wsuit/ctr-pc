@@ -28,10 +28,12 @@ namespace CutTheRopeDX.GameMain
             _ = bool.TryParse(xmlNode.Attribute("grab")?.Value, out bool useGrab);
             _ = bool.TryParse(xmlNode.Attribute("bubble")?.Value, out bool useBubble);
             _ = bool.TryParse(xmlNode.Attribute("bouncer")?.Value, out bool useBouncer);
-            int possibleStatesMask = (useBouncer ? 8 : 0) | (useBubble ? 2 : 0) | (useGrab ? 4 : 0);
-            Ghost ghost = new Ghost().InitWithPositionPossibleStatesMaskGrabRadiusBouncerAngleBubblesBungeesBouncers(
+            GhostForm possibleForms = (useBouncer ? GhostForm.Bouncer : GhostForm.None)
+                | (useBubble ? GhostForm.Bubble : GhostForm.None)
+                | (useGrab ? GhostForm.Grab : GhostForm.None);
+            Ghost ghost = new Ghost().InitWithPositionPossibleFormsGrabRadiusBouncerAngleBubblesBungeesBouncers(
                 Vect(px, py),
-                possibleStatesMask,
+                possibleForms,
                 grabRadius,
                 bouncerAngle,
                 bubbles,

@@ -1071,6 +1071,16 @@ namespace CutTheRopeDX.GameMain
             {
                 if (parts != null)
                 {
+                    if (!ownsTail && tail != null)
+                    {
+                        foreach (ConstraintedPoint part in parts)
+                        {
+                            if (part != tail)
+                            {
+                                tail.RemoveConstraint(part);
+                            }
+                        }
+                    }
                     foreach (ConstraintedPoint part in parts)
                     {
                         bool ownsPart = (part == bungeeAnchor && ownsAnchor) || (part == tail && ownsTail) || (part != bungeeAnchor && part != tail);

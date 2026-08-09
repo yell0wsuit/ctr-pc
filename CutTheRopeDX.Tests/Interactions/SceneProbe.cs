@@ -47,12 +47,36 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Grab>>(scene, "bungees");
         }
 
+        /// <summary>All ropes currently registered with the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The registered rope entries.</returns>
+        public static IReadOnlyList<RopeEntry> RegisteredRopes(this GameScene scene)
+        {
+            return Field<RopeRegistry>(scene, "ropes").All;
+        }
+
         /// <summary>All free bubbles loaded into the scene.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The bubble list.</returns>
         public static List<Bubble> Bubbles(this GameScene scene)
         {
             return Field<List<Bubble>>(scene, "bubbles");
+        }
+
+        /// <summary>All ghosts.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The ghost list.</returns>
+        public static List<Ghost> Ghosts(this GameScene scene)
+        {
+            return Field<List<Ghost>>(scene, "ghosts");
+        }
+
+        /// <summary>All air pumps.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The pump list.</returns>
+        public static List<Pump> Pumps(this GameScene scene)
+        {
+            return Field<List<Pump>>(scene, "pumps");
         }
 
         /// <summary>All rockets.</summary>

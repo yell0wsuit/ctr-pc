@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
@@ -16,7 +17,7 @@ namespace CutTheRopeDX.GameMain
         /// Initializes a ghost and its morphing visuals at a level position.
         /// </summary>
         /// <param name="position">World position of the ghost.</param>
-        /// <param name="possibleStateMask">Bitmask of ghost states that this ghost may cycle through.</param>
+        /// <param name="possibleForms">Ghost forms that this ghost may cycle through.</param>
         /// <param name="grabRadius">Grab radius used when the ghost morphs into a grab.</param>
         /// <param name="bouncerAngle">Bouncer angle used when the ghost morphs into a bouncer.</param>
         /// <param name="bubbles">Scene bubble collection that receives ghost-created bubbles.</param>
@@ -24,9 +25,9 @@ namespace CutTheRopeDX.GameMain
         /// <param name="bouncers">Scene bouncer collection that receives ghost-created bouncers.</param>
         /// <param name="owner">Owning game scene.</param>
         /// <returns>The initialized ghost.</returns>
-        public Ghost InitWithPositionPossibleStatesMaskGrabRadiusBouncerAngleBubblesBungeesBouncers(
+        public Ghost InitWithPositionPossibleFormsGrabRadiusBouncerAngleBubblesBungeesBouncers(
             Vector position,
-            int possibleStateMask,
+            GhostForm possibleForms,
             float grabRadius,
             float bouncerAngle,
             List<Bubble> bubbles,
@@ -35,8 +36,11 @@ namespace CutTheRopeDX.GameMain
             GameScene owner)
         {
             hostScene = owner;
-            possibleStatesMask = possibleStateMask | 1;
-            ghostState = 1;
+            this.possibleForms = possibleForms | GhostForm.Idle;
+            Form = GhostForm.Idle;
+            Apparition = null;
+            MorphPhase = null;
+            retiringApparitions.Clear();
             this.bouncerAngle = bouncerAngle;
             this.grabRadius = grabRadius;
             gsBubbles = bubbles;
@@ -90,11 +94,6 @@ namespace CutTheRopeDX.GameMain
             ghostImageFace.AddTimelinewithID(faceFloat, 13);
             ghostImageFace.PlayTimeline(13);
 
-            bubble = null;
-            grab = null;
-            bouncer = null;
-            cyclingEnabled = true;
-            candyBreak = false;
             return this;
         }
 
@@ -103,9 +102,9 @@ namespace CutTheRopeDX.GameMain
         {
             if (disposing)
             {
-                bubble = null;
-                grab = null;
-                bouncer = null;
+                Apparition = null;
+                MorphPhase = null;
+                retiringApparitions.Clear();
                 ghostImageBody = null;
                 ghostImageFace = null;
                 ghostImage = null;
@@ -118,113 +117,51 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
-            if (bubble != null && bubble.GetCurrentTimelineIndex() == 11 && bubble.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
-            {
-                _ = gsBubbles.Remove(bubble);
-                bubble = null;
-            }
-            if (bouncer != null && bouncer.GetCurrentTimelineIndex() == 11 && bouncer.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
-            {
-                _ = gsBouncers.Remove(bouncer);
-                bouncer = null;
-            }
-            if (grab != null && grab.GetCurrentTimelineIndex() == 11 && grab.GetCurrentTimeline().state == Timeline.TimelineState.TIMELINE_STOPPED)
-            {
-                hostScene?.UnregisterRope(grab.Rope);
-                grab.DestroyRope();
-                _ = gsBungees.Remove(grab);
-                grab = null;
-            }
+            RetireFinishedApparitions();
             base.Update(delta);
-            if (grab != null && grab.Rope != null && grab.Rope.cut != -1 && grab.GetCurrentTimelineIndex() == 10)
+            CompleteMorphIfFinished();
+            if (Apparition is GhostGrab grab
+                && grab.Rope != null
+                && grab.Rope.cut != -1
+                && grab.GetCurrentTimelineIndex() == 10)
             {
-                cyclingEnabled = true;
-                ResetToState(1);
+                ResetToForm(GhostForm.Idle);
             }
         }
 
         /// <summary>
         /// Morphs the ghost into a specific allowed state.
         /// </summary>
-        /// <param name="newState">Ghost state bit to activate.</param>
-        public void ResetToState(int newState)
+        /// <param name="newForm">Ghost form to activate.</param>
+        public void ResetToForm(GhostForm newForm)
         {
-            if ((newState & possibleStatesMask) == 0)
+            if (!IsSingleForm(newForm) || (newForm & possibleForms) == 0)
             {
                 return;
             }
-            ghostState = newState;
-            Timeline morphOut = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            morphOut.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-            morphOut.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_DISAPPEAR_TIME));
-            morphOut.delegateTimelineDelegate = this;
-            if (bubble != null)
+
+            GhostForm outgoingForm = Form;
+            IGhostApparition outgoing = Apparition;
+            MorphPhase = new GhostMorphPhase(outgoingForm, newForm);
+            Apparition = null;
+            if (outgoing != null)
             {
-                if (bubble.GetCurrentTimelineIndex() == 11)
-                {
-                    _ = gsBubbles.Remove(bubble);
-                    bubble = null;
-                }
-                else
-                {
-                    bubble.AddTimelinewithID(morphOut, 11);
-                    bubble.PlayTimeline(11);
-                    bubble.popped = true;
-                }
+                BeginRetiringApparition(outgoing);
+                retiringApparitions.Add(new RetiringGhostApparition(outgoingForm, newForm, outgoing));
             }
-            if (grab != null)
-            {
-                Bungee rope = grab.Rope;
-                if (rope != null)
-                {
-                    grab.Rope.forceWhite = true;
-                    rope.cutTime = GHOST_MORPHING_APPEAR_TIME;
-                    if (rope.cut == -1)
-                    {
-                        rope.cut = 0;
-                    }
-                }
-                if (grab.GetCurrentTimelineIndex() == 11)
-                {
-                    hostScene?.UnregisterRope(grab.Rope);
-                    grab.DestroyRope();
-                    _ = gsBungees.Remove(grab);
-                    grab = null;
-                }
-                else
-                {
-                    grab.AddTimelinewithID(morphOut, 11);
-                    grab.PlayTimeline(11);
-                }
-            }
-            if (bouncer != null)
-            {
-                if (bouncer.GetCurrentTimelineIndex() == 11)
-                {
-                    _ = gsBouncers.Remove(bouncer);
-                    bouncer = null;
-                }
-                else
-                {
-                    bouncer.AddTimelinewithID(morphOut, 11);
-                    bouncer.PlayTimeline(11);
-                }
-            }
-            if (ghostImage.GetCurrentTimelineIndex() == 10)
+            else if (ghostImage.GetCurrentTimelineIndex() == 10)
             {
                 ghostImage.PlayTimeline(11);
             }
 
-            Timeline morphIn = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            morphIn.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0));
-            morphIn.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, GHOST_MORPHING_APPEAR_TIME));
-
-            switch (ghostState)
+            Form = newForm;
+            Timeline morphIn = CreateMorphTimeline(appearing: true);
+            switch (newForm)
             {
-                case 1:
+                case GhostForm.Idle:
                     ghostImage.PlayTimeline(10);
                     break;
-                case 2:
+                case GhostForm.Bubble:
                     {
                         GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(Resources.Img.ObjBubble, RND_RANGE(1, 3));
                         ghostBubble.DoRestoreCutTransparency();
@@ -237,7 +174,7 @@ namespace CutTheRopeDX.GameMain
                         image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);
-                        bubble = ghostBubble;
+                        Apparition = ghostBubble;
                         gsBubbles.Add(ghostBubble);
                         ghostBubble.passColorToChilds = true;
                         ghostBubble.AddTimelinewithID(morphIn, 10);
@@ -245,10 +182,8 @@ namespace CutTheRopeDX.GameMain
                         ghostBubble.AddSupportingCloudsTimelines();
                         break;
                     }
-                case 3:
-                    break;
-                case 4:
-                    grab = new GhostGrab().InitWithPosition(x, y);
+                case GhostForm.Grab:
+                    GhostGrab grab = new GhostGrab().InitWithPosition(x, y);
                     grab.Wheel = null;
                     grab.Spider = null;
                     // A ghost apparition is only ever a plain or auto-radius hook, so it goes
@@ -284,17 +219,20 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
                     gsBungees.Add(grab);
+                    Apparition = grab;
                     grab.AddTimelinewithID(morphIn, 10);
                     grab.PlayTimeline(10);
                     break;
-                case 8:
-                    bouncer = new GhostBouncer().InitWithPosXYWidthAndAngle(x, y, 1, bouncerAngle);
+                case GhostForm.Bouncer:
+                    GhostBouncer bouncer = (GhostBouncer)new GhostBouncer().InitWithPosXYWidthAndAngle(x, y, 1, bouncerAngle);
                     gsBouncers.Add(bouncer);
+                    Apparition = bouncer;
                     bouncer.AddTimelinewithID(morphIn, 10);
                     bouncer.PlayTimeline(10);
                     break;
+                case GhostForm.None:
                 default:
-                    break;
+                    throw new InvalidOperationException($"Unsupported ghost form {newForm}.");
             }
 
             morphingBubbles.StartSystem(GHOST_MORPHING_BUBBLES_COUNT);
@@ -307,38 +245,59 @@ namespace CutTheRopeDX.GameMain
         public void ResetToNextState()
         {
             // No non-idle states available; nothing to cycle to.
-            if ((possibleStatesMask & ~1) == 0)
+            if ((possibleForms & ~GhostForm.Idle) == 0)
             {
                 return;
             }
 
-            int state = ghostState;
+            GhostForm nextForm = Form;
             do
             {
-                state <<= 1;
-                if (state == 16)
+                nextForm = (GhostForm)((int)nextForm << 1);
+                if ((int)nextForm == 16)
                 {
-                    state = 2;
+                    nextForm = GhostForm.Bubble;
                 }
             }
-            while ((state & possibleStatesMask) == 0);
+            while ((nextForm & possibleForms) == 0);
 
             // With only 1 non-idle property, the cycle wraps back to the current state.
-            // Calling ResetToState would orphan the existing object in its list before
-            // its disappear animation completes, so bail out instead.
-            if (state == ghostState)
+            // Re-entering the only form would produce a visual puff without changing behavior,
+            // so bail out instead.
+            if (nextForm == Form)
             {
                 return;
             }
 
-            ResetToState(state);
+            ResetToForm(nextForm);
+        }
+
+        /// <summary>Whether this ghost's current apparition is <paramref name="candidate"/>.</summary>
+        public bool OwnsBubble(Bubble candidate)
+        {
+            return Apparition is GhostBubble bubble && ReferenceEquals(bubble, candidate);
+        }
+
+        /// <summary>
+        /// Releases the exact ghost bubble claimed by candy and returns the ghost to its idle form.
+        /// </summary>
+        /// <returns><see langword="true"/> when this ghost owned the supplied bubble.</returns>
+        public bool ReleaseBubble(Bubble candidate)
+        {
+            if (!OwnsBubble(candidate))
+            {
+                return false;
+            }
+
+            ResetToForm(GhostForm.Idle);
+            return true;
         }
 
         /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
             float distance = VectLength(VectSub(Vect(tx, ty), Vect(x, y)));
-            if (cyclingEnabled && !candyBreak && distance < GHOST_TOUCH_RADIUS)
+            if (!IsBubbleCaptured && distance < GHOST_TOUCH_RADIUS)
             {
                 ResetToNextState();
                 return true;
@@ -380,6 +339,104 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        private bool IsBubbleCaptured => Apparition is GhostBubble bubble
+            && hostScene?.IsBubbleClaimedByCandy(bubble) == true;
+
+        private static bool IsSingleForm(GhostForm candidate)
+        {
+            int value = (int)candidate;
+            return value > 0 && (value & (value - 1)) == 0;
+        }
+
+        private static Timeline CreateMorphTimeline(bool appearing)
+        {
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            timeline.AddKeyFrame(KeyFrame.MakeColor(
+                appearing ? RGBAColor.transparentRGBA : RGBAColor.solidOpaqueRGBA,
+                KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE,
+                0));
+            timeline.AddKeyFrame(KeyFrame.MakeColor(
+                appearing ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA,
+                KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
+                appearing ? GHOST_MORPHING_APPEAR_TIME : GHOST_MORPHING_DISAPPEAR_TIME));
+            return timeline;
+        }
+
+        private void BeginRetiringApparition(IGhostApparition outgoing)
+        {
+            if (outgoing is GhostBubble bubble)
+            {
+                bubble.popped = true;
+            }
+            else if (outgoing is GhostGrab grab && grab.Rope != null)
+            {
+                grab.Rope.forceWhite = true;
+                grab.Rope.cutTime = GHOST_MORPHING_APPEAR_TIME;
+                if (grab.Rope.cut == -1)
+                {
+                    grab.Rope.cut = 0;
+                }
+            }
+
+            BaseElement element = outgoing.Element;
+            Timeline morphOut = CreateMorphTimeline(appearing: false);
+            morphOut.delegateTimelineDelegate = this;
+            element.AddTimelinewithID(morphOut, 11);
+            element.PlayTimeline(11);
+        }
+
+        private void RetireFinishedApparitions()
+        {
+            for (int i = retiringApparitions.Count - 1; i >= 0; i--)
+            {
+                RetiringGhostApparition retirement = retiringApparitions[i];
+                BaseElement element = retirement.Apparition.Element;
+                if (element.GetCurrentTimelineIndex() != 11
+                    || element.GetCurrentTimeline()?.state != Timeline.TimelineState.TIMELINE_STOPPED)
+                {
+                    continue;
+                }
+
+                RetireApparition(retirement.Apparition);
+                retiringApparitions.RemoveAt(i);
+            }
+        }
+
+        private void RetireApparition(IGhostApparition retired)
+        {
+            switch (retired)
+            {
+                case GhostBubble bubble:
+                    _ = gsBubbles.Remove(bubble);
+                    break;
+                case GhostGrab grab:
+                    hostScene?.UnregisterRope(grab.Rope);
+                    grab.DestroyRope();
+                    _ = gsBungees.Remove(grab);
+                    break;
+                case GhostBouncer bouncer:
+                    _ = gsBouncers.Remove(bouncer);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported ghost apparition {retired.GetType().Name}.");
+            }
+        }
+
+        private void CompleteMorphIfFinished()
+        {
+            if (MorphPhase == null)
+            {
+                return;
+            }
+
+            BaseElement incoming = Apparition?.Element ?? ghostImage;
+            if (incoming.GetCurrentTimelineIndex() == 10
+                && incoming.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
+            {
+                MorphPhase = null;
+            }
+        }
+
         /// <summary>Duration of the ghost morph-in fade, in seconds.</summary>
         private const float GHOST_MORPHING_APPEAR_TIME = 0.36f;
 
@@ -392,29 +449,17 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Touch radius used for cycling ghost state.</summary>
         private const float GHOST_TOUCH_RADIUS = 80f;
 
-        /// <summary>Current ghost state bit.</summary>
-        public int ghostState;
+        /// <summary>Authoritative current form.</summary>
+        internal GhostForm Form { get; private set; }
 
-        /// <summary>Bubble object currently owned by the ghost state.</summary>
-        public Bubble bubble;
+        /// <summary>The one current non-idle apparition, if any.</summary>
+        internal IGhostApparition Apparition { get; private set; }
 
-        /// <summary>Grab object currently owned by the ghost state.</summary>
-        public Grab grab;
-
-        /// <summary>Bouncer object currently owned by the ghost state.</summary>
-        public Bouncer bouncer;
-
-        /// <summary>Whether touch input may cycle this ghost to another state.</summary>
-        public bool cyclingEnabled;
+        /// <summary>The outgoing/incoming form pair while the newest morph-in is active.</summary>
+        internal GhostMorphPhase? MorphPhase { get; private set; }
 
         /// <summary>Grab radius used when the ghost morphs into a grab.</summary>
         public float grabRadius;
-
-        /// <summary>Whether the candy has broken and should block ghost cycling.</summary>
-        public bool candyBreak;
-
-        /// <summary>Bitmask of ghost states this ghost may cycle through.</summary>
-        public int possibleStatesMask;
 
         /// <summary>Bouncer angle used when the ghost morphs into a bouncer.</summary>
         public float bouncerAngle;
@@ -445,5 +490,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Owning game scene used for ghost-created rope anchors.</summary>
         private GameScene hostScene;
+
+        /// <summary>Allowed forms for this ghost, including idle.</summary>
+        private GhostForm possibleForms;
+
+        /// <summary>Outgoing apparitions waiting for safe post-iteration retirement.</summary>
+        private readonly List<RetiringGhostApparition> retiringApparitions = [];
     }
 }
