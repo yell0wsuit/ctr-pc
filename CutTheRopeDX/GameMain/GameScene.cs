@@ -943,6 +943,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Authoritative per-pointer rope-cut gesture state.</summary>
         private readonly PointerGestureState[] pointerGestures = new PointerGestureState[PointerGestureCount];
 
+        /// <summary>Whether an outcome allows visual-only pointer trails while gameplay input is blocked.</summary>
+        internal bool AcceptsVisualOnlyPointerInput => gameplayFlow.TransitionActive
+            || gameplayFlow.WonTriggered
+            || gameplayFlow.LostTriggered;
+
         /// <summary>
         /// Current rope physics time scale.
         /// </summary>

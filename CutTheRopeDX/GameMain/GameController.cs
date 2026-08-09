@@ -28,6 +28,12 @@ namespace CutTheRopeDX.GameMain
             }
             base.Update(t);
 
+            GameScene gameScene = (GameScene)GetView(0)?.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            if (gameScene?.AcceptsVisualOnlyPointerInput == true && !gameScene.updateable)
+            {
+                gameScene.UpdatePointerGestureVisuals(t);
+            }
+
             if (levelWatcher != null && levelWatcher.TryConsumeChange(DateTime.UtcNow))
             {
                 ApplyCustomLevelChange();
@@ -750,7 +756,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            if (!gameScene.touchable)
+            if (!CanRoutePointerInput(gameScene))
             {
                 return false;
             }
@@ -785,7 +791,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            if (!gameScene.touchable)
+            if (!CanRoutePointerInput(gameScene))
             {
                 return false;
             }
@@ -824,7 +830,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            if (!gameScene.touchable)
+            if (!CanRoutePointerInput(gameScene))
             {
                 return false;
             }
@@ -922,12 +928,19 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
             GameScene gameScene = (GameScene)view.GetChild(0);
-            if (gameScene == null || !gameScene.touchable)
+            if (gameScene == null || !CanRoutePointerInput(gameScene))
             {
                 return false;
             }
             _ = gameScene.TouchDraggedXYIndex(x, y, 0);
             return true;
+        }
+
+        /// <summary>Allows gameplay input normally and visual-only trails during a stable outcome.</summary>
+        private bool CanRoutePointerInput(GameScene gameScene)
+        {
+            return gameScene.touchable
+                || (!navigationExitActive && gameScene.AcceptsVisualOnlyPointerInput);
         }
 
         /// <inheritdoc />

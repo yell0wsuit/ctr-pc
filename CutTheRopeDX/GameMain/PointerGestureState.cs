@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -106,6 +107,27 @@ namespace CutTheRopeDX.GameMain
             TraceDownPosition = default;
             Cuts.Clear();
             Trace?.Reset();
+        }
+
+        /// <summary>Advances fading cut ribbons and the visual trace independently of gameplay simulation.</summary>
+        public void UpdateVisuals(float delta)
+        {
+            for (int i = 0; i < Cuts.Count; i++)
+            {
+                GameScene.FingerCut cut = Cuts[i];
+                float alpha = cut.c.AlphaChannel;
+                if (Mover.MoveVariableToTarget(ref alpha, 0f, 10f, delta))
+                {
+                    Cuts.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    cut.c.AlphaChannel = alpha;
+                }
+            }
+
+            Trace?.Update(delta);
         }
     }
 }

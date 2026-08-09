@@ -77,21 +77,22 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-down event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
+            if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
+            {
+                return true;
+            }
+            // Outcome input owns only the visual trace; it must not reach any gameplay object.
+            if (AcceptsVisualOnlyPointerInput)
+            {
+                gesture.Begin(Vect(tx, ty), Vect(tx + camera.pos.X, ty + camera.pos.Y));
+                return true;
+            }
             if (ignoreTouches)
             {
                 if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
                 {
                     fastenCamera = true;
                 }
-                return true;
-            }
-            // Suppress all gameplay interactions while a win/loss transition is running.
-            if (gameplayFlow.TransitionActive)
-            {
-                return true;
-            }
-            if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
-            {
                 return true;
             }
             if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
@@ -445,16 +446,17 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-up event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
-            if (ignoreTouches)
-            {
-                return true;
-            }
-            // Suppress all gameplay interactions while a win/loss transition is running.
-            if (gameplayFlow.TransitionActive)
-            {
-                return true;
-            }
             if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
+            {
+                return true;
+            }
+            // Outcome input ends the visual trace without reaching any gameplay object.
+            if (AcceptsVisualOnlyPointerInput)
+            {
+                gesture.End();
+                return true;
+            }
+            if (ignoreTouches)
             {
                 return true;
             }
@@ -595,21 +597,22 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-move event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchMoveXYIndex(float tx, float ty, int ti)
         {
-            if (ignoreTouches)
-            {
-                return true;
-            }
-            // Suppress all gameplay interactions while a win/loss transition is running.
-            if (gameplayFlow.TransitionActive)
-            {
-                return true;
-            }
             if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
             }
             Vector vector = Vect(tx, ty);
             Vector world = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+            // Outcome input advances only the visual trace; no cuts or object handlers run.
+            if (AcceptsVisualOnlyPointerInput)
+            {
+                _ = gesture.Move(vector, world, out _);
+                return true;
+            }
+            if (ignoreTouches)
+            {
+                return true;
+            }
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
@@ -874,8 +877,8 @@ namespace CutTheRopeDX.GameMain
             {
                 return false;
             }
-            // Suppress all gameplay interactions while a win/loss transition is running.
-            if (gameplayFlow.TransitionActive)
+            // Hover state is gameplay-only; outcome drawing is handled by the gesture lifecycle.
+            if (AcceptsVisualOnlyPointerInput)
             {
                 return true;
             }

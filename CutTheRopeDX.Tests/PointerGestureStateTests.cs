@@ -4,6 +4,9 @@ using System.Reflection;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input.Touch;
+
 using Xunit;
 
 namespace CutTheRopeDX.Tests
@@ -118,6 +121,83 @@ namespace CutTheRopeDX.Tests
             });
 
             Assert.Null(exception);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void OutcomePointerDrawsATrailWithoutCreatingInteractiveCuts(bool won)
+        {
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(pack: 1, level: 4);
+            HeadlessGame.StepFrames(scene, 60);
+            PointerGestureState gesture = GetPointerGesture(scene, 0);
+            if (won)
+            {
+                scene.gameplayFlow.MarkWon();
+                scene.gameplayFlow.EndTransition();
+            }
+            else
+            {
+                scene.gameplayFlow.MarkLost();
+            }
+
+            Assert.True(scene.TouchDownXYIndex(10_000f, 10_000f, 0));
+            Assert.True(scene.TouchMoveXYIndex(10_020f, 10_000f, 0));
+
+            Assert.True(gesture.IsDragging);
+            Assert.True(gesture.Trace.IsAlive);
+            Assert.Empty(gesture.Cuts);
+
+            Assert.True(scene.TouchUpXYIndex(10_020f, 10_000f, 0));
+            Assert.False(gesture.IsDragging);
+        }
+
+        [Fact]
+        public void ResultsOverlayRoutesUnclaimedTouchesToVisualTrailInput()
+        {
+            _ = HeadlessGame.Boot();
+            GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
+            GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            HeadlessGame.StepFrames(scene, 60);
+            PointerGestureState gesture = GetPointerGesture(scene, 0);
+            scene.gameplayFlow.MarkWon();
+            scene.gameplayFlow.EndTransition();
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+            _ = controller.TouchesBeganwithEvent([
+                new TouchLocation(37, TouchLocationState.Pressed, new Vector2(10_000f, 10_000f))
+            ]);
+            _ = controller.TouchesMovedwithEvent([
+                new TouchLocation(37, TouchLocationState.Moved, new Vector2(10_020f, 10_000f))
+            ]);
+            _ = controller.TouchesMovedwithEvent([
+                new TouchLocation(37, TouchLocationState.Moved, new Vector2(10_040f, 10_000f))
+            ]);
+
+            Assert.True(gesture.Trace.IsAlive);
+            Assert.Empty(gesture.Cuts);
+
+            _ = controller.TouchesEndedwithEvent([
+                new TouchLocation(37, TouchLocationState.Released, new Vector2(10_040f, 10_000f))
+            ]);
+            Assert.False(gesture.IsDragging);
+            Assert.True(gesture.Trace.IsAlive);
+
+            scene.updateable = false;
+            for (int frame = 0; frame < 120; frame++)
+            {
+                controller.Update(0.016f);
+            }
+
+            Assert.False(gesture.Trace.IsAlive);
+        }
+
+        private static PointerGestureState GetPointerGesture(GameScene scene, int pointerIndex)
+        {
+            FieldInfo field = typeof(GameScene).GetField("pointerGestures", InstanceFields);
+            PointerGestureState[] gestures = Assert.IsType<PointerGestureState[]>(field?.GetValue(scene));
+            return gestures[pointerIndex];
         }
     }
 }

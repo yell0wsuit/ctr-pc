@@ -29,24 +29,7 @@ namespace CutTheRopeDX.GameMain
             dd.Update(delta);
             pollenDrawer.Update(delta);
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            foreach (PointerGestureState gesture in pointerGestures)
-            {
-                for (int j = 0; j < gesture.Cuts.Count; j++)
-                {
-                    FingerCut fingerCut = gesture.Cuts[j];
-                    float alpha = fingerCut.c.AlphaChannel;
-                    if (Mover.MoveVariableToTarget(ref alpha, 0, 10, delta))
-                    {
-                        _ = gesture.Cuts.Remove(fingerCut);
-                        j--;
-                    }
-                    else
-                    {
-                        fingerCut.c.AlphaChannel = alpha;
-                    }
-                }
-                gesture.Trace?.Update(delta);
-            }
+            UpdatePointerGestureVisuals(delta);
             if (earthAnims != null)
             {
                 foreach (object obj in earthAnims)
@@ -1536,7 +1519,7 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (clickToCut && !ignoreTouches)
+            if (clickToCut && !ignoreTouches && !AcceptsVisualOnlyPointerInput)
             {
                 ResetBungeeHighlight();
                 bool flag12 = false;
@@ -1618,6 +1601,15 @@ namespace CutTheRopeDX.GameMain
                 case RestartStep.None:
                 default:
                     break;
+            }
+        }
+
+        /// <summary>Advances pointer visuals even when outcome presentation freezes gameplay simulation.</summary>
+        internal void UpdatePointerGestureVisuals(float delta)
+        {
+            foreach (PointerGestureState gesture in pointerGestures)
+            {
+                gesture.UpdateVisuals(delta);
             }
         }
 
