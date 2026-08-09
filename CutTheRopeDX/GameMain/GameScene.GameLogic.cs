@@ -471,11 +471,6 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            if (GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targets.Count))
-            {
-                targetAnimationController?.PlayChewing();
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, targetAnimationController?.SkinDefinition);
-            }
             PopCandyBubble(candies[0].WholeBody);
             // The primary is already Removed(Eaten) here: the single caller runs behind AllEaten,
             // which cannot pass while an eatable candy still has a body. So the win timeline below

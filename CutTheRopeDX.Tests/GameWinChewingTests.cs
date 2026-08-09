@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -6,16 +9,6 @@ namespace CutTheRopeDX.Tests
 {
     public class GameWinChewingTests
     {
-        [Theory]
-        [InlineData(0, true)]
-        [InlineData(1, true)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        public void ShouldPlayPrimaryChewingOnGameWonOnlyForLegacySingleTargetWin(int targetCount, bool expected)
-        {
-            Assert.Equal(expected, GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targetCount));
-        }
-
         [Theory]
         [InlineData(2, false, true, true)]
         [InlineData(3, false, true, true)]
