@@ -337,9 +337,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DrawCuts()
         {
-            for (int i = 0; i < 5; i++)
+            foreach (PointerGestureState gesture in pointerGestures)
             {
-                fingerTraces[i]?.Draw();
+                gesture.Trace?.Draw();
             }
         }
     }

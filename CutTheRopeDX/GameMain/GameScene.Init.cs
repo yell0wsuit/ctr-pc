@@ -81,11 +81,10 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].y = hudStar[i].height / 2;
                 _ = AddChild(hudStar[i]);
             }
-            for (int j = 0; j < 5; j++)
+            int selectedTraceIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
+            for (int j = 0; j < pointerGestures.Length; j++)
             {
-                fingerCuts[j] = [];
-                int selectedTraceIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
-                fingerTraces[j] = FingerTraceFactory.Create(selectedTraceIndex);
+                pointerGestures[j] = new PointerGestureState(FingerTraceFactory.Create(selectedTraceIndex));
             }
             clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
         }

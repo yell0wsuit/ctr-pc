@@ -937,20 +937,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private float targetBaseScaleY = 1f;
 
-        /// <summary>
-        /// Per-touch flags indicating which touches are currently dragging.
-        /// </summary>
-        private readonly bool[] dragging = new bool[5];
+        /// <summary>Number of simultaneous pointer gestures supported by gameplay.</summary>
+        private const int PointerGestureCount = 5;
 
-        /// <summary>
-        /// Starting positions for active touches.
-        /// </summary>
-        private readonly Vector[] startPos = new Vector[5];
-
-        /// <summary>
-        /// Previous starting positions for active touches.
-        /// </summary>
-        private readonly Vector[] prevStartPos = new Vector[5];
+        /// <summary>Authoritative per-pointer rope-cut gesture state.</summary>
+        private readonly PointerGestureState[] pointerGestures = new PointerGestureState[PointerGestureCount];
 
         /// <summary>
         /// Current rope physics time scale.
@@ -1141,26 +1132,6 @@ namespace CutTheRopeDX.GameMain
         /// The last recorded touch position for scene-level gestures.
         /// </summary>
         public Vector slastTouch;
-
-        /// <summary>
-        /// Per-touch finger cut ribbons used for cut visualization.
-        /// </summary>
-        public List<FingerCut>[] fingerCuts = new List<FingerCut>[5];
-
-        /// <summary>
-        /// Per-touch finger trace effects.
-        /// </summary>
-        public FingerTrace[] fingerTraces = new FingerTrace[5];
-
-        /// <summary>
-        /// Touch-down positions used by the finger trace system.
-        /// </summary>
-        private readonly Vector[] fingerTraceDownPos = new Vector[5];
-
-        /// <summary>
-        /// Whether each touch is actively driving a finger trace drag.
-        /// </summary>
-        private readonly bool[] fingerTraceDragging = new bool[5];
 
         /// <summary>
         /// Represents one rendered cut segment between two touch positions.

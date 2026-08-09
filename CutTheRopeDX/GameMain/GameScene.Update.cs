@@ -29,15 +29,15 @@ namespace CutTheRopeDX.GameMain
             dd.Update(delta);
             pollenDrawer.Update(delta);
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            for (int i = 0; i < 5; i++)
+            foreach (PointerGestureState gesture in pointerGestures)
             {
-                for (int j = 0; j < fingerCuts[i].Count; j++)
+                for (int j = 0; j < gesture.Cuts.Count; j++)
                 {
-                    FingerCut fingerCut = fingerCuts[i][j];
+                    FingerCut fingerCut = gesture.Cuts[j];
                     float alpha = fingerCut.c.AlphaChannel;
                     if (Mover.MoveVariableToTarget(ref alpha, 0, 10, delta))
                     {
-                        _ = fingerCuts[i].Remove(fingerCut);
+                        _ = gesture.Cuts.Remove(fingerCut);
                         j--;
                     }
                     else
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.GameMain
                         fingerCut.c.AlphaChannel = alpha;
                     }
                 }
-                fingerTraces[i]?.Update(delta);
+                gesture.Trace?.Update(delta);
             }
             if (earthAnims != null)
             {

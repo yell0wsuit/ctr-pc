@@ -49,14 +49,23 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void EndActiveFingerTraces()
         {
-            for (int i = 0; i < fingerTraces.Length; i++)
+            foreach (PointerGestureState gesture in pointerGestures)
             {
-                if (fingerTraceDragging[i])
-                {
-                    fingerTraces[i]?.End();
-                    fingerTraceDragging[i] = false;
-                }
+                gesture?.Cancel();
             }
+        }
+
+        /// <summary>Resolves a supported pointer index before any gesture state is accessed.</summary>
+        private bool TryGetPointerGesture(int pointerIndex, out PointerGestureState gesture)
+        {
+            if ((uint)pointerIndex < (uint)pointerGestures.Length)
+            {
+                gesture = pointerGestures[pointerIndex];
+                return gesture != null;
+            }
+
+            gesture = null;
+            return false;
         }
 
         /// <summary>
@@ -81,7 +90,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            if (ti >= 5)
+            if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
             }
@@ -143,13 +152,7 @@ namespace CutTheRopeDX.GameMain
                     return true;
                 }
             }
-            if (!dragging[ti])
-            {
-                dragging[ti] = true;
-                prevStartPos[ti] = startPos[ti] = vector;
-                fingerTraceDownPos[ti] = world;
-                fingerTraceDragging[ti] = false;
-            }
+            gesture.Begin(vector, world);
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
@@ -416,7 +419,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (conveyors.OnPointerDown(worldX, worldY, ti))
             {
-                dragging[ti] = false;
+                gesture.Cancel();
                 return true;
             }
             if (clickToCut && !ignoreTouches)
@@ -451,16 +454,11 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            dragging[ti] = false;
-            if (fingerTraceDragging[ti])
-            {
-                fingerTraces[ti]?.End();
-                fingerTraceDragging[ti] = false;
-            }
-            if (ti >= 5)
+            if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
             }
+            gesture.End();
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
@@ -606,11 +604,11 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            Vector vector = Vect(tx, ty);
-            if (ti >= 5)
+            if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
             }
+            Vector vector = Vect(tx, ty);
             Vector world = Vect(tx + camera.pos.X, ty + camera.pos.Y);
             if (rockets != null)
             {
@@ -626,7 +624,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj in pumps)
             {
                 Pump pump3 = (Pump)obj;
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(startPos[ti], vector) > 10)
+                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(gesture.StartPosition, vector) > 10)
                 {
                     pump3.pumpTouchTimer = 0f;
                 }
@@ -794,7 +792,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     // Cancel stick timer if moved too much (kickable grabs)
                     if (grab2.Mount is SuctionMount dragMount && !dragMount.IsMounted && grab2.Rope != null &&
-                        VectLength(VectSub(startPos[ti], vector)) > Grab.KICK_MOVE_LENGTH)
+                        VectLength(VectSub(gesture.StartPosition, vector)) > Grab.KICK_MOVE_LENGTH)
                     {
                         dragMount.CancelSticking();
                     }
@@ -804,9 +802,9 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
-            if (dragging[ti])
+            if (gesture.Move(vector, world, out Vector segmentStart))
             {
-                Vector start = VectAdd(startPos[ti], camera.pos);
+                Vector start = VectAdd(segmentStart, camera.pos);
                 Vector end = VectAdd(Vect(tx, ty), camera.pos);
                 FingerCut fingerCut = new()
                 {
@@ -816,9 +814,9 @@ namespace CutTheRopeDX.GameMain
                     endSize = 5f,
                     c = RGBAColor.whiteRGBA
                 };
-                fingerCuts[ti].Add(fingerCut);
+                gesture.Cuts.Add(fingerCut);
                 int ropesCutThisFrame = 0;
-                foreach (object obj2 in fingerCuts[ti])
+                foreach (object obj2 in gesture.Cuts)
                 {
                     FingerCut item = (FingerCut)obj2;
                     ropesCutThisFrame += CutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
@@ -858,25 +856,6 @@ namespace CutTheRopeDX.GameMain
                         CTRRootController.PostAchievementName("1058248892", ACHIEVEMENT_STRING("\"Ultimate Rope Cutter\""));
                     }
                 }
-                prevStartPos[ti] = startPos[ti];
-                startPos[ti] = vector;
-                if (fingerTraces[ti] != null)
-                {
-                    if (!fingerTraceDragging[ti])
-                    {
-                        float dx = world.X - fingerTraceDownPos[ti].X;
-                        float dy = world.Y - fingerTraceDownPos[ti].Y;
-                        if ((dx * dx) + (dy * dy) >= 100f)
-                        {
-                            fingerTraceDragging[ti] = true;
-                        }
-                    }
-
-                    if (fingerTraceDragging[ti])
-                    {
-                        fingerTraces[ti].Append(world);
-                    }
-                }
             }
             return true;
         }
@@ -891,7 +870,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the drag was recorded; otherwise, <see langword="false"/>.</returns>
         public bool TouchDraggedXYIndex(float tx, float ty, int index)
         {
-            if (index > 5)
+            if (!TryGetPointerGesture(index, out _))
             {
                 return false;
             }
