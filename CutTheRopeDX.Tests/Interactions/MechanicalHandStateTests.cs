@@ -1,6 +1,7 @@
 using System;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
@@ -91,10 +92,11 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void StealLeavesTheRivalHandsRotationFlagSet()
+        public void StealClearsTheRivalHandsRotationFlag()
         {
-            // PINS TODAY'S BEHAVIOR. Task 3 flips this assertion deliberately: both reference
-            // decompiles omit the clear here, but the omission was only safe under one candy.
+            // Both reference decompiles omit this clear (iOS 38981, WP7 GameScene.cs:1569), which was
+            // safe only because Experiments had one candy per level. DX supports many, so rotation
+            // state must not outlive the hold it belongs to.
             (GameScene scene, CandyContext candy) = DuoRig(s => s.Rocket(160, 200, impulse: 0f));
             _ = Act.BindRocket(scene, candy);
             MechanicalHand first = Act.GrabWithHand(scene, candy, handIndex: 0);
@@ -106,7 +108,72 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Same(second, candy.Lifecycle.Attachments.Hand);
             Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, first.state);
-            Assert.True(first.doRotateCandy);
+            Assert.False(first.doRotateCandy);
+        }
+
+        [Fact]
+        public void AStolenFromHandDoesNotSpinItsNextCandy()
+        {
+            // Rocket candy at 160,200; a second, plain candy parked away from it.
+            (GameScene scene, CandyContext rocketCandy) = DuoRig(s => s
+                .Rocket(160, 200, impulse: 0f)
+                .Candy(60, 200, number: "2"));
+            CandyContext plainCandy = scene.Candies()[1];
+            Interaction.Hover(plainCandy);
+            _ = Act.BindRocket(scene, rocketCandy);
+
+            MechanicalHand first = Act.GrabWithHand(scene, rocketCandy, handIndex: 0);
+            Assert.True(
+                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                "the first hand never started rotating its rocket candy");
+            _ = Act.GrabWithHand(scene, rocketCandy, handIndex: 1);
+
+            // The stolen-from hand settles, then takes the plain candy instead.
+            Interaction.PlaceCandyAt(rocketCandy, new Vector(2000f, 2000f));
+            Assert.True(
+                Interaction.StepUntil(scene, () => first.state == MechanicalHand.STATE_HAND_IDLE, maxFrames: 60),
+                "the stolen-from hand never settled to idle");
+            _ = Act.GrabWithHand(scene, plainCandy, handIndex: 0);
+
+            // The update loop rotates Main when present, falling back to Visual, so watch the same one.
+            GameObject spun = plainCandy.WholeBody.Main ?? plainCandy.WholeBody.Visual;
+            float before = spun.rotation;
+            Act.RotateSegment(scene, first);
+
+            Assert.False(first.doRotateCandy);
+            Assert.Equal(before, spun.rotation);
+        }
+
+        [Fact]
+        public void ARegrabbedRocketCandyStillRotates()
+        {
+            (GameScene scene, CandyContext candy) = DuoRig(s => s.Rocket(160, 200, impulse: 0f));
+            _ = Act.BindRocket(scene, candy);
+            MechanicalHand first = Act.GrabWithHand(scene, candy, handIndex: 0);
+            Assert.True(
+                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                "the first hand never started rotating its rocket candy");
+
+            MechanicalHand second = Act.GrabWithHand(scene, candy, handIndex: 1);
+            Act.TapClaw(scene, second);
+
+            // A releasing hand settles only once the candy is outside MH_RELEASE_DISTANCE, and the
+            // grab helper parks the claw on the candy, so the hand has to be walked clear first.
+            Vector parked = new(
+                candy.WholeBody.Point.pos.X + (MechanicalHand.MH_RELEASE_DISTANCE * 4f),
+                candy.WholeBody.Point.pos.Y);
+            Assert.True(
+                Interaction.StepUntil(
+                    scene,
+                    () => Act.MoveClawTo(first, parked),
+                    () => first.state == MechanicalHand.STATE_HAND_IDLE,
+                    maxFrames: 30),
+                "the stolen-from hand never settled to idle");
+            _ = Act.GrabWithHand(scene, candy, handIndex: 0);
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                "rotation was not re-derived after the candy came back");
         }
 
         [Fact]

@@ -1764,6 +1764,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 otherHand.cPoint.RemoveConstraint(grabbedBody.Point);
                                 otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
+                                otherHand.doRotateCandy = false;
                                 otherHand.releaseSoundPlayed = false;
                                 reorderHands = true;
                                 break;
@@ -1773,6 +1774,7 @@ namespace CutTheRopeDX.GameMain
 
                     hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.state = MechanicalHand.STATE_HAND_CANDY;
+                    hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = false;
                     selectedHandIndex = hands.IndexOf(hand);
                     _ = ctx.Lifecycle.Attachments.CaptureByHand(hand);
