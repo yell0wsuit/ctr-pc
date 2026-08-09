@@ -71,6 +71,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Ghost>>(scene, "ghosts");
         }
 
+        /// <summary>All air pumps.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The pump list.</returns>
+        public static List<Pump> Pumps(this GameScene scene)
+        {
+            return Field<List<Pump>>(scene, "pumps");
+        }
+
         /// <summary>All rockets.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The rocket list.</returns>

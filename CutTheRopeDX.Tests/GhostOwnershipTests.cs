@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
 
@@ -181,6 +185,66 @@ namespace CutTheRopeDX.Tests
             Assert.DoesNotContain(outgoingGrab, scene.Grabs());
             Assert.Null(outgoingGrab.Rope);
             Assert.DoesNotContain(scene.RegisteredRopes(), entry => entry.Rope == outgoingRope);
+        }
+
+        [Fact]
+        public void TwoRapidAutoRopeToBouncerMorphsReleaseCandyPhysicsBeforePumpImpulse()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Ghost(80, 100, radius: -1, bouncer: true)
+                .Ghost(240, 100, radius: -1, bouncer: true)
+                .Pump(160, 300)
+                .Build();
+            CandyBody candy = scene.Candy().WholeBody;
+            int originalConstraintCount = candy.Point.constraints.Count;
+            List<Ghost> ghosts = scene.Ghosts();
+            Assert.Equal(2, ghosts.Count);
+
+            foreach (Ghost ghost in ghosts)
+            {
+                ghost.ResetToForm(GhostForm.Grab);
+            }
+            List<GhostGrab> outgoingGrabs = [.. ghosts.Select(ghost => Assert.IsType<GhostGrab>(ghost.Apparition))];
+            List<Bungee> outgoingRopes = [.. outgoingGrabs.Select(grab => Assert.IsType<Bungee>(grab.Rope))];
+            Assert.Equal(originalConstraintCount + 2, candy.Point.constraints.Count);
+
+            foreach (Ghost ghost in ghosts)
+            {
+                ghost.ResetToForm(GhostForm.Bouncer);
+            }
+            foreach (GhostGrab outgoing in outgoingGrabs)
+            {
+                outgoing.Update(0.2f);
+            }
+            foreach (Ghost ghost in ghosts)
+            {
+                ghost.Update(0f);
+                Assert.Equal(GhostForm.Bouncer, ghost.Form);
+                _ = Assert.IsType<GhostBouncer>(ghost.Apparition);
+            }
+
+            Assert.Empty(scene.Grabs());
+            Assert.DoesNotContain(scene.RegisteredRopes(), entry => outgoingRopes.Contains(entry.Rope));
+            Assert.Equal(originalConstraintCount, candy.Point.constraints.Count);
+
+            Pump pump = Assert.Single(scene.Pumps());
+            BaseElement.CalculateTopLeft(candy.Visual);
+            Vector beforePump = candy.Point.pos;
+            float distanceBelowPump = pump.y - beforePump.Y;
+            float verticalImpulse = 2f * (ActivePhysicsConstants.PumpFlowLength - distanceBelowPump);
+            float expectedY = beforePump.Y - (verticalImpulse * 0.016f / ActivePhysicsConstants.TimeScale);
+
+            scene.OperatePump(pump);
+            for (int i = 0; i < Bungee.BUNGEE_RELAXION_TIMES; i++)
+            {
+                ConstraintedPoint.SatisfyConstraints(candy.Point);
+            }
+
+            Assert.Equal(beforePump.X, candy.Point.pos.X, 3);
+            Assert.Equal(expectedY, candy.Point.pos.Y, 3);
+            Assert.Equal(originalConstraintCount, candy.Point.constraints.Count);
         }
 
         [Fact]

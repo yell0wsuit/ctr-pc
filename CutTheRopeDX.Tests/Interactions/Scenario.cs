@@ -263,14 +263,28 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
         /// <param name="radius">Grab radius, or -1 for an automatically attached rope.</param>
+        /// <param name="bouncer">Whether the ghost can also morph into a bouncer.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Ghost(int x, int y, int radius = 80)
+        public Scenario Ghost(int x, int y, int radius = 80, bool bouncer = false)
         {
             XElement ghost = Node("ghost", x, y);
             ghost.SetAttributeValue("bubble", "true");
             ghost.SetAttributeValue("grab", "true");
+            ghost.SetAttributeValue("bouncer", Flag(bouncer));
             ghost.SetAttributeValue("radius", Num(radius));
             return Add(ghost);
+        }
+
+        /// <summary>Adds a directional air pump.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="angle">Authored pump angle in degrees; -90 blows upward.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Pump(int x, int y, float angle = -90f)
+        {
+            XElement pump = Node("pump", x, y);
+            pump.SetAttributeValue("angle", Num(angle));
+            return Add(pump);
         }
 
         /// <summary>Adds a snail.</summary>
