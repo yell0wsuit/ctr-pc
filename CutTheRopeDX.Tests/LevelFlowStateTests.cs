@@ -181,19 +181,49 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void PendingLossAndWinningRejectRestart()
+        public void EveryOutcomePresentationAllowsRestart()
         {
             LevelFlowState pendingLoss = new();
             LevelFlowState winning = new();
+            LevelFlowState losing = new();
             Assert.True(pendingLoss.TryScheduleLoss());
             Assert.True(winning.TryBeginWin());
+            Assert.True(losing.TryBeginLoss());
 
-            Assert.False(pendingLoss.CanRestart);
-            Assert.False(winning.CanRestart);
-            Assert.False(pendingLoss.TryBeginRestartDim());
-            Assert.False(winning.TryBeginRestartDim());
-            Assert.Equal(RestartPhase.Playing, pendingLoss.Phase);
-            Assert.Equal(RestartPhase.Playing, winning.Phase);
+            Assert.True(pendingLoss.CanRestart);
+            Assert.True(winning.CanRestart);
+            Assert.True(losing.CanRestart);
+            Assert.True(pendingLoss.TryBeginRestartDim());
+            Assert.True(winning.TryBeginRestartDim());
+            Assert.True(losing.TryBeginRestartDim());
+            Assert.Equal(RestartPhase.FadingOut, pendingLoss.Phase);
+            Assert.Equal(RestartPhase.FadingOut, winning.Phase);
+            Assert.Equal(RestartPhase.FadingOut, losing.Phase);
+        }
+
+        [Fact]
+        public void RestartInFlightPreventsAWinFromCompleting()
+        {
+            LevelFlowState gameplayFlow = new();
+            Assert.True(gameplayFlow.TryBeginWin());
+            Assert.True(gameplayFlow.TryBeginRestartDim());
+
+            Assert.False(gameplayFlow.CompleteWinTransition());
+            Assert.NotEqual(LevelOutcomeState.Won, gameplayFlow.Outcome);
+        }
+
+        [Fact]
+        public void RestartDuringADimIsRejectedSoAPendingDispatchCannotResetIt()
+        {
+            LevelFlowState gameplayFlow = new();
+            Assert.True(gameplayFlow.TryBeginLoss());
+            Assert.True(gameplayFlow.TryBeginRestartDim());
+            _ = gameplayFlow.Advance(LevelFlowState.DimDuration / 2f);
+            float dimAfterPartialFade = gameplayFlow.DimTime;
+
+            Assert.False(gameplayFlow.CanRestart);
+            Assert.False(gameplayFlow.TryBeginRestartDim());
+            Assert.Equal(dimAfterPartialFade, gameplayFlow.DimTime);
         }
 
         [Fact]

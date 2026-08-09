@@ -81,9 +81,17 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether any win/loss outcome owns the level.</summary>
         public bool HasOutcome => Outcome != LevelOutcomeState.Playing;
 
-        /// <summary>Whether player input may start a restart.</summary>
-        public bool CanRestart => Phase == RestartPhase.Playing
-            && Outcome == LevelOutcomeState.Playing;
+        /// <summary>
+        /// Whether player input may start a restart. An outcome presentation is a skippable
+        /// cutscene, not a lock: the player may bail out of a sad Om Nom or a chewing animation
+        /// and retry immediately. Only a dim already in flight refuses.
+        /// </summary>
+        /// <remarks>
+        /// Must stay identical to <see cref="TryBeginRestartDim"/>'s precondition. The restart
+        /// button reloads the map and only then calls <c>AnimateLevelRestart</c>, so a state this
+        /// property accepts but that method rejects would reload the level and never re-show it.
+        /// </remarks>
+        public bool CanRestart => Phase == RestartPhase.Playing;
 
         /// <summary>True while the screen is dimming out, when the dim overlay renders inverted.</summary>
         public bool IsFadingOut => Phase == RestartPhase.FadingOut;
@@ -133,14 +141,21 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Atomically starts a manual restart or completes an active loss into restart.</summary>
         /// <returns><see langword="true"/> when restart dimming started.</returns>
+        /// <remarks>
+        /// Rejecting a dim that is already in flight is what makes the restart button safe during
+        /// an outcome: the loss timeline's own delayed <c>AnimateLevelRestart</c> lands here after
+        /// a player-initiated dim has started and must not reset it back to full.
+        /// </remarks>
         public bool TryBeginRestartDim()
         {
-            if (Phase != RestartPhase.Playing
-                || Outcome is not (LevelOutcomeState.Playing or LevelOutcomeState.Losing))
+            if (Phase != RestartPhase.Playing)
             {
                 return false;
             }
 
+            // A loss that reaches the dim has finished presenting, whether its own timeline got
+            // there or the player skipped ahead. Winning is left alone: the player is abandoning
+            // the win rather than completing it, and Show resets the outcome moments later.
             if (Outcome == LevelOutcomeState.Losing)
             {
                 Outcome = LevelOutcomeState.Lost;
@@ -192,9 +207,13 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Completes the active win presentation.</summary>
         /// <returns><see langword="true"/> when an active win became complete.</returns>
+        /// <remarks>
+        /// A restart in flight refuses the completion. The player skipped the chewing animation to
+        /// retry, so the win must not report itself and pop the results box over the dim.
+        /// </remarks>
         public bool CompleteWinTransition()
         {
-            if (Outcome != LevelOutcomeState.Winning)
+            if (Phase != RestartPhase.Playing || Outcome != LevelOutcomeState.Winning)
             {
                 return false;
             }

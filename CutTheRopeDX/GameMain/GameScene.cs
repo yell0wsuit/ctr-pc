@@ -322,7 +322,13 @@ namespace CutTheRopeDX.GameMain
         private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
-            _ = gameplayFlow.CompleteWinTransition();
+            if (!gameplayFlow.CompleteWinTransition())
+            {
+                // A restart claimed the level while the win was still presenting. Leave the result
+                // pending: Show clears it, so the abandoned win never reaches the results box.
+                return;
+            }
+
             if (pendingLevelResult is LevelResult result)
             {
                 pendingLevelResult = null;

@@ -229,7 +229,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RestartIsIgnoredDuringWinningTransition()
+        public void RestartBailsOutOfTheWinPresentation()
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
@@ -237,8 +237,20 @@ namespace CutTheRopeDX.Tests
 
             controller.OnButtonPressed(GameControllerButtonId.Restart);
 
-            Assert.Equal(LevelOutcomeState.Winning, scene.gameplayFlow.Outcome);
-            Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
+            Assert.False(scene.gameplayFlow.CompleteWinTransition());
+        }
+
+        [Fact]
+        public void RestartBailsOutOfTheLossPresentation()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+
+            Assert.Equal(RestartPhase.FadingOut, scene.gameplayFlow.Phase);
         }
 
         [Theory]
