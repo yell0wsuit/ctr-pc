@@ -1011,20 +1011,14 @@ namespace CutTheRopeDX.GameMain
         private bool fastenCamera;
 
         /// <summary>
-        /// The ghost bubble parked behind the merged candy's own bubble when both split halves were
-        /// carrying one. It is released when that bubble pops or is replaced, and is
+        /// Atomic ownership ticket for the ghost bubble parked behind a merged candy's own bubble.
+        /// It is released when that bubble pops or the ticket is replaced, and is
         /// <see langword="null"/> whenever no second ghost is waiting.
         /// </summary>
-        private GameObject pendingSecondGhostBubble;
+        private ParkedGhostBubble parkedGhostBubble;
 
-        /// <summary>The whole body that owns <see cref="pendingSecondGhostBubble"/>.</summary>
-        private CandyBody pendingSecondGhostBubbleOwner;
-
-        /// <summary>Candy point waiting for the lantern's delayed capture callback.</summary>
-        private ConstraintedPoint pendingLanternCapturePoint;
-
-        /// <summary>Lantern assigned to <see cref="pendingLanternCapturePoint"/>.</summary>
-        private Lantern pendingLanternCapture;
+        /// <summary>Atomic ticket waiting for the lantern's delayed capture callback.</summary>
+        private PendingLanternCapture pendingLanternCapture;
 
         /// <summary>
         /// The number of ropes cut within the active combo window.
