@@ -1359,44 +1359,38 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
                 // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.asleep))
+                if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
                 {
                     continue;
                 }
                 Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
-                bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
+                bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
 
-                if (!t.mouthOpen && canInteractWithTarget)
+                if (t.Feeding.Phase == TargetFeedingPhase.Idle && canInteractWithTarget)
                 {
                     if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
                     {
-                        t.mouthOpen = true;
-                        t.controller?.PlayMouthOpening();
-                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
-                        t.mouthCloseTimer = 1f;
+                        if (t.Feeding.TryOpenMouth(closeDelay: 1f))
+                        {
+                            t.controller?.PlayMouthOpening();
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                        }
                     }
                 }
-                else if (t.mouthCloseTimer > 0 && canInteractWithTarget)
+                else if (t.Feeding.Phase == TargetFeedingPhase.MouthOpen && canInteractWithTarget)
                 {
-                    float timer = t.mouthCloseTimer;
-                    _ = Mover.MoveVariableToTarget(ref timer, 0, 1, delta);
-                    t.mouthCloseTimer = timer;
-                    if (t.mouthCloseTimer <= 0)
+                    bool candyNearby = CandyDecisions.ShouldOpenMouth(
+                        targetPos,
+                        candyViews,
+                        ActivePhysicsConstants.MouthOpenDistance);
+                    if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
                     {
-                        if (!CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
+                        t.controller?.PlayMouthClosing();
+                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
+                        tummyTeasers++;
+                        if (tummyTeasers >= 10)
                         {
-                            t.mouthOpen = false;
-                            t.controller?.PlayMouthClosing();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
-                            tummyTeasers++;
-                            if (tummyTeasers >= 10)
-                            {
-                                CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
-                            }
-                        }
-                        else
-                        {
-                            t.mouthCloseTimer = 1f;
+                            CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
                         }
                     }
                 }
@@ -1409,8 +1403,11 @@ namespace CutTheRopeDX.GameMain
                 for (int ti = 0; ti < targets.Count; ti++)
                 {
                     TargetContext t = targets[ti];
-                    bool canInteractWithTarget = !nightLevel || t.isNightTargetAwake == true;
-                    if (!canInteractWithTarget || !gameplayFlow.CanReactToCandy(t.asleep) || !t.mouthOpen || t.targetObject == null)
+                    bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
+                    if (!canInteractWithTarget
+                        || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed)
+                        || t.Feeding.Phase != TargetFeedingPhase.MouthOpen
+                        || t.targetObject == null)
                     {
                         continue;
                     }
@@ -1431,8 +1428,7 @@ namespace CutTheRopeDX.GameMain
                             }
 
                             body.Visual.visible = false;
-                            t.asleep = true;
-                            t.mouthOpen = false;
+                            _ = t.Feeding.TryBeginChewing();
                             t.controller?.PlayChewing();
                             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.controller?.SkinDefinition);
                             SchedulePostEatSleep(t);

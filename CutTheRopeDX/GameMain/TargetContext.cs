@@ -3,10 +3,10 @@ using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
 {
-    /// <summary>
-    /// All per-Om-Nom state. Mouth state lives here because targeting is many-to-many.
-    /// </summary>
-    internal sealed class TargetContext
+    /// <summary>Composes all state owned by one independently targetable Om Nom.</summary>
+    /// <param name="blinkCountdown">Initial animation-frame blink countdown.</param>
+    /// <param name="idleCountdown">Initial animation-frame idle/chat countdown.</param>
+    internal sealed class TargetContext(int blinkCountdown, int idleCountdown)
     {
         public TargetAnimationController controller;
 
@@ -18,36 +18,13 @@ namespace CutTheRopeDX.GameMain
 
         public float baseScaleY = 1f;
 
-        /// <summary>Mouth currently open.</summary>
-        public bool mouthOpen;
+        /// <summary>Gets the authoritative feeding behavior.</summary>
+        public TargetFeedingState Feeding { get; } = new();
 
-        /// <summary>Countdown before the mouth closes again.</summary>
-        public float mouthCloseTimer;
+        /// <summary>Gets the authoritative night-sleep behavior and shared sleep presentation.</summary>
+        public NightSleepState NightSleep { get; } = new();
 
-        /// <summary>True once this Om Nom has eaten a candy; it will not reopen ("eats then sleeps").</summary>
-        public bool asleep;
-
-        // --- Night-level sleep state (per Om Nom; were scene singletons) ---
-        public bool? isNightTargetAwake;
-
-        public bool sleepPulseActive;
-
-        public float sleepPulseTime;
-
-        public float sleepPulseDelay;
-
-        public float sleepPulseBaseY;
-
-        public float sleepSoundTimer;
-
-        public bool nightSleepOverlayVisible;
-
-        public bool postEatSleepActive;
-
-        public bool postEatSleepScheduled;
-
-        public int blinkTimer;
-
-        public int idlesTimer;
+        /// <summary>Gets the authoritative blink, idle, and chat cadence.</summary>
+        public TargetIdleState Idle { get; } = new(blinkCountdown, idleCountdown);
     }
 }

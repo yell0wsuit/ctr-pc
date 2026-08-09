@@ -133,10 +133,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when a chat greeting was started; otherwise, <see langword="false"/>.</returns>
         private bool TryStartChatReaction()
         {
-            if (chatReactionActive
-                || targets.Count != 2
-                || targets[0].asleep
-                || targets[1].asleep
+            if (targets.Count != 2
+                || targets[0].Idle.HasPendingChat
+                || targets[1].Idle.HasPendingChat
+                || targets[0].Feeding.IsFed
+                || targets[1].Feeding.IsFed
                 || RND_RANGE(0, ChatReactionOdds - 1) != 0)
             {
                 return false;
@@ -147,8 +148,8 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            targets[0].idlesTimer = RND_RANGE(5, 20);
-            targets[1].idlesTimer = RND_RANGE(5, 20);
+            targets[0].Idle.ScheduleIdle(RND_RANGE(5, 20));
+            targets[1].Idle.ScheduleIdle(RND_RANGE(5, 20));
             return true;
         }
 
@@ -178,9 +179,12 @@ namespace CutTheRopeDX.GameMain
             int firstIndex = RND_RANGE(0, 1);
             int secondIndex = 1 - firstIndex;
             TargetAnimationState firstState = firstIndex == 0 ? states.Value.first : states.Value.second;
-            pendingChatGreetState = secondIndex == 0 ? states.Value.first : states.Value.second;
-            pendingChatGreetIndex = secondIndex;
-            chatReactionActive = true;
+            TargetContext secondTarget = targets[secondIndex];
+            TargetAnimationState secondState = secondIndex == 0 ? states.Value.first : states.Value.second;
+            if (!secondTarget.Idle.TryScheduleChat(secondState))
+            {
+                return false;
+            }
 
             // Initiator turns now; the other follows a fixed beat later.
             targets[firstIndex].controller?.PlayGreetingTurn(firstState);
@@ -198,20 +202,28 @@ namespace CutTheRopeDX.GameMain
         /// <param name="param">Unused timeline payload.</param>
         private void Selector_showSecondChatGreeting(FrameworkTypes param)
         {
-            chatReactionActive = false;
-
-            if (targets.Count != 2 || pendingChatGreetIndex >= targets.Count)
+            if (targets.Count != 2)
             {
                 return;
             }
 
-            TargetContext second = targets[pendingChatGreetIndex];
+            TargetContext second = null;
+            TargetAnimationState state = default;
+            for (int ti = 0; ti < targets.Count; ti++)
+            {
+                if (targets[ti].Idle.TryConsumeChat(out state))
+                {
+                    second = targets[ti];
+                    break;
+                }
+            }
+
             if (second?.targetObject == null)
             {
                 return;
             }
 
-            second.controller?.PlayGreetingTurn(pendingChatGreetState);
+            second.controller?.PlayGreetingTurn(state);
             CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.controller?.SkinDefinition);
         }
 
@@ -791,15 +803,6 @@ namespace CutTheRopeDX.GameMain
         /// One-in-N odds that an idle reaction on a two-Om-Nom level becomes a chat greeting.
         /// </summary>
         private const int ChatReactionOdds = 3;
-
-        /// <summary>Greet state queued for the second Om Nom in a staggered two-Om-Nom chat greeting.</summary>
-        private TargetAnimationState pendingChatGreetState;
-
-        /// <summary>Target index queued to greet second in a staggered two-Om-Nom chat greeting.</summary>
-        private int pendingChatGreetIndex;
-
-        /// <summary>Whether a two-Om-Nom chat greeting hand-off is currently in progress.</summary>
-        private bool chatReactionActive;
 
         /// <summary>
         /// All active razor objects in the loaded level.

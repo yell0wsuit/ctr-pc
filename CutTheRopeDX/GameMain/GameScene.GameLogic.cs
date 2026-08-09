@@ -456,14 +456,12 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }
-                SetNightSleepVisibility(t, false);
-                t.sleepPulseActive = false;
-                t.sleepSoundTimer = 0f;
-                t.postEatSleepScheduled = false;
+                t.NightSleep.ClearPresentation();
+                t.controller?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -528,14 +526,12 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }
-                SetNightSleepVisibility(t, false);
-                t.sleepPulseActive = false;
-                t.sleepSoundTimer = 0f;
-                t.postEatSleepScheduled = false;
+                t.NightSleep.ClearPresentation();
+                t.controller?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -551,7 +547,7 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }

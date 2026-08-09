@@ -209,27 +209,25 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            if (nightLevel && owner.isNightTargetAwake == false)
+            if (nightLevel && !owner.NightSleep.IsAwake)
             {
                 return;
             }
             if (i == 1)
             {
-                owner.blinkTimer--;
-                if (owner.blinkTimer == 0)
+                TargetIdleStep idleStep = owner.Idle.AdvanceCadence();
+                if (idleStep.BlinkDue && owner.Idle.ConsumeBlink(3))
                 {
                     owner.controller?.TriggerBlink();
-                    owner.blinkTimer = 3;
                 }
-                owner.idlesTimer--;
-                if (owner.idlesTimer == 0)
+                if (idleStep.IdleDue)
                 {
                     // On two-Om-Nom levels the idle reaction may instead become a mutual chat
                     // greeting (Time Travel). When it does, both timers are reset by the chat.
                     if (!TryStartChatReaction())
                     {
                         owner.controller?.PlayRandomIdleVariant(RND_RANGE);
-                        owner.idlesTimer = RND_RANGE(5, 20);
+                        _ = owner.Idle.ConsumeIdle(RND_RANGE(5, 20));
                     }
                 }
                 return;
