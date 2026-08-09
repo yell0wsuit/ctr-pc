@@ -217,7 +217,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.MarkTransitionActive();
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
 
             _ = useBack
                 ? controller.BackButtonPressed()
@@ -226,6 +226,19 @@ namespace CutTheRopeDX.Tests
             Assert.True(scene.updateable);
             Assert.False(PauseMenu(controller).IsEnabled());
             Assert.Equal(GameController.EXIT_CODE_FROM_PAUSE_MENU, controller.exitCode);
+        }
+
+        [Fact]
+        public void RestartIsIgnoredDuringWinningTransition()
+        {
+            (GameController controller, GameScene scene) = Load();
+            HeadlessGame.StepFrames(scene, 60);
+            Assert.True(scene.gameplayFlow.TryBeginWin());
+
+            controller.OnButtonPressed(GameControllerButtonId.Restart);
+
+            Assert.Equal(LevelOutcomeState.Winning, scene.gameplayFlow.Outcome);
+            Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
         }
 
         [Theory]
@@ -254,7 +267,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.MarkTransitionActive();
+            Assert.True(scene.gameplayFlow.TryScheduleLoss());
 
             Press(controller, input);
 

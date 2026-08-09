@@ -322,7 +322,7 @@ namespace CutTheRopeDX.GameMain
         private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
-            gameplayFlow.EndTransition();
+            _ = gameplayFlow.CompleteWinTransition();
             if (pendingLevelResult is LevelResult result)
             {
                 pendingLevelResult = null;
@@ -944,9 +944,7 @@ namespace CutTheRopeDX.GameMain
         private readonly PointerGestureState[] pointerGestures = new PointerGestureState[PointerGestureCount];
 
         /// <summary>Whether an outcome allows visual-only pointer trails while gameplay input is blocked.</summary>
-        internal bool AcceptsVisualOnlyPointerInput => gameplayFlow.TransitionActive
-            || gameplayFlow.WonTriggered
-            || gameplayFlow.LostTriggered;
+        internal bool AcceptsVisualOnlyPointerInput => gameplayFlow.HasOutcome;
 
         /// <summary>
         /// Current rope physics time scale.

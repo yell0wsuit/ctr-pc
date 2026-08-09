@@ -256,9 +256,17 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Starts the level restart dimming animation.
         /// </summary>
+        /// <remarks>
+        /// Two callers: the loss timeline one second after <see cref="GameLost"/> (which converts
+        /// <c>Losing</c> into <c>Lost</c>), and the reload path when a manual restart set
+        /// <c>animateRestartDim</c>. The result is discarded because every rejection is a duplicate
+        /// request - a dim already in flight, or an outcome that already claimed the restart. Both
+        /// must be ignored rather than restarting the dim, which is what stops a pending loss
+        /// dispatch from resetting a player-initiated dim back to full.
+        /// </remarks>
         public void AnimateLevelRestart()
         {
-            gameplayFlow.BeginRestartDim();
+            _ = gameplayFlow.TryBeginRestartDim();
         }
 
         /// <summary>
@@ -448,11 +456,10 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameWon()
         {
-            if (!gameplayFlow.CanTriggerTerminalOutcome)
+            if (!gameplayFlow.TryBeginWin())
             {
                 return;
             }
-            gameplayFlow.MarkWon();
             pendingLevelResult = CalculateScore();
 
             EndActiveFingerTraces();
@@ -514,11 +521,10 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void GameLost()
         {
-            if (!gameplayFlow.CanTriggerTerminalOutcome)
+            if (!gameplayFlow.TryBeginLoss())
             {
                 return;
             }
-            gameplayFlow.MarkLost();
 
             EndActiveFingerTraces();
             conveyors?.CancelAllDrags();
@@ -831,7 +837,10 @@ namespace CutTheRopeDX.GameMain
         /// <param name="delay">Seconds to wait before running the loss sequence.</param>
         private void ScheduleGameLost(float delay)
         {
-            gameplayFlow.MarkTransitionActive();
+            if (!gameplayFlow.TryScheduleLoss())
+            {
+                return;
+            }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameLost), null, delay);
         }
 

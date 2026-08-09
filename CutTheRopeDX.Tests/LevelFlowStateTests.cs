@@ -14,8 +14,9 @@ namespace CutTheRopeDX.Tests
             LevelFlowState gameplayFlow = new();
 
             Assert.Equal(RestartPhase.Playing, gameplayFlow.Phase);
+            Assert.Equal(LevelOutcomeState.Playing, gameplayFlow.Outcome);
             Assert.True(gameplayFlow.CanTriggerOutcome);
-            Assert.True(gameplayFlow.CanTriggerTerminalOutcome);
+            Assert.True(gameplayFlow.CanRestart);
             Assert.True(gameplayFlow.CanReactToCandy());
         }
 
@@ -24,17 +25,32 @@ namespace CutTheRopeDX.Tests
         {
             LevelFlowState gameplayFlow = new();
 
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
 
             Assert.Equal(RestartPhase.FadingOut, gameplayFlow.Phase);
             Assert.False(gameplayFlow.CanTriggerOutcome);
         }
 
         [Fact]
+        public void FadingOutAtomicallyRejectsEveryOutcomeTransition()
+        {
+            LevelFlowState winFlow = new();
+            LevelFlowState immediateLossFlow = new();
+            LevelFlowState scheduledLossFlow = new();
+            Assert.True(winFlow.TryBeginRestartDim());
+            Assert.True(immediateLossFlow.TryBeginRestartDim());
+            Assert.True(scheduledLossFlow.TryBeginRestartDim());
+
+            Assert.False(winFlow.TryBeginWin());
+            Assert.False(immediateLossFlow.TryBeginLoss());
+            Assert.False(scheduledLossFlow.TryScheduleLoss());
+        }
+
+        [Fact]
         public void AdvanceFadingOutRequestsSceneSwapThenCompletes()
         {
             LevelFlowState gameplayFlow = new();
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
 
             RestartStep step = RestartStep.None;
             for (int i = 0; i < 60 && step != RestartStep.SwapScene; i++)
@@ -59,7 +75,7 @@ namespace CutTheRopeDX.Tests
             // Level-triggered, not edge-triggered: a delta large enough to consume the whole dim
             // must advance the phase in the same call.
             LevelFlowState gameplayFlow = new();
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
 
             Assert.Equal(RestartStep.SwapScene, gameplayFlow.Advance(1f));
         }
@@ -68,7 +84,7 @@ namespace CutTheRopeDX.Tests
         public void AdvanceIsIdempotentOncePlaying()
         {
             LevelFlowState gameplayFlow = new();
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
             _ = gameplayFlow.Advance(1f);
             _ = gameplayFlow.Advance(1f);
             Assert.Equal(RestartPhase.Playing, gameplayFlow.Phase);
@@ -87,48 +103,141 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void MarkWonBlocksFurtherTerminalOutcomes()
+        public void BeginWinBlocksFurtherTerminalOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
-            gameplayFlow.MarkWon();
+            Assert.True(gameplayFlow.TryBeginWin());
 
             Assert.True(gameplayFlow.WonTriggered);
             Assert.True(gameplayFlow.TransitionActive);
-            Assert.False(gameplayFlow.CanTriggerTerminalOutcome);
             Assert.False(gameplayFlow.CanReactToCandy());
         }
 
         [Fact]
-        public void MarkLostBlocksFurtherTerminalOutcomes()
+        public void BeginLossBlocksFurtherTerminalOutcomes()
         {
             LevelFlowState gameplayFlow = new();
 
-            gameplayFlow.MarkLost();
+            Assert.True(gameplayFlow.TryBeginLoss());
 
             Assert.True(gameplayFlow.LostTriggered);
             Assert.True(gameplayFlow.TransitionActive);
-            Assert.False(gameplayFlow.CanTriggerTerminalOutcome);
             Assert.False(gameplayFlow.CanReactToCandy());
         }
 
         [Fact]
         public void ScheduledLossBlocksCandyReactionsBeforeLossFires()
         {
-            // Spider and hazard losses wait for their visual animation before MarkLost. The
+            // Spider and hazard losses wait for their visual animation before TryBeginLoss. The
             // transition gate must close immediately so candy cannot produce a win meanwhile.
             LevelFlowState gameplayFlow = new();
 
-            gameplayFlow.MarkTransitionActive();
+            Assert.True(gameplayFlow.TryScheduleLoss());
 
             Assert.True(gameplayFlow.TransitionActive);
             Assert.False(gameplayFlow.LostTriggered);
             Assert.False(gameplayFlow.CanReactToCandy());
 
-            gameplayFlow.MarkLost();
+            Assert.True(gameplayFlow.TryBeginLoss());
 
             Assert.True(gameplayFlow.LostTriggered);
-            Assert.False(gameplayFlow.CanTriggerTerminalOutcome);
+        }
+
+        [Fact]
+        public void PendingLossRejectsDuplicateSchedulingAndACompetingWin()
+        {
+            LevelFlowState gameplayFlow = new();
+
+            Assert.True(gameplayFlow.TryScheduleLoss());
+
+            Assert.Equal(LevelOutcomeState.PendingLoss, gameplayFlow.Outcome);
+            Assert.False(gameplayFlow.TryScheduleLoss());
+            Assert.False(gameplayFlow.TryBeginWin());
+            Assert.Equal(LevelOutcomeState.PendingLoss, gameplayFlow.Outcome);
+        }
+
+        [Fact]
+        public void NonPlayingOutcomesCannotTriggerAnotherOutcome()
+        {
+            LevelFlowState pendingLoss = new();
+            LevelFlowState winning = new();
+            LevelFlowState losing = new();
+            LevelFlowState won = new();
+            LevelFlowState lost = new();
+            Assert.True(pendingLoss.TryScheduleLoss());
+            Assert.True(winning.TryBeginWin());
+            Assert.True(losing.TryBeginLoss());
+            Assert.True(won.TryBeginWin());
+            Assert.True(won.CompleteWinTransition());
+            Assert.True(lost.TryBeginLoss());
+            Assert.True(lost.TryBeginRestartDim());
+
+            Assert.False(pendingLoss.CanTriggerOutcome);
+            Assert.False(winning.CanTriggerOutcome);
+            Assert.False(losing.CanTriggerOutcome);
+            Assert.False(won.CanTriggerOutcome);
+            Assert.False(lost.CanTriggerOutcome);
+        }
+
+        [Fact]
+        public void PendingLossAndWinningRejectRestart()
+        {
+            LevelFlowState pendingLoss = new();
+            LevelFlowState winning = new();
+            Assert.True(pendingLoss.TryScheduleLoss());
+            Assert.True(winning.TryBeginWin());
+
+            Assert.False(pendingLoss.CanRestart);
+            Assert.False(winning.CanRestart);
+            Assert.False(pendingLoss.TryBeginRestartDim());
+            Assert.False(winning.TryBeginRestartDim());
+            Assert.Equal(RestartPhase.Playing, pendingLoss.Phase);
+            Assert.Equal(RestartPhase.Playing, winning.Phase);
+        }
+
+        [Fact]
+        public void PendingLossCanOnlyAdvanceToLosing()
+        {
+            LevelFlowState gameplayFlow = new();
+            Assert.True(gameplayFlow.TryScheduleLoss());
+
+            Assert.True(gameplayFlow.TryBeginLoss());
+
+            Assert.Equal(LevelOutcomeState.Losing, gameplayFlow.Outcome);
+            Assert.True(gameplayFlow.LostTriggered);
+            Assert.False(gameplayFlow.WonTriggered);
+        }
+
+        [Fact]
+        public void WinningCannotChangeToLosingAndCompletesAsWon()
+        {
+            LevelFlowState gameplayFlow = new();
+            Assert.True(gameplayFlow.TryBeginWin());
+
+            Assert.False(gameplayFlow.TryBeginLoss());
+            Assert.True(gameplayFlow.CompleteWinTransition());
+
+            Assert.Equal(LevelOutcomeState.Won, gameplayFlow.Outcome);
+            Assert.True(gameplayFlow.WonTriggered);
+            Assert.False(gameplayFlow.LostTriggered);
+            Assert.False(gameplayFlow.TransitionActive);
+            Assert.False(gameplayFlow.CanReactToCandy());
+        }
+
+        [Fact]
+        public void LosingCompletesAsLostWhenRestartBegins()
+        {
+            LevelFlowState gameplayFlow = new();
+            Assert.True(gameplayFlow.TryBeginLoss());
+
+            Assert.True(gameplayFlow.TryBeginRestartDim());
+
+            Assert.Equal(LevelOutcomeState.Lost, gameplayFlow.Outcome);
+            Assert.True(gameplayFlow.LostTriggered);
+            Assert.False(gameplayFlow.WonTriggered);
+            Assert.False(gameplayFlow.TransitionActive);
+            Assert.False(gameplayFlow.CanReactToCandy());
         }
 
         [Fact]
@@ -140,13 +249,13 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void BeginRestartDimAlwaysSetsANonZeroDim()
+        public void TryBeginRestartDimAlwaysSetsANonZeroDim()
         {
             // This invariant is what makes a stranded restart unreachable: the phase is never
             // FadingOut with no dim left, so Advance always has something to consume.
             LevelFlowState gameplayFlow = new();
 
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
 
             Assert.Equal(RestartPhase.FadingOut, gameplayFlow.Phase);
             Assert.True(gameplayFlow.DimTime > 0f);
@@ -156,8 +265,8 @@ namespace CutTheRopeDX.Tests
         public void ResetClearsStrandedRestartPhase()
         {
             LevelFlowState gameplayFlow = new();
-            gameplayFlow.BeginRestartDim();
-            gameplayFlow.MarkLost();
+            Assert.True(gameplayFlow.TryBeginLoss());
+            Assert.True(gameplayFlow.TryBeginRestartDim());
 
             gameplayFlow.Reset();
 
@@ -173,10 +282,10 @@ namespace CutTheRopeDX.Tests
             // Show() runs in the middle of a restart, between the two dim phases. Clearing the
             // phase there would wipe the in-flight restart.
             LevelFlowState gameplayFlow = new();
-            gameplayFlow.BeginRestartDim();
+            Assert.True(gameplayFlow.TryBeginRestartDim());
             _ = gameplayFlow.Advance(1f);
             Assert.Equal(RestartPhase.FadingIn, gameplayFlow.Phase);
-            gameplayFlow.MarkLost();
+            Assert.True(gameplayFlow.TryBeginLoss());
 
             gameplayFlow.ResetOutcome();
 

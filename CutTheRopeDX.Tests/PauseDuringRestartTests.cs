@@ -158,7 +158,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.BeginRestartDim();
+            Assert.True(scene.gameplayFlow.TryBeginRestartDim());
             Assert.Equal(RestartStep.SwapScene, scene.gameplayFlow.Advance(1f));
 
             _ = controller.BackButtonPressed();
@@ -188,7 +188,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.BeginRestartDim();
+            Assert.True(scene.gameplayFlow.TryBeginRestartDim());
             Assert.Equal(RestartStep.SwapScene, scene.gameplayFlow.Advance(1f));
 
             _ = controller.MenuButtonPressed();
@@ -217,7 +217,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = Load();
             HeadlessGame.StepFrames(scene, 60);
-            scene.gameplayFlow.BeginRestartDim();
+            Assert.True(scene.gameplayFlow.TryBeginRestartDim());
             Assert.Equal(RestartStep.SwapScene, scene.gameplayFlow.Advance(1f));
 
             controller.OnButtonPressed(GameControllerButtonId.Pause);

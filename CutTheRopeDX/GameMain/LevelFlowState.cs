@@ -28,10 +28,30 @@ namespace CutTheRopeDX.GameMain
         Completed,
     }
 
+    /// <summary>Where the level sits in its mutually exclusive win/loss lifecycle.</summary>
+    internal enum LevelOutcomeState
+    {
+        /// <summary>No outcome has started.</summary>
+        Playing,
+
+        /// <summary>A delayed loss owns the outcome, but its loss sequence has not started yet.</summary>
+        PendingLoss,
+
+        /// <summary>The win presentation is active.</summary>
+        Winning,
+
+        /// <summary>The loss presentation is active.</summary>
+        Losing,
+
+        /// <summary>The win presentation completed.</summary>
+        Won,
+
+        /// <summary>The loss presentation completed and restart dimming has begun.</summary>
+        Lost,
+    }
+
     /// <summary>
-    /// Single owner of a level's lifecycle: the restart-dim machine and the win/lose flags.
-    /// These were five public fields read from a dozen places; desync between them silently
-    /// disabled every terminal outcome in the game.
+    /// Single owner of a level's lifecycle: the independent restart-dim and outcome machines.
     /// </summary>
     internal sealed class LevelFlowState
     {
@@ -44,36 +64,46 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Remaining dim time for the current phase.</summary>
         public float DimTime { get; private set; }
 
-        /// <summary>Whether the win sequence has started.</summary>
-        public bool WonTriggered { get; private set; }
+        /// <summary>Current authoritative win/loss state.</summary>
+        public LevelOutcomeState Outcome { get; private set; } = LevelOutcomeState.Playing;
 
-        /// <summary>Whether the loss sequence has started.</summary>
-        public bool LostTriggered { get; private set; }
+        /// <summary>Whether the level reached either win state.</summary>
+        public bool WonTriggered => Outcome is LevelOutcomeState.Winning or LevelOutcomeState.Won;
+
+        /// <summary>Whether the level reached either loss state.</summary>
+        public bool LostTriggered => Outcome is LevelOutcomeState.Losing or LevelOutcomeState.Lost;
 
         /// <summary>Whether a win/loss transition is currently playing.</summary>
-        public bool TransitionActive { get; private set; }
+        public bool TransitionActive => Outcome is LevelOutcomeState.PendingLoss
+            or LevelOutcomeState.Winning
+            or LevelOutcomeState.Losing;
+
+        /// <summary>Whether any win/loss outcome owns the level.</summary>
+        public bool HasOutcome => Outcome != LevelOutcomeState.Playing;
+
+        /// <summary>Whether player input may start a restart.</summary>
+        public bool CanRestart => Phase == RestartPhase.Playing
+            && Outcome == LevelOutcomeState.Playing;
 
         /// <summary>True while the screen is dimming out, when the dim overlay renders inverted.</summary>
         public bool IsFadingOut => Phase == RestartPhase.FadingOut;
 
         /// <summary>
-        /// Whether a terminal outcome may fire. False only while dimming out, so a level being
-        /// torn down cannot also be won or lost.
+        /// Whether a new terminal outcome may claim the level. A level being torn down or already
+        /// owned by an outcome cannot also be won or lost.
         /// </summary>
-        public bool CanTriggerOutcome => Phase != RestartPhase.FadingOut;
-
-        /// <summary>Whether neither terminal outcome has started yet.</summary>
-        public bool CanTriggerTerminalOutcome => !WonTriggered && !LostTriggered;
+        public bool CanTriggerOutcome => Phase != RestartPhase.FadingOut
+            && Outcome == LevelOutcomeState.Playing;
 
         /// <summary>
-        /// Whether Om Nom may react to candy or light. Suppressed during a win/loss transition
-        /// so a sad Om Nom does not chase a surviving candy.
+        /// Whether Om Nom may react to candy or light. Suppressed after any outcome claims the
+        /// level so a sad Om Nom does not chase a surviving candy.
         /// </summary>
         /// <param name="targetAlreadyFed">Whether this Om Nom has already eaten.</param>
         /// <returns><see langword="true"/> when gameplay reactions are allowed.</returns>
         public bool CanReactToCandy(bool targetAlreadyFed = false)
         {
-            return !TransitionActive && !targetAlreadyFed;
+            return Outcome == LevelOutcomeState.Playing && !targetAlreadyFed;
         }
 
         /// <summary>
@@ -93,49 +123,84 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Clears the win/lose flags and the transition flag, leaving the restart phase alone.
+        /// Returns the outcome machine to normal play, leaving the restart phase alone.
         /// Call from scene setup, which also runs in the middle of a restart.
         /// </summary>
         public void ResetOutcome()
         {
-            WonTriggered = false;
-            LostTriggered = false;
-            TransitionActive = false;
+            Outcome = LevelOutcomeState.Playing;
         }
 
-        /// <summary>Starts the restart dim animation.</summary>
-        public void BeginRestartDim()
+        /// <summary>Atomically starts a manual restart or completes an active loss into restart.</summary>
+        /// <returns><see langword="true"/> when restart dimming started.</returns>
+        public bool TryBeginRestartDim()
         {
+            if (Phase != RestartPhase.Playing
+                || Outcome is not (LevelOutcomeState.Playing or LevelOutcomeState.Losing))
+            {
+                return false;
+            }
+
+            if (Outcome == LevelOutcomeState.Losing)
+            {
+                Outcome = LevelOutcomeState.Lost;
+            }
             Phase = RestartPhase.FadingOut;
             DimTime = DimDuration;
+            return true;
         }
 
-        /// <summary>Marks the win sequence as started.</summary>
-        public void MarkWon()
+        /// <summary>Atomically claims a playing level for the win sequence.</summary>
+        /// <returns><see langword="true"/> when the win sequence claimed the outcome.</returns>
+        public bool TryBeginWin()
         {
-            WonTriggered = true;
-            TransitionActive = true;
+            if (!CanTriggerOutcome)
+            {
+                return false;
+            }
+
+            Outcome = LevelOutcomeState.Winning;
+            return true;
         }
 
-        /// <summary>Marks the loss sequence as started.</summary>
-        public void MarkLost()
+        /// <summary>Atomically starts an immediate or previously scheduled loss sequence.</summary>
+        /// <returns><see langword="true"/> when the loss sequence claimed the outcome.</returns>
+        public bool TryBeginLoss()
         {
-            LostTriggered = true;
-            TransitionActive = true;
+            if (Phase == RestartPhase.FadingOut
+                || Outcome is not (LevelOutcomeState.Playing or LevelOutcomeState.PendingLoss))
+            {
+                return false;
+            }
+
+            Outcome = LevelOutcomeState.Losing;
+            return true;
         }
 
-        /// <summary>Marks a transition active without committing to an outcome yet.</summary>
-        /// <remarks>Used when a loss is scheduled after a delay: without this, a candy eaten
-        /// during the delay would satisfy the win check and produce a false win.</remarks>
-        public void MarkTransitionActive()
+        /// <summary>Atomically reserves a playing level for a delayed loss.</summary>
+        /// <returns><see langword="true"/> when this call reserved the outcome.</returns>
+        public bool TryScheduleLoss()
         {
-            TransitionActive = true;
+            if (!CanTriggerOutcome)
+            {
+                return false;
+            }
+
+            Outcome = LevelOutcomeState.PendingLoss;
+            return true;
         }
 
-        /// <summary>Ends the transition without clearing the win/lose flags.</summary>
-        public void EndTransition()
+        /// <summary>Completes the active win presentation.</summary>
+        /// <returns><see langword="true"/> when an active win became complete.</returns>
+        public bool CompleteWinTransition()
         {
-            TransitionActive = false;
+            if (Outcome != LevelOutcomeState.Winning)
+            {
+                return false;
+            }
+
+            Outcome = LevelOutcomeState.Won;
+            return true;
         }
 
         /// <summary>
@@ -175,7 +240,6 @@ namespace CutTheRopeDX.GameMain
             }
 
             Phase = RestartPhase.Playing;
-            TransitionActive = false;
             return RestartStep.Completed;
         }
     }
