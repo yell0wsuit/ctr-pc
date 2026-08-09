@@ -35,7 +35,7 @@ namespace CutTheRopeDX.GameMain
         public bool CanEnterTransport => Presence == CandyPresence.Present && !Attachments.InLantern;
 
         /// <summary>Gets whether lifecycle or attachment ownership currently suppresses gravity.</summary>
-        public bool IsGravitySuppressed => Presence == CandyPresence.Hidden || Attachments.IsGravitySuppressed;
+        public bool IsGravitySuppressed => Presence == CandyPresence.Hidden || Attachments.SuppressGravity;
 
         /// <summary>Gets the physical bodies currently available to scene systems.</summary>
         public IReadOnlyList<CandyBody> ActiveBodies =>

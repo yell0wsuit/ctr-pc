@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
             Assert.True(detached.CarriedByMouse);
             Assert.True(detached.InLantern);
             Assert.False(attachments.HasAny);
-            Assert.False(attachments.IsGravitySuppressed);
+            Assert.False(attachments.SuppressGravity);
             Assert.Null(attachments.LastAntSegment);
             Assert.Equal(0f, attachments.AntCooldown);
         }
@@ -131,7 +131,7 @@ namespace CutTheRopeDX.Tests
             Assert.Null(attachments.Hand);
             Assert.Null(attachments.AntSegment);
             Assert.False(attachments.CarriedByMouse);
-            Assert.True(attachments.IsGravitySuppressed);
+            Assert.True(attachments.SuppressGravity);
         }
     }
 }

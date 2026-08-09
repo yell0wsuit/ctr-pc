@@ -87,7 +87,7 @@ namespace CutTheRopeDX.GameMain
             || CarriedByMouse;
 
         /// <summary>Gets whether an attachment currently owns gravity for the candy point.</summary>
-        public bool IsGravitySuppressed => InLantern
+        public bool SuppressGravity => InLantern
             || Rocket != null
             || AntSegment != null
             || CarriedByMouse;
