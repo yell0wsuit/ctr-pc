@@ -74,9 +74,7 @@ namespace CutTheRopeDX.GameMain
             mice = [];
             miceManager = null;
             pollenDrawer = new PollenDrawer();
-            pendingSecondGhostBubble = null;
-            pendingSecondGhostBubbleOwner = null;
-            pendingLanternCapturePoint = null;
+            parkedGhostBubble = null;
             pendingLanternCapture = null;
             targets.Clear();
             targetBaseScaleX = 1f;

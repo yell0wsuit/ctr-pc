@@ -354,20 +354,43 @@ namespace CutTheRopeDX.Tests.Interactions
         /// </summary>
         public static void ParkSecondGhostBubble(this GameScene scene, CandyBody owner, GameObject bubble)
         {
-            FieldInfo bubbleField = typeof(GameScene).GetField("pendingSecondGhostBubble", Instance)
-                ?? throw new MissingFieldException(nameof(GameScene), "pendingSecondGhostBubble");
-            bubbleField.SetValue(scene, bubble);
-
-            // The owner field is introduced by the invariant fix. Keeping this setup compatible
-            // with the pre-fix shape lets the isolation test first demonstrate the failure.
-            FieldInfo ownerField = typeof(GameScene).GetField("pendingSecondGhostBubbleOwner", Instance);
-            ownerField?.SetValue(scene, owner);
+            FieldInfo field = typeof(GameScene).GetField("parkedGhostBubble", Instance)
+                ?? throw new MissingFieldException(nameof(GameScene), "parkedGhostBubble");
+            field.SetValue(scene, new ParkedGhostBubble(owner, bubble));
         }
 
         /// <summary>Gets the ghost bubble parked behind a merged candy's active ghost bubble.</summary>
         public static GameObject PendingSecondGhostBubble(this GameScene scene)
         {
-            return Field<GameObject>(scene, "pendingSecondGhostBubble");
+            return Field<ParkedGhostBubble>(scene, "parkedGhostBubble")?.Bubble;
+        }
+
+        /// <summary>Installs an exact lantern ticket for delayed-callback identity tests.</summary>
+        public static void SetPendingLanternCapture(
+            this GameScene scene,
+            PendingLanternCapture capture)
+        {
+            FieldInfo field = typeof(GameScene).GetField("pendingLanternCapture", Instance)
+                ?? throw new MissingFieldException(nameof(GameScene), "pendingLanternCapture");
+            field.SetValue(scene, capture);
+        }
+
+        /// <summary>Gets the scene's current delayed lantern-capture ticket.</summary>
+        public static PendingLanternCapture PendingLanternCapture(this GameScene scene)
+        {
+            return Field<PendingLanternCapture>(scene, "pendingLanternCapture");
+        }
+
+        /// <summary>Invokes the real delayed lantern completion callback with an exact ticket.</summary>
+        public static void CompletePendingLanternCapture(
+            this GameScene scene,
+            PendingLanternCapture capture)
+        {
+            MethodInfo method = typeof(GameScene).GetMethod(
+                "CompletePendingLanternCapture",
+                Instance)
+                ?? throw new MissingMethodException(nameof(GameScene), "CompletePendingLanternCapture");
+            _ = method.Invoke(scene, [capture]);
         }
 
         /// <summary>Whether any conveyor belt has bound the given grab.</summary>

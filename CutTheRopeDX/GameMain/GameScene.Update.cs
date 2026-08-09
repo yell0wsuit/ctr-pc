@@ -355,8 +355,7 @@ namespace CutTheRopeDX.GameMain
                         CandyBody rightBody = merging.Right.Body;
                         GameObject leftBubble = leftBody.Bubble;
                         GameObject rightBubble = rightBody.Bubble;
-                        pendingSecondGhostBubble = null;
-                        pendingSecondGhostBubbleOwner = null;
+                        CancelParkedGhostBubble();
                         if (leftBubble != null || rightBubble != null)
                         {
                             bool leftHasGhost = leftBubble != null && DisableGhostCycleForBubble(leftBubble);
@@ -364,8 +363,7 @@ namespace CutTheRopeDX.GameMain
                             if (leftHasGhost && rightHasGhost)
                             {
                                 mergedBody.Bubble = leftBubble;
-                                pendingSecondGhostBubble = rightBubble;
-                                pendingSecondGhostBubbleOwner = mergedBody;
+                                parkedGhostBubble = new ParkedGhostBubble(mergedBody, rightBubble);
                             }
                             else if (leftHasGhost)
                             {
@@ -748,9 +746,11 @@ namespace CutTheRopeDX.GameMain
                         body.Point.SetWeight(SnailWeight.AfterForceDetach(body.Point.weight, lanternDetachedSnails));
                     }
                     PopCandyBubble(body);
-                    pendingLanternCapturePoint = body.Point;
-                    pendingLanternCapture = lantern;
-                    dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(CompletePendingLanternCapture), body.Point, 0.05f);
+                    pendingLanternCapture = new PendingLanternCapture(body.Point, lantern);
+                    dd.CallObjectSelectorParamafterDelay(
+                        new DelayedDispatcher.DispatchFunc(CompletePendingLanternCapture),
+                        pendingLanternCapture,
+                        0.05f);
 
                     // Trigger special tutorial for lantern
                     TriggerSpecialTutorial(3);

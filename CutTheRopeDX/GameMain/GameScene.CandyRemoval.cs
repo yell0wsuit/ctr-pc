@@ -137,28 +137,22 @@ namespace CutTheRopeDX.GameMain
 
         private void CancelPendingLanternCaptureForRemoval(ConstraintedPoint point)
         {
-            if (pendingLanternCapturePoint == point)
+            if (pendingLanternCapture?.Point == point)
             {
-                pendingLanternCapturePoint = null;
                 pendingLanternCapture = null;
             }
         }
 
         private void CompletePendingLanternCapture(FrameworkTypes value)
         {
-            if (value is not ConstraintedPoint point || pendingLanternCapturePoint != point)
+            if (value is not PendingLanternCapture capture
+                || !ReferenceEquals(pendingLanternCapture, capture))
             {
                 return;
             }
 
-            Lantern lantern = pendingLanternCapture;
-            pendingLanternCapturePoint = null;
             pendingLanternCapture = null;
-            CandyContext ctx = CandyForPointOrNull(point);
-            if (lantern != null && ctx?.Lifecycle.Attachments.InLantern == true)
-            {
-                lantern.CaptureCandy(point);
-            }
+            capture.Complete(CandyForPointOrNull(capture.Point));
         }
 
         private void DetachRopeConstraintsForPoint(ConstraintedPoint point)
@@ -216,14 +210,17 @@ namespace CutTheRopeDX.GameMain
 
         private void ReleasePendingSecondGhostBubbleForBody(CandyBody body)
         {
-            if (pendingSecondGhostBubble == null || pendingSecondGhostBubbleOwner != body)
+            if (parkedGhostBubble?.Owner != body)
             {
                 return;
             }
 
-            EnableGhostCycleForBubble(pendingSecondGhostBubble);
-            pendingSecondGhostBubble = null;
-            pendingSecondGhostBubbleOwner = null;
+            CancelParkedGhostBubble();
+        }
+
+        private void CancelParkedGhostBubble()
+        {
+            parkedGhostBubble = parkedGhostBubble?.ReplaceWith(null, EnableGhostCycleForBubble);
         }
     }
 }
