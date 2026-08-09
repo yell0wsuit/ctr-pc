@@ -389,11 +389,10 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns><see langword="true"/> when the settle owed the drop sound.</returns>
         public static bool SettleOwedDropSound(MechanicalHand hand)
         {
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
-            bool owed = !hand.releaseSoundPlayed;
-            hand.state = MechanicalHand.STATE_HAND_IDLE;
-            hand.releaseSoundPlayed = false;
-            return owed;
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            HandSettle settle = hand.TrySettleToIdle(MechanicalHand.MH_RELEASE_DISTANCE + 1f);
+            Assert.NotEqual(HandSettle.Stayed, settle);
+            return settle == HandSettle.SettledOwingDropSound;
         }
 
         /// <summary>

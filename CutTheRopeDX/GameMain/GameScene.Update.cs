@@ -1675,7 +1675,7 @@ namespace CutTheRopeDX.GameMain
 
                 hand.Update(delta);
                 CandyContext heldCandy = HandHeldCandy(hand);
-                if (hand.state == MechanicalHand.STATE_HAND_CANDY && heldCandy != null)
+                if (hand.State == MechanicalHandState.HoldingCandy && heldCandy != null)
                 {
                     CandyBody heldBody = heldCandy.WholeBody;
                     heldBody.Visual.drawX += hand.cPoint.pos.X - heldBody.Point.pos.X;
@@ -1688,7 +1688,7 @@ namespace CutTheRopeDX.GameMain
                     // at the claw amplifies that phantom velocity into a huge impulse and launches the candy.
                     heldBody.Point.prevPos = heldBody.Point.pos;
 
-                    if (hand.doRotateCandy)
+                    if (hand.DoRotateCandy)
                     {
                         if (hand.rotatingSegment != null)
                         {
@@ -1699,7 +1699,7 @@ namespace CutTheRopeDX.GameMain
                     else if (heldCandy.Lifecycle.Attachments.HasActiveRocket)
                     {
                         _ = hand.IsRotating();
-                        hand.doRotateCandy = true;
+                        hand.BeginCandyRotation();
                     }
                 }
 
@@ -1716,12 +1716,12 @@ namespace CutTheRopeDX.GameMain
                     // holds *this* hand's target candy (single-candy legacy measured hand-to-hand
                     // because the holder sat on the only candy). With multiple candies a hand
                     // holding a different candy must not corrupt our distance to our own candy.
-                    if (otherHand.state == MechanicalHand.STATE_HAND_CANDY && HandHeldCandy(otherHand) == nearestCandy)
+                    if (otherHand.State == MechanicalHandState.HoldingCandy && HandHeldCandy(otherHand) == nearestCandy)
                     {
                         distance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
                     }
 
-                    if (hand.state == MechanicalHand.STATE_HAND_IDLE && otherHand.state == MechanicalHand.STATE_HAND_IDLE)
+                    if (hand.State == MechanicalHandState.Idle && otherHand.State == MechanicalHandState.Idle)
                     {
                         float handDistance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
                         if (handDistance < MechanicalHand.MH_CLAP_DISTANCE)
@@ -1742,7 +1742,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (nearestCandy != null
                     && HandGrab.ShouldGrab(
-                        hand.state == MechanicalHand.STATE_HAND_IDLE,
+                        hand.State == MechanicalHandState.Idle,
                         !nearestCandy.HasNoWholeBodyInPlay,
                         nearestCandy.Lifecycle.Attachments.InLantern,
                         nearestCandy.Lifecycle.Transport?.Sock != null,
@@ -1759,13 +1759,11 @@ namespace CutTheRopeDX.GameMain
                         {
                             if (otherHand != null && HandSteal.ShouldReleaseOtherHand(
                                     otherHand != hand,
-                                    otherHand.state == MechanicalHand.STATE_HAND_CANDY,
+                                    otherHand.State == MechanicalHandState.HoldingCandy,
                                     ctx.Lifecycle.Attachments.Hand == otherHand))
                             {
                                 otherHand.cPoint.RemoveConstraint(grabbedBody.Point);
-                                otherHand.state = MechanicalHand.STATE_HAND_RELEASE;
-                                otherHand.doRotateCandy = false;
-                                otherHand.releaseSoundPlayed = false;
+                                otherHand.ReleaseCandy();
                                 reorderHands = true;
                                 break;
                             }
@@ -1773,9 +1771,7 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                    hand.state = MechanicalHand.STATE_HAND_CANDY;
-                    hand.doRotateCandy = false;
-                    hand.releaseSoundPlayed = false;
+                    hand.GrabCandy();
                     selectedHandIndex = hands.IndexOf(hand);
                     _ = ctx.Lifecycle.Attachments.CaptureByHand(hand);
 
@@ -1813,14 +1809,9 @@ namespace CutTheRopeDX.GameMain
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }
 
-                if (hand.state == MechanicalHand.STATE_HAND_RELEASE && distance > MechanicalHand.MH_RELEASE_DISTANCE)
+                if (hand.TrySettleToIdle(distance) == HandSettle.SettledOwingDropSound)
                 {
-                    hand.state = MechanicalHand.STATE_HAND_IDLE;
-                    if (!hand.releaseSoundPlayed)
-                    {
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
-                    }
-                    hand.releaseSoundPlayed = false;
+                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }
 

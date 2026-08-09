@@ -47,8 +47,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.TapClaw(scene, hand);
 
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
-            Assert.False(hand.doRotateCandy);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            Assert.False(hand.DoRotateCandy);
             Assert.False(Act.SettleOwedDropSound(hand));
         }
 
@@ -60,8 +60,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             scene.DetachActiveHands();
 
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
-            Assert.False(hand.doRotateCandy);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            Assert.False(hand.DoRotateCandy);
             Assert.True(Act.SettleOwedDropSound(hand));
         }
 
@@ -73,8 +73,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             scene.DetachHandsForPoint(candy.WholeBody.Point);
 
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
-            Assert.False(hand.doRotateCandy);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            Assert.False(hand.DoRotateCandy);
             Assert.False(Act.SettleOwedDropSound(hand));
         }
 
@@ -86,8 +86,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             scene.BreakCandyBody(candy.WholeBody);
 
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
-            Assert.False(hand.doRotateCandy);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            Assert.False(hand.DoRotateCandy);
             Assert.False(Act.SettleOwedDropSound(hand));
         }
 
@@ -101,14 +101,14 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.BindRocket(scene, candy);
             MechanicalHand first = Act.GrabWithHand(scene, candy, handIndex: 0);
             Assert.True(
-                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                Interaction.StepUntil(scene, () => first.DoRotateCandy, maxFrames: 10),
                 "the first hand never started rotating its rocket candy");
 
             MechanicalHand second = Act.GrabWithHand(scene, candy, handIndex: 1);
 
             Assert.Same(second, candy.Lifecycle.Attachments.Hand);
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, first.state);
-            Assert.False(first.doRotateCandy);
+            Assert.Equal(MechanicalHandState.Releasing, first.State);
+            Assert.False(first.DoRotateCandy);
         }
 
         [Fact]
@@ -124,14 +124,14 @@ namespace CutTheRopeDX.Tests.Interactions
 
             MechanicalHand first = Act.GrabWithHand(scene, rocketCandy, handIndex: 0);
             Assert.True(
-                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                Interaction.StepUntil(scene, () => first.DoRotateCandy, maxFrames: 10),
                 "the first hand never started rotating its rocket candy");
             _ = Act.GrabWithHand(scene, rocketCandy, handIndex: 1);
 
             // The stolen-from hand settles, then takes the plain candy instead.
             Interaction.PlaceCandyAt(rocketCandy, new Vector(2000f, 2000f));
             Assert.True(
-                Interaction.StepUntil(scene, () => first.state == MechanicalHand.STATE_HAND_IDLE, maxFrames: 60),
+                Interaction.StepUntil(scene, () => first.State == MechanicalHandState.Idle, maxFrames: 60),
                 "the stolen-from hand never settled to idle");
             _ = Act.GrabWithHand(scene, plainCandy, handIndex: 0);
 
@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Tests.Interactions
             float before = spun.rotation;
             Act.RotateSegment(scene, first);
 
-            Assert.False(first.doRotateCandy);
+            Assert.False(first.DoRotateCandy);
             Assert.Equal(before, spun.rotation);
         }
 
@@ -151,7 +151,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.BindRocket(scene, candy);
             MechanicalHand first = Act.GrabWithHand(scene, candy, handIndex: 0);
             Assert.True(
-                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                Interaction.StepUntil(scene, () => first.DoRotateCandy, maxFrames: 10),
                 "the first hand never started rotating its rocket candy");
 
             MechanicalHand second = Act.GrabWithHand(scene, candy, handIndex: 1);
@@ -166,13 +166,13 @@ namespace CutTheRopeDX.Tests.Interactions
                 Interaction.StepUntil(
                     scene,
                     () => Act.MoveClawTo(first, parked),
-                    () => first.state == MechanicalHand.STATE_HAND_IDLE,
+                    () => first.State == MechanicalHandState.Idle,
                     maxFrames: 30),
                 "the stolen-from hand never settled to idle");
             _ = Act.GrabWithHand(scene, candy, handIndex: 0);
 
             Assert.True(
-                Interaction.StepUntil(scene, () => first.doRotateCandy, maxFrames: 10),
+                Interaction.StepUntil(scene, () => first.DoRotateCandy, maxFrames: 10),
                 "rotation was not re-derived after the candy came back");
         }
 
@@ -184,8 +184,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             HeadlessGame.StepFrames(scene, 10);
 
-            Assert.Equal(MechanicalHand.STATE_HAND_CANDY, hand.state);
-            Assert.False(hand.doRotateCandy);
+            Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
+            Assert.False(hand.DoRotateCandy);
         }
 
         [Fact]
@@ -197,7 +197,7 @@ namespace CutTheRopeDX.Tests.Interactions
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
 
             Assert.True(
-                Interaction.StepUntil(scene, () => hand.doRotateCandy, maxFrames: 10),
+                Interaction.StepUntil(scene, () => hand.DoRotateCandy, maxFrames: 10),
                 "the hand never started rotating its rocket candy");
         }
 
@@ -207,18 +207,18 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = SoloRig();
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
             Act.TapClaw(scene, hand);
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
 
             // Parked on the claw: inside MH_RELEASE_DISTANCE, so the hand must hold its state.
             Vector claw = hand.ClawPosition();
             Interaction.PlaceCandyAt(candy, claw);
             HeadlessGame.StepFrames(scene, 5);
-            Assert.Equal(MechanicalHand.STATE_HAND_RELEASE, hand.state);
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
 
             // Well clear of the claw, and far outside MH_GRAB_DISTANCE so it cannot be re-grabbed.
             Interaction.PlaceCandyAt(candy, new Vector(claw.X + (MechanicalHand.MH_RELEASE_DISTANCE * 3f), claw.Y));
             Assert.True(
-                Interaction.StepUntil(scene, () => hand.state == MechanicalHand.STATE_HAND_IDLE, maxFrames: 30),
+                Interaction.StepUntil(scene, () => hand.State == MechanicalHandState.Idle, maxFrames: 30),
                 "the hand never settled to idle");
         }
 
@@ -236,10 +236,63 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.MoveClawTo(second, new Vector(meeting.X + 50f, meeting.Y));
             HeadlessGame.StepFrames(scene, 1);
 
-            Assert.Equal(MechanicalHand.STATE_HAND_IDLE, first.state);
-            Assert.Equal(MechanicalHand.STATE_HAND_IDLE, second.state);
+            Assert.Equal(MechanicalHandState.Idle, first.State);
+            Assert.Equal(MechanicalHandState.Idle, second.State);
             Assert.True(first.clapTimer > 0f, "the first hand's clap cooldown was not armed");
             Assert.True(second.clapTimer > 0f, "the second hand's clap cooldown was not armed");
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void EveryReleaseLeavesTheSameState(bool afterDropSound)
+        {
+            (GameScene scene, CandyContext candy) = SoloRig();
+            MechanicalHand hand = Act.GrabWithHand(scene, candy);
+
+            if (afterDropSound)
+            {
+                hand.ReleaseCandyAfterDropSound();
+            }
+            else
+            {
+                hand.ReleaseCandy();
+            }
+
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            Assert.False(hand.DoRotateCandy);
+        }
+
+        [Fact]
+        public void SettleReportsWhoOwesTheDropSound()
+        {
+            (GameScene scene, CandyContext candy) = SoloRig();
+            MechanicalHand hand = Act.GrabWithHand(scene, candy);
+
+            hand.ReleaseCandy();
+            Assert.Equal(HandSettle.Stayed, hand.TrySettleToIdle(MechanicalHand.MH_RELEASE_DISTANCE));
+            Assert.Equal(HandSettle.SettledOwingDropSound, hand.TrySettleToIdle(MechanicalHand.MH_RELEASE_DISTANCE + 1f));
+            Assert.Equal(MechanicalHandState.Idle, hand.State);
+
+            hand.ReleaseCandyAfterDropSound();
+            Assert.Equal(HandSettle.Settled, hand.TrySettleToIdle(MechanicalHand.MH_RELEASE_DISTANCE + 1f));
+            Assert.Equal(MechanicalHandState.Idle, hand.State);
+        }
+
+        [Fact]
+        public void GrabbingStartsAHoldWithNoInheritedRotation()
+        {
+            (GameScene scene, CandyContext candy) = SoloRig(s => s.Rocket(160, 200, impulse: 0f));
+            _ = Act.BindRocket(scene, candy);
+            MechanicalHand hand = Act.GrabWithHand(scene, candy);
+            Assert.True(
+                Interaction.StepUntil(scene, () => hand.DoRotateCandy, maxFrames: 10),
+                "the hand never started rotating its rocket candy");
+
+            hand.GrabCandy();
+
+            Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
+            Assert.False(hand.DoRotateCandy);
         }
 
         /// <summary>One rotatable hand, parked out of reach; the candy hovers where it loads.</summary>

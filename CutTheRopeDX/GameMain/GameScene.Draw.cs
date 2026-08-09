@@ -147,7 +147,7 @@ namespace CutTheRopeDX.GameMain
                     if (hand != null)
                     {
                         hand.Draw();
-                        if (hand.state == MechanicalHand.STATE_HAND_CANDY)
+                        if (hand.State == MechanicalHandState.HoldingCandy)
                         {
                             activeHand = hand;
                         }
@@ -278,7 +278,7 @@ namespace CutTheRopeDX.GameMain
             {
                 foreach (MechanicalHand hand in hands)
                 {
-                    if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                    if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                     {
                         hand.TheClaw().DrawFingers();
                     }

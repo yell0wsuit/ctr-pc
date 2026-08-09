@@ -261,13 +261,11 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
 
-                    if (hand.state == MechanicalHand.STATE_HAND_CANDY && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
+                    if (hand.State == MechanicalHandState.HoldingCandy && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
                     {
                         CandyContext held = HandHeldCandy(hand);
                         hand.cPoint.RemoveConstraint(held?.WholeBody.Point ?? star);
-                        hand.state = MechanicalHand.STATE_HAND_RELEASE;
-                        hand.doRotateCandy = false;
-                        hand.releaseSoundPlayed = true;
+                        hand.ReleaseCandyAfterDropSound();
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
                         _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
