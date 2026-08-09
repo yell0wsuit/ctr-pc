@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
-            gravityState.DrawButton();
+            gravityState.DrawButtons();
             miceManager?.DrawHoles();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);

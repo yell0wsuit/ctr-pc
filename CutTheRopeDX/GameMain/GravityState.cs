@@ -13,7 +13,7 @@ namespace CutTheRopeDX.GameMain
     internal sealed class GravityState
     {
         private readonly List<Image> earthAnimations = [];
-        private ToggleButton button;
+        private readonly List<ToggleButton> buttons = [];
         private int toggleTouchIndex = -1;
 
         /// <summary>Authored gravity before orientation is applied.</summary>
@@ -31,7 +31,7 @@ namespace CutTheRopeDX.GameMain
             BaseVector = default;
             IsInverted = false;
             toggleTouchIndex = -1;
-            button = null;
+            buttons.Clear();
             earthAnimations.Clear();
         }
 
@@ -44,7 +44,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Attaches the toggle whose face is controlled by this state.</summary>
         public void AttachButton(ToggleButton button)
         {
-            this.button = button;
+            if (button != null && !buttons.Contains(button))
+            {
+                buttons.Add(button);
+            }
         }
 
         /// <summary>Adds one earth image whose timeline is controlled by this state.</summary>
@@ -95,20 +98,30 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Checks the active toggle face against a world-space pointer position.</summary>
         public bool IsInToggleTouchZone(float x, float y)
         {
-            return button != null
-                && ((Button)button.GetChild(button.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(x, y, true);
+            foreach (ToggleButton button in buttons)
+            {
+                if (((Button)button.GetChild(button.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(x, y, true))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        /// <summary>Draws the gravity toggle when the loaded level provides one.</summary>
-        public void DrawButton()
+        /// <summary>Draws every gravity toggle provided by the loaded level.</summary>
+        public void DrawButtons()
         {
-            button?.Draw();
+            foreach (ToggleButton button in buttons)
+            {
+                button.Draw();
+            }
         }
 
-        /// <summary>Removes the gravity toggle from its scene parent when present.</summary>
-        public void RemoveButtonFrom(BaseElement parent)
+        /// <summary>Removes every gravity toggle from its scene parent.</summary>
+        public void RemoveButtonsFrom(BaseElement parent)
         {
-            if (button != null)
+            foreach (ToggleButton button in buttons)
             {
                 parent.RemoveChild(button);
             }
@@ -138,9 +151,12 @@ namespace CutTheRopeDX.GameMain
             MaterialPoint.globalGravity = current;
             MaterialPoint.globalDisableGravity = current.X == 0f && current.Y == 0f;
 
-            if (button != null && button.On() != IsInverted)
+            foreach (ToggleButton button in buttons)
             {
-                button.Toggle();
+                if (button.On() != IsInverted)
+                {
+                    button.Toggle();
+                }
             }
 
             foreach (Image earthAnimation in earthAnimations)

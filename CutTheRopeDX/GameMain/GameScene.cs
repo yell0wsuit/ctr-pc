@@ -218,7 +218,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Hide()
         {
-            gravityState.RemoveButtonFrom(this);
+            gravityState.RemoveButtonsFrom(this);
             if (waterLayer != null)
             {
                 waterLayer.PrepareToRelease();

@@ -87,6 +87,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void EveryAttachedButtonFollowsTheAuthoritativeOrientation()
+        {
+            GravityState gravity = new();
+            ToggleButton first = CreateToggleButton();
+            ToggleButton second = CreateToggleButton();
+            gravity.ConfigureBase(new Vector(0f, 100f));
+            gravity.AttachButton(first);
+            gravity.AttachButton(second);
+            gravity.Activate();
+
+            gravity.Toggle();
+
+            Assert.True(first.On());
+            Assert.True(second.On());
+
+            gravity.Toggle();
+
+            Assert.False(first.On());
+            Assert.False(second.On());
+        }
+
+        [Fact]
         public void ActivateRestoresNormalOrientationAcrossEveryRepresentation()
         {
             GravityState gravity = new();
