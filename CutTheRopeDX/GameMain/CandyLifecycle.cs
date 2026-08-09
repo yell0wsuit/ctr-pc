@@ -10,6 +10,7 @@ namespace CutTheRopeDX.GameMain
             Presence = presence;
             WholeBody = wholeBody;
             Split = split;
+            Attachments = new CandyAttachments();
         }
 
         /// <summary>Gets the candy's current lifecycle topology.</summary>
@@ -26,6 +27,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets the current hidden transport session, or <see langword="null"/> outside transport.</summary>
         public CandyTransportSession Transport { get; private set; }
+
+        /// <summary>Gets the authoritative whole-candy attachment state.</summary>
+        public CandyAttachments Attachments { get; }
+
+        /// <summary>Gets whether the present candy may start a transport operation.</summary>
+        public bool CanEnterTransport => Presence == CandyPresence.Present && !Attachments.InLantern;
+
+        /// <summary>Gets whether lifecycle or attachment ownership currently suppresses gravity.</summary>
+        public bool IsGravitySuppressed => Presence == CandyPresence.Hidden || Attachments.IsGravitySuppressed;
 
         /// <summary>Gets the physical bodies currently available to scene systems.</summary>
         public IReadOnlyList<CandyBody> ActiveBodies =>
@@ -88,21 +98,26 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
-        /// <summary>Permanently removes a present candy for the specified reason.</summary>
+        /// <summary>
+        /// Permanently removes a present candy and atomically detaches its whole-candy owners.
+        /// </summary>
         /// <param name="reason">The reason the candy is removed.</param>
+        /// <param name="detachedAttachments">Former attachment owners for scene-level cleanup.</param>
         /// <returns>
-        /// <see langword="true"/> when the candy transitions from present to removed;
-        /// otherwise, <see langword="false"/> when the transition is illegal or already terminal.
+        /// <see langword="true"/> when the candy transitioned to removed; otherwise,
+        /// <see langword="false"/> without changing lifecycle or attachment state.
         /// </returns>
-        public bool TryRemove(CandyRemovalReason reason)
+        public bool TryRemove(CandyRemovalReason reason, out CandyAttachmentSnapshot detachedAttachments)
         {
             if (Presence != CandyPresence.Present)
             {
+                detachedAttachments = null;
                 return false;
             }
 
             Presence = CandyPresence.Removed;
             RemovalReason = reason;
+            detachedAttachments = Attachments.DetachAll();
             return true;
         }
 
@@ -125,17 +140,22 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Temporarily hides a present whole body inside the specified transport session.</summary>
         /// <param name="session">The exact transport session that will later complete this transition.</param>
+        /// <param name="detachedAttachments">Former incompatible carriers for scene-level cleanup.</param>
         /// <returns>
         /// <see langword="true"/> when a present whole candy becomes hidden; otherwise,
         /// <see langword="false"/> when the lifecycle is removed, split, or already hidden.
         /// </returns>
-        public bool TryHide(CandyTransportSession session)
+        public bool TryHide(
+            CandyTransportSession session,
+            out CandyAttachmentSnapshot detachedAttachments)
         {
-            if (Presence != CandyPresence.Present)
+            if (session == null || !CanEnterTransport)
             {
+                detachedAttachments = null;
                 return false;
             }
 
+            detachedAttachments = Attachments.DetachForTransport();
             Transport = session;
             Presence = CandyPresence.Hidden;
             return true;

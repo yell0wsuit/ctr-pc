@@ -21,7 +21,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                ctx.inLantern = false;
+                ctx.Lifecycle.Attachments.ReleaseFromLantern();
                 body.Visual.color = RGBAColor.solidOpaqueRGBA;
                 body.Visual.passTransformationsToChilds = false;
                 body.Visual.scaleX = body.Visual.scaleY = 0.71f;

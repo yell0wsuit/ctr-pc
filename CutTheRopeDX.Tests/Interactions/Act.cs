@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests.Interactions
                     rocket.point.pos = position;
                     rocket.point.prevPos = position;
                 },
-                () => candy.activeRocket == rocket,
+                () => candy.Lifecycle.Attachments.Rocket == rocket,
                 "the rocket never bound to the candy");
             return rocket;
         }
@@ -96,7 +96,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static MechanicalHand GrabWithHand(GameScene scene, CandyContext candy, int handIndex = 0)
         {
             MechanicalHand hand = scene.Hands()[handIndex];
-            Chase(scene, candy, position => MoveClawTo(hand, position), () => candy.capturingHand == hand, "the hand never grabbed the candy");
+            Chase(scene, candy, position => MoveClawTo(hand, position), () => candy.Lifecycle.Attachments.Hand == hand, "the hand never grabbed the candy");
             return hand;
         }
 
@@ -107,7 +107,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Mouse CarryByMouse(GameScene scene, CandyContext candy)
         {
             Mouse mouse = scene.Mice()[0];
-            Chase(scene, candy, position => MoveTo(mouse, position), () => candy.carriedByMouse, "the mouse never took the candy");
+            Chase(scene, candy, position => MoveTo(mouse, position), () => candy.Lifecycle.Attachments.CarriedByMouse, "the mouse never took the candy");
             return mouse;
         }
 
@@ -122,7 +122,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Mouse CarryByMouseWithoutMovingIt(GameScene scene, CandyContext candy)
         {
             Assert.True(
-                Interaction.StepUntil(scene, () => candy.carriedByMouse),
+                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.CarriedByMouse),
                 "the mouse never took the candy");
             HeadlessGame.StepFrames(scene, SettleFrames);
             return scene.Mice()[0];
@@ -137,7 +137,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static void CarryByAnts(GameScene scene, CandyContext candy)
         {
             Assert.True(
-                Interaction.StepUntil(scene, () => candy.antSegment != null),
+                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.AntSegment != null),
                 "the ants never picked up the candy");
         }
 
@@ -246,7 +246,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static void CaptureInLantern(GameScene scene, CandyContext candy)
         {
             Lantern lantern = Lantern.GetAllLanterns()[0];
-            Chase(scene, candy, position => MoveTo(lantern, position), () => candy.inLantern, "the lantern never captured the candy");
+            Chase(scene, candy, position => MoveTo(lantern, position), () => candy.Lifecycle.Attachments.InLantern, "the lantern never captured the candy");
         }
 
         /// <summary>

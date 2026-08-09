@@ -85,7 +85,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.CaptureInLantern(scene, captured);
 
-            Assert.True(captured.inLantern);
+            Assert.True(captured.Lifecycle.Attachments.InLantern);
             Assert.Same(bubble, kept.WholeBody.Bubble);
         }
 
@@ -113,8 +113,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.CarryByMouse(scene, stolen);
 
-            Assert.True(stolen.carriedByMouse);
-            Assert.Same(hand, kept.capturingHand);
+            Assert.True(stolen.Lifecycle.Attachments.CarriedByMouse);
+            Assert.Same(hand, kept.Lifecycle.Attachments.Hand);
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.EnterBambooTube(scene, swallowed, TubeMouth.CatchesFalling);
 
             Assert.NotNull(swallowed.Lifecycle.Transport?.BambooTube);
-            Assert.Same(rocket, kept.activeRocket);
+            Assert.Same(rocket, kept.Lifecycle.Attachments.Rocket);
             Assert.True(rocket.visible);
         }
 

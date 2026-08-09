@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             MechanicalHand claimant = Act.GrabWithHand(scene, candy, handIndex: 0);
 
-            Assert.Same(claimant, candy.capturingHand);
+            Assert.Same(claimant, candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, rival.state);
         }
 
@@ -43,8 +43,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.GrabWithHand(scene, candy);
 
-            Assert.True(candy.HasActiveRocket);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.True(candy.Lifecycle.Attachments.HasActiveRocket);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.GrabWithHand(scene, candy);
 
-            Assert.Null(candy.antSegment);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.GrabWithHand(scene, candy);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

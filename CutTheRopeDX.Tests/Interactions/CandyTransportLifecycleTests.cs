@@ -116,7 +116,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Equal(CandyPresence.Hidden, swallowed.Lifecycle.Presence);
             Assert.Equal(CandyPresence.Present, kept.Lifecycle.Presence);
             Assert.Null(kept.Lifecycle.Transport);
-            Assert.Same(rocket, kept.activeRocket);
+            Assert.Same(rocket, kept.Lifecycle.Attachments.Rocket);
             Assert.True(rocket.visible);
         }
 

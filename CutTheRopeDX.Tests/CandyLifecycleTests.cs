@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests
         {
             CandyLifecycle lifecycle = PresentLifecycle();
 
-            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Eaten));
+            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Eaten, out _));
             Assert.Equal(CandyPresence.Removed, lifecycle.Presence);
             Assert.Equal(CandyRemovalReason.Eaten, lifecycle.RemovalReason);
             Assert.True(lifecycle.WasEaten);
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests
             CandyRemovalReason reason = (CandyRemovalReason)reasonValue;
             CandyLifecycle lifecycle = PresentLifecycle();
 
-            Assert.True(lifecycle.TryRemove(reason));
+            Assert.True(lifecycle.TryRemove(reason, out _));
             Assert.False(lifecycle.WasEaten);
             Assert.True(lifecycle.HasFailedRemoval);
         }
@@ -47,10 +47,25 @@ namespace CutTheRopeDX.Tests
         public void RemovedCandyIsTerminal()
         {
             CandyLifecycle lifecycle = PresentLifecycle();
-            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard));
+            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard, out _));
 
-            Assert.False(lifecycle.TryRemove(CandyRemovalReason.Eaten));
+            Assert.False(lifecycle.TryRemove(CandyRemovalReason.Eaten, out _));
             Assert.Equal(CandyRemovalReason.Hazard, lifecycle.RemovalReason);
+        }
+
+        [Fact]
+        public void RemovingAWholeCandyAtomicallyClearsItsAttachmentState()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+            _ = lifecycle.Attachments.CaptureInLantern();
+            lifecycle.Attachments.SetCarriedByMouse(true);
+
+            Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard, out CandyAttachmentSnapshot detached));
+
+            Assert.True(detached.CarriedByMouse);
+            Assert.True(detached.InLantern);
+            Assert.False(lifecycle.Attachments.HasAny);
+            Assert.False(lifecycle.IsGravitySuppressed);
         }
 
         [Fact]
@@ -94,7 +109,7 @@ namespace CutTheRopeDX.Tests
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession session = CandyTransportSession.ForBamboo(candy: null, tube: null);
 
-            Assert.True(lifecycle.TryHide(session));
+            Assert.True(lifecycle.TryHide(session, out _));
             Assert.Equal(CandyPresence.Hidden, lifecycle.Presence);
             Assert.Empty(lifecycle.ActiveBodies);
             Assert.False(lifecycle.WasEaten);
@@ -105,7 +120,7 @@ namespace CutTheRopeDX.Tests
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession session = CandyTransportSession.ForSock(null, null, 123f);
-            Assert.True(lifecycle.TryHide(session));
+            Assert.True(lifecycle.TryHide(session, out _));
 
             Assert.True(lifecycle.TryCompleteTransport(session));
             Assert.Equal(CandyPresence.Present, lifecycle.Presence);
@@ -124,13 +139,33 @@ namespace CutTheRopeDX.Tests
             Assert.Same(whole, ctx.Lifecycle.WholeBody);
             Assert.Equal(CandyPresence.Present, ctx.Lifecycle.Presence);
             Assert.Equal([whole], ctx.Lifecycle.ActiveBodies);
+            Assert.NotNull(ctx.Lifecycle.Attachments);
+            Assert.True(ctx.Lifecycle.CanEnterTransport);
+            Assert.False(ctx.Lifecycle.IsGravitySuppressed);
+        }
+
+        [Fact]
+        public void LanternAndTransportStateAuthoritativelyAnswerInteractionQuestions()
+        {
+            CandyLifecycle lifecycle = PresentLifecycle();
+
+            _ = lifecycle.Attachments.CaptureInLantern();
+
+            Assert.False(lifecycle.CanEnterTransport);
+            Assert.True(lifecycle.IsGravitySuppressed);
+
+            lifecycle.Attachments.ReleaseFromLantern();
+            CandyTransportSession session = CandyTransportSession.ForBamboo(null, null);
+            Assert.True(lifecycle.TryHide(session, out _));
+            Assert.False(lifecycle.CanEnterTransport);
+            Assert.True(lifecycle.IsGravitySuppressed);
         }
 
         [Fact]
         public void ContextOutcomePreservesCapabilitiesAndRemovalReason()
         {
             CandyContext ctx = new(Body(CandyBodyRole.Whole)) { Capabilities = CandyCapabilities.LightBulb };
-            Assert.True(ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard));
+            Assert.True(ctx.Lifecycle.TryRemove(CandyRemovalReason.Hazard, out _));
 
             CandyOutcomeView outcome = ctx.ToOutcomeView();
 
@@ -175,9 +210,9 @@ namespace CutTheRopeDX.Tests
             CandyLifecycle lifecycle = PresentLifecycle();
             CandyTransportSession oldSession = CandyTransportSession.ForBamboo(null, null);
             CandyTransportSession newSession = CandyTransportSession.ForSock(null, null, 123f);
-            _ = lifecycle.TryHide(oldSession);
+            _ = lifecycle.TryHide(oldSession, out _);
             Assert.True(lifecycle.TryCompleteTransport(oldSession));
-            _ = lifecycle.TryHide(newSession);
+            _ = lifecycle.TryHide(newSession, out _);
 
             Assert.False(lifecycle.TryCompleteTransport(oldSession));
             Assert.Same(newSession, lifecycle.Transport);

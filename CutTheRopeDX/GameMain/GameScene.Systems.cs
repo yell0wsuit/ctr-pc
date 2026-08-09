@@ -249,7 +249,7 @@ namespace CutTheRopeDX.GameMain
             // TryHide is the entry gate as well as the transition: it refuses a candy that is already
             // hidden in another transit, removed, or split.
             CandyTransportSession session = CandyTransportSession.ForBamboo(ctx, bambooTube);
-            if (!ctx.Lifecycle.TryHide(session))
+            if (!ctx.Lifecycle.TryHide(session, out CandyAttachmentSnapshot detached))
             {
                 return;
             }
@@ -258,16 +258,11 @@ namespace CutTheRopeDX.GameMain
             CandyBody body = ctx.WholeBody;
             GameObject candyVisual = body.Visual;
             ReleaseRopesForPoint(body.Point);
-            DetachHandsForPoint(body.Point);
-            DropMouseCandyForPoint(body.Point);
-            // Take the candy off the ants too: a lingering antSegment hard-overwrites the point
-            // position all through transit and then yanks/brakes the candy at the exit tube,
-            // killing the teleport throw.
-            DetachCandyFromConveyor(ctx);
+            ReleaseTransportAttachments(detached, body.Point);
             // The Experiments reference's operateTube: sets the rocket invisible for the transit.
-            if (ctx.HasActiveRocket)
+            if (ctx.Lifecycle.Attachments.HasActiveRocket)
             {
-                ctx.activeRocket.visible = false;
+                ctx.Lifecycle.Attachments.Rocket.visible = false;
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.15f);
             body.Point.disableGravity = true;

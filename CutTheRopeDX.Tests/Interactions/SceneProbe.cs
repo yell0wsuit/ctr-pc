@@ -294,14 +294,16 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             Assert.Equal(0, scene.AttachedRopeCount(candy));
             Assert.Null(candy.WholeBody.Bubble);
-            Assert.Null(candy.activeRocket);
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Rocket);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
-            Assert.Null(candy.antSegment);
-            Assert.Null(candy.lastAntSegment);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
+            Assert.Null(candy.Lifecycle.Attachments.LastAntSegment);
             Assert.Equal(0, scene.SnailCount(candy));
-            Assert.False(candy.inLantern);
+            Assert.False(candy.Lifecycle.Attachments.InLantern);
+            Assert.False(candy.Lifecycle.Attachments.HasAny);
+            Assert.False(candy.Lifecycle.IsGravitySuppressed);
             Assert.False(candy.WholeBody.Point.disableGravity);
         }
 

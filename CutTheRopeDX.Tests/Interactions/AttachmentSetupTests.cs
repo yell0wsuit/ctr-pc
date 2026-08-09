@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(candy);
             Interaction.PlaceCandyAt(candy, Interaction.At(rocket.x, rocket.y));
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.HasActiveRocket));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.HasActiveRocket));
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(candy);
             Interaction.PlaceCandyAt(candy, hand.ClawPosition());
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.capturingHand == hand));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.Hand == hand));
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(candy);
             Interaction.PlaceCandyAt(candy, Interaction.At(Scenario.New().WorldX(160), Scenario.WorldY(200)));
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.carriedByMouse));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.CarriedByMouse));
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.Tests.Interactions
             CandyContext candy = scene.Candy();
             Interaction.Hover(candy);
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.antSegment != null));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.AntSegment != null));
         }
 
         [Fact]
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.Tests.Interactions
             CandyContext candy = scene.Candy();
             Interaction.Hover(candy);
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.inLantern));
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.InLantern));
         }
 
         [Fact]

@@ -92,8 +92,14 @@ namespace CutTheRopeDX.GameMain
             float worldX = tx + camera.pos.X;
             float worldY = ty + camera.pos.Y;
             waterLayer?.AddParticlesAtXY(worldX, worldY);
-            if (miceManager != null && miceManager.HandleClick(worldX, worldY))
+            if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
             {
+                CandyContext droppedCandy = CandyForPointOrNull(droppedMouseCandy);
+                droppedCandy?.Lifecycle.Attachments.SetCarriedByMouse(false);
+                if (droppedCandy != null)
+                {
+                    droppedMouseCandy.disableGravity = droppedCandy.Lifecycle.IsGravitySuppressed;
+                }
                 return true;
             }
             Vector vector = Vect(tx, ty);
@@ -173,7 +179,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab grab = (Grab)obj;
                     GunSource gun = grab.GunSource;
-                    if (gun != null && gun.CanFire(candies[0].inLantern))
+                    if (gun != null && gun.CanFire(candies[0].Lifecycle.Attachments.InLantern))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
@@ -260,7 +266,7 @@ namespace CutTheRopeDX.GameMain
                         hand.doRotateCandy = false;
                         hand.releaseSoundPlayed = true;
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
-                        _ = (held?.capturingHand = null);
+                        _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                         CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                         return true;
                     }

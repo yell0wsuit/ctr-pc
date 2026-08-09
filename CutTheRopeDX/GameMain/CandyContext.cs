@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 
@@ -45,15 +44,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public bool HasNoWholeBodyInPlay => Lifecycle.Presence != CandyPresence.Present;
 
-        /// <summary>True while this candy is captured in a lantern (was the singleton <c>isCandyInLantern</c>).</summary>
-        public bool inLantern;
-
-        /// <summary>The rocket currently flying this candy, if any (was the singleton <c>activeRocket</c>).</summary>
-        public Rocket activeRocket;
-
-        /// <summary>True while a rocket is bound to and flying this candy.</summary>
-        public bool HasActiveRocket => activeRocket != null;
-
         /// <summary>
         /// True when this candy can be grabbed by a mechanical hand right now: it is present and its
         /// capabilities permit it. The <c>Is*</c> form folds in presence; <see cref="CandyCapabilities"/>
@@ -63,34 +53,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>True when this candy can attach to an ant conveyor right now: present and capable.</summary>
         public bool IsAntAttachable => !HasNoWholeBodyInPlay && Capabilities.CanAttachAnts;
-
-        /// <summary>Ant-conveyor segment currently carrying this candy (null if not carried).</summary>
-        public AntsPathSegment antSegment;
-
-        /// <summary>Last segment that carried this candy, held during the re-attach cooldown.</summary>
-        public AntsPathSegment lastAntSegment;
-
-        /// <summary>Re-attach cooldown timer for this candy's last segment.</summary>
-        public float antCooldown;
-
-        /// <summary>True while this candy must leave a segment's external bounds before re-attaching.</summary>
-        public bool antWaitForFly;
-
-        /// <summary>
-        /// This candy's own carrier marker on <see cref="antSegment"/>. It starts at the candy's
-        /// projection onto the segment and advances at the segment speed, so multiple candies ride the
-        /// same lane independently, each keeping the spacing it had on entry. Unused when not carried.
-        /// </summary>
-        public Vector antInteractionPoint;
-
-        /// <summary>Seconds since this candy attached to <see cref="antSegment"/> (carry snap + detach grace).</summary>
-        public float antInteractionTime;
-
-        /// <summary>The mechanical hand currently holding this candy, if any (one candy per hand).</summary>
-        public MechanicalHand capturingHand;
-
-        /// <summary>True while this candy is the one carried by the active mouse (single-occupancy).</summary>
-        public bool carriedByMouse;
 
         /// <summary>Behavior flags for this candy-like physics body.</summary>
         public CandyCapabilities Capabilities = CandyCapabilities.Candy;

@@ -32,9 +32,9 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.CarryByMouse(scene, candy);
 
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
-            Assert.True(candy.carriedByMouse);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         [Fact]
@@ -45,8 +45,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.CarryByMouse(scene, candy);
 
-            Assert.True(candy.HasActiveRocket);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.True(candy.Lifecycle.Attachments.HasActiveRocket);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
         }
 
         [Fact]
@@ -82,8 +82,21 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.CarryByMouseWithoutMovingIt(scene, candy);
             HeadlessGame.StepFrames(scene, 30);
 
-            Assert.True(candy.carriedByMouse);
-            Assert.Null(candy.antSegment);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
+        }
+
+        [Fact]
+        public void ClickingTheCarryingMouseImmediatelyClearsCandyOwnership()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s);
+            Mouse mouse = Act.CarryByMouse(scene, candy);
+
+            Assert.True(scene.TouchDownXYIndex((int)mouse.x, (int)mouse.y, 0));
+
+            Assert.False(scene.MouseCarries(candy));
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.Equal(candy.Lifecycle.IsGravitySuppressed, candy.WholeBody.Point.disableGravity);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment, int mouseY = 40)

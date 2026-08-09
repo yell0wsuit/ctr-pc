@@ -40,6 +40,7 @@ namespace CutTheRopeDX.Tests
         public static GameScene LoadLevel(int pack, int level)
         {
             CTRRootController root = (CTRRootController)Application.SharedRootController();
+            root.SetPicker(false);
             root.SetPack(pack);
             root.SetLevel(level);
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
@@ -61,6 +62,7 @@ namespace CutTheRopeDX.Tests
         public static GameController LoadLevelWithController(int pack, int level)
         {
             CTRRootController root = (CTRRootController)Application.SharedRootController();
+            root.SetPicker(false);
             root.SetPack(pack);
             root.SetLevel(level);
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);

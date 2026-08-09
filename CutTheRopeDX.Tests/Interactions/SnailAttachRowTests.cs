@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.Same(hand, candy.capturingHand);
+            Assert.Same(hand, candy.Lifecycle.Attachments.Hand);
             Assert.Equal(1, scene.SnailCount(candy));
         }
 
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
             Assert.Equal(1, scene.SnailCount(candy));
         }
 
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.NotNull(candy.antSegment);
+            Assert.NotNull(candy.Lifecycle.Attachments.AntSegment);
             Assert.Equal(1, scene.SnailCount(candy));
         }
 
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.True(candy.carriedByMouse);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
             Assert.Equal(1, scene.SnailCount(candy));
         }
 

@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
             Act.Eat(scene, candy);
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
         }
 
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
             Act.Eat(scene, candy);
-            Assert.False(candy.HasActiveRocket);
+            Assert.False(candy.Lifecycle.Attachments.HasActiveRocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
         }
 
@@ -68,10 +68,10 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(120, 200, path: "80,0"));
             Act.CarryByAnts(scene, candy);
             Act.Eat(scene, candy);
-            Assert.Null(candy.antSegment);
-            Assert.Null(candy.lastAntSegment);
-            Assert.False(candy.antWaitForFly);
-            Assert.Equal(0f, candy.antCooldown);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
+            Assert.Null(candy.Lifecycle.Attachments.LastAntSegment);
+            Assert.False(candy.Lifecycle.Attachments.AntWaitingForExit);
+            Assert.Equal(0f, candy.Lifecycle.Attachments.AntCooldown);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);
             Act.Eat(scene, candy);
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
             Assert.False(scene.MouseCarries(candy));
         }
 

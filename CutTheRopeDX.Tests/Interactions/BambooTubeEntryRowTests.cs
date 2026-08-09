@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
 
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
         }
 
@@ -44,8 +44,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
 
-            Assert.True(candy.HasActiveRocket);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.True(candy.Lifecycle.Attachments.HasActiveRocket);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
             Assert.False(rocket.visible);
         }
 
@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesRightward);
 
-            Assert.Null(candy.antSegment);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(TubeMouth mouth, Func<Scenario, Scenario> attachment)

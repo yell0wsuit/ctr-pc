@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.CaptureInLantern(scene, candy);
 
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
         }
 
@@ -43,7 +43,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.CaptureInLantern(scene, candy);
 
-            Assert.False(candy.HasActiveRocket);
+            Assert.False(candy.Lifecycle.Attachments.HasActiveRocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
         }
 
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.CaptureInLantern(scene, candy);
 
-            Assert.Null(candy.antSegment);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.CaptureInLantern(scene, candy);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

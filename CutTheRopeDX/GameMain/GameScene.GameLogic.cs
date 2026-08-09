@@ -189,27 +189,24 @@ namespace CutTheRopeDX.GameMain
                 session.BambooTube.ThrowCandy(body.Point);
                 session.BambooTube.ThrowParticlesOut(particlesAniPool);
                 body.Visual.PlayTimeline(2);
-                if (ctx.HasActiveRocket)
+                if (ctx.Lifecycle.Attachments.HasActiveRocket)
                 {
-                    ctx.activeRocket.visible = true;
+                    ctx.Lifecycle.Attachments.Rocket.visible = true;
                     Vector holeOut = session.BambooTube.HoleOut;
                     Vector tubeCenter = Vect(session.BambooTube.x, session.BambooTube.y);
-                    ctx.activeRocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
-                    ctx.activeRocket.startRotation = ctx.activeRocket.rotation;
-                    ctx.activeRocket.startCandyRotation = 0f;
+                    ctx.Lifecycle.Attachments.Rocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
+                    ctx.Lifecycle.Attachments.Rocket.startRotation = ctx.Lifecycle.Attachments.Rocket.rotation;
+                    ctx.Lifecycle.Attachments.Rocket.startCandyRotation = 0f;
                     GameObject rocketCandyVisual = body.Main ?? body.Visual;
                     rocketCandyVisual.rotation = 0f;
-                    ctx.activeRocket.additionalAngle = 0f;
-                    ctx.activeRocket.UpdateRotation();
-                    ctx.activeRocket.point.posDelta = vectZero;
-                    ctx.activeRocket.point.pos = body.Point.pos;
-                    ctx.activeRocket.point.prevPos = ctx.activeRocket.point.pos;
-                    ctx.activeRocket.point.v = vectZero;
+                    ctx.Lifecycle.Attachments.Rocket.additionalAngle = 0f;
+                    ctx.Lifecycle.Attachments.Rocket.UpdateRotation();
+                    ctx.Lifecycle.Attachments.Rocket.point.posDelta = vectZero;
+                    ctx.Lifecycle.Attachments.Rocket.point.pos = body.Point.pos;
+                    ctx.Lifecycle.Attachments.Rocket.point.prevPos = ctx.Lifecycle.Attachments.Rocket.point.pos;
+                    ctx.Lifecycle.Attachments.Rocket.point.v = vectZero;
                 }
-                else
-                {
-                    body.Point.disableGravity = false;
-                }
+                body.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
 
                 return;
             }
@@ -229,19 +226,21 @@ namespace CutTheRopeDX.GameMain
                 body.Point.posDelta = VectDiv(body.Point.v, 60f);
                 body.Point.prevPos = VectSub(body.Point.pos, body.Point.posDelta);
 
-                if (ctx.HasActiveRocket)
+                if (ctx.Lifecycle.Attachments.HasActiveRocket)
                 {
-                    ctx.activeRocket.visible = true;
-                    ctx.activeRocket.point.pos = body.Point.pos;
-                    ctx.activeRocket.point.prevPos = body.Point.prevPos;
-                    ctx.activeRocket.point.v = body.Point.v;
-                    ctx.activeRocket.point.posDelta = body.Point.posDelta;
-                    ctx.activeRocket.rotation = session.Sock.rotation + DEG_90;
-                    ctx.activeRocket.startRotation = session.Sock.rotation + DEG_90;
-                    ctx.activeRocket.startCandyRotation = body.Main.rotation;
-                    ctx.activeRocket.additionalAngle = 0f;
-                    ctx.activeRocket.UpdateRotation();
+                    ctx.Lifecycle.Attachments.Rocket.visible = true;
+                    ctx.Lifecycle.Attachments.Rocket.point.pos = body.Point.pos;
+                    ctx.Lifecycle.Attachments.Rocket.point.prevPos = body.Point.prevPos;
+                    ctx.Lifecycle.Attachments.Rocket.point.v = body.Point.v;
+                    ctx.Lifecycle.Attachments.Rocket.point.posDelta = body.Point.posDelta;
+                    ctx.Lifecycle.Attachments.Rocket.rotation = session.Sock.rotation + DEG_90;
+                    ctx.Lifecycle.Attachments.Rocket.startRotation = session.Sock.rotation + DEG_90;
+                    ctx.Lifecycle.Attachments.Rocket.startCandyRotation = body.Main.rotation;
+                    ctx.Lifecycle.Attachments.Rocket.additionalAngle = 0f;
+                    ctx.Lifecycle.Attachments.Rocket.UpdateRotation();
                 }
+
+                body.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
             }
         }
 
@@ -322,7 +321,7 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].inLantern)
+                if (candies[i].Lifecycle.Attachments.InLantern)
                 {
                     return true;
                 }
@@ -335,7 +334,7 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].activeRocket == rocket)
+                if (candies[i].Lifecycle.Attachments.Rocket == rocket)
                 {
                     return candies[i];
                 }
@@ -348,7 +347,7 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < candies.Count; i++)
             {
-                if (candies[i].capturingHand == hand)
+                if (candies[i].Lifecycle.Attachments.Hand == hand)
                 {
                     return candies[i];
                 }
@@ -367,7 +366,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 CandyContext ctx = candies[i];
-                if (!ctx.IsHandGrabbable || ctx.inLantern || ctx.Lifecycle.Transport?.Sock != null)
+                if (!ctx.IsHandGrabbable || ctx.Lifecycle.Attachments.InLantern || ctx.Lifecycle.Transport?.Sock != null)
                 {
                     continue;
                 }
@@ -384,13 +383,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Exhausts the rocket bound to <paramref name="ctx"/> (one-time consume) and clears the binding.</summary>
         private static void ExhaustRocketForCandy(CandyContext ctx)
         {
-            if (ctx.activeRocket == null)
+            Rocket rocket = ctx?.Lifecycle.Attachments.Rocket;
+            if (rocket == null)
             {
                 return;
             }
-            ctx.activeRocket.state = Rocket.STATE_ROCKET_EXAUST;
-            ctx.activeRocket.StopAnimation();
-            ctx.activeRocket = null;
+            rocket.state = Rocket.STATE_ROCKET_EXAUST;
+            rocket.StopAnimation();
+            _ = ctx.Lifecycle.Attachments.TryReleaseRocket(rocket);
         }
 
         /// <summary>
@@ -589,6 +589,16 @@ namespace CutTheRopeDX.GameMain
             }
 
             miceManager.ReleaseAllCandy();
+            foreach (CandyContext ctx in candies)
+            {
+                if (!ctx.Lifecycle.Attachments.CarriedByMouse)
+                {
+                    continue;
+                }
+
+                ctx.Lifecycle.Attachments.SetCarriedByMouse(false);
+                ctx.WholeBody.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+            }
 
             if (mice != null)
             {
@@ -726,7 +736,7 @@ namespace CutTheRopeDX.GameMain
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
                 {
                     CandyContext ctx = body.Owner;
-                    if (!ctx.Capabilities.CanBeBrokenByHazards || ctx.inLantern)
+                    if (!ctx.Capabilities.CanBeBrokenByHazards || ctx.Lifecycle.Attachments.InLantern)
                     {
                         continue;
                     }
@@ -946,6 +956,12 @@ namespace CutTheRopeDX.GameMain
             if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), point))
             {
                 miceManager.ForceDropCandy();
+                CandyContext ctx = CandyForPointOrNull(point);
+                ctx?.Lifecycle.Attachments.SetCarriedByMouse(false);
+                if (ctx != null)
+                {
+                    point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                }
             }
         }
 
@@ -994,7 +1010,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Releases all mechanical hands currently holding a candy. Once a candy's
-        /// <see cref="CandyContext.capturingHand"/> is cleared the ant conveyor is free to pick it up
+        /// <see cref="CandyAttachments.Hand"/> is cleared the ant conveyor is free to pick it up
         /// again, so no global conveyor unblock is needed.
         /// </summary>
         public void DetachActiveHands()
@@ -1015,7 +1031,7 @@ namespace CutTheRopeDX.GameMain
                     hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = false;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
-                    _ = (held?.capturingHand = null);
+                    _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                 }
             }
         }
@@ -1053,7 +1069,7 @@ namespace CutTheRopeDX.GameMain
                     hand.doRotateCandy = false;
                     hand.releaseSoundPlayed = true;
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
-                    _ = (held?.capturingHand = null);
+                    _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }

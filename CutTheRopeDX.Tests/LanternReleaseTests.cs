@@ -23,8 +23,8 @@ namespace CutTheRopeDX.Tests
             int restoredIndex = LanternRelease.RestoreReleasedCandy(candies, secondPoint);
 
             Assert.Equal(1, restoredIndex);
-            Assert.True(first.inLantern);
-            Assert.False(second.inLantern);
+            Assert.True(first.Lifecycle.Attachments.InLantern);
+            Assert.False(second.Lifecycle.Attachments.InLantern);
             Assert.True(RGBAColor.RGBAEqual(RGBAColor.transparentRGBA, first.WholeBody.Visual.color));
             Assert.True(RGBAColor.RGBAEqual(RGBAColor.solidOpaqueRGBA, second.WholeBody.Visual.color));
             Assert.False(second.WholeBody.Visual.passTransformationsToChilds);
@@ -45,7 +45,9 @@ namespace CutTheRopeDX.Tests
                 CapturedVisual(),
                 CapturedVisual());
 
-            return new CandyContext(body) { inLantern = true };
+            CandyContext candy = new(body);
+            _ = candy.Lifecycle.Attachments.CaptureInLantern();
+            return candy;
         }
 
         private static GameObject CapturedVisual()
