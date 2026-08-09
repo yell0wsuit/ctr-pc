@@ -107,7 +107,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Mouse CarryByMouse(GameScene scene, CandyContext candy)
         {
             Mouse mouse = scene.Mice()[0];
-            Chase(scene, candy, position => MoveTo(mouse, position), () => candy.Lifecycle.Attachments.CarriedByMouse, "the mouse never took the candy");
+            Chase(scene, candy, position => MoveTo(mouse, position), () => scene.MouseCarries(candy), "the mouse never took the candy");
             return mouse;
         }
 
@@ -122,7 +122,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static Mouse CarryByMouseWithoutMovingIt(GameScene scene, CandyContext candy)
         {
             Assert.True(
-                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.CarriedByMouse),
+                Interaction.StepUntil(scene, () => scene.MouseCarries(candy)),
                 "the mouse never took the candy");
             HeadlessGame.StepFrames(scene, SettleFrames);
             return scene.Mice()[0];

@@ -206,7 +206,7 @@ namespace CutTheRopeDX.GameMain
                     ctx.Lifecycle.Attachments.Rocket.point.prevPos = ctx.Lifecycle.Attachments.Rocket.point.pos;
                     ctx.Lifecycle.Attachments.Rocket.point.v = vectZero;
                 }
-                body.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                body.Point.disableGravity = IsCandyGravitySuppressed(ctx);
 
                 return;
             }
@@ -240,7 +240,7 @@ namespace CutTheRopeDX.GameMain
                     ctx.Lifecycle.Attachments.Rocket.UpdateRotation();
                 }
 
-                body.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                body.Point.disableGravity = IsCandyGravitySuppressed(ctx);
             }
         }
 
@@ -588,16 +588,11 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            ConstraintedPoint released = miceManager.ActiveMouseCarriedStar();
             miceManager.ReleaseAllCandy();
-            foreach (CandyContext ctx in candies)
+            if (CandyForPointOrNull(released) is CandyContext releasedCandy)
             {
-                if (!ctx.Lifecycle.Attachments.CarriedByMouse)
-                {
-                    continue;
-                }
-
-                ctx.Lifecycle.Attachments.SetCarriedByMouse(false);
-                ctx.WholeBody.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                releasedCandy.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(releasedCandy);
             }
 
             if (mice != null)
@@ -957,12 +952,23 @@ namespace CutTheRopeDX.GameMain
             {
                 miceManager.ForceDropCandy();
                 CandyContext ctx = CandyForPointOrNull(point);
-                ctx?.Lifecycle.Attachments.SetCarriedByMouse(false);
                 if (ctx != null)
                 {
-                    point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                    point.disableGravity = IsCandyGravitySuppressed(ctx);
                 }
             }
+        }
+
+        /// <summary>Gets whether the active mouse is the authoritative owner of this candy.</summary>
+        private bool MouseCarries(CandyContext ctx)
+        {
+            return ctx != null && miceManager?.CarriesCandy(ctx.WholeBody.Point) == true;
+        }
+
+        /// <summary>Combines lifecycle-owned gravity suppression with derived mouse ownership.</summary>
+        private bool IsCandyGravitySuppressed(CandyContext ctx)
+        {
+            return ctx?.Lifecycle.IsGravitySuppressed == true || MouseCarries(ctx);
         }
 
         /// <summary>

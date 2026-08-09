@@ -183,8 +183,7 @@ namespace CutTheRopeDX.GameMain
             IsActive = false;
             retreating = false;
             elapsedActive = 0f;
-            carriedStar = null;
-            carriedCandy = null;
+            carry = null;
             grabAnimating = false;
             entryOffsets = new Vector[4];
             exitOffsets = new Vector[3];
@@ -223,8 +222,7 @@ namespace CutTheRopeDX.GameMain
             IsActive = false;
             retreating = false;
             elapsedActive = 0f;
-            carriedStar = null;
-            carriedCandy = null;
+            carry = null;
 
             float angleRad = DEGREES_TO_RADIANS(angleDeg);
             Vector origin = default;
@@ -265,13 +263,11 @@ namespace CutTheRopeDX.GameMain
         /// Plays the entry animation and sets up initial state.
         /// </summary>
         /// <param name="sprites">Shared sprite resources for rendering.</param>
-        /// <param name="carriedCandy">Optional candy object to carry from spawn.</param>
-        /// <param name="carriedStar">Optional star point constraint for the candy.</param>
-        public void Spawn(SharedMouseSprites sprites, GameObject carriedCandy, ConstraintedPoint carriedStar)
+        /// <param name="carry">Optional complete candy payload transferred from another mouse.</param>
+        public void Spawn(SharedMouseSprites sprites, MouseCarry carry)
         {
             sharedSprites = sprites;
-            this.carriedCandy = carriedCandy;
-            this.carriedStar = carriedStar;
+            this.carry = carry;
 
             mouseGroup.RemoveAllChilds();
             _ = mouseGroup.AddChild(sprites.Container);
@@ -282,14 +278,7 @@ namespace CutTheRopeDX.GameMain
                 sprites.Container.AddTimelinewithID(bounceTimeline, (int)MouseAnimationId.Bounce);
             }
 
-            if (carriedCandy != null && carriedStar == null)
-            {
-                Vector offset = entryOffsets[3];
-                carriedCandy.x = x + offset.X;
-                carriedCandy.y = y + offset.Y;
-            }
-
-            PlayAnimation(carriedCandy != null ? MouseAnimationId.EntryWithCandy : MouseAnimationId.EntryEmpty);
+            PlayAnimation(carry != null ? MouseAnimationId.EntryWithCandy : MouseAnimationId.EntryEmpty);
             retreating = false;
             IsActive = false;
             elapsedActive = 0f;
@@ -297,9 +286,9 @@ namespace CutTheRopeDX.GameMain
 
             sprites.Eyes.visible = false;
 
-            if (carriedStar != null)
+            if (carry != null)
             {
-                AttachExistingCandy(carriedStar, carriedCandy);
+                AttachExistingCandy(carry);
             }
 
             CTRSoundMgr.PlaySound(Resources.Snd.MouseRustle);
@@ -325,8 +314,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="candy">The candy game object being grabbed.</param>
         public void GrabCandy(ConstraintedPoint star, GameObject candy)
         {
-            carriedStar = star;
-            carriedCandy = candy;
+            carry = new MouseCarry(star, candy);
 
             star.disableGravity = true;
             star.v = default;
@@ -353,15 +341,15 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when candy was actually carried and has been released.</returns>
         public bool ReleaseCarriedCandy()
         {
-            if (carriedStar == null)
+            MouseCarry released = carry;
+            if (released == null)
             {
                 return false;
             }
 
-            carriedStar.disableGravity = false;
-            carriedStar.prevPos = carriedStar.pos;
-            carriedStar = null;
-            carriedCandy = null;
+            released.Star.disableGravity = false;
+            released.Star.prevPos = released.Star.pos;
+            carry = null;
             grabAnimating = false;
             return true;
         }
@@ -400,7 +388,7 @@ namespace CutTheRopeDX.GameMain
 
             SharedMouseSprites? sprites = sharedSprites;
 
-            bool hasCandy = carriedStar != null;
+            bool hasCandy = carry != null;
 
             // iOS: only hide eyes when exiting empty (not when exiting with candy)
             if (!hasCandy && sprites.HasValue)
@@ -442,10 +430,10 @@ namespace CutTheRopeDX.GameMain
                 grabAnimating = false;
             }
 
-            if (carriedStar != null)
+            if (carry != null)
             {
-                carriedStar.pos = Vect(x + mouthOffset.X, y + mouthOffset.Y);
-                carriedStar.prevPos = carriedStar.pos;
+                carry.Star.pos = Vect(x + mouthOffset.X, y + mouthOffset.Y);
+                carry.Star.prevPos = carry.Star.pos;
             }
 
             if (IsActive && !retreating && !grabAnimating)
@@ -466,17 +454,15 @@ namespace CutTheRopeDX.GameMain
         /// and initiating the entry path animation. Used when transferring
         /// candy between mice.
         /// </summary>
-        /// <param name="star">The constrained star point to attach.</param>
-        /// <param name="candy">The candy game object to attach.</param>
-        public void AttachExistingCandy(ConstraintedPoint star, GameObject candy)
+        /// <param name="existingCarry">The complete candy payload to attach.</param>
+        private void AttachExistingCandy(MouseCarry existingCarry)
         {
-            carriedStar = star;
-            carriedCandy = candy;
-            star.disableGravity = true;
-            star.v = default;
+            carry = existingCarry;
+            existingCarry.Star.disableGravity = true;
+            existingCarry.Star.v = default;
             Vector offset = entryOffsets[3];
-            star.pos = Vect(x + offset.X, y + offset.Y);
-            star.prevPos = star.pos;
+            existingCarry.Star.pos = Vect(x + offset.X, y + offset.Y);
+            existingCarry.Star.prevPos = existingCarry.Star.pos;
             mouthPathPlayer.Play(CreateEntryPath());
             grabAnimating = true;
         }
@@ -484,7 +470,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Gets a value indicating whether the mouse is currently carrying candy.
         /// </summary>
-        public bool HasCandy => carriedStar != null;
+        public bool HasCandy => carry != null;
+
+        /// <summary>Gets the physics point currently carried by this mouse.</summary>
+        public ConstraintedPoint CarriedStar => carry?.Star;
 
         /// <summary>
         /// Determines whether the mouse can be clicked at the specified coordinates
@@ -498,7 +487,7 @@ namespace CutTheRopeDX.GameMain
         /// </returns>
         public bool IsClickable(float clickX, float clickY)
         {
-            return IsActive && carriedStar != null && !retreating && VectDistance(Vect(x, y), Vect(clickX, clickY)) < grabRadius;
+            return IsActive && carry != null && !retreating && VectDistance(Vect(x, y), Vect(clickX, clickY)) < grabRadius;
         }
 
         /// <summary>
@@ -538,8 +527,7 @@ namespace CutTheRopeDX.GameMain
             retreating = true;
             IsActive = false;
             grabAnimating = false;
-            carriedStar = null;
-            carriedCandy = null;
+            carry = null;
 
             if (sharedSprites.HasValue)
             {
@@ -557,15 +545,13 @@ namespace CutTheRopeDX.GameMain
         /// internal references. Used when transferring candy between mice.
         /// </summary>
         /// <returns>
-        /// A tuple containing the carried star point and candy object, both of which may be <see langword="null"/>.
+        /// The complete carried payload, or <see langword="null"/> when the mouse is empty.
         /// </returns>
-        public (ConstraintedPoint star, GameObject candy) DetachCarriedCandy()
+        public MouseCarry DetachCarriedCandy()
         {
-            ConstraintedPoint star = carriedStar;
-            GameObject candy = carriedCandy;
-            carriedStar = null;
-            carriedCandy = null;
-            return (star, candy);
+            MouseCarry detached = carry;
+            carry = null;
+            return detached;
         }
 
         /// <inheritdoc />
@@ -799,14 +785,9 @@ namespace CutTheRopeDX.GameMain
         private float elapsedActive;
 
         /// <summary>
-        /// Star point currently carried by the mouse.
+        /// Complete candy payload currently owned by the mouse.
         /// </summary>
-        private ConstraintedPoint carriedStar;
-
-        /// <summary>
-        /// Candy object currently carried by the mouse.
-        /// </summary>
-        private GameObject carriedCandy;
+        private MouseCarry carry;
 
         /// <summary>
         /// Shared sprite set currently attached to this mouse.

@@ -448,7 +448,7 @@ namespace CutTheRopeDX.GameMain
             if (ctx != null)
             {
                 _ = ctx.Lifecycle.Attachments.TryReleaseRocket(r);
-                ctx.WholeBody.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                ctx.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(ctx);
             }
         }
 

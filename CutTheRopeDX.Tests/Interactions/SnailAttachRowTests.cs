@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.RideSnail(scene, candy);
 
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
             Assert.Equal(1, scene.SnailCount(candy));
         }
 

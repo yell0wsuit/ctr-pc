@@ -101,7 +101,7 @@ namespace CutTheRopeDX.GameMain
             CandyContext ctx = CandyForPointOrNull(point);
             if (ctx != null)
             {
-                point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                point.disableGravity = IsCandyGravitySuppressed(ctx);
             }
         }
 
@@ -120,7 +120,7 @@ namespace CutTheRopeDX.GameMain
             CandyContext ctx = CandyForPointOrNull(point);
             if (ctx != null)
             {
-                point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                point.disableGravity = IsCandyGravitySuppressed(ctx);
             }
         }
 

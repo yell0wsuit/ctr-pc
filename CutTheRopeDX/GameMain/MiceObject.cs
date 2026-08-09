@@ -67,9 +67,10 @@ namespace CutTheRopeDX.GameMain
             bool hasIndexOne = mice.Any(m => m != null && m.index == 1);
             if (sharedSpriteContainer.HasValue && (index == 1 || (activeMouse == null && !hasIndexOne)))
             {
+                MouseCarry carry = activeMouse?.DetachCarriedCandy();
                 activeMouse = mouse;
                 activeIndex = index;
-                mouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar);
+                mouse.Spawn(sharedSpriteContainer.Value, carry);
             }
         }
 
@@ -104,8 +105,6 @@ namespace CutTheRopeDX.GameMain
             // a later candy is grabbed, since that path matches the singleton star points.
             scene.ReleaseRopesForPoint(star);
             scene.DetachHandsForPoint(star);
-            carriedStar = star;
-            carriedCandy = candy;
             activeMouse.GrabCandy(star, candy);
         }
 
@@ -121,7 +120,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The point the active mouse is currently carrying, or null when it carries nothing.</summary>
         public ConstraintedPoint ActiveMouseCarriedStar()
         {
-            return (activeMouse?.HasCandy ?? false) ? carriedStar : null;
+            return activeMouse?.CarriedStar;
+        }
+
+        /// <summary>Gets whether the active mouse owns the specified candy point.</summary>
+        public bool CarriesCandy(ConstraintedPoint point)
+        {
+            return MouseOwnership.CarriesCandy(activeMouse?.CarriedStar, point);
         }
 
         /// <summary>
@@ -135,8 +140,6 @@ namespace CutTheRopeDX.GameMain
             }
 
             activeMouse.DropCandyAndRetreat();
-            carriedStar = null;
-            carriedCandy = null;
         }
 
         /// <summary>
@@ -161,8 +164,6 @@ namespace CutTheRopeDX.GameMain
             {
                 droppedCandy = ActiveMouseCarriedStar();
                 activeMouse.DropCandyAndRetreat();
-                carriedStar = null;
-                carriedCandy = null;
                 return true;
             }
 
@@ -191,13 +192,11 @@ namespace CutTheRopeDX.GameMain
             int nextIdx = (currentIdx + 1) % ordered.Count;
             Mouse nextMouse = ordered[nextIdx];
 
-            (ConstraintedPoint star, GameObject candy) = currentMouse.DetachCarriedCandy();
-            carriedStar = star;
-            carriedCandy = candy;
+            MouseCarry carry = currentMouse.DetachCarriedCandy();
 
             activeIndex = nextMouse.index;
             activeMouse = nextMouse;
-            nextMouse.Spawn(sharedSpriteContainer.Value, carriedCandy, carriedStar);
+            nextMouse.Spawn(sharedSpriteContainer.Value, carry);
         }
 
         /// <summary>
@@ -214,8 +213,6 @@ namespace CutTheRopeDX.GameMain
                 _ = mouse?.ReleaseCarriedCandy();
             }
 
-            carriedStar = null;
-            carriedCandy = null;
         }
 
         /// <summary>
@@ -376,14 +373,5 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private bool advanceLocked;
 
-        /// <summary>
-        /// Star point currently being handed off between mice.
-        /// </summary>
-        private ConstraintedPoint carriedStar;
-
-        /// <summary>
-        /// Candy object currently being handed off between mice.
-        /// </summary>
-        private GameObject carriedCandy;
     }
 }

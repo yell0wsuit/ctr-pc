@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Bubble bubble = Act.CaptureInBubble(scene, candy);
 
             Assert.Same(bubble, candy.WholeBody.Bubble);
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

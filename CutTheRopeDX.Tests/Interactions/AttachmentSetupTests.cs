@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.Hover(candy);
             Interaction.PlaceCandyAt(candy, Interaction.At(Scenario.New().WorldX(160), Scenario.WorldY(200)));
 
-            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.CarriedByMouse));
+            Assert.True(Interaction.StepUntil(scene, () => scene.MouseCarries(candy)));
         }
 
         [Fact]

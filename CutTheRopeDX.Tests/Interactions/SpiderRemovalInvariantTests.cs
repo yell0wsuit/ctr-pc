@@ -84,7 +84,6 @@ namespace CutTheRopeDX.Tests.Interactions
             scene.SpiderWon(scene.Grabs()[0]);
 
             scene.AssertNoLiveAttachments(captured);
-            Assert.True(mouseCandy.Lifecycle.Attachments.CarriedByMouse);
             Assert.True(scene.MouseCarries(mouseCandy));
         }
 

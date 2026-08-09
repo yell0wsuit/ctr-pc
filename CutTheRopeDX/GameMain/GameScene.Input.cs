@@ -95,10 +95,9 @@ namespace CutTheRopeDX.GameMain
             if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
             {
                 CandyContext droppedCandy = CandyForPointOrNull(droppedMouseCandy);
-                droppedCandy?.Lifecycle.Attachments.SetCarriedByMouse(false);
                 if (droppedCandy != null)
                 {
-                    droppedMouseCandy.disableGravity = droppedCandy.Lifecycle.IsGravitySuppressed;
+                    droppedMouseCandy.disableGravity = IsCandyGravitySuppressed(droppedCandy);
                 }
                 return true;
             }

@@ -80,7 +80,6 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Mouse(160, 200));
             _ = Act.CarryByMouse(scene, candy);
             Act.Eat(scene, candy);
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
             Assert.False(scene.MouseCarries(candy));
         }
 
