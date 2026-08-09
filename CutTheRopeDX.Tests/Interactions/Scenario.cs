@@ -262,13 +262,14 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <summary>Adds a ghost that can morph into a bubble and a grab.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
+        /// <param name="radius">Grab radius, or -1 for an automatically attached rope.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Ghost(int x, int y)
+        public Scenario Ghost(int x, int y, int radius = 80)
         {
             XElement ghost = Node("ghost", x, y);
             ghost.SetAttributeValue("bubble", "true");
             ghost.SetAttributeValue("grab", "true");
-            ghost.SetAttributeValue("radius", Num(80));
+            ghost.SetAttributeValue("radius", Num(radius));
             return Add(ghost);
         }
 

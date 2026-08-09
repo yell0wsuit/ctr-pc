@@ -47,6 +47,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Grab>>(scene, "bungees");
         }
 
+        /// <summary>All ropes currently registered with the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The registered rope entries.</returns>
+        public static IReadOnlyList<RopeEntry> RegisteredRopes(this GameScene scene)
+        {
+            return Field<RopeRegistry>(scene, "ropes").All;
+        }
+
         /// <summary>All free bubbles loaded into the scene.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The bubble list.</returns>

@@ -69,6 +69,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void BubbleToGrabImmediatelyChangesOwnershipThenRetiresTheOutgoingBubble()
+        {
+            (Ghost ghost, List<Bubble> bubbles, List<Grab> grabs, _) = CreateGhost();
+            ghost.ResetToForm(GhostForm.Bubble);
+            GhostBubble outgoingBubble = Assert.IsType<GhostBubble>(ghost.Apparition);
+
+            ghost.ResetToForm(GhostForm.Grab);
+
+            Assert.Equal(GhostForm.Grab, ghost.Form);
+            GhostGrab currentGrab = Assert.IsType<GhostGrab>(ghost.Apparition);
+            Assert.Same(currentGrab, Assert.Single(grabs));
+            Assert.Same(outgoingBubble, Assert.Single(bubbles));
+
+            outgoingBubble.Update(0.2f);
+            ghost.Update(0f);
+
+            Assert.Empty(bubbles);
+            Assert.Equal(GhostForm.Grab, ghost.Form);
+            Assert.Same(currentGrab, ghost.Apparition);
+        }
+
+        [Fact]
         public void MorphPhaseNamesOutgoingAndIncomingFormsUntilAppearanceFinishes()
         {
             (Ghost ghost, _, _, _) = CreateGhost();
@@ -104,6 +126,61 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(GhostForm.Idle, ghost.Form);
             Assert.Null(ghost.Apparition);
+        }
+
+        [Fact]
+        public void PoppedGhostBubbleClearsCandyOwnershipAndRetiresWithoutLeaking()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Ghost(20, 40)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Ghost ghost = Assert.Single(scene.Ghosts());
+            ghost.ResetToForm(GhostForm.Bubble);
+            Bubble poppedBubble = Act.CaptureInBubble(scene, candy);
+
+            scene.PopCandyBubble(candy.WholeBody);
+
+            Assert.Null(candy.WholeBody.Bubble);
+            Assert.Equal(GhostForm.Idle, ghost.Form);
+            Assert.Null(ghost.Apparition);
+            Assert.Contains(poppedBubble, scene.Bubbles());
+
+            poppedBubble.Update(0.2f);
+            ghost.Update(0f);
+
+            Assert.DoesNotContain(poppedBubble, scene.Bubbles());
+        }
+
+        [Fact]
+        public void CutAutoRopeReturnsGhostToIdleAndRetiresTheGrabAndRope()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Ghost(20, 40, radius: -1)
+                .Build();
+            Ghost ghost = Assert.Single(scene.Ghosts());
+            ghost.ResetToForm(GhostForm.Grab);
+            GhostGrab outgoingGrab = Assert.IsType<GhostGrab>(ghost.Apparition);
+            Bungee outgoingRope = outgoingGrab.Rope;
+            Assert.NotNull(outgoingRope);
+            Assert.Contains(scene.RegisteredRopes(), entry => entry.Rope == outgoingRope);
+
+            outgoingRope.cut = 0;
+            ghost.Update(0f);
+
+            Assert.Equal(GhostForm.Idle, ghost.Form);
+            Assert.Null(ghost.Apparition);
+
+            outgoingGrab.Update(0.2f);
+            ghost.Update(0f);
+
+            Assert.DoesNotContain(outgoingGrab, scene.Grabs());
+            Assert.Null(outgoingGrab.Rope);
+            Assert.DoesNotContain(scene.RegisteredRopes(), entry => entry.Rope == outgoingRope);
         }
 
         [Fact]
