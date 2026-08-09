@@ -623,7 +623,6 @@ namespace CutTheRopeDX.GameMain
                 input,
                 overlayMode,
                 gameScene.gameplayFlow.Phase,
-                gameScene.gameplayFlow.TransitionActive,
                 resultExitAllowed: !CustomLevelSession.IsActive);
         }
 
