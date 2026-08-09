@@ -301,14 +301,15 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="y">Level-space Y of the shoulder.</param>
         /// <param name="segmentLength">Segment length in level units.</param>
         /// <param name="segmentAngle">Segment angle in degrees (0 points right, 90 down).</param>
+        /// <param name="rotatable">Whether the segment carries a rotate button.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Hand(int x, int y, int segmentLength, float segmentAngle)
+        public Scenario Hand(int x, int y, int segmentLength, float segmentAngle, bool rotatable = false)
         {
             XElement hand = Node("hand", x, y);
             hand.SetAttributeValue("segmentsCount", Num(1));
             hand.SetAttributeValue("segment1Length", Num(segmentLength));
             hand.SetAttributeValue("segment1Angle", Num(segmentAngle));
-            hand.SetAttributeValue("segment1Rotatable", Flag(false));
+            hand.SetAttributeValue("segment1Rotatable", Flag(rotatable));
             return Add(hand);
         }
 
