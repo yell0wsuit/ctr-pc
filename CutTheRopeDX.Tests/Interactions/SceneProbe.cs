@@ -283,8 +283,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static bool MouseCarries(this GameScene scene, CandyContext candy)
         {
             MiceObject mice = Field<MiceObject>(scene, "miceManager");
-            ConstraintedPoint carried = mice?.ActiveMouseCarriedStar();
-            return carried != null && carried == candy.WholeBody.Point;
+            return mice?.CarriesCandy(candy.WholeBody.Point) == true;
         }
 
         /// <summary>Asserts that a retired whole candy has no observable live attachment owner.</summary>
@@ -297,7 +296,6 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Null(candy.Lifecycle.Attachments.Rocket);
             Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
             Assert.Null(candy.Lifecycle.Attachments.AntSegment);
             Assert.Null(candy.Lifecycle.Attachments.LastAntSegment);
             Assert.Equal(0, scene.SnailCount(candy));

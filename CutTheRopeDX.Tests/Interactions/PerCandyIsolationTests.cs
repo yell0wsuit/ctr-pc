@@ -113,7 +113,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             _ = Act.CarryByMouse(scene, stolen);
 
-            Assert.True(stolen.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(stolen));
             Assert.Same(hand, kept.Lifecycle.Attachments.Hand);
         }
 

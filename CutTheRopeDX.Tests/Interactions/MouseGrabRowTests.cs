@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.CarryByMouseWithoutMovingIt(scene, candy);
             HeadlessGame.StepFrames(scene, 30);
 
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
             Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
@@ -95,8 +95,30 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(scene.TouchDownXYIndex((int)mouse.x, (int)mouse.y, 0));
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
             Assert.Equal(candy.Lifecycle.IsGravitySuppressed, candy.WholeBody.Point.disableGravity);
+        }
+
+        [Fact]
+        public void RetreatTransfersTheSameCarryToTheNextMouse()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Mouse(160, 200, index: 1)
+                .Mouse(300, 200, index: 2)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Interaction.Hover(candy);
+            Mouse first = Act.CarryByMouse(scene, candy);
+            Mouse second = scene.Mice()[1];
+
+            first.BeginRetreat();
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => second.IsActive && scene.MouseCarries(candy)),
+                "the next mouse never received the carried candy");
+            Assert.False(first.HasCandy);
+            Assert.True(second.HasCandy);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment, int mouseY = 40)

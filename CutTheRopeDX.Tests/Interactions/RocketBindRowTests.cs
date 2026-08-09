@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Rocket rocket = Act.BindRocket(scene, candy);
 
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
             Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
             Assert.Equal(Rocket.STATE_ROCKET_FLY, rocket.state);
         }

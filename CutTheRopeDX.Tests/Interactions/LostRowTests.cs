@@ -98,7 +98,6 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.BreakOnSpikes(scene, candy);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         [Fact]
@@ -116,7 +115,6 @@ namespace CutTheRopeDX.Tests.Interactions
             scene.GameLost();
 
             Assert.False(scene.MouseCarries(surviving));
-            Assert.False(surviving.Lifecycle.Attachments.CarriedByMouse);
             Assert.False(surviving.Lifecycle.IsGravitySuppressed);
             Assert.False(surviving.WholeBody.Point.disableGravity);
         }
@@ -169,7 +167,6 @@ namespace CutTheRopeDX.Tests.Interactions
             scene.BreakCandyBody(candy.WholeBody);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         [Fact]
@@ -305,7 +302,7 @@ namespace CutTheRopeDX.Tests.Interactions
             HeadlessGame.StepFrames(scene, 60);
 
             Assert.Equal(0, scene.Outcomes().LostCount);
-            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.True(scene.MouseCarries(candy));
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

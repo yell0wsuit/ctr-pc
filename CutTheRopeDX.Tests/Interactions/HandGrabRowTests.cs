@@ -92,7 +92,6 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.GrabWithHand(scene, candy);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

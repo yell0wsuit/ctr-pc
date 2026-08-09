@@ -87,7 +87,7 @@ namespace CutTheRopeDX.GameMain
 
                 bool shouldSlowStop = AntCandyInteraction.ShouldSlowStopAfterDetach(otherSegmentContainsCandyExternally);
                 attachments.EndAntCarry(waitForExit: false);
-                point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                point.disableGravity = IsCandyGravitySuppressed(ctx);
 
                 if (shouldSlowStop)
                 {
@@ -188,7 +188,7 @@ namespace CutTheRopeDX.GameMain
             ApplyConveyorBrake(ctx);
             ctx.Lifecycle.Attachments.EndAntCarry(waitForExit: true);
             PlayAntConveyorDetachSound();
-            point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+            point.disableGravity = IsCandyGravitySuppressed(ctx);
             return true;
         }
 
@@ -211,7 +211,7 @@ namespace CutTheRopeDX.GameMain
         /// <see cref="AntCandyInteraction.CanAttach"/>.
         /// </summary>
         /// <param name="ctx">The candy to detach from the conveyor.</param>
-        private static void DetachCandyFromConveyor(CandyContext ctx)
+        private void DetachCandyFromConveyor(CandyContext ctx)
         {
             if (ctx == null)
             {
@@ -225,7 +225,7 @@ namespace CutTheRopeDX.GameMain
                 PlayAntConveyorDetachSound();
 
                 // A candy can only hold a segment if it had a point when it attached.
-                ctx.WholeBody.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+                ctx.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(ctx);
             }
         }
 
@@ -256,7 +256,7 @@ namespace CutTheRopeDX.GameMain
                 candyHeldByHand: ctx.Lifecycle.Attachments.Hand != null,
                 candyInLantern: ctx.Lifecycle.Attachments.InLantern,
                 candyInTransport: ctx.Lifecycle.Presence == CandyPresence.Hidden,
-                candyCarriedByMouse: ctx.Lifecycle.Attachments.CarriedByMouse))
+                candyCarriedByMouse: MouseCarries(ctx)))
             {
                 return false;
             }
@@ -273,7 +273,7 @@ namespace CutTheRopeDX.GameMain
                 interactionPoint.X + (segment.speed.X * 0.01f),
                 interactionPoint.Y + (segment.speed.Y * 0.01f));
             _ = ctx.Lifecycle.Attachments.BeginAntCarry(segment, interactionPoint, 0.3f, 0.01f);
-            ctx.WholeBody.Point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+            ctx.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(ctx);
 
             if (freshPickup)
             {

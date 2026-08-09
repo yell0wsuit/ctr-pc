@@ -851,13 +851,6 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
 
-                // Sync per-candy carried flag from the active mouse (covers grab + every drop path).
-                ConstraintedPoint carried = miceManager.ActiveMouseCarriedStar();
-                for (int ci = 0; ci < candies.Count; ci++)
-                {
-                    candies[ci].Lifecycle.Attachments.SetCarriedByMouse(
-                        MouseOwnership.CarriesCandy(carried, candies[ci].WholeBody.Point));
-                }
             }
             float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
             foreach (object obj11 in socks)
@@ -982,7 +975,7 @@ namespace CutTheRopeDX.GameMain
                     // wobble, frozen in as a position drift if the candy is dropped mid-jitter.
                     // Parked: no satisfaction, no thrust; position snap, rotation sync, fuse tick
                     // and gravity heal keep running, and full flight resumes on drop.
-                    bool parkedOnMouse = rocketCandy?.Lifecycle.Attachments.CarriedByMouse == true;
+                    bool parkedOnMouse = MouseCarries(rocketCandy);
                     if (parkedOnMouse && carriesCandy)
                     {
                         // prevPos too: rocket.Update integrates the point next, and a bare pos
@@ -1073,7 +1066,7 @@ namespace CutTheRopeDX.GameMain
                         if (rocket.time != -1f && Mover.MoveVariableToTarget(ref rocket.time, 0f, 1f, delta))
                         {
                             ExhaustRocketForCandy(rocketCandy);
-                            rocketStar.disableGravity = rocketCandy?.Lifecycle.IsGravitySuppressed == true;
+                            rocketStar.disableGravity = IsCandyGravitySuppressed(rocketCandy);
                         }
                     }
                     if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_DIST)
@@ -1112,7 +1105,7 @@ namespace CutTheRopeDX.GameMain
                             // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
                             // The rocket steals from nobody — it coexists with hand or mouse and
                             // launches when the holder releases.
-                            if (RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, ctx.Lifecycle.Attachments.CarriedByMouse))
+                            if (RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
                             {
                                 rocket.point.pos = body.Point.pos;
                                 rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);

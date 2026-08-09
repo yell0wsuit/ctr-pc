@@ -3,21 +3,19 @@ using CutTheRopeDX.Framework.Helpers;
 
 namespace CutTheRopeDX.GameMain
 {
-    /// <summary>Immutable owners released by an authoritative attachment transition.</summary>
+    /// <summary>Immutable device owners released by an authoritative attachment transition.</summary>
     internal sealed class CandyAttachmentSnapshot
     {
         internal CandyAttachmentSnapshot(
             bool inLantern,
             Rocket rocket,
             AntsPathSegment antSegment,
-            MechanicalHand hand,
-            bool carriedByMouse)
+            MechanicalHand hand)
         {
             InLantern = inLantern;
             Rocket = rocket;
             AntSegment = antSegment;
             Hand = hand;
-            CarriedByMouse = carriedByMouse;
         }
 
         /// <summary>Gets whether a lantern owned the candy.</summary>
@@ -32,8 +30,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the mechanical hand that owned the candy, if any.</summary>
         public MechanicalHand Hand { get; }
 
-        /// <summary>Gets whether the mouse owned the candy.</summary>
-        public bool CarriedByMouse { get; }
     }
 
     /// <summary>
@@ -74,40 +70,33 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the mechanical hand currently holding the candy, if any.</summary>
         public MechanicalHand Hand { get; private set; }
 
-        /// <summary>Gets whether the active mouse currently carries the candy.</summary>
-        public bool CarriedByMouse { get; private set; }
-
         /// <summary>Gets whether the aggregate contains a live attachment or reattachment guard.</summary>
         public bool HasAny => InLantern
             || Rocket != null
             || AntSegment != null
             || LastAntSegment != null
             || AntWaitingForExit
-            || Hand != null
-            || CarriedByMouse;
+            || Hand != null;
 
         /// <summary>Gets whether an attachment currently owns gravity for the candy point.</summary>
         public bool SuppressGravity => InLantern
             || Rocket != null
-            || AntSegment != null
-            || CarriedByMouse;
+            || AntSegment != null;
 
         /// <summary>
         /// Captures the candy in a lantern and atomically releases every incompatible carrier.
         /// </summary>
-        /// <returns>The former rocket, hand, ant, and mouse owners for scene-level cleanup.</returns>
+        /// <returns>The former rocket, hand, and ant owners for scene-level cleanup.</returns>
         public CandyAttachmentSnapshot CaptureInLantern()
         {
             CandyAttachmentSnapshot snapshot = new(
                 inLantern: false,
                 rocket: Rocket,
                 antSegment: AntSegment,
-                hand: Hand,
-                carriedByMouse: CarriedByMouse);
+                hand: Hand);
             InLantern = true;
             Rocket = null;
             Hand = null;
-            CarriedByMouse = false;
             ResetAnts();
             return snapshot;
         }
@@ -168,12 +157,6 @@ namespace CutTheRopeDX.GameMain
 
             Hand = null;
             return true;
-        }
-
-        /// <summary>Synchronizes ownership with the active mouse.</summary>
-        public void SetCarriedByMouse(bool carried)
-        {
-            CarriedByMouse = carried;
         }
 
         /// <summary>Starts a complete ant-conveyor carry interaction.</summary>
@@ -256,17 +239,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Clears carriers that cannot survive transport while preserving a bound rocket.
         /// </summary>
-        /// <returns>The former hand, ant, and mouse owners for scene-level cleanup.</returns>
+        /// <returns>The former hand and ant owners for scene-level cleanup.</returns>
         public CandyAttachmentSnapshot DetachForTransport()
         {
             CandyAttachmentSnapshot snapshot = new(
                 inLantern: false,
                 rocket: null,
                 antSegment: AntSegment,
-                hand: Hand,
-                carriedByMouse: CarriedByMouse);
+                hand: Hand);
             Hand = null;
-            CarriedByMouse = false;
             ResetAnts();
             return snapshot;
         }
@@ -274,11 +255,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Atomically clears every attachment and returns the former owners.</summary>
         public CandyAttachmentSnapshot DetachAll()
         {
-            CandyAttachmentSnapshot snapshot = new(InLantern, Rocket, AntSegment, Hand, CarriedByMouse);
+            CandyAttachmentSnapshot snapshot = new(InLantern, Rocket, AntSegment, Hand);
             InLantern = false;
             Rocket = null;
             Hand = null;
-            CarriedByMouse = false;
             ResetAnts();
             return snapshot;
         }

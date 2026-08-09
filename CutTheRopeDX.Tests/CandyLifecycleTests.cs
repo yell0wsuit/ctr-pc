@@ -58,11 +58,9 @@ namespace CutTheRopeDX.Tests
         {
             CandyLifecycle lifecycle = PresentLifecycle();
             _ = lifecycle.Attachments.CaptureInLantern();
-            lifecycle.Attachments.SetCarriedByMouse(true);
 
             Assert.True(lifecycle.TryRemove(CandyRemovalReason.Hazard, out CandyAttachmentSnapshot detached));
 
-            Assert.True(detached.CarriedByMouse);
             Assert.True(detached.InLantern);
             Assert.False(lifecycle.Attachments.HasAny);
             Assert.False(lifecycle.IsGravitySuppressed);

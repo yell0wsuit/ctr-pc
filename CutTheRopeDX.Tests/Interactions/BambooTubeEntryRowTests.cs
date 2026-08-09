@@ -94,7 +94,6 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(TubeMouth mouth, Func<Scenario, Scenario> attachment)

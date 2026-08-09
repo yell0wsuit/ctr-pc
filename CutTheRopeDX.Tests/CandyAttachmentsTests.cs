@@ -68,14 +68,11 @@ namespace CutTheRopeDX.Tests
             _ = attachments.BindRocket(rocket);
             _ = attachments.CaptureByHand(hand);
             _ = attachments.BeginAntCarry(segment, new Vector(25f, 5f), 0.3f, 0.01f);
-            attachments.SetCarriedByMouse(true);
-
             CandyAttachmentSnapshot detached = attachments.DetachAll();
 
             Assert.Same(rocket, detached.Rocket);
             Assert.Same(hand, detached.Hand);
             Assert.Same(segment, detached.AntSegment);
-            Assert.True(detached.CarriedByMouse);
             Assert.True(detached.InLantern);
             Assert.False(attachments.HasAny);
             Assert.False(attachments.SuppressGravity);
@@ -93,18 +90,14 @@ namespace CutTheRopeDX.Tests
             _ = attachments.BindRocket(rocket);
             _ = attachments.CaptureByHand(hand);
             _ = attachments.BeginAntCarry(segment, new Vector(25f, 5f), 0.3f, 0.01f);
-            attachments.SetCarriedByMouse(true);
-
             CandyAttachmentSnapshot detached = attachments.DetachForTransport();
 
             Assert.Same(hand, detached.Hand);
             Assert.Same(segment, detached.AntSegment);
-            Assert.True(detached.CarriedByMouse);
             Assert.Null(detached.Rocket);
             Assert.Same(rocket, attachments.Rocket);
             Assert.Null(attachments.Hand);
             Assert.Null(attachments.AntSegment);
-            Assert.False(attachments.CarriedByMouse);
         }
 
         [Fact]
@@ -117,20 +110,16 @@ namespace CutTheRopeDX.Tests
             _ = attachments.BindRocket(rocket);
             _ = attachments.CaptureByHand(hand);
             _ = attachments.BeginAntCarry(segment, new Vector(25f, 5f), 0.3f, 0.01f);
-            attachments.SetCarriedByMouse(true);
-
             CandyAttachmentSnapshot detached = attachments.CaptureInLantern();
 
             Assert.Same(rocket, detached.Rocket);
             Assert.Same(hand, detached.Hand);
             Assert.Same(segment, detached.AntSegment);
-            Assert.True(detached.CarriedByMouse);
             Assert.False(detached.InLantern);
             Assert.True(attachments.InLantern);
             Assert.Null(attachments.Rocket);
             Assert.Null(attachments.Hand);
             Assert.Null(attachments.AntSegment);
-            Assert.False(attachments.CarriedByMouse);
             Assert.True(attachments.SuppressGravity);
         }
     }
