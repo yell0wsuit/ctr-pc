@@ -28,8 +28,9 @@ namespace CutTheRopeDX.Tests.Interactions
 
         private readonly List<XElement> objects = [];
         private readonly List<XAttribute> design = [];
-        private readonly int width = DefaultWidth;
-        private readonly int height = DefaultHeight;
+        private int width = DefaultWidth;
+        private int height = DefaultHeight;
+        private int special = 1;
         private bool splitCandy;
 
         internal Scenario()
@@ -288,13 +289,14 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="y">Level-space Y.</param>
         /// <param name="radius">Grab radius in level units.</param>
         /// <param name="index">Mouse index; index 1 is the one that starts active.</param>
+        /// <param name="activeTime">Seconds before the mouse retreats.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Mouse(int x, int y, int radius = 80, int index = 1)
+        public Scenario Mouse(int x, int y, int radius = 80, int index = 1, float activeTime = 600f)
         {
             XElement mouse = Node("mouse", x, y);
             mouse.SetAttributeValue("angle", Num(0));
             mouse.SetAttributeValue("radius", Num(radius));
-            mouse.SetAttributeValue("activeTime", Num(600));
+            mouse.SetAttributeValue("activeTime", Num(activeTime));
             mouse.SetAttributeValue("index", Num(index));
             return Add(mouse);
         }
@@ -410,6 +412,21 @@ namespace CutTheRopeDX.Tests.Interactions
             return this;
         }
 
+        /// <summary>Sets the authored map dimensions.</summary>
+        public Scenario MapSize(int mapWidth, int mapHeight)
+        {
+            width = mapWidth;
+            height = mapHeight;
+            return this;
+        }
+
+        /// <summary>Sets the authored special-tutorial identifier.</summary>
+        public Scenario Special(int specialId)
+        {
+            special = specialId;
+            return this;
+        }
+
         /// <summary>Boots the scenario and returns the live scene.</summary>
         /// <returns>The loaded scene, ready to be stepped.</returns>
         public GameScene Build()
@@ -427,7 +444,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 new XElement(
                     "gameDesign",
                     new XAttribute("ropePhysicsSpeed", "1.0"),
-                    new XAttribute("special", "1"),
+                    new XAttribute("special", special),
                     new XAttribute("twoParts", Flag(splitCandy)),
                     design));
 

@@ -103,6 +103,45 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Equal(Rocket.STATE_ROCKET_FLY, rocket.state);
         }
 
+        [Fact]
+        public void RocketFliesStraightAfterReleaseFromSecondMouse()
+        {
+            GameScene scene = Scenario.New()
+                .MapSize(640, 480)
+                .Special(0)
+                .Design("nightLevel", "false")
+                .Design("useMobilePhysics", "true")
+                .Candy(82, 100, number: "0")
+                .OmNom(106, 346)
+                .Mouse(85, 194, radius: 50, index: 1, activeTime: 1f)
+                .Mouse(246, 142, radius: 50, index: 2, activeTime: 1f)
+                .Rocket(245, 115, angle: 0f, impulse: 20f, impulseFactor: 0.6f)
+                .Build();
+            CandyContext candy = scene.Candy();
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => scene.Mice()[1].IsActive && scene.MouseCarries(candy), maxFrames: 360),
+                "the second mouse never received the candy");
+            Assert.NotNull(candy.Lifecycle.Attachments.Rocket);
+
+            Mouse second = scene.Mice()[1];
+            Rocket rocket = candy.Lifecycle.Attachments.Rocket;
+            Assert.True(scene.TouchDownXYIndex((int)second.x, (int)second.y, 0));
+            float releaseX = candy.WholeBody.Point.pos.X;
+            float releaseY = candy.WholeBody.Point.pos.Y;
+            float rocketReleaseX = rocket.x;
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.True(
+                candy.WholeBody.Point.pos.X > releaseX + 20f,
+                "the rocket did not fly forward after release");
+            Assert.True(rocket.x > rocketReleaseX + 20f, "the rocket visual did not follow the candy");
+            Assert.InRange(candy.WholeBody.Point.pos.Y, releaseY - 5f, releaseY + 5f);
+            Assert.InRange(rocket.y, releaseY - 5f, releaseY + 5f);
+            Assert.InRange(rocket.x - candy.WholeBody.Point.pos.X, -2f, 2f);
+        }
+
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment, float rocketImpulse = 0f)
         {
             // Rocket 0 is the one under test and parks in a corner until Act.BindRocket brings it
