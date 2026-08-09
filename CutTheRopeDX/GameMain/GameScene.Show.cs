@@ -108,11 +108,9 @@ namespace CutTheRopeDX.GameMain
                 timeline6.delegateTimelineDelegate = staticAniPool;
                 _ = staticAniPool.AddChild(text);
             }
-            for (int m = 0; m < 5; m++)
+            foreach (PointerGestureState gesture in pointerGestures)
             {
-                dragging[m] = false;
-                startPos[m] = prevStartPos[m] = vectZero;
-                fingerTraces[m]?.Reset();
+                gesture?.Reset();
             }
             if (clickToCut)
             {
