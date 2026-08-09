@@ -456,14 +456,12 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }
-                SetNightSleepVisibility(t, false);
-                t.sleepPulseActive = false;
-                t.sleepSoundTimer = 0f;
-                t.postEatSleepScheduled = false;
+                t.NightSleep.ClearPresentation();
+                t.controller?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -473,11 +471,6 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            if (GameWinChewing.ShouldPlayPrimaryChewingOnGameWon(targets.Count))
-            {
-                targetAnimationController?.PlayChewing();
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, targetAnimationController?.SkinDefinition);
-            }
             PopCandyBubble(candies[0].WholeBody);
             // The primary is already Removed(Eaten) here: the single caller runs behind AllEaten,
             // which cannot pass while an eatable candy still has a body. So the win timeline below
@@ -528,14 +521,12 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }
-                SetNightSleepVisibility(t, false);
-                t.sleepPulseActive = false;
-                t.sleepSoundTimer = 0f;
-                t.postEatSleepScheduled = false;
+                t.NightSleep.ClearPresentation();
+                t.controller?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -551,7 +542,7 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
-                if (t.postEatSleepActive)
+                if (t.Feeding.IsAsleep)
                 {
                     continue;
                 }

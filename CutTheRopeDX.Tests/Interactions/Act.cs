@@ -156,9 +156,9 @@ namespace CutTheRopeDX.Tests.Interactions
                 scene,
                 candy,
                 position => MoveMouthTo(target.targetObject, position),
-                // Falling asleep is what only eating does; candy-gone alone would also be true of a
+                // Becoming fed is what only eating does; candy-gone alone would also be true of a
                 // candy that drifted off screen while Om Nom was chasing it.
-                () => target.asleep,
+                () => target.Feeding.IsFed,
                 "Om Nom never ate the candy");
         }
 

@@ -64,18 +64,13 @@ namespace CutTheRopeDX.GameMain
             controller.Initialize(this);
 
             // Register this Om Nom as an independent target. targets[0] stays the primary.
-            targets.Add(new TargetContext
+            targets.Add(new TargetContext(BLINK_SKIP, RND_RANGE(5, 20))
             {
                 controller = controller,
                 targetObject = targetObj,
                 support = support,
                 baseScaleX = targetBaseScaleX,
                 baseScaleY = targetBaseScaleY,
-                mouthOpen = false,
-                mouthCloseTimer = 0f,
-                asleep = false,
-                blinkTimer = BLINK_SKIP,
-                idlesTimer = RND_RANGE(5, 20),
             });
 
             // Show greeting if needed (skip for night levels).

@@ -9,7 +9,7 @@ namespace CutTheRopeDX.GameMain
 
         private void SchedulePostEatSleep(TargetContext target)
         {
-            if (target.postEatSleepScheduled
+            if (target.Feeding.Phase != TargetFeedingPhase.Chewing
                 || !GameWinChewing.ShouldSchedulePostEatSleep(
                     targets.Count,
                     nightLevel,
@@ -18,7 +18,6 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            target.postEatSleepScheduled = true;
             dd.CallObjectSelectorParamafterDelay(
                 new DelayedDispatcher.DispatchFunc(Selector_startPostEatSleep),
                 new PostEatSleepRequest(target),
@@ -34,7 +33,6 @@ namespace CutTheRopeDX.GameMain
 
             TargetContext target = request.Target;
             if (target == null
-                || !target.asleep
                 || gameplayFlow.TransitionActive
                 || !GameWinChewing.ShouldSchedulePostEatSleep(
                     targets.Count,
@@ -44,8 +42,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            target.postEatSleepActive = true;
-            target.sleepSoundTimer = NightSleepSoundInterval;
+            if (!target.Feeding.TryFallAsleep())
+            {
+                return;
+            }
+
+            target.NightSleep.StartPostEatPresentation(NightSleepSoundInterval);
             SetNightSleepVisibility(target, false);
             target.controller?.PlaySleepingWithoutIdleToSleepTrim();
         }
@@ -60,7 +62,7 @@ namespace CutTheRopeDX.GameMain
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext target = targets[ti];
-                if (!target.postEatSleepActive || target.targetObject == null)
+                if (!target.Feeding.IsAsleep || target.targetObject == null)
                 {
                     continue;
                 }
@@ -75,10 +77,8 @@ namespace CutTheRopeDX.GameMain
                 target.controller?.UpdateSleepOverlays(delta);
                 target.controller?.SyncSleepOverlayPosition(target.targetObject.x, target.targetObject.y);
 
-                target.sleepSoundTimer += delta;
-                if (target.sleepSoundTimer > NightSleepSoundInterval)
+                if (target.NightSleep.AdvanceSound(delta, NightSleepSoundInterval))
                 {
-                    target.sleepSoundTimer = 0f;
                     CTRSoundMgr.PlayRandomOmNomSound(
                         target.controller?.SkinDefinition,
                         Resources.Snd.MonsterSleep1,
