@@ -218,10 +218,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Hide()
         {
-            if (gravityButton != null)
-            {
-                RemoveChild(gravityButton);
-            }
+            gravityState.RemoveButtonFrom(this);
             if (waterLayer != null)
             {
                 waterLayer.PrepareToRelease();
@@ -1087,41 +1084,14 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public bool nightLevel;
 
-        /// <summary>
-        /// Whether gravity is currently in the normal orientation.
-        /// </summary>
-        public bool gravityNormal;
-
-        /// <summary>
-        /// The UI button that toggles gravity orientation.
-        /// </summary>
-        public ToggleButton gravityButton;
-
-        /// <summary>
-        /// The touch index currently holding the gravity button, or an invalid marker.
-        /// </summary>
-        public int gravityTouchDown;
+        /// <summary>Single owner of authored gravity, orientation, input, physics, and presentation.</summary>
+        public readonly GravityState gravityState = new();
 
         /// <summary>
         /// Whether the loaded map declares a split candy. Level metadata, parsed before the split
         /// lifecycle exists, so the loader cannot ask the primary candy's lifecycle instead.
         /// </summary>
         private bool levelAuthorsSplitCandy;
-
-        /// <summary>
-        /// The X value for the global gravity.
-        /// </summary>
-        public float globalGravityX;
-
-        /// <summary>
-        /// The Y value for the global gravity.
-        /// </summary>
-        public float globalGravityY;
-
-        /// <summary>
-        /// Earth animation images used by gravity-switch levels.
-        /// </summary>
-        public List<Image> earthAnims;
 
         /// <summary>
         /// Optional string to load as a name for the level.

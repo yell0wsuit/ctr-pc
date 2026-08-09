@@ -87,7 +87,7 @@ namespace CutTheRopeDX.GameMain
             float verticalOffset = ActivePhysicsConstants.SteamTubeVerticalOffsetScale * tubeScale;
             float collisionRadius = ActivePhysicsConstants.SteamTubeCollisionRadiusScale * tubeScale;
             bool useMobileFormula = ActivePhysicsConstants.UseMobilePhysicsModel;
-            bool gravityInverted = gravityButton != null && !gravityNormal;
+            bool gravityInverted = gravityState.IsInverted;
 
             float rectLeft = tube.x - (tubeWidth / 2f);
             float rectTop = tube.y - currentHeight - verticalOffset;
@@ -454,7 +454,7 @@ namespace CutTheRopeDX.GameMain
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            if (gravityButton != null && !gravityNormal)
+            if (gravityState.IsInverted)
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)g.Spider.Animation.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)g.Spider.Animation.x, (int)(g.Spider.Animation.y + 50), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));
@@ -510,7 +510,7 @@ namespace CutTheRopeDX.GameMain
             capturedCandy.y = -5f;
             _ = image.AddChild(capturedCandy);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            if (gravityButton != null && !gravityNormal)
+            if (gravityState.IsInverted)
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y - 10), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)sg.Spider.Animation.x, (int)(sg.Spider.Animation.y + 70), KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3f));

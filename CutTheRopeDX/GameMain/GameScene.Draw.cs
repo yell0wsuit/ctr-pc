@@ -71,19 +71,13 @@ namespace CutTheRopeDX.GameMain
             }
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            if (earthAnims != null)
-            {
-                foreach (object obj in earthAnims)
-                {
-                    ((Image)obj).Draw();
-                }
-            }
+            gravityState.DrawEarthAnimations();
             Renderer.Translate(-Canvas.xOffsetScaled, 0f, 0f);
             Renderer.PopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.Draw();
-            gravityButton?.Draw();
+            gravityState.DrawButton();
             miceManager?.DrawHoles();
             Renderer.SetColor(Color.White);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);

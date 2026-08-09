@@ -95,9 +95,9 @@ namespace CutTheRopeDX.GameMain
                 }
                 return true;
             }
-            if (gravityButton != null && ((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
+            if (gravityState.IsInToggleTouchZone(tx + camera.pos.X, ty + camera.pos.Y))
             {
-                gravityTouchDown = ti;
+                gravityState.CaptureToggleTouch(ti);
             }
             float worldX = tx + camera.pos.X;
             float worldY = ty + camera.pos.Y;
@@ -489,14 +489,12 @@ namespace CutTheRopeDX.GameMain
                     return true;
                 }
             }
-            if (gravityButton != null && gravityTouchDown == ti)
+            if (gravityState.ReleaseToggleTouch(ti))
             {
-                if (((Button)gravityButton.GetChild(gravityButton.On() ? 1 : 0)).IsInTouchZoneXYforTouchDown(tx + camera.pos.X, ty + camera.pos.Y, true))
+                if (gravityState.IsInToggleTouchZone(tx + camera.pos.X, ty + camera.pos.Y))
                 {
-                    gravityButton.Toggle();
                     OnButtonPressed(0);
                 }
-                gravityTouchDown = -1;
             }
 
             foreach (BambooTube bambooTube in bambooTubes)

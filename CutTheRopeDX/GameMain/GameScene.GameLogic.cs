@@ -761,7 +761,7 @@ namespace CutTheRopeDX.GameMain
             grid.DoRestoreCutTransparency();
             ChainFlashLight sparks = (ChainFlashLight)new ChainFlashLight().InitWithTotalParticlesandImageGrid(10, grid);
             sparks.angle = swingAngleDegrees;
-            if (gravityButton != null && !gravityNormal)
+            if (gravityState.IsInverted)
             {
                 sparks.gravity.Y = -sparks.gravity.Y;
                 sparks.angle = -swingAngleDegrees;
@@ -785,7 +785,7 @@ namespace CutTheRopeDX.GameMain
             grid.DoRestoreCutTransparency();
             ChainCutDebris debris = (ChainCutDebris)new ChainCutDebris().InitWithTotalParticlesandImageGrid(2, grid);
             debris.angle = swingAngleDegrees;
-            if (gravityButton != null && !gravityNormal)
+            if (gravityState.IsInverted)
             {
                 debris.gravity.Y = -debris.gravity.Y;
                 debris.angle = -swingAngleDegrees;
@@ -809,7 +809,7 @@ namespace CutTheRopeDX.GameMain
             Image image2 = Image.Image_createWithResID(candyResource);
             image2.DoRestoreCutTransparency();
             CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
-            if (gravityButton != null && !gravityNormal)
+            if (gravityState.IsInverted)
             {
                 candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;
                 candyBreak.angle = 90f;
@@ -1087,34 +1087,10 @@ namespace CutTheRopeDX.GameMain
         /// <param name="_">Game scene button identifier.</param>
         public void OnButtonPressed(GameSceneButtonId _)
         {
-            if (MaterialPoint.globalGravity.Y == globalGravityY)
-            {
-                MaterialPoint.globalGravity.Y = -globalGravityY;
-                gravityNormal = false;
-                CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
-            }
-            else
-            {
-                MaterialPoint.globalGravity.Y = globalGravityY;
-                gravityNormal = true;
-                CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
-            }
-            if (earthAnims == null)
-            {
-                return;
-            }
-            foreach (object obj in earthAnims)
-            {
-                Image earthAnim = (Image)obj;
-                if (gravityNormal)
-                {
-                    earthAnim.PlayTimeline(0);
-                }
-                else
-                {
-                    earthAnim.PlayTimeline(1);
-                }
-            }
+            gravityState.Toggle();
+            CTRSoundMgr.PlaySound(gravityState.IsInverted
+                ? Resources.Snd.GravityOn
+                : Resources.Snd.GravityOff);
         }
 
         /// <inheritdoc />

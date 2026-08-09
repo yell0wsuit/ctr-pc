@@ -87,7 +87,6 @@ namespace CutTheRopeDX.GameMain
 
                             if (PackConfig.GetEarthBg(rc.GetPack()))
                             {
-                                earthAnims = [];
                                 if (mapWidth > SCREEN_WIDTH)
                                 {
                                     CreateEarthImageWithOffsetXY(back.width, 0f);
@@ -150,8 +149,9 @@ namespace CutTheRopeDX.GameMain
                                 }
                             }
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
-                            globalGravityX = (item2.Attribute("globalGravityX") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityX")?.Value) : 0f;
-                            globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
+                            float globalGravityX = (item2.Attribute("globalGravityX") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityX")?.Value) : 0f;
+                            float globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
+                            gravityState.ConfigureBase(new Vector(globalGravityX, globalGravityY));
                             _ = bool.TryParse(item2.Attribute("candiesConnected")?.Value, out candiesConnected);
                             candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
                             candiesConnectedBreakable = GetBoolAttribute(item2, "candiesConnectedBreakable", defaultValue: true);

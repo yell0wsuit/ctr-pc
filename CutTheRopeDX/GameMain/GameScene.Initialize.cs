@@ -19,8 +19,7 @@ namespace CutTheRopeDX.GameMain
             staticAniPool.RemoveAllChilds();
             decalsLayer?.RemoveAllChilds();
             Lantern.RemoveAllLanterns();
-            gravityButton = null;
-            gravityTouchDown = -1;
+            gravityState.BeginLoad();
             if (waterLayer != null)
             {
                 waterLayer.PrepareToRelease();
@@ -74,7 +73,6 @@ namespace CutTheRopeDX.GameMain
 
             mice = [];
             miceManager = null;
-            earthAnims = null;
             pollenDrawer = new PollenDrawer();
             pendingSecondGhostBubble = null;
             pendingSecondGhostBubbleOwner = null;
