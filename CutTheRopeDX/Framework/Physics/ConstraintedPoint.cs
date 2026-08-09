@@ -235,12 +235,16 @@ namespace CutTheRopeDX.Framework.Physics
                 Vector deltaVector = new(
                     constraint.cp.pos.X - constrainedPoint.pos.X,
                     constraint.cp.pos.Y - constrainedPoint.pos.Y);
+                float restLength = constraint.restLength;
                 if (deltaVector.X == 0f && deltaVector.Y == 0f)
                 {
+                    if (restLength == 0f)
+                    {
+                        continue;
+                    }
                     deltaVector = DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION;
                 }
                 float deltaLength = VectLength(deltaVector);
-                float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
 
                 bool shouldApplyConstraint = (type == Constraint.CONSTRAINT.DISTANCE)
