@@ -144,12 +144,14 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="x">X coordinate of the click.</param>
         /// <param name="y">Y coordinate of the click.</param>
+        /// <param name="droppedCandy">Receives the candy point released by the click.</param>
         /// <returns>
         /// <see langword="true" /> if the click was handled and candy was dropped;
         /// otherwise <see langword="false" />.
         /// </returns>
-        public bool HandleClick(float x, float y)
+        public bool HandleClick(float x, float y, out ConstraintedPoint droppedCandy)
         {
+            droppedCandy = null;
             if (activeMouse == null || !activeMouse.HasCandy)
             {
                 return false;
@@ -157,6 +159,7 @@ namespace CutTheRopeDX.GameMain
 
             if (activeMouse.IsClickable(x, y))
             {
+                droppedCandy = ActiveMouseCarriedStar();
                 activeMouse.DropCandyAndRetreat();
                 carriedStar = null;
                 carriedCandy = null;

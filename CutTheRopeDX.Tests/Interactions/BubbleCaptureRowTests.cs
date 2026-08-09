@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.True(bubble.popped);
             Assert.Null(candy.WholeBody.Bubble);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Tests.Interactions
             // overwriting the candy's position, but the bubble's lift eventually pulls it clear of
             // the segment and the lane lets go.
             Assert.Same(bubble, candy.WholeBody.Bubble);
-            Assert.Null(candy.antSegment);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Bubble bubble = Act.CaptureInBubble(scene, candy);
 
             Assert.Same(bubble, candy.WholeBody.Bubble);
-            Assert.True(candy.carriedByMouse);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

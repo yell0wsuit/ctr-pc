@@ -15,28 +15,35 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> only when the body transitioned to removed.</returns>
         private bool TryRetireCandyBody(CandyBody body, CandyRemovalReason reason)
         {
-            if (body?.Owner == null || !TryCommitCandyRemoval(body, reason))
+            if (body?.Owner == null || !TryCommitCandyRemoval(body, reason, out CandyAttachmentSnapshot detached))
             {
                 return false;
             }
 
-            ReleaseRemovalOwnership(body, reason);
+            ReleaseRemovalOwnership(body, reason, detached);
             return true;
         }
 
-        private static bool TryCommitCandyRemoval(CandyBody body, CandyRemovalReason reason)
+        private static bool TryCommitCandyRemoval(
+            CandyBody body,
+            CandyRemovalReason reason,
+            out CandyAttachmentSnapshot detached)
         {
             SplitCandyState split = body.Owner.Lifecycle.Split;
+            detached = null;
             return body.Role switch
             {
                 CandyBodyRole.LeftHalf => split?.Left.TryRemove(reason) == true,
                 CandyBodyRole.RightHalf => split?.Right.TryRemove(reason) == true,
-                CandyBodyRole.Whole => body.Owner.Lifecycle.TryRemove(reason),
+                CandyBodyRole.Whole => body.Owner.Lifecycle.TryRemove(reason, out detached),
                 _ => false,
             };
         }
 
-        private void ReleaseRemovalOwnership(CandyBody body, CandyRemovalReason reason)
+        private void ReleaseRemovalOwnership(
+            CandyBody body,
+            CandyRemovalReason reason,
+            CandyAttachmentSnapshot detached)
         {
             ReleaseRopesForBody(body);
             DetachRopeConstraintsForPoint(body.Point);
@@ -48,21 +55,84 @@ namespace CutTheRopeDX.GameMain
 
             if (body.Role == CandyBodyRole.Whole)
             {
-                CandyContext ctx = body.Owner;
-                DetachHandsForPoint(body.Point);
+                ReleaseDetachedHand(detached?.Hand, body.Point);
                 DetachSnailsForPoint(body.Point);
                 DropMouseCandyForPoint(body.Point);
-                ctx.carriedByMouse = false;
-                DetachCandyFromConveyor(ctx);
-                ExhaustRocketForCandy(ctx);
+                if (detached?.AntSegment != null)
+                {
+                    PlayAntConveyorDetachSound();
+                }
+                ExhaustDetachedRocket(detached?.Rocket);
                 CancelPendingLanternCaptureForRemoval(body.Point);
                 _ = Lantern.CancelCandyCaptureForRemoval(body.Point);
-                ctx.inLantern = false;
             }
 
             // Carrier release ordering is deliberately closed here: no owner may leave a retired
             // point gravity-suppressed. Authored/device-specific weight is preserved.
             body.Point.disableGravity = false;
+        }
+
+        private void ReleaseDetachedHand(MechanicalHand hand, ConstraintedPoint point)
+        {
+            if (hand == null)
+            {
+                return;
+            }
+
+            hand.cPoint.RemoveConstraint(point);
+            hand.state = MechanicalHand.STATE_HAND_RELEASE;
+            hand.doRotateCandy = false;
+            hand.releaseSoundPlayed = true;
+            hand.AnimateReleaseWithAnimationsPool(aniPool);
+            CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+        }
+
+        private void ReleaseTransportAttachments(
+            CandyAttachmentSnapshot detached,
+            ConstraintedPoint point)
+        {
+            ReleaseDetachedHand(detached?.Hand, point);
+            DropMouseCandyForPoint(point);
+            if (detached?.AntSegment != null)
+            {
+                PlayAntConveyorDetachSound();
+            }
+
+            CandyContext ctx = CandyForPointOrNull(point);
+            if (ctx != null)
+            {
+                point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+            }
+        }
+
+        private void ReleaseLanternCaptureAttachments(
+            CandyAttachmentSnapshot detached,
+            ConstraintedPoint point)
+        {
+            ReleaseDetachedHand(detached?.Hand, point);
+            DropMouseCandyForPoint(point);
+            if (detached?.AntSegment != null)
+            {
+                PlayAntConveyorDetachSound();
+            }
+            ExhaustDetachedRocket(detached?.Rocket);
+
+            CandyContext ctx = CandyForPointOrNull(point);
+            if (ctx != null)
+            {
+                point.disableGravity = ctx.Lifecycle.IsGravitySuppressed;
+            }
+        }
+
+        private static void ExhaustDetachedRocket(Rocket rocket)
+        {
+            if (rocket == null)
+            {
+                return;
+            }
+
+            rocket.state = Rocket.STATE_ROCKET_EXAUST;
+            rocket.StopAnimation();
         }
 
         private void CancelPendingLanternCaptureForRemoval(ConstraintedPoint point)
@@ -85,7 +155,7 @@ namespace CutTheRopeDX.GameMain
             pendingLanternCapturePoint = null;
             pendingLanternCapture = null;
             CandyContext ctx = CandyForPointOrNull(point);
-            if (lantern != null && ctx?.inLantern == true)
+            if (lantern != null && ctx?.Lifecycle.Attachments.InLantern == true)
             {
                 lantern.CaptureCandy(point);
             }

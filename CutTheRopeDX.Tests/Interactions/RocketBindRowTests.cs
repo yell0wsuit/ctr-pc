@@ -31,8 +31,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Rocket rocket = Act.BindRocket(scene, candy);
 
-            Assert.Same(hand, candy.capturingHand);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.Same(hand, candy.Lifecycle.Attachments.Hand);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
 
             // A holder's rocket skips the reel-in and goes straight to FLY, straining at the claw
             // until the hand lets go.
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Rocket second = Act.BindRocket(scene, candy, rocketIndex: 0);
 
-            Assert.Same(second, candy.activeRocket);
+            Assert.Same(second, candy.Lifecycle.Attachments.Rocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, first.state);
         }
 
@@ -87,7 +87,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.BindRocket(scene, candy);
             HeadlessGame.StepFrames(scene, 150);
 
-            Assert.Null(candy.antSegment);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
         }
 
         [Fact]
@@ -98,8 +98,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Rocket rocket = Act.BindRocket(scene, candy);
 
-            Assert.True(candy.carriedByMouse);
-            Assert.Same(rocket, candy.activeRocket);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
             Assert.Equal(Rocket.STATE_ROCKET_FLY, rocket.state);
         }
 

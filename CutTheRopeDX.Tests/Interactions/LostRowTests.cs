@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.BreakOnSpikes(scene, candy);
 
-            Assert.Null(candy.capturingHand);
+            Assert.Null(candy.Lifecycle.Attachments.Hand);
             Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
         }
 
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.BreakOnSpikes(scene, candy);
 
-            Assert.False(candy.HasActiveRocket);
+            Assert.False(candy.Lifecycle.Attachments.HasActiveRocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
         }
 
@@ -83,10 +83,10 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.BreakOnSpikes(scene, candy);
 
-            Assert.Null(candy.antSegment);
-            Assert.Null(candy.lastAntSegment);
-            Assert.False(candy.antWaitForFly);
-            Assert.Equal(0f, candy.antCooldown);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
+            Assert.Null(candy.Lifecycle.Attachments.LastAntSegment);
+            Assert.False(candy.Lifecycle.Attachments.AntWaitingForExit);
+            Assert.Equal(0f, candy.Lifecycle.Attachments.AntCooldown);
         }
 
         [Fact]
@@ -98,7 +98,27 @@ namespace CutTheRopeDX.Tests.Interactions
             Act.BreakOnSpikes(scene, candy);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
+        }
+
+        [Fact]
+        public void LevelLossClearsMouseOwnershipFromASurvivingCandy()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(240, 200)
+                .Mouse(240, 200)
+                .OmNom(20, 460)
+                .Build();
+            CandyContext surviving = scene.Candy();
+            Interaction.Hover(surviving);
+            _ = Act.CarryByMouse(scene, surviving);
+
+            scene.GameLost();
+
+            Assert.False(scene.MouseCarries(surviving));
+            Assert.False(surviving.Lifecycle.Attachments.CarriedByMouse);
+            Assert.False(surviving.Lifecycle.IsGravitySuppressed);
+            Assert.False(surviving.WholeBody.Point.disableGravity);
         }
 
         [Fact]
@@ -129,15 +149,15 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s.Ants(150, 200, path: "20,0", moveSpeed: 600f));
             Act.CarryByAnts(scene, candy);
             Assert.True(
-                Interaction.StepUntil(scene, () => candy.antSegment == null && candy.lastAntSegment != null),
+                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.AntSegment == null && candy.Lifecycle.Attachments.LastAntSegment != null),
                 "the candy never entered the ant reattachment-cooldown state");
 
             scene.BreakCandyBody(candy.WholeBody);
 
-            Assert.Null(candy.antSegment);
-            Assert.Null(candy.lastAntSegment);
-            Assert.False(candy.antWaitForFly);
-            Assert.Equal(0f, candy.antCooldown);
+            Assert.Null(candy.Lifecycle.Attachments.AntSegment);
+            Assert.Null(candy.Lifecycle.Attachments.LastAntSegment);
+            Assert.False(candy.Lifecycle.Attachments.AntWaitingForExit);
+            Assert.Equal(0f, candy.Lifecycle.Attachments.AntCooldown);
         }
 
         [Fact]
@@ -149,7 +169,7 @@ namespace CutTheRopeDX.Tests.Interactions
             scene.BreakCandyBody(candy.WholeBody);
 
             Assert.False(scene.MouseCarries(candy));
-            Assert.False(candy.carriedByMouse);
+            Assert.False(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         [Fact]
@@ -161,15 +181,15 @@ namespace CutTheRopeDX.Tests.Interactions
                 Interaction.StepUntil(
                     scene,
                     () => Act.MoveTo(lantern, candy.WholeBody.Point.pos),
-                    () => candy.inLantern),
+                    () => candy.Lifecycle.Attachments.InLantern),
                 "the lantern never began capturing the candy");
 
             scene.BreakCandyBody(candy.WholeBody);
 
-            Assert.False(candy.inLantern);
+            Assert.False(candy.Lifecycle.Attachments.InLantern);
             Assert.False(candy.WholeBody.Point.disableGravity);
             HeadlessGame.StepFrames(scene, 10);
-            Assert.False(candy.inLantern);
+            Assert.False(candy.Lifecycle.Attachments.InLantern);
             Assert.False(candy.WholeBody.Point.disableGravity);
         }
 
@@ -181,7 +201,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             scene.BreakCandyBody(candy.WholeBody);
 
-            Assert.False(candy.inLantern);
+            Assert.False(candy.Lifecycle.Attachments.InLantern);
             Assert.False(candy.WholeBody.Point.disableGravity);
             HeadlessGame.StepFrames(scene, 10);
             Assert.False(candy.WholeBody.Point.disableGravity);
@@ -195,7 +215,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Act.LoseOffScreen(scene, candy);
 
-            Assert.False(candy.HasActiveRocket);
+            Assert.False(candy.Lifecycle.Attachments.HasActiveRocket);
             Assert.Equal(Rocket.STATE_ROCKET_EXAUST, rocket.state);
         }
 
@@ -271,7 +291,7 @@ namespace CutTheRopeDX.Tests.Interactions
             // The claw pins the candy back every frame, ahead of the off-screen check, so a held
             // candy never reaches the kill line - the hand has to let go first.
             Assert.Equal(0, scene.Outcomes().LostCount);
-            Assert.Same(hand, candy.capturingHand);
+            Assert.Same(hand, candy.Lifecycle.Attachments.Hand);
         }
 
         [Fact]
@@ -285,7 +305,7 @@ namespace CutTheRopeDX.Tests.Interactions
             HeadlessGame.StepFrames(scene, 60);
 
             Assert.Equal(0, scene.Outcomes().LostCount);
-            Assert.True(candy.carriedByMouse);
+            Assert.True(candy.Lifecycle.Attachments.CarriedByMouse);
         }
 
         private static (GameScene Scene, CandyContext Candy) Rig(Func<Scenario, Scenario> attachment)

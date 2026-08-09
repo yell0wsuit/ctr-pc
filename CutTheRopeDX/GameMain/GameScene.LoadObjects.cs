@@ -20,7 +20,10 @@ namespace CutTheRopeDX.GameMain
             List<XElement> list = [.. map.Elements()];
             // Establish captured state before grabs are loaded so XML object order cannot attach a
             // fixed rope to candy that starts inside a lantern.
-            candies[0].inLantern = NormalRopeLoad.CandyStartsInLantern(map);
+            if (NormalRopeLoad.CandyStartsInLantern(map))
+            {
+                _ = candies[0].Lifecycle.Attachments.CaptureInLantern();
+            }
 
             // Preload candy-like auxiliary bodies (light bulbs, axes) so grabs can resolve them
             // regardless of XML order.

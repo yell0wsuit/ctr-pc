@@ -145,7 +145,7 @@ namespace CutTheRopeDX.GameMain
                 // A part="L"/"R" grab binds to a half, so the owner lookup has to resolve halves too;
                 // an unowned point (no candy at all) simply carries no lantern state.
                 CandyContext ropeTarget = CandyForPointOrNull(constraintedPoint);
-                if (NormalRopeLoad.ShouldCreate(ropeTarget?.inLantern == true))
+                if (NormalRopeLoad.ShouldCreate(ropeTarget?.Lifecycle.Attachments.InLantern == true))
                 {
                     Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.X, constraintedPoint.pos.Y, len);
                     bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;

@@ -38,7 +38,7 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
                     // Handclap exemption: two hand-held candies pass through each other (spec §4).
-                    if (ca.capturingHand != null && cb.capturingHand != null)
+                    if (ca.Lifecycle.Attachments.Hand != null && cb.Lifecycle.Attachments.Hand != null)
                     {
                         continue;
                     }

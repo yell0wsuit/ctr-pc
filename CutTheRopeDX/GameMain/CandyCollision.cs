@@ -42,7 +42,7 @@ namespace CutTheRopeDX.GameMain
         public static bool ShouldParticipate(CandyContext ctx)
         {
             return ctx != null
-                && ShouldParticipate(ctx.HasNoWholeBodyInPlay, ctx.inLantern)
+                && ShouldParticipate(ctx.HasNoWholeBodyInPlay, ctx.Lifecycle.Attachments.InLantern)
                 && ctx.Capabilities.CanCollideWithCandyBodies;
         }
 

@@ -198,7 +198,7 @@ namespace CutTheRopeDX.GameMain
                 Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                grab.GunSource?.SetDisabled(candies[0].inLantern);
+                grab.GunSource?.SetDisabled(candies[0].Lifecycle.Attachments.InLantern);
                 grab.DrawBack();
             }
             foreach (object bungeeObj in bungees)
@@ -248,7 +248,7 @@ namespace CutTheRopeDX.GameMain
                     for (int ci = 0; ci < candies.Count; ci++)
                     {
                         CandyContext ctx = candies[ci];
-                        if (rocket == ctx.activeRocket && ctx.Lifecycle.Presence == CandyPresence.Hidden)
+                        if (rocket == ctx.Lifecycle.Attachments.Rocket && ctx.Lifecycle.Presence == CandyPresence.Hidden)
                         {
                             hiddenForTransit = true;
                             break;
@@ -266,7 +266,7 @@ namespace CutTheRopeDX.GameMain
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 CandyContext ctx = body.Owner;
-                if (body.Role != CandyBodyRole.Whole || ctx.emitsLight || ctx.inLantern)
+                if (body.Role != CandyBodyRole.Whole || ctx.emitsLight || ctx.Lifecycle.Attachments.InLantern)
                 {
                     continue;
                 }

@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
                 .Build();
             CandyContext context = scene.Candies().Single(candy => candy.emitsLight);
 
-            Assert.True(context.Lifecycle.TryRemove(CandyRemovalReason.OffScreen));
+            Assert.True(context.Lifecycle.TryRemove(CandyRemovalReason.OffScreen, out _));
 
             context.LightBulb.Update(0.016f);
 

@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Rocket rocket = scene.Rockets()[0];
 
             Assert.True(
-                Interaction.StepUntil(scene, () => candy.HasActiveRocket),
+                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.HasActiveRocket),
                 "the rocket never bound the candy");
 
             AssertReachIsToItsOwnCandy(rocket, candy);
@@ -156,7 +156,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Empty(scene.ActiveBodies(CandyInteraction.Rocket));
             HeadlessGame.StepFrames(scene, 120);
-            Assert.False(scene.Candies()[0].HasActiveRocket);
+            Assert.False(scene.Candies()[0].Lifecycle.Attachments.HasActiveRocket);
             Assert.Equal([split.Left.Body, split.Right.Body], scene.ActiveBodies());
         }
 
@@ -188,11 +188,11 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
 
             Assert.True(
-                Interaction.StepUntil(scene, () => left.HasActiveRocket && right.HasActiveRocket),
+                Interaction.StepUntil(scene, () => left.Lifecycle.Attachments.HasActiveRocket && right.Lifecycle.Attachments.HasActiveRocket),
                 "both rockets never bound");
 
-            Assert.Same(scene.Rockets()[0], right.activeRocket);
-            Assert.Same(scene.Rockets()[1], left.activeRocket);
+            Assert.Same(scene.Rockets()[0], right.Lifecycle.Attachments.Rocket);
+            Assert.Same(scene.Rockets()[1], left.Lifecycle.Attachments.Rocket);
         }
 
         /// <summary>
@@ -205,11 +205,11 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
             Assert.True(
-                Interaction.StepUntil(scene, () => left.HasActiveRocket && right.HasActiveRocket),
+                Interaction.StepUntil(scene, () => left.Lifecycle.Attachments.HasActiveRocket && right.Lifecycle.Attachments.HasActiveRocket),
                 "both rockets never bound");
 
-            AssertReachIsToItsOwnCandy(right.activeRocket, right);
-            AssertReachIsToItsOwnCandy(left.activeRocket, left);
+            AssertReachIsToItsOwnCandy(right.Lifecycle.Attachments.Rocket, right);
+            AssertReachIsToItsOwnCandy(left.Lifecycle.Attachments.Rocket, left);
         }
 
         [Fact]
@@ -217,11 +217,11 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             (GameScene scene, CandyContext left, CandyContext right) = TwoRocketScene();
             Assert.True(
-                Interaction.StepUntil(scene, () => left.HasActiveRocket && right.HasActiveRocket),
+                Interaction.StepUntil(scene, () => left.Lifecycle.Attachments.HasActiveRocket && right.Lifecycle.Attachments.HasActiveRocket),
                 "both rockets never bound");
 
-            Assert.Null(right.activeRocket.BindReach(left));
-            Assert.Null(left.activeRocket.BindReach(right));
+            Assert.Null(right.Lifecycle.Attachments.Rocket.BindReach(left));
+            Assert.Null(left.Lifecycle.Attachments.Rocket.BindReach(right));
         }
 
         [Fact]
