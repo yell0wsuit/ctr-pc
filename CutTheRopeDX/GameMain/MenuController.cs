@@ -1910,7 +1910,7 @@ namespace CutTheRopeDX.GameMain
                         return;
                     }
                 case var id when id == MenuButtonId.QuitGame:
-                    Global.XnaGame.Exit();
+                    PlatformServices.Host?.Exit();
                     return;
                 case var id when id == MenuButtonId.ClosePopup:
                     if (ep != null)

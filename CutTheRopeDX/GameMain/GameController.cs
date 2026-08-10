@@ -529,7 +529,7 @@ namespace CutTheRopeDX.GameMain
                     if (CustomLevelSession.IsActive)
                     {
                         CTRSoundMgr.StopAll();
-                        Global.XnaGame.Exit();
+                        PlatformServices.Host?.Exit();
                         return;
                     }
                     exitCode = 0;
