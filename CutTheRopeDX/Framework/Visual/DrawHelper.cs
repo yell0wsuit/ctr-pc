@@ -1,7 +1,7 @@
 using System;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,4 +1,4 @@
-namespace CutTheRopeDX.Desktop
+namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Defines the OpenGL-style blend factors supported by the desktop renderer.

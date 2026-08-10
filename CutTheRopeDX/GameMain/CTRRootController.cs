@@ -156,7 +156,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             // A priming draw outside the draw loop; headless runs have no device to draw with.
-            if (Desktop.Renderer.IsAvailable)
+            if (Renderer.IsAvailable)
             {
                 Application.SharedCanvas().BeforeRender();
                 ActiveChild().ActiveView().Draw();

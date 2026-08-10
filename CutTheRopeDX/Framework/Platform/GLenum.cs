@@ -1,4 +1,4 @@
-namespace CutTheRopeDX.Desktop
+namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Defines OpenGL-style capability and state constants used by the renderer abstraction layer.

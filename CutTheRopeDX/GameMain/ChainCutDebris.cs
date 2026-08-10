@@ -1,5 +1,5 @@
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework.Graphics;

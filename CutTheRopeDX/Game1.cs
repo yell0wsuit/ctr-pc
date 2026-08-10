@@ -181,7 +181,7 @@ namespace CutTheRopeDX
             // Initialize FontManager for FontStashSharp fonts
             Framework.Visual.FontManager.Initialize(GraphicsDevice);
 
-            Renderer.Init();
+            PlatformServices.Render = new MonoGameRenderBackend();
             Global.MouseCursor.Load(Content);
             Window.AllowUserResizing = true;
 

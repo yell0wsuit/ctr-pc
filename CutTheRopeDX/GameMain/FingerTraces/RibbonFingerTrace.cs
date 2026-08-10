@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;

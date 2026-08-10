@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Framework.Platform;
 
 using FontStashSharp;
 
@@ -244,7 +245,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             Color parentColor = call.InheritedColor.ToXNA();
 
-            SpriteBatch spriteBatch = Renderer.GetSpriteBatch();
+            SpriteBatch spriteBatch = Global.SpriteBatch;
             if (spriteBatch == null)
             {
                 Debug.WriteLine("FontStash: SpriteBatch is null");

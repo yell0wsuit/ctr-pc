@@ -1,5 +1,5 @@
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.Framework.Helpers
 {
