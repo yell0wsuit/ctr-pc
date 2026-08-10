@@ -3,7 +3,7 @@
     <GraphicsBackend Condition="'$(GraphicsBackend)' == ''">VK</GraphicsBackend>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX'">
+  <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX.Desktop'">
     <BaseOutputPath>bin/$(GraphicsBackend)/</BaseOutputPath>
     <BaseIntermediateOutputPath>obj/$(GraphicsBackend)/</BaseIntermediateOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>

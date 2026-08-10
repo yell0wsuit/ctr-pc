@@ -35,7 +35,7 @@ jobs:
                   fi
 
             - name: Run Roslynator analysis
-              run: roslynator analyze CutTheRopeDX/CutTheRopeDX.csproj
+              run: roslynator analyze src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj
 
             - name: Build
               run: dotnet build --no-restore -c Release

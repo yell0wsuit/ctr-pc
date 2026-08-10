@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <!--
+    Mirrors the constant the game project defines, so a test that depends on which MonoGame is behind it
+    can say so at compile time. Deriving that from the framework at run time instead would mean a test
+    detecting the absence of the very thing it exists to guard, and passing because of it.
+  -->
+  <PropertyGroup Condition="'$(GraphicsBackend)' == 'GL'">
+    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CutTheRopeDX.Core\CutTheRopeDX.Core.csproj" />
+    <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
+  </ItemGroup>
+
+  <!--
+    These test genuinely Desktop-only, MonoGame-bound implementation details (quad batching/blend
+    state tied to XNA Rectangle/Matrix/vertex types, the MonoGame Song completion workaround, and
+    FontStashFont's composite-target rotation). Tests now references Core only, not Desktop, so
+    these can no longer compile here. Excluded rather than given a Desktop reference (which would
+    defeat the point of this split) or silently dropped.
+  -->
+  <ItemGroup>
+    <Compile Remove="QuadBatchTests.cs" />
+    <Compile Remove="QuadBakingTests.cs" />
+    <Compile Remove="BlendParamsSnapshotTests.cs" />
+    <Compile Remove="QuadIndexPatternTests.cs" />
+    <Compile Remove="RingAllocatorTests.cs" />
+    <Compile Remove="SongLoopWorkaroundTests.cs" />
+    <Compile Remove="TextCompositeTargetSelectionTests.cs" />
+  </ItemGroup>
+
+</Project>
