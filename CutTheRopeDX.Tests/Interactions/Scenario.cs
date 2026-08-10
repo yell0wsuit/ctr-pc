@@ -259,6 +259,20 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(Node("bubble", x, y));
         }
 
+        /// <summary>Adds a bouncer.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="size">Width class: 1 is the small bouncer, 2 the large one.</param>
+        /// <param name="angle">Bouncer angle in degrees.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Bouncer(int x, int y, int size = 2, float angle = 0f)
+        {
+            XElement bouncer = Node(size == 1 ? "bouncer1" : "bouncer2", x, y);
+            bouncer.SetAttributeValue("size", Num(size));
+            bouncer.SetAttributeValue("angle", Num(angle));
+            return Add(bouncer);
+        }
+
         /// <summary>Adds a ghost that can morph into a bubble and a grab.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
