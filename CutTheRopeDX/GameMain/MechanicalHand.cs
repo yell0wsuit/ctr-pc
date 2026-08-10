@@ -7,6 +7,32 @@ using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
 {
+    /// <summary>The mutually exclusive states a mechanical hand can be in.</summary>
+    internal enum MechanicalHandState
+    {
+        /// <summary>Waiting, and free to grab a candy in reach.</summary>
+        Idle,
+
+        /// <summary>Holding a candy in the claw.</summary>
+        HoldingCandy,
+
+        /// <summary>Let go, and waiting for the candy to clear the claw before going idle.</summary>
+        Releasing
+    }
+
+    /// <summary>Outcome of a settle attempt on a releasing hand.</summary>
+    internal enum HandSettle
+    {
+        /// <summary>The hand is not releasing, or the candy has not cleared the claw yet.</summary>
+        Stayed,
+
+        /// <summary>The hand went idle; the drop sound was already played by the release site.</summary>
+        Settled,
+
+        /// <summary>The hand went idle and the caller now owes the drop sound.</summary>
+        SettledOwingDropSound
+    }
+
     /// <summary>
     /// Composite mechanical hand element made of articulated segments and a claw.
     /// Handles segment hierarchy, claw position tracking, and catch/release animations.
@@ -19,7 +45,7 @@ namespace CutTheRopeDX.GameMain
         public MechanicalHand()
         {
             rotatingSegment = null;
-            state = STATE_HAND_IDLE;
+            State = MechanicalHandState.Idle;
             cPoint = new ConstraintedPoint
             {
                 disableGravity = true
@@ -27,7 +53,7 @@ namespace CutTheRopeDX.GameMain
             cPoint.SetWeight(0.0001f);
             releaseSoundPlayed = false;
             clapTimer = 0f;
-            canPlayClap = false;
+            CanPlayClap = false;
 
             Vector jointCenter = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 2);
             Vector candyAnchor = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 8);
@@ -207,6 +233,94 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Takes hold of a candy. Rotation state is cleared so a hold never inherits anything from
+        /// the previous one; the update loop re-derives it from the candy actually held.
+        /// </summary>
+        public void GrabCandy()
+        {
+            State = MechanicalHandState.HoldingCandy;
+            DoRotateCandy = false;
+            releaseSoundPlayed = false;
+        }
+
+        /// <summary>
+        /// Lets go of the candy. The drop sound is still owed and plays when the hand settles.
+        /// </summary>
+        public void ReleaseCandy()
+        {
+            BeginRelease(dropSoundPlayed: false);
+        }
+
+        /// <summary>
+        /// Lets go of the candy when the caller has already played the drop sound itself.
+        /// </summary>
+        public void ReleaseCandyAfterDropSound()
+        {
+            BeginRelease(dropSoundPlayed: true);
+        }
+
+        /// <summary>
+        /// Settles a releasing hand back to idle once the candy has cleared the claw.
+        /// </summary>
+        /// <param name="clawDistance">Distance from this hand to the candy it let go of.</param>
+        /// <returns>Whether the hand settled, and whether the caller now owes the drop sound.</returns>
+        public HandSettle TrySettleToIdle(float clawDistance)
+        {
+            if (State != MechanicalHandState.Releasing || clawDistance <= MH_RELEASE_DISTANCE)
+            {
+                return HandSettle.Stayed;
+            }
+
+            State = MechanicalHandState.Idle;
+            bool owed = !releaseSoundPlayed;
+            releaseSoundPlayed = false;
+            return owed ? HandSettle.SettledOwingDropSound : HandSettle.Settled;
+        }
+
+        /// <summary>
+        /// Marks this hand as eligible to clap. Never reset once set, matching the original.
+        /// </summary>
+        public void ArmClap()
+        {
+            CanPlayClap = true;
+        }
+
+        /// <summary>
+        /// Arms the clap cooldown on both hands when they are idle and within clap range, and
+        /// reports whether the pair should emit the clap effect.
+        /// </summary>
+        /// <param name="other">The other hand in the pair.</param>
+        /// <returns><see langword="true"/> when the caller should play the clap effect.</returns>
+        public bool TryClapWith(MechanicalHand other)
+        {
+            if (other == null
+                || State != MechanicalHandState.Idle
+                || other.State != MechanicalHandState.Idle
+                || VectDistance(cPoint.pos, other.cPoint.pos) >= MH_CLAP_DISTANCE)
+            {
+                return false;
+            }
+
+            bool clap = (ClapTimer <= 0f || other.ClapTimer <= 0f) && (CanPlayClap || other.CanPlayClap);
+            ClapTimer = MH_CLAP_COOLDOWN;
+            other.ClapTimer = MH_CLAP_COOLDOWN;
+            return clap;
+        }
+
+        /// <summary>Starts rotating the held candy along with the hand's moving segment.</summary>
+        public void BeginCandyRotation()
+        {
+            DoRotateCandy = true;
+        }
+
+        private void BeginRelease(bool dropSoundPlayed)
+        {
+            State = MechanicalHandState.Releasing;
+            DoRotateCandy = false;
+            releaseSoundPlayed = dropSoundPlayed;
+        }
+
+        /// <summary>
         /// Gets a segment by index.
         /// </summary>
         /// <param name="index">Segment index.</param>
@@ -296,29 +410,23 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Cooldown before a hand can play another clap effect.</summary>
         public const float MH_CLAP_COOLDOWN = 0.3f;
 
-        /// <summary>Idle hand state value.</summary>
-        public const int STATE_HAND_IDLE = 0;
-
-        /// <summary>State value used while the hand is holding the candy.</summary>
-        public const int STATE_HAND_CANDY = 1;
-
-        /// <summary>State value used while the hand is releasing the candy.</summary>
-        public const int STATE_HAND_RELEASE = 2;
-
         /// <summary>Current mechanical hand state.</summary>
-        public int state;
+        public MechanicalHandState State { get; private set; }
 
-        /// <summary>Whether attached candy visuals should rotate with segment movement.</summary>
-        public bool doRotateCandy;
+        /// <summary>Whether the candy held by this hand should rotate with segment movement.</summary>
+        public bool DoRotateCandy { get; private set; }
 
         /// <summary>Whether this hand is eligible to play a clap effect.</summary>
-        public bool canPlayClap;
+        public bool CanPlayClap { get; private set; }
 
         /// <summary>Remaining clap cooldown time in seconds.</summary>
-        public float clapTimer;
+        public float ClapTimer { get => clapTimer; private set => clapTimer = value; }
+
+        /// <summary>Backing store for <see cref="ClapTimer"/>, needed because it is moved by ref.</summary>
+        private float clapTimer;
 
         /// <summary>Whether the release sound has already played for the current release.</summary>
-        public bool releaseSoundPlayed;
+        private bool releaseSoundPlayed;
 
         /// <summary>Offset from the terminal joint to the candy anchor in claw local space.</summary>
         private Vector clawOffset;

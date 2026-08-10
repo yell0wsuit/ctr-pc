@@ -344,6 +344,57 @@ namespace CutTheRopeDX.Tests.Interactions
             hand.cPoint.pos = hand.ClawPosition();
         }
 
+        /// <summary>Taps a hand's claw, which is how a player makes it drop the candy.</summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="hand">Hand whose claw is tapped.</param>
+        public static void TapClaw(GameScene scene, MechanicalHand hand)
+        {
+            Vector claw = hand.ClawPosition();
+            Assert.True(scene.TouchDownXYIndex(claw.X, claw.Y, 0), "the claw tap was not handled");
+            HeadlessGame.StepFrames(scene, 1);
+        }
+
+        /// <summary>
+        /// Starts a segment rotation and makes it the hand's rotating segment, as a button press
+        /// would. The segment must have been created rotatable.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="hand">Hand to rotate.</param>
+        /// <param name="segmentIndex">Segment to rotate.</param>
+        public static void RotateSegment(GameScene scene, MechanicalHand hand, int segmentIndex = 0)
+        {
+            MechanicalHandSegment segment = hand.SegmentAtIndex(segmentIndex);
+            segment.Rotate();
+            Assert.NotNull(segment.GetCurrentTimeline());
+            hand.rotatingSegment = segment;
+            HeadlessGame.StepFrames(scene, 2);
+        }
+
+        /// <summary>
+        /// Makes a hand eligible to clap, as pressing one of its rotate buttons does.
+        /// </summary>
+        /// <param name="hand">Hand to arm.</param>
+        public static void ArmClap(MechanicalHand hand)
+        {
+            hand.ArmClap();
+        }
+
+        /// <summary>
+        /// Settles a releasing hand to idle and reports whether that settle still owed the drop
+        /// sound. Sounds are not observable headlessly, so this seam is the only way to pin that
+        /// axis; its body is rewritten when the settle transition lands, leaving every caller's
+        /// assertions untouched.
+        /// </summary>
+        /// <param name="hand">Hand to settle.</param>
+        /// <returns><see langword="true"/> when the settle owed the drop sound.</returns>
+        public static bool SettleOwedDropSound(MechanicalHand hand)
+        {
+            Assert.Equal(MechanicalHandState.Releasing, hand.State);
+            HandSettle settle = hand.TrySettleToIdle(MechanicalHand.MH_RELEASE_DISTANCE + 1f);
+            Assert.NotEqual(HandSettle.Stayed, settle);
+            return settle == HandSettle.SettledOwingDropSound;
+        }
+
         /// <summary>
         /// Recomputes a tube's hole positions after it has been moved. The tube caches them and
         /// only refreshes on rotation, so a moved tube would otherwise keep catching candy at the

@@ -52,7 +52,7 @@ namespace CutTheRopeDX.GameMain
         {
             PreDraw();
             EnsureHandReference();
-            if (mechanicalHand?.state == MechanicalHand.STATE_HAND_CANDY)
+            if (mechanicalHand?.State == MechanicalHandState.HoldingCandy)
             {
                 clawActive.Draw();
             }
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             PreDraw();
-            if (mechanicalHand?.state == MechanicalHand.STATE_HAND_CANDY)
+            if (mechanicalHand?.State == MechanicalHandState.HoldingCandy)
             {
                 clawActive.Draw();
             }

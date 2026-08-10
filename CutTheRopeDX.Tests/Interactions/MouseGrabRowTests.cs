@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests.Interactions
             _ = Act.CarryByMouse(scene, candy);
 
             Assert.Null(candy.Lifecycle.Attachments.Hand);
-            Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
+            Assert.NotEqual(MechanicalHandState.HoldingCandy, hand.State);
             Assert.True(scene.MouseCarries(candy));
         }
 

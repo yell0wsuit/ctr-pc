@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests.Interactions
             MechanicalHand hand = Act.GrabWithHand(scene, candy);
             Act.Eat(scene, candy);
             Assert.Null(candy.Lifecycle.Attachments.Hand);
-            Assert.NotEqual(MechanicalHand.STATE_HAND_CANDY, hand.state);
+            Assert.NotEqual(MechanicalHandState.HoldingCandy, hand.State);
         }
 
         [Fact]

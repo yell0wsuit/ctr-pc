@@ -1020,14 +1020,12 @@ namespace CutTheRopeDX.GameMain
 
             foreach (MechanicalHand hand in hands)
             {
-                if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
                     ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
                     hand.cPoint.RemoveConstraint(heldPoint);
-                    hand.state = MechanicalHand.STATE_HAND_RELEASE;
-                    hand.doRotateCandy = false;
-                    hand.releaseSoundPlayed = false;
+                    hand.ReleaseCandy();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                 }
@@ -1054,7 +1052,7 @@ namespace CutTheRopeDX.GameMain
 
             foreach (MechanicalHand hand in hands)
             {
-                if (hand != null && hand.state == MechanicalHand.STATE_HAND_CANDY)
+                if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
                     ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
@@ -1063,9 +1061,7 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
                     hand.cPoint.RemoveConstraint(heldPoint);
-                    hand.state = MechanicalHand.STATE_HAND_RELEASE;
-                    hand.doRotateCandy = false;
-                    hand.releaseSoundPlayed = true;
+                    hand.ReleaseCandyAfterDropSound();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
