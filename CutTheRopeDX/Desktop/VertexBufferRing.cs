@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Desktop
@@ -19,12 +22,16 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Uploads <paramref name="count"/> vertices and returns the start vertex to draw from.
         /// </summary>
+        /// <typeparam name="TData">The element type of the source array. It only has to be
+        /// layout-identical to <typeparamref name="T"/>; the Core-owned vertex structs are
+        /// uploaded directly instead of being copied into an XNA-typed array first.</typeparam>
         /// <param name="data">Source vertex data.</param>
         /// <param name="count">Number of vertices to upload.</param>
         /// <returns>The start vertex offset, or -1 when the write exceeds the ring's
         /// total capacity and the caller must use a fallback upload.</returns>
-        public int Write(T[] data, int count)
+        public int Write<TData>(TData[] data, int count) where TData : struct
         {
+            Debug.Assert(Unsafe.SizeOf<TData>() == _stride, "Source vertex size must match the ring's vertex stride.");
             if (!_allocator.TryAllocate(count, out int start, out _))
             {
                 return -1;

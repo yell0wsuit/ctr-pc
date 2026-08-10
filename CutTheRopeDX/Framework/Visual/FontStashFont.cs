@@ -243,7 +243,8 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="call">Layout, formatted lines, color modulation, and ping-pong clip state for the text element.</param>
         public override void DrawText(in TextDrawCall call)
         {
-            Color parentColor = call.InheritedColor.ToXNA();
+            CutTheRopeDX.Framework.Core.Color inherited = call.InheritedColor.ToColor();
+            Color parentColor = new(inherited.R, inherited.G, inherited.B, inherited.A);
 
             SpriteBatch spriteBatch = Global.SpriteBatch;
             if (spriteBatch == null)

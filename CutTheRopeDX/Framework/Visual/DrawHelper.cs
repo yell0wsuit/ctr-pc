@@ -486,8 +486,8 @@ namespace CutTheRopeDX.Framework.Visual
             Vector vector5 = VectAdd(v3, vector2);
             Vector vector6 = VectAdd(v5, vector2);
             VertexPositionColor[] vertices = GetVertexCache(ref s_antialiasedLineVerticesCache, 8);
-            Color transparent = RGBAColor.transparentRGBA.ToXNA();
-            Color lineColor = color.ToXNA();
+            Color transparent = RGBAColor.transparentRGBA.ToColor();
+            Color lineColor = color.ToColor();
             vertices[0] = new VertexPositionColor(new Vector3(v2.X, v2.Y, 0f), transparent);
             vertices[1] = new VertexPositionColor(new Vector3(v4.X, v4.Y, 0f), transparent);
             vertices[2] = new VertexPositionColor(new Vector3(vector3.X, vector3.Y, 0f), lineColor);
@@ -558,7 +558,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="fill">Fill color of the rectangle.</param>
         public static void DrawSolidRectWOBorder(float x, float y, float w, float h, RGBAColor fill)
         {
-            Color color = fill.ToXNA();
+            Color color = fill.ToColor();
             s_rectVertices[0] = new VertexPositionColor(new Vector3(x, y, 0f), color);
             s_rectVertices[1] = new VertexPositionColor(new Vector3(x + w, y, 0f), color);
             s_rectVertices[2] = new VertexPositionColor(new Vector3(x, y + h, 0f), color);
@@ -579,7 +579,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="color">Outline color.</param>
         public static void DrawPolygon(float[] vertices, int vertexCount, RGBAColor color)
         {
-            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToXNA());
+            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, color.ToColor());
             Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
@@ -592,9 +592,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="fill">Fill color.</param>
         public static void DrawSolidPolygon(float[] vertices, int vertexCount, RGBAColor border, RGBAColor fill)
         {
-            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
+            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToColor());
             Renderer.DrawTriangleStrip(fillVertices, vertexCount);
-            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, border.ToXNA());
+            VertexPositionColor[] lineVertices = BuildClosedLineVertices(vertices, vertexCount, border.ToColor());
             Renderer.DrawLineStrip(lineVertices, vertexCount + 1);
         }
 
@@ -606,7 +606,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="fill">Fill color.</param>
         public static void DrawSolidPolygonWOBorder(float[] vertices, int vertexCount, RGBAColor fill)
         {
-            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToXNA());
+            VertexPositionColor[] fillVertices = BuildColoredVertices(vertices, vertexCount, fill.ToColor());
             Renderer.DrawTriangleStrip(fillVertices, vertexCount);
         }
 
@@ -624,7 +624,7 @@ namespace CutTheRopeDX.Framework.Visual
             for (int i = 0; i < vertexCount; i++)
             {
                 Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
-                vertices[i] = new VertexPositionColor(position, colors[i].ToXNA());
+                vertices[i] = new VertexPositionColor(position, colors[i].ToColor());
             }
             return vertices;
         }

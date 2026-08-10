@@ -207,7 +207,7 @@ namespace CutTheRopeDX.GameMain
                 RGBAColor final = new(1f, 1f, 1f, finalAlpha);
 
                 // Draw snowflake with transformation matrix
-                Renderer.SetColor(final.ToXNA());
+                Renderer.SetColor(final.ToColor());
                 Renderer.PushMatrix();
                 Renderer.Translate(drawX, drawY, 0f);
                 Renderer.Scale(flake.Scale, flake.Scale, 1f);

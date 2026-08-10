@@ -137,7 +137,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
             {
-                Renderer.SetColor(RGBAColor.solidOpaqueRGBAXna);
+                Renderer.SetColor(RGBAColor.solidOpaqueRGBAColor);
             }
         }
 
@@ -222,7 +222,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
             {
-                Renderer.SetColor(color.ToWhiteAlphaXNA());
+                Renderer.SetColor(color.ToWhiteAlphaColor());
             }
             if (blendingMode != -1)
             {

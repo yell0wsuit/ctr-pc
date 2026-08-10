@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -33,7 +35,7 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>Transforms and stages one four-vertex sprite quad.</summary>
-        public void Append(VertexPositionNormalTexture[] vertices, in QuadBatchKey key, in Matrix modelView, Color premultipliedTint)
+        public void Append(ReadOnlySpan<VertexPositionNormalTexture> vertices, in QuadBatchKey key, in Matrix modelView, Color premultipliedTint)
         {
             if (QuadCount == 0)
             {

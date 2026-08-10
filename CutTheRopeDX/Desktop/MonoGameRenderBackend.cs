@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
@@ -8,6 +10,8 @@ using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using Core = CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Desktop
 {
@@ -62,6 +66,35 @@ namespace CutTheRopeDX.Desktop
         /// so the few render calls that sit outside the draw loop must skip themselves.
         /// </summary>
         public bool IsAvailable => Global.GraphicsDevice != null;
+
+        /// <summary>
+        /// Verifies that every Core-owned vertex struct still has the exact size of the XNA
+        /// struct it is reinterpreted as. The draw methods below hand Core vertex arrays
+        /// straight to MonoGame's buffer uploads and <see cref="MemoryMarshal.Cast{TFrom, TTo}(Span{TFrom})"/>
+        /// the sprite path, so a layout change would silently corrupt vertex data instead of
+        /// failing. This throws rather than asserting so the tripwire holds in Release too.
+        /// </summary>
+        static MonoGameRenderBackend()
+        {
+            RequireSameSize<Core.VertexPositionColor, VertexPositionColor>();
+            RequireSameSize<Core.VertexPositionColorTexture, VertexPositionColorTexture>();
+            RequireSameSize<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>();
+            RequireSameSize<Core.Color, Color>();
+        }
+
+        /// <summary>
+        /// Throws when the Core struct and the XNA struct it is reinterpreted as differ in size.
+        /// </summary>
+        /// <typeparam name="TCore">The Core-owned struct.</typeparam>
+        /// <typeparam name="TXna">The XNA struct it is reinterpreted as.</typeparam>
+        private static void RequireSameSize<TCore, TXna>()
+        {
+            if (Unsafe.SizeOf<TCore>() != Unsafe.SizeOf<TXna>())
+            {
+                throw new InvalidOperationException(
+                    $"{typeof(TCore)} ({Unsafe.SizeOf<TCore>()} bytes) is no longer layout-compatible with {typeof(TXna)} ({Unsafe.SizeOf<TXna>()} bytes).");
+            }
+        }
 
         /// <summary>
         /// Initializes the OpenGL emulation layer. Sets up BasicEffect shaders and rasterizer states.
@@ -357,9 +390,16 @@ namespace CutTheRopeDX.Desktop
         /// Returns the current model-view matrix.
         /// </summary>
         /// <returns>The current model-view matrix.</returns>
-        public Matrix GetModelViewMatrix()
+        public System.Numerics.Matrix4x4 GetModelViewMatrix()
         {
-            return s_matrixModelView;
+            // MonoGame only defines the Matrix4x4 -> Matrix implicit conversion, so the
+            // Core-facing direction is an element-for-element copy in the same M11..M44 order.
+            Matrix m = s_matrixModelView;
+            return new System.Numerics.Matrix4x4(
+                m.M11, m.M12, m.M13, m.M14,
+                m.M21, m.M22, m.M23, m.M24,
+                m.M31, m.M32, m.M33, m.M34,
+                m.M41, m.M42, m.M43, m.M44);
         }
 
         #endregion
@@ -370,27 +410,37 @@ namespace CutTheRopeDX.Desktop
         /// Sets the current drawing color.
         /// </summary>
         /// <param name="c">The color to apply to subsequent draw calls.</param>
-        public void SetColor(Color c)
+        public void SetColor(Core.Color c)
         {
-            s_Color = c;
+            s_Color = ToXna(c);
         }
 
         /// <summary>
         /// Returns the current drawing color.
         /// </summary>
         /// <returns>The current draw color.</returns>
-        public Color GetCurrentColor()
+        public Core.Color GetCurrentColor()
         {
-            return s_Color;
+            return new Core.Color(s_Color.R, s_Color.G, s_Color.B, s_Color.A);
         }
 
         /// <summary>
         /// Sets the clear color for GlClear operations.
         /// </summary>
         /// <param name="c">The color used by <see cref="Clear(int)"/>.</param>
-        public void SetClearColor(Color c)
+        public void SetClearColor(Core.Color c)
         {
-            s_glClearColor = c;
+            s_glClearColor = ToXna(c);
+        }
+
+        /// <summary>
+        /// Converts a Core color to the XNA color the graphics device consumes.
+        /// </summary>
+        /// <param name="c">The Core color.</param>
+        /// <returns>The equivalent XNA color.</returns>
+        private static Color ToXna(Core.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
         }
 
         /// <summary>
@@ -463,7 +513,7 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         /// <param name="vertices">The colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
-        public void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
+        public void DrawTriangleStrip(Core.VertexPositionColor[] vertices, int vertexCount)
         {
             FlushQuads();
             if (vertexCount < 3)
@@ -478,7 +528,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+                DrawPrimitives<Core.VertexPositionColor, VertexPositionColor>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
             s_LastVertices_PositionColor = vertices;
         }
@@ -488,7 +538,7 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         /// <param name="vertices">The textured vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
-        public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
+        public void DrawTriangleStrip(Core.VertexPositionNormalTexture[] vertices, int vertexCount)
         {
             if (TrySubmitQuad(vertices, vertexCount))
             {
@@ -507,7 +557,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+                DrawPrimitives<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
             s_LastVertices_PositionNormalTexture = vertices;
         }
@@ -517,7 +567,7 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         /// <param name="vertices">The textured and colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
-        public void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
+        public void DrawTriangleStrip(Core.VertexPositionColorTexture[] vertices, int vertexCount)
         {
             FlushQuads();
             if (vertexCount < 3)
@@ -532,7 +582,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+                DrawPrimitives<Core.VertexPositionColorTexture, VertexPositionColorTexture>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
             }
         }
 
@@ -542,7 +592,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertices">The textured vertex data to draw.</param>
         /// <param name="indices">The index buffer describing triangle order.</param>
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
-        public void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
+        public void DrawTriangleList(Core.VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
             FlushQuads();
             BasicEffect effect = GetEffect(true, false);
@@ -553,7 +603,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
+                DrawIndexedPrimitives<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
             }
             s_LastVertices_PositionNormalTexture = vertices;
         }
@@ -564,7 +614,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="vertices">The textured and colored vertex data to draw.</param>
         /// <param name="indices">The index buffer describing triangle order.</param>
         /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
-        public void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
+        public void DrawTriangleList(Core.VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
             FlushQuads();
             if (indexCount == 0)
@@ -579,7 +629,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawIndexedPrimitives(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
+                DrawIndexedPrimitives<Core.VertexPositionColorTexture, VertexPositionColorTexture>(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
             }
         }
 
@@ -588,7 +638,7 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         /// <param name="vertices">The colored vertex data to draw.</param>
         /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
-        public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
+        public void DrawLineStrip(Core.VertexPositionColor[] vertices, int vertexCount)
         {
             FlushQuads();
             if (vertexCount < 2)
@@ -603,7 +653,7 @@ namespace CutTheRopeDX.Desktop
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-                DrawPrimitives(PrimitiveType.LineStrip, vertices, vertexCount, vertexCount - 1);
+                DrawPrimitives<Core.VertexPositionColor, VertexPositionColor>(PrimitiveType.LineStrip, vertices, vertexCount, vertexCount - 1);
             }
         }
 
@@ -615,7 +665,7 @@ namespace CutTheRopeDX.Desktop
         /// Returns the last drawn colored vertices (for debugging/inspection).
         /// </summary>
         /// <returns>The last colored vertex array submitted by a matching draw call.</returns>
-        public VertexPositionColor[] GetLastVertices_PositionColor()
+        public Core.VertexPositionColor[] GetLastVertices_PositionColor()
         {
             return s_LastVertices_PositionColor;
         }
@@ -624,7 +674,7 @@ namespace CutTheRopeDX.Desktop
         /// Returns the last drawn textured vertices (for debugging/inspection).
         /// </summary>
         /// <returns>The last textured vertex array submitted by a matching draw call.</returns>
-        public VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
+        public Core.VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
         {
             return s_LastVertices_PositionNormalTexture;
         }
@@ -692,7 +742,7 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Attempts to queue a four-vertex textured sprite.
         /// </summary>
-        private bool TrySubmitQuad(VertexPositionNormalTexture[] vertices, int vertexCount)
+        private bool TrySubmitQuad(Core.VertexPositionNormalTexture[] vertices, int vertexCount)
         {
             if (vertexCount != 4)
             {
@@ -716,7 +766,11 @@ namespace CutTheRopeDX.Desktop
             {
                 FlushQuads();
             }
-            s_quadBatch.Append(vertices, key, s_matrixModelView, QuadBaking.BakePremultipliedTint(s_Color));
+            s_quadBatch.Append(
+                MemoryMarshal.Cast<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(vertices.AsSpan(0, vertexCount)),
+                key,
+                s_matrixModelView,
+                QuadBaking.BakePremultipliedTint(s_Color));
             s_LastVertices_PositionNormalTexture = vertices;
             return true;
         }
@@ -760,18 +814,22 @@ namespace CutTheRopeDX.Desktop
         /// Uploads vertex data through the shared ring and issues a non-indexed primitive draw call.
         /// Falls back to the legacy grow-and-discard buffer for writes larger than the ring.
         /// </summary>
-        /// <typeparam name="T">The vertex type being uploaded.</typeparam>
+        /// <typeparam name="TSource">The Core vertex type holding the data. It is uploaded as-is;
+        /// it only has to be layout-identical to <typeparamref name="TVertex"/>.</typeparam>
+        /// <typeparam name="TVertex">The XNA vertex type whose declaration describes the buffer.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
         /// <param name="vertices">The source vertex data.</param>
         /// <param name="vertexCount">The number of vertices to upload.</param>
         /// <param name="primitiveCount">The number of primitives to render.</param>
-        private void DrawPrimitives<T>(PrimitiveType primitiveType, T[] vertices, int vertexCount, int primitiveCount) where T : struct, IVertexType
+        private void DrawPrimitives<TSource, TVertex>(PrimitiveType primitiveType, TSource[] vertices, int vertexCount, int primitiveCount)
+            where TSource : struct
+            where TVertex : struct, IVertexType
         {
-            VertexBufferRing<T> ring = GetVertexRing<T>();
+            VertexBufferRing<TVertex> ring = GetVertexRing<TVertex>();
             int vertexStart = ring.Write(vertices, vertexCount);
             if (vertexStart < 0)
             {
-                DynamicVertexBuffer fallback = GetOversizeVertexBuffer<T>(vertexCount);
+                DynamicVertexBuffer fallback = GetOversizeVertexBuffer<TVertex>(vertexCount);
                 fallback.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
                 Global.GraphicsDevice.SetVertexBuffer(fallback);
                 Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
@@ -788,20 +846,24 @@ namespace CutTheRopeDX.Desktop
         /// Uploads vertex and index data through the shared rings and issues an indexed draw call.
         /// Falls back to the legacy grow-and-discard buffers for writes larger than a ring.
         /// </summary>
-        /// <typeparam name="T">The vertex type being uploaded.</typeparam>
+        /// <typeparam name="TSource">The Core vertex type holding the data. It is uploaded as-is;
+        /// it only has to be layout-identical to <typeparamref name="TVertex"/>.</typeparam>
+        /// <typeparam name="TVertex">The XNA vertex type whose declaration describes the buffer.</typeparam>
         /// <param name="primitiveType">The primitive topology to draw.</param>
         /// <param name="vertices">The source vertex data.</param>
         /// <param name="indices">The source index data.</param>
         /// <param name="indexCount">The number of indices to upload.</param>
         /// <param name="primitiveCount">The number of primitives to render.</param>
-        private void DrawIndexedPrimitives<T>(PrimitiveType primitiveType, T[] vertices, short[] indices, int indexCount, int primitiveCount) where T : struct, IVertexType
+        private void DrawIndexedPrimitives<TSource, TVertex>(PrimitiveType primitiveType, TSource[] vertices, short[] indices, int indexCount, int primitiveCount)
+            where TSource : struct
+            where TVertex : struct, IVertexType
         {
-            VertexBufferRing<T> ring = GetVertexRing<T>();
+            VertexBufferRing<TVertex> ring = GetVertexRing<TVertex>();
             int baseVertex = ring.Write(vertices, vertices.Length);
             int startIndex = baseVertex < 0 ? -1 : s_indexRing.Write(indices, indexCount);
             if (baseVertex < 0 || startIndex < 0)
             {
-                DynamicVertexBuffer fallbackVertices = GetOversizeVertexBuffer<T>(vertices.Length);
+                DynamicVertexBuffer fallbackVertices = GetOversizeVertexBuffer<TVertex>(vertices.Length);
                 fallbackVertices.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
                 DynamicIndexBuffer fallbackIndices = GetOversizeIndexBuffer(indexCount);
                 fallbackIndices.SetData(indices, 0, indexCount, SetDataOptions.Discard);
@@ -995,12 +1057,12 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Captures the last submitted colored vertices for debugging.
         /// </summary>
-        private VertexPositionColor[] s_LastVertices_PositionColor;
+        private Core.VertexPositionColor[] s_LastVertices_PositionColor;
 
         /// <summary>
         /// Captures the last submitted textured vertices for debugging.
         /// </summary>
-        private VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
+        private Core.VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
 
         #endregion
     }

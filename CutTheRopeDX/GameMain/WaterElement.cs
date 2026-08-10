@@ -227,7 +227,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            Renderer.SetColor(color.ToWhiteAlphaXNA());
+            Renderer.SetColor(color.ToWhiteAlphaColor());
             float bottomY = drawY + height > SCREEN_HEIGHT ? drawY + height : SCREEN_HEIGHT;
             DrawHelper.DrawImageTiled(texture, 0, drawX, bottomY - bottomShadowSize.Y + SCREEN_OFFSET_Y, width, topShadowSize.Y);
             DrawHelper.DrawImageTiled(texture, 2, drawX - MathF.Ceiling(xOffsetBack), drawY, width + MathF.Floor(xOffsetBack), backTileSize.Y);
@@ -311,7 +311,7 @@ namespace CutTheRopeDX.GameMain
             PostDraw();
 
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            Renderer.SetColor(color.ToWhiteAlphaXNA());
+            Renderer.SetColor(color.ToWhiteAlphaColor());
             DrawHelper.DrawImageTiled(texture, 3, drawX - MathF.Ceiling(xOffsetTop), drawY, width + MathF.Floor(xOffsetTop), topTileSize.Y);
             Renderer.SetColor(Color.White);
         }

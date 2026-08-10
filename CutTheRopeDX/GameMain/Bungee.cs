@@ -142,7 +142,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < vertexCount; i++)
             {
                 Vector3 position = new(positions[positionIndex++], positions[positionIndex++], 0f);
-                vertices[i] = new VertexPositionColor(position, colors[i].ToXNA());
+                vertices[i] = new VertexPositionColor(position, colors[i].ToColor());
             }
             return vertices;
         }
@@ -258,7 +258,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 float olx = -1f, oly = -1f, orx = -1f, ory = -1f;
                 RGBAColor outlineColor = RGBAColor.MakeRGBA(0, 0, 0, 0.4f * alphaMultiplier);
-                Renderer.SetColor(outlineColor.ToXNA());
+                Renderer.SetColor(outlineColor.ToColor());
                 int ptCount = outlinePtCount / 2;
                 for (int i = 0; i < ptCount - 1; i++)
                 {
@@ -300,7 +300,7 @@ namespace CutTheRopeDX.GameMain
                 if (cachedPointCount >= 8 || bezierT == 1)
                 {
                     RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
-                    Renderer.SetColor(color.ToXNA());
+                    Renderer.SetColor(color.ToColor());
                     int segmentCount = cachedPointCount >> 1;
                     for (int i = 0; i < segmentCount - 1; i++)
                     {
@@ -494,7 +494,7 @@ namespace CutTheRopeDX.GameMain
             RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, GetCutFadeAlpha(b), b.ChainColorSeed);
             Renderer.FillTexturedColoredVertices(vertices, texCoordinates, colors, vertexBuffer, sprites.Length);
 
-            Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
+            Renderer.SetColor(RGBAColor.whiteRGBA.ToColor());
             (BlendingFactor source, BlendingFactor destination) = GetChainFadeBlendFactors();
             Renderer.SetBlendFunc(source, destination);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
@@ -1019,7 +1019,7 @@ namespace CutTheRopeDX.GameMain
             {
                 color.AlphaChannel = alpha;
             }
-            Renderer.SetColor(color.ToXNA());
+            Renderer.SetColor(color.ToColor());
 
             lightRandomSeed ??= christmasRandom.Next(0, 1000);
 
@@ -1061,7 +1061,7 @@ namespace CutTheRopeDX.GameMain
                 lightsCount = lightIdx;
             }
 
-            Renderer.SetColor(RGBAColor.whiteRGBA.ToXNA());
+            Renderer.SetColor(RGBAColor.whiteRGBA.ToColor());
         }
 
         /// <inheritdoc />

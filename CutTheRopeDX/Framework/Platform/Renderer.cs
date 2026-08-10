@@ -1,7 +1,7 @@
-using CutTheRopeDX.Framework.Visual;
+using System.Numerics;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.Framework.Platform
 {
@@ -236,9 +236,9 @@ namespace CutTheRopeDX.Framework.Platform
         /// Returns the current model-view matrix.
         /// </summary>
         /// <returns>The current model-view matrix, or the identity matrix when no backend is installed.</returns>
-        public static Matrix GetModelViewMatrix()
+        public static Matrix4x4 GetModelViewMatrix()
         {
-            return PlatformServices.Render is { } r ? r.GetModelViewMatrix() : Matrix.Identity;
+            return PlatformServices.Render is { } r ? r.GetModelViewMatrix() : Matrix4x4.Identity;
         }
 
         #endregion
@@ -554,7 +554,7 @@ namespace CutTheRopeDX.Framework.Platform
                         2 => tex2,
                         _ => tex3
                     };
-                    Color color = colors[colorIndex + vertex].ToXNA();
+                    Color color = colors[colorIndex + vertex].ToColor();
                     vertices[vertexIndex++] = new VertexPositionColorTexture(positionValue, color, texCoord);
                 }
             }

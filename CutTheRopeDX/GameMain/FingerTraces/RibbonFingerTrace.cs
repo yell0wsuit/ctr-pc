@@ -157,7 +157,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                     : minimumRibbonHalfWidth + (ribbonBaseWidth * t);
                 Vector left = VectSub(point, VectMult(normal, halfWidth));
                 Vector right = VectAdd(point, VectMult(normal, halfWidth));
-                Color color = GetRibbonColor(t).ToXNA();
+                Color color = GetRibbonColor(t).ToColor();
 
                 int vertexIndex = i * 2;
                 ribbonVerticesCache[vertexIndex] = new VertexPositionColor(new Vector3(left.X, left.Y, 0f), color);

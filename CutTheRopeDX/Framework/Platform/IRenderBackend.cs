@@ -1,7 +1,7 @@
-using CutTheRopeDX.Framework.Visual;
+using System.Numerics;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.Framework.Platform
 {
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Returns the current model-view matrix.
         /// </summary>
-        Matrix GetModelViewMatrix();
+        Matrix4x4 GetModelViewMatrix();
 
         /// <summary>
         /// Sets the current drawing color.

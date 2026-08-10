@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using Microsoft.Xna.Framework;
+using CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Framework
 {
@@ -14,10 +14,10 @@ namespace CutTheRopeDX.Framework
     public struct RGBAColor(float R, float G, float B, float A)
     {
         /// <summary>
-        /// Converts this color to an XNA <see cref="Color"/>.
+        /// Converts this color to a packed <see cref="Color"/>.
         /// </summary>
-        /// <returns>The converted XNA color.</returns>
-        public readonly Color ToXNA()
+        /// <returns>The converted packed color.</returns>
+        public readonly Color ToColor()
         {
             Color result = default;
             int redByte = (int)(RedColor * 255f);
@@ -32,10 +32,10 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Converts to an XNA <see cref="Color"/> with white RGB and this color's alpha.
+        /// Converts to a packed <see cref="Color"/> with white RGB and this color's alpha.
         /// </summary>
-        /// <returns>An XNA color with white RGB and this instance's alpha channel.</returns>
-        public readonly Color ToWhiteAlphaXNA()
+        /// <returns>A packed color with white RGB and this instance's alpha channel.</returns>
+        public readonly Color ToWhiteAlphaColor()
         {
             Color result = default;
             int alphaByte = (int)(AlphaChannel * 255f);
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Converts an XNA <see cref="Color"/> (as returned by the renderer's current color state) to an <see cref="RGBAColor"/>.
+        /// Converts a packed <see cref="Color"/> (as returned by the renderer's current color state) to an <see cref="RGBAColor"/>.
         /// </summary>
         /// <param name="c">The renderer color to convert.</param>
         /// <returns>The equivalent <see cref="RGBAColor"/>.</returns>
@@ -115,9 +115,9 @@ namespace CutTheRopeDX.Framework
         public static readonly RGBAColor solidOpaqueRGBA = new(1f, 1f, 1f, 1f);
 
         /// <summary>
-        /// XNA <see cref="Color.White"/> equivalent of <see cref="solidOpaqueRGBA"/>.
+        /// Packed <see cref="Color.White"/> equivalent of <see cref="solidOpaqueRGBA"/>.
         /// </summary>
-        public static readonly Color solidOpaqueRGBAXna = Color.White;
+        public static readonly Color solidOpaqueRGBAColor = Color.White;
 
         /// <summary>
         /// Fully opaque red (1, 0, 0, 1).

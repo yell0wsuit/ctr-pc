@@ -258,7 +258,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             {
                 LightningQuad quad = quads[i];
                 Quad2D textureQuad = texture.quads[quad.QuadIndex];
-                XnaColor color = RGBAColor.MakeRGBA(1f, 1f, (i + 0.5f) / quads.Count, 1f).ToXNA();
+                XnaColor color = RGBAColor.MakeRGBA(1f, 1f, (i + 0.5f) / quads.Count, 1f).ToColor();
                 int vertexIndex = i * 4;
 
                 verticesCache[vertexIndex] = new VertexPositionColorTexture(
