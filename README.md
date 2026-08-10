@@ -90,7 +90,7 @@ To test the game during the development process, follow these steps:
     a. Windows
 
     ```bash
-    dotnet publish CutTheRopeDX\CutTheRopeDX.csproj -c Release -f net10.0 -p:PublishAot=true -o .\CutTheRopeDX\bin\Publish\win-x64
+    dotnet publish src\CutTheRopeDX.Desktop\CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o .\src\CutTheRopeDX.Desktop\bin\Publish\win-x64
     ```
 
     b. macOS
@@ -98,7 +98,7 @@ To test the game during the development process, follow these steps:
     _Without AVFoundation (will use FFmpeg for video playback):_
 
     ```bash
-    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0 -r osx-arm64 -o ./CutTheRopeDX/bin/Publish/osx-arm64
+    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -r osx-arm64 -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
     ```
 
     Make sure you have installed FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg).
@@ -106,7 +106,7 @@ To test the game during the development process, follow these steps:
     _With AVFoundation (only for macOS 26.0 and later, requires Xcode installed):_
 
     ```bash
-    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./CutTheRopeDX/bin/Publish/osx-arm64
+    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
     ```
 
     > Note:  
@@ -115,7 +115,7 @@ To test the game during the development process, follow these steps:
     c. Linux
 
     ```bash
-    dotnet publish CutTheRopeDX/CutTheRopeDX.csproj -c Release -f net10.0 -p:PublishAot=true -o ./CutTheRopeDX/bin/Publish/linux-x64
+    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/linux-x64
     ```
 
     > Warning:  
@@ -126,7 +126,7 @@ To test the game during the development process, follow these steps:
 4. To run the unit tests:
 
     ```bash
-    dotnet test CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj -p:ExcludeMacOSTarget=true
+    dotnet test src/CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj -p:ExcludeMacOSTarget=true
     ```
 
 ## Running a custom level

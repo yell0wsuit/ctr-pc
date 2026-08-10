@@ -42,11 +42,11 @@ except ImportError:
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.resolve()
-CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
+CSPROJ = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "CutTheRopeDX.Desktop.csproj"
 LAUNCHER_CSPROJ = (
-    PROJECT_ROOT / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launcher.csproj"
+    PROJECT_ROOT / "src" / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launcher.csproj"
 )
-RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
+RELEASE_DIR = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "release_github"
 
 ARCHITECTURES = {
     "x64": {"rid": "win-x64", "btbn": "win64", "label": "x64"},
@@ -343,7 +343,7 @@ def main():
     runtime_id = config["rid"]
     btbn_arch = config["btbn"]
     arch_label = config["label"]
-    output_dir = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / runtime_id
+    output_dir = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "Publish" / runtime_id
     build_options = (version, use_aot, runtime_id)
 
     print(f"\nBuilding v{version} for {runtime_id} " f"(NativeAOT: {use_aot})...")
