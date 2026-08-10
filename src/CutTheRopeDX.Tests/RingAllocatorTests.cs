@@ -1,4 +1,4 @@
-using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Framework.Platform;
 
 using Xunit;
 

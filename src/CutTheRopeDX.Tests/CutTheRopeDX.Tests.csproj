@@ -37,8 +37,6 @@
     <Compile Remove="QuadBatchTests.cs" />
     <Compile Remove="QuadBakingTests.cs" />
     <Compile Remove="BlendParamsSnapshotTests.cs" />
-    <Compile Remove="QuadIndexPatternTests.cs" />
-    <Compile Remove="RingAllocatorTests.cs" />
     <Compile Remove="SongLoopWorkaroundTests.cs" />
     <Compile Remove="TextCompositeTargetSelectionTests.cs" />
   </ItemGroup>

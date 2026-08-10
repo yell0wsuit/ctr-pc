@@ -1,3 +1,5 @@
+using CutTheRopeDX.Framework.Platform;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Desktop

@@ -1,4 +1,4 @@
-namespace CutTheRopeDX.Desktop
+namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Generates the immutable triangle-list index pattern for batched quads. Each quad's

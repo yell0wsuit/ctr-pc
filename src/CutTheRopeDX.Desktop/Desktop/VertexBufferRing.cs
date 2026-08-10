@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+using CutTheRopeDX.Framework.Platform;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Desktop

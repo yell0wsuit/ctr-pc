@@ -1,4 +1,4 @@
-namespace CutTheRopeDX.Desktop
+namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Pure-CPU cursor arithmetic for ring-buffer allocation. Hands out contiguous
