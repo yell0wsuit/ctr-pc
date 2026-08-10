@@ -210,12 +210,12 @@ namespace CutTheRopeDX.Framework.Visual
             _resName = path;
             // _localTexParams = _texParams;
             Reg();
-            (int W, int H)? dimensions = Platform.AssetPlatform.Current.ImageDimensions(path);
+            (int W, int H)? dimensions = AssetPlatform.Current.ImageDimensions(path);
             if (dimensions == null)
             {
                 return null;
             }
-            textureHandle_ = Platform.AssetPlatform.Current.ImageTexture(path);
+            textureHandle_ = AssetPlatform.Current.ImageTexture(path);
             ImageLoaded(dimensions.Value.W, dimensions.Value.H);
             quadsCount = 0;
             CalculateForQuickDrawing();
@@ -311,7 +311,7 @@ namespace CutTheRopeDX.Framework.Visual
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes
             CtrRenderer.OnDrawFrame();
-            Platform.ITextureHandle renderTargetHandle = Renderer.DetachRenderTarget();
+            ITextureHandle renderTargetHandle = Renderer.DetachRenderTarget();
             Renderer.ResetRenderTarget();
             Application.SharedRootController().transitionTime = transitionTime;
             textureHandle_ = renderTargetHandle;
@@ -344,7 +344,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// The underlying platform texture handle.
         /// </summary>
-        public Platform.ITextureHandle textureHandle_;
+        public ITextureHandle textureHandle_;
 
         /// <summary>
         /// Resource name/path used to load this texture.

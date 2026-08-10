@@ -196,7 +196,7 @@ namespace CutTheRopeDX
             Window.ClientSizeChanged += Window_ClientSizeChanged;
 
             CtrBootstrap.Initialize(
-                new Framework.Platform.DesktopAssetPlatform(),
+                new DesktopAssetPlatform(),
                 new MonoGameAudioBackend(Content),
                 Global.ScreenSizeManager.WindowWidth,
                 Global.ScreenSizeManager.WindowHeight,
