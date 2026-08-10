@@ -1,6 +1,6 @@
 using System;
 
-using Microsoft.Xna.Framework.Graphics;
+using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <inheritdoc/>
-        public Texture2D GetTexture()
+        public ITextureHandle GetTexture()
         {
             return null;
         }

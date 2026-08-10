@@ -7,6 +7,7 @@ using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using Microsoft.Xna.Framework;
@@ -312,11 +313,12 @@ namespace CutTheRopeDX
             {
                 return;
             }
-            Texture2D texture = Application.SharedMovieMgr().GetTexture();
-            if (texture == null)
+            ITextureHandle textureHandle = Application.SharedMovieMgr().GetTexture();
+            if (textureHandle == null)
             {
                 return;
             }
+            Texture2D texture = ((MonoGameTexture)textureHandle).Texture;
             if (_ignoreMouseClick > 0)
             {
                 _ignoreMouseClick--;

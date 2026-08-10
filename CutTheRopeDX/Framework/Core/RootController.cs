@@ -65,9 +65,9 @@ namespace CutTheRopeDX.Framework.Core
                 if (lastTime > transitionTime)
                 {
                     transitionTime = -1f;
-                    prevScreenImage?.xnaTexture_.Dispose();
+                    (prevScreenImage?.textureHandle_ as MonoGameTexture)?.Texture.Dispose();
                     prevScreenImage = null;
-                    nextScreenImage?.xnaTexture_.Dispose();
+                    (nextScreenImage?.textureHandle_ as MonoGameTexture)?.Texture.Dispose();
                     nextScreenImage = null;
                 }
             }
@@ -234,7 +234,7 @@ namespace CutTheRopeDX.Framework.Core
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
-                nextScreenImage?.xnaTexture_.Dispose();
+                (nextScreenImage?.textureHandle_ as MonoGameTexture)?.Texture.Dispose();
                 nextScreenImage = Grabber.Grab();
                 Renderer.LoadIdentity();
             }
@@ -255,7 +255,7 @@ namespace CutTheRopeDX.Framework.Core
                 Renderer.Clear(0);
                 ApplyLandscape();
                 previousView.Draw();
-                prevScreenImage?.xnaTexture_.Dispose();
+                (prevScreenImage?.textureHandle_ as MonoGameTexture)?.Texture.Dispose();
                 prevScreenImage = Grabber.Grab();
                 Renderer.LoadIdentity();
             }

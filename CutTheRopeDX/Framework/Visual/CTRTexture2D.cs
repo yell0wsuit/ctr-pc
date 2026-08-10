@@ -217,7 +217,7 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 return null;
             }
-            xnaTexture_ = Platform.AssetPlatform.Current.ImageTexture(path);
+            textureHandle_ = Platform.AssetPlatform.Current.ImageTexture(path);
             ImageLoaded(dimensions.Value.W, dimensions.Value.H);
             quadsCount = 0;
             CalculateForQuickDrawing();
@@ -313,10 +313,10 @@ namespace CutTheRopeDX.Framework.Visual
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes
             CtrRenderer.OnDrawFrame();
-            RenderTarget2D renderTarget = Renderer.DetachRenderTarget();
-            Global.GraphicsDevice.SetRenderTarget(null);
+            Platform.ITextureHandle renderTargetHandle = Renderer.DetachRenderTarget();
+            Renderer.ResetRenderTarget();
             Application.SharedRootController().transitionTime = transitionTime;
-            xnaTexture_ = renderTarget;
+            textureHandle_ = renderTargetHandle;
             //_format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
             //_size = new Vector(realWidth, realHeight);
             _width = (uint)realWidth;
@@ -334,19 +334,19 @@ namespace CutTheRopeDX.Framework.Visual
         {
             if (disposing)
             {
-                if (xnaTexture_ != null)
+                if (textureHandle_ != null)
                 {
                     Images.Free(_resName);
-                    xnaTexture_ = null;
+                    textureHandle_ = null;
                 }
             }
             base.Dispose(disposing);
         }
 
         /// <summary>
-        /// The underlying XNA texture.
+        /// The underlying platform texture handle.
         /// </summary>
-        public Texture2D xnaTexture_;
+        public Platform.ITextureHandle textureHandle_;
 
         /// <summary>
         /// Resource name/path used to load this texture.

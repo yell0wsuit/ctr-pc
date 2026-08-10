@@ -19,9 +19,9 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
-        public Texture2D ImageTexture(string contentPath)
+        public ITextureHandle ImageTexture(string contentPath)
         {
-            return Images.Get(contentPath);
+            return Images.GetHandle(contentPath);
         }
 
         /// <inheritdoc />

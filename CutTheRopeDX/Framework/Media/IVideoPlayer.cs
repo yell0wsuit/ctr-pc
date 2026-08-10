@@ -1,6 +1,6 @@
 using System;
 
-using Microsoft.Xna.Framework.Graphics;
+using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -30,10 +30,10 @@ namespace CutTheRopeDX.Framework.Media
         /// Gets the current video frame as a texture.
         /// </summary>
         /// <returns>
-        /// A <see cref="Texture2D"/> containing the current video frame, or <see langword="null" />
+        /// An <see cref="ITextureHandle"/> containing the current video frame, or <see langword="null" />
         /// if no video is playing or playback has finished.
         /// </returns>
-        Texture2D GetTexture();
+        ITextureHandle GetTexture();
 
         /// <summary>
         /// Determines whether a video is currently loaded and potentially playing.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;
@@ -187,13 +188,21 @@ namespace CutTheRopeDX.Desktop
         /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
         /// Used for screen capture operations.
         /// </summary>
-        /// <returns>The detached render target, or <see langword="null"/> when no render target is active.</returns>
-        public static RenderTarget2D DetachRenderTarget()
+        /// <returns>The detached render target wrapped as a texture handle, or <see langword="null"/> when no render target is active.</returns>
+        public static ITextureHandle DetachRenderTarget()
         {
             FlushQuads();
             RenderTarget2D renderTarget2D = s_RenderTarget;
             s_RenderTarget = null;
-            return renderTarget2D;
+            return renderTarget2D == null ? null : new MonoGameTexture(renderTarget2D);
+        }
+
+        /// <summary>
+        /// Clears the active render target on the graphics device so subsequent draws target the back buffer.
+        /// </summary>
+        public static void ResetRenderTarget()
+        {
+            Global.GraphicsDevice.SetRenderTarget(null);
         }
 
         /// <summary>
@@ -411,7 +420,7 @@ namespace CutTheRopeDX.Desktop
         /// <param name="t">The texture to bind for textured draw calls.</param>
         public static void BindTexture(CTRTexture2D t)
         {
-            s_Texture = t;
+            s_Texture = t.textureHandle_ == null ? null : ((MonoGameTexture)t.textureHandle_).Texture;
         }
 
         #endregion
@@ -858,7 +867,7 @@ namespace CutTheRopeDX.Desktop
             {
                 return false;
             }
-            if (s_Texture == null || s_Texture.xnaTexture_ == null || s_Texture.xnaTexture_.IsDisposed)
+            if (s_Texture == null || s_Texture.IsDisposed)
             {
                 return false;
             }
@@ -871,7 +880,7 @@ namespace CutTheRopeDX.Desktop
             {
                 return false;
             }
-            QuadBatchKey key = new(s_Texture.xnaTexture_, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
+            QuadBatchKey key = new(s_Texture, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
             if (s_quadBatch.IsFull || !s_quadBatch.CanAccept(key))
             {
                 FlushQuads();
@@ -901,7 +910,7 @@ namespace CutTheRopeDX.Desktop
                 {
                     return basicEffect;
                 }
-                basicEffect.Texture = s_Texture.xnaTexture_;
+                basicEffect.Texture = s_Texture;
                 basicEffect.DiffuseColor = s_Color.ToVector3();
                 Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
                 Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
@@ -1077,9 +1086,9 @@ namespace CutTheRopeDX.Desktop
         private static Matrix s_matrixProjection = Matrix.Identity;
 
         /// <summary>
-        /// Stores the texture currently bound for textured draw calls.
+        /// Stores the unwrapped texture currently bound for textured draw calls.
         /// </summary>
-        private static CTRTexture2D s_Texture;
+        private static Texture2D s_Texture;
 
         /// <summary>
         /// Stores the clear color used by <see cref="Clear(int)"/>.

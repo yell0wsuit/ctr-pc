@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using FFmpeg.AutoGen;
@@ -146,7 +147,7 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <inheritdoc/>
-        public Texture2D GetTexture()
+        public ITextureHandle GetTexture()
         {
             if (videoTexture == null)
             {
@@ -165,7 +166,7 @@ namespace CutTheRopeDX.Framework.Media
                 }
             }
 
-            return videoTexture;
+            return videoTextureHandle;
         }
 
         /// <inheritdoc/>
@@ -867,6 +868,7 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
+            videoTextureHandle = new MonoGameTexture(videoTexture);
             textureWidth = width;
             textureHeight = height;
         }
@@ -946,6 +948,7 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = null;
+            videoTextureHandle = null;
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
@@ -1068,6 +1071,9 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>MonoGame texture for rendering video frames.</summary>
         private Texture2D videoTexture;
+
+        /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
+        private MonoGameTexture videoTextureHandle;
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;

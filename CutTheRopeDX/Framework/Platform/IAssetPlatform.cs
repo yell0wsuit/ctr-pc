@@ -1,7 +1,5 @@
 using CutTheRopeDX.Framework.Visual;
 
-using Microsoft.Xna.Framework.Graphics;
-
 namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
@@ -17,8 +15,8 @@ namespace CutTheRopeDX.Framework.Platform
 
         /// <summary>The backing texture, or <see langword="null"/> when running without a device.</summary>
         /// <param name="contentPath">Content-relative path, e.g. <c>images/obj_candy</c>.</param>
-        /// <returns>The loaded texture, or <see langword="null"/>.</returns>
-        Texture2D ImageTexture(string contentPath);
+        /// <returns>The loaded texture handle, or <see langword="null"/>.</returns>
+        ITextureHandle ImageTexture(string contentPath);
 
         /// <summary>Loads a font by logical resource name.</summary>
         /// <param name="resourceName">Logical font resource name.</param>

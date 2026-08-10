@@ -6,8 +6,6 @@ using System.Text.Json;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework.Graphics;
-
 namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
@@ -34,7 +32,7 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
-        public Texture2D ImageTexture(string contentPath)
+        public ITextureHandle ImageTexture(string contentPath)
         {
             return null;
         }
