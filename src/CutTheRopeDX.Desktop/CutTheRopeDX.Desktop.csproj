@@ -104,6 +104,10 @@
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Tests" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="FFmpeg.AutoGen" />
   </ItemGroup>

@@ -26,19 +26,4 @@
     <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
   </ItemGroup>
 
-  <!--
-    These test genuinely Desktop-only, MonoGame-bound implementation details (quad batching/blend
-    state tied to XNA Rectangle/Matrix/vertex types, the MonoGame Song completion workaround, and
-    FontStashFont's composite-target rotation). Tests now references Core only, not Desktop, so
-    these can no longer compile here. Excluded rather than given a Desktop reference (which would
-    defeat the point of this split) or silently dropped.
-  -->
-  <ItemGroup>
-    <Compile Remove="QuadBatchTests.cs" />
-    <Compile Remove="QuadBakingTests.cs" />
-    <Compile Remove="BlendParamsSnapshotTests.cs" />
-    <Compile Remove="SongLoopWorkaroundTests.cs" />
-    <Compile Remove="TextCompositeTargetSelectionTests.cs" />
-  </ItemGroup>
-
 </Project>

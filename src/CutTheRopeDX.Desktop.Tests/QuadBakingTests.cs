@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using Xunit;
 
-namespace CutTheRopeDX.Tests
+namespace CutTheRopeDX.Desktop.Tests
 {
     public sealed class QuadBakingTests
     {

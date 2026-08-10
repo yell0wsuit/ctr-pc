@@ -2,7 +2,7 @@ using CutTheRopeDX.Framework.Visual;
 
 using Xunit;
 
-namespace CutTheRopeDX.Tests
+namespace CutTheRopeDX.Desktop.Tests
 {
     public class TextCompositeTargetSelectionTests
     {

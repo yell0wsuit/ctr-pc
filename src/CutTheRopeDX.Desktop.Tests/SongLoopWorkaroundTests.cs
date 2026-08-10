@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Media;
 
 using Xunit;
 
-namespace CutTheRopeDX.Tests
+namespace CutTheRopeDX.Desktop.Tests
 {
     // Excluded from CutTheRopeDX.Tests.csproj compilation (Compile Remove): this class tests
     // MonoGameSongCompletionWorkaround, which is genuinely Desktop/XNA-bound (Microsoft.Xna.Framework.Media.Song).

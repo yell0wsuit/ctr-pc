@@ -3,7 +3,7 @@ using CutTheRopeDX.Framework.Platform;
 
 using Xunit;
 
-namespace CutTheRopeDX.Tests
+namespace CutTheRopeDX.Desktop.Tests
 {
     public sealed class BlendParamsSnapshotTests
     {
