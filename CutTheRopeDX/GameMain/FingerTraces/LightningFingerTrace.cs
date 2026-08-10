@@ -6,11 +6,8 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
-using Microsoft.Xna.Framework.Graphics;
-
-using XnaColor = Microsoft.Xna.Framework.Color;
-using XnaVector2 = Microsoft.Xna.Framework.Vector2;
-using XnaVector3 = Microsoft.Xna.Framework.Vector3;
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace CutTheRopeDX.GameMain.FingerTraces
 {
@@ -165,7 +162,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 DrawSpritePose(sprite);
             }
 
-            Renderer.SetColor(XnaColor.White);
+            Renderer.SetColor(Color.White);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }
 
@@ -258,25 +255,25 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             {
                 LightningQuad quad = quads[i];
                 Quad2D textureQuad = texture.quads[quad.QuadIndex];
-                XnaColor color = RGBAColor.MakeRGBA(1f, 1f, (i + 0.5f) / quads.Count, 1f).ToColor();
+                Color color = RGBAColor.MakeRGBA(1f, 1f, (i + 0.5f) / quads.Count, 1f).ToColor();
                 int vertexIndex = i * 4;
 
                 verticesCache[vertexIndex] = new VertexPositionColorTexture(
-                    new XnaVector3(quad.BottomLeft.X, quad.BottomLeft.Y, 0f),
+                    new Vector3(quad.BottomLeft.X, quad.BottomLeft.Y, 0f),
                     color,
-                    new XnaVector2(textureQuad.blX, textureQuad.blY));
+                    new Vector2(textureQuad.blX, textureQuad.blY));
                 verticesCache[vertexIndex + 1] = new VertexPositionColorTexture(
-                    new XnaVector3(quad.BottomRight.X, quad.BottomRight.Y, 0f),
+                    new Vector3(quad.BottomRight.X, quad.BottomRight.Y, 0f),
                     color,
-                    new XnaVector2(textureQuad.brX, textureQuad.brY));
+                    new Vector2(textureQuad.brX, textureQuad.brY));
                 verticesCache[vertexIndex + 2] = new VertexPositionColorTexture(
-                    new XnaVector3(quad.TopLeft.X, quad.TopLeft.Y, 0f),
+                    new Vector3(quad.TopLeft.X, quad.TopLeft.Y, 0f),
                     color,
-                    new XnaVector2(textureQuad.tlX, textureQuad.tlY));
+                    new Vector2(textureQuad.tlX, textureQuad.tlY));
                 verticesCache[vertexIndex + 3] = new VertexPositionColorTexture(
-                    new XnaVector3(quad.TopRight.X, quad.TopRight.Y, 0f),
+                    new Vector3(quad.TopRight.X, quad.TopRight.Y, 0f),
                     color,
-                    new XnaVector2(textureQuad.trX, textureQuad.trY));
+                    new Vector2(textureQuad.trX, textureQuad.trY));
             }
 
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

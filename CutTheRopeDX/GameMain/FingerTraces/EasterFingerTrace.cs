@@ -1,6 +1,5 @@
 using CutTheRopeDX.Framework;
-
-using Microsoft.Xna.Framework;
+using CutTheRopeDX.Framework.Helpers;
 
 namespace CutTheRopeDX.GameMain.FingerTraces
 {
@@ -32,9 +31,9 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             {
                 float blend = t * 3f;
                 return RGBAColor.MakeRGBA(
-                    MathHelper.Lerp(0.14118f, 1f, blend),
-                    MathHelper.Lerp(0.81961f, 1f, blend),
-                    MathHelper.Lerp(0.87451f, 1f, blend),
+                    CTRMathHelper.Lerp(0.14118f, 1f, blend),
+                    CTRMathHelper.Lerp(0.81961f, 1f, blend),
+                    CTRMathHelper.Lerp(0.87451f, 1f, blend),
                     1f);
             }
 

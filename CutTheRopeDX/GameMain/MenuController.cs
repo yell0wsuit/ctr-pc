@@ -12,9 +12,6 @@ using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -2071,17 +2068,17 @@ namespace CutTheRopeDX.GameMain
             if (activeViewID == 5 && ddPackSelect != null)
             {
                 ddPackSelect.Update(delta);
-                if (Global.XnaGame.IsKeyPressed(Keys.Left))
+                if (Global.XnaGame.IsKeyPressed(KeyCode.Left))
                 {
                     OnButtonPressed(MenuButtonId.PreviousPack);
                     return;
                 }
-                if (Global.XnaGame.IsKeyPressed(Keys.Right))
+                if (Global.XnaGame.IsKeyPressed(KeyCode.Right))
                 {
                     OnButtonPressed(MenuButtonId.NextPack);
                     return;
                 }
-                if ((Global.XnaGame.IsKeyPressed(Keys.Space) || Global.XnaGame.IsKeyPressed(Keys.Enter)) && !bScrolling)
+                if ((Global.XnaGame.IsKeyPressed(KeyCode.Space) || Global.XnaGame.IsKeyPressed(KeyCode.Enter)) && !bScrolling)
                 {
                     OnButtonPressed(MenuButtonId.ForPack(currentPack));
                     return;

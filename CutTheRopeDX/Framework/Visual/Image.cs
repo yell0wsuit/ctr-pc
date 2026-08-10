@@ -4,8 +4,6 @@ using System.Xml.Linq;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
-using Microsoft.Xna.Framework.Graphics;
-
 namespace CutTheRopeDX.Framework.Visual
 {
     /// <summary>
@@ -287,7 +285,6 @@ namespace CutTheRopeDX.Framework.Visual
             }
             base.Dispose(disposing);
         }
-
 
         /// <summary>
         /// Timeline action name for setting the draw quad index.

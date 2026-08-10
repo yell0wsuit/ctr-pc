@@ -1,6 +1,5 @@
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework;
 
 // FontConfiguration keeps its original CutTheRopeDX.GameMain namespace even though it now lives
 // alongside FontEffectSettings in Framework/Visual — the decouple-core refactor plan holds

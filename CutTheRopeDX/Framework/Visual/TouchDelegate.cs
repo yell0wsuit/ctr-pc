@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using Microsoft.Xna.Framework.Input.Touch;
+using CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Framework.Visual
 {

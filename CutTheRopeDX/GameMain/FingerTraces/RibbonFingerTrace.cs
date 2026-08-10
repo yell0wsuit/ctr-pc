@@ -5,8 +5,7 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Vector3 = System.Numerics.Vector3;
 
 namespace CutTheRopeDX.GameMain.FingerTraces
 {

@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Framework.Platform
             return FontManager.LoadFont(
                 config.FontFile,
                 config.Size,
-                config.Color,
+                new Microsoft.Xna.Framework.Color(config.Color.R, config.Color.G, config.Color.B, config.Color.A),
                 config.Effects,
                 config.LineSpacing,
                 config.TopSpacing);

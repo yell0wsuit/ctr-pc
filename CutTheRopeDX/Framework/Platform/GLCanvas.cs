@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRopeDX.Framework.Platform
 {
@@ -17,14 +15,14 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Gets the current scaled view bounds in desktop window coordinates.
         /// </summary>
-        public Rectangle Bounds
+        public CTRRectangle Bounds
         {
             get
             {
-                _bounds.Width = ScreenPresentation.Instance.SurfaceWidth;
-                _bounds.Height = ScreenPresentation.Instance.SurfaceHeight;
-                _bounds.X = 0;
-                _bounds.Y = 0;
+                _bounds.w = ScreenPresentation.Instance.SurfaceWidth;
+                _bounds.h = ScreenPresentation.Instance.SurfaceHeight;
+                _bounds.x = 0;
+                _bounds.y = 0;
                 return _bounds;
             }
         }
@@ -288,7 +286,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Cached rectangle reused when returning <see cref="Bounds"/>.
         /// </summary>
-        private Rectangle _bounds;
+        private CTRRectangle _bounds;
 
         /// <summary>
         /// Whether the current view is fullscreen.

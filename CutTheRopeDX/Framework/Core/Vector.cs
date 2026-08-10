@@ -1,6 +1,6 @@
 using System.Globalization;
 
-using Microsoft.Xna.Framework;
+using Vector2 = System.Numerics.Vector2;
 
 namespace CutTheRopeDX.Framework.Core
 {
@@ -10,9 +10,9 @@ namespace CutTheRopeDX.Framework.Core
     public struct Vector
     {
         /// <summary>
-        /// Initializes a new <see cref="Vector"/> from an XNA <see cref="Vector2"/>.
+        /// Initializes a new <see cref="Vector"/> from a <see cref="Vector2"/>.
         /// </summary>
-        /// <param name="v">Source XNA vector.</param>
+        /// <param name="v">Source vector.</param>
         public Vector(Vector2 v)
         {
             X = v.X;
@@ -31,10 +31,10 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Converts this vector to an XNA <see cref="Vector2"/>.
+        /// Converts this vector to a <see cref="Vector2"/>.
         /// </summary>
-        /// <returns>The converted XNA vector.</returns>
-        public readonly Vector2 ToXNA()
+        /// <returns>The converted vector.</returns>
+        public readonly Vector2 ToVector2()
         {
             return new Vector2(X, Y);
         }

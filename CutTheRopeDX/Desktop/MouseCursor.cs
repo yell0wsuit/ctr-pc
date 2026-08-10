@@ -8,7 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
+
+using Core = CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Desktop
 {
@@ -254,41 +255,41 @@ namespace CutTheRopeDX.Desktop
         /// Translates mouse button activity into touch events for desktop input emulation.
         /// </summary>
         /// <returns>The current touch locations derived from mouse input.</returns>
-        public List<TouchLocation> GetTouchLocation()
+        public List<Core.TouchLocation> GetTouchLocation()
         {
-            List<TouchLocation> list = [];
+            List<Core.TouchLocation> list = [];
             _mouseStateOriginal = Global.XnaGame.GetMouseState();
             MouseState mouseStateTranformed = TransformMouseState(_mouseStateOriginal);
-            TouchLocation item = default;
+            Core.TouchLocation item = default;
             if (_touchID > 0)
             {
                 if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
                 {
-                    TouchLocation touchLocation;
+                    Core.TouchLocation touchLocation;
                     if (_mouseStateTransformed.LeftButton == ButtonState.Pressed)
                     {
-                        touchLocation = new TouchLocation(_touchID, TouchLocationState.Moved, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
+                        touchLocation = new Core.TouchLocation(_touchID, Core.TouchLocationState.Moved, new System.Numerics.Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
                     else
                     {
                         int nextTouchId = _touchID + 1;
                         _touchID = nextTouchId;
-                        touchLocation = new TouchLocation(nextTouchId, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
+                        touchLocation = new Core.TouchLocation(nextTouchId, Core.TouchLocationState.Pressed, new System.Numerics.Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
                     }
                     item = touchLocation;
                 }
                 else if (_mouseStateTransformed.LeftButton == ButtonState.Pressed)
                 {
-                    item = new TouchLocation(_touchID, TouchLocationState.Released, new Vector2(_mouseStateTransformed.X, _mouseStateTransformed.Y));
+                    item = new Core.TouchLocation(_touchID, Core.TouchLocationState.Released, new System.Numerics.Vector2(_mouseStateTransformed.X, _mouseStateTransformed.Y));
                 }
             }
             else if (mouseStateTranformed.LeftButton == ButtonState.Pressed)
             {
                 int nextTouchId = _touchID + 1;
                 _touchID = nextTouchId;
-                item = new TouchLocation(nextTouchId, TouchLocationState.Pressed, new Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
+                item = new Core.TouchLocation(nextTouchId, Core.TouchLocationState.Pressed, new System.Numerics.Vector2(mouseStateTranformed.X, mouseStateTranformed.Y));
             }
-            if (item.State != TouchLocationState.Invalid)
+            if (item.State != Core.TouchLocationState.Invalid)
             {
                 list.Add(item);
             }

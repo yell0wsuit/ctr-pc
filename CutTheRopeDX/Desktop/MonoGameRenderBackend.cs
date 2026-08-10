@@ -88,6 +88,8 @@ namespace CutTheRopeDX.Desktop
         /// <typeparam name="TCore">The Core-owned struct.</typeparam>
         /// <typeparam name="TXna">The XNA struct it is reinterpreted as.</typeparam>
         private static void RequireSameSize<TCore, TXna>()
+            where TCore : struct
+            where TXna : struct
         {
             if (Unsafe.SizeOf<TCore>() != Unsafe.SizeOf<TXna>())
             {

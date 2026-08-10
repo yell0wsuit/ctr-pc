@@ -5,9 +5,8 @@ using System.Linq;
 using System.Reflection;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework;
 
 namespace CutTheRopeDX.GameMain
 {

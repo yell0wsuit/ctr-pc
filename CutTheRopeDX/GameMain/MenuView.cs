@@ -1,8 +1,6 @@
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
-using Microsoft.Xna.Framework;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>

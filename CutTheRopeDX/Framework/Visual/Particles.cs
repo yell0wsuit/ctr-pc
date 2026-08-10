@@ -1,7 +1,5 @@
 using CutTheRopeDX.Framework.Core;
 
-using Microsoft.Xna.Framework.Graphics;
-
 namespace CutTheRopeDX.Framework.Visual
 {
     /// <summary>
@@ -117,7 +115,6 @@ namespace CutTheRopeDX.Framework.Visual
                 particles = null;
                 vertices = null;
                 colors = null;
-                texture = null;
             }
             base.Dispose(disposing);
         }
@@ -394,11 +391,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// Accumulated time for emission rate tracking.
         /// </summary>
         public float emitCounter;
-
-        /// <summary>
-        /// Texture used for rendering particles.
-        /// </summary>
-        public Texture2D texture;
 
         /// <summary>
         /// Point sprite positions and sizes for rendering.

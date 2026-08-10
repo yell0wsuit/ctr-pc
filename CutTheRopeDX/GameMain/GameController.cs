@@ -9,9 +9,6 @@ using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -23,7 +20,7 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float t)
         {
             // XnaGame is the desktop host and is absent headless, where there is no keyboard.
-            if (overlayMode == GameControllerOverlayMode.Gameplay && Global.XnaGame?.IsKeyPressed(Keys.F5) == true)
+            if (overlayMode == GameControllerOverlayMode.Gameplay && Global.XnaGame?.IsKeyPressed(KeyCode.F5) == true)
             {
                 OnButtonPressed(GameControllerButtonId.Restart);
             }

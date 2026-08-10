@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Visual;
 
-using Microsoft.Xna.Framework.Input.Touch;
-
 namespace CutTheRopeDX.Framework.Core
 {
     /// <summary>

@@ -14,6 +14,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Color = Microsoft.Xna.Framework.Color;
+
 namespace CutTheRopeDX
 {
     /// <summary>
@@ -220,11 +222,13 @@ namespace CutTheRopeDX
         /// </summary>
         /// <param name="key">The key to check.</param>
         /// <returns><see langword="true"/> if <paramref name="key"/> transitioned from up to down this frame; otherwise <see langword="false"/>.</returns>
-        public bool IsKeyPressed(Keys key)
+        internal bool IsKeyPressed(KeyCode key)
         {
-            _ = keyState.TryGetValue(key, out bool value);
-            bool flag = keyboardStateXna.IsKeyDown(key);
-            keyState[key] = flag;
+            // KeyCode mirrors XNA's Keys numeric values exactly, so the cast is the whole conversion.
+            Keys xnaKey = (Keys)key;
+            _ = keyState.TryGetValue(xnaKey, out bool value);
+            bool flag = keyboardStateXna.IsKeyDown(xnaKey);
+            keyState[xnaKey] = flag;
             return flag && value != flag;
         }
 
@@ -255,7 +259,7 @@ namespace CutTheRopeDX
             IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
             keyboardStateXna = Keyboard.GetState();
 
-            if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (IsKeyPressed(KeyCode.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 Application.SharedMovieMgr().Stop();
                 _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();

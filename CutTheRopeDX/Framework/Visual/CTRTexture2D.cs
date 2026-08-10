@@ -3,8 +3,6 @@ using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
-using Microsoft.Xna.Framework.Graphics;
-
 namespace CutTheRopeDX.Framework.Visual
 {
     /// <summary>
@@ -160,7 +158,6 @@ namespace CutTheRopeDX.Framework.Visual
         public static void SetAliasTexParameters()
         {
         }
-
 
         /// <summary>
         /// Registers this texture in the global linked list.

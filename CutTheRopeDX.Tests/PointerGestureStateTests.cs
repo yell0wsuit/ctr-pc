@@ -4,10 +4,9 @@ using System.Reflection;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
-
 using Xunit;
+
+using Vector2 = System.Numerics.Vector2;
 
 namespace CutTheRopeDX.Tests
 {

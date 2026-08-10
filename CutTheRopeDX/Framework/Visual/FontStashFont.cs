@@ -236,15 +236,26 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Converts a Core color to the XNA color the sprite/font APIs consume. Core owns the
+        /// color type now; this Desktop-bound file converts at its own boundary.
+        /// </summary>
+        /// <param name="c">The Core color.</param>
+        /// <returns>The equivalent XNA color.</returns>
+        private static Color ToXnaColor(Core.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+
+        /// <summary>
         /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
         /// When fading, all layers are first composited at full opacity onto a render target,
         /// then drawn to screen with the fade alpha so shadow/stroke/fill fade in sync.
         /// </summary>
         /// <param name="call">Layout, formatted lines, color modulation, and ping-pong clip state for the text element.</param>
+
         public override void DrawText(in TextDrawCall call)
         {
-            CutTheRopeDX.Framework.Core.Color inherited = call.InheritedColor.ToColor();
-            Color parentColor = new(inherited.R, inherited.G, inherited.B, inherited.A);
+            Color parentColor = ToXnaColor(call.InheritedColor.ToColor());
 
             SpriteBatch spriteBatch = Global.SpriteBatch;
             if (spriteBatch == null)
@@ -414,7 +425,7 @@ namespace CutTheRopeDX.Framework.Visual
                     Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
                     int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
                     Color shadowColor = MakeColor(
-                        effects.ShadowColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
+                        ToXnaColor(effects.ShadowColor), inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
 
                     for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
                     {
@@ -434,7 +445,7 @@ namespace CutTheRopeDX.Framework.Visual
                 if (effects?.HasStroke == true)
                 {
                     Color strokeColor = MakeColor(
-                        effects.StrokeColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
+                        ToXnaColor(effects.StrokeColor), inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
                     int strokeAmount = effects.StrokeAmount;
 
                     for (int x = -strokeAmount; x <= strokeAmount; x++)

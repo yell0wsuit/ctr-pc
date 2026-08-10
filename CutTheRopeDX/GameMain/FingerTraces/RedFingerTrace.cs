@@ -1,7 +1,6 @@
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework;
 
 namespace CutTheRopeDX.GameMain.FingerTraces
 {
@@ -34,17 +33,17 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             {
                 float blend = t * 2f;
                 return RGBAColor.MakeRGBA(
-                    MathHelper.Lerp(0.7882f, 0.98824f, blend),
-                    MathHelper.Lerp(0.2157f, 0.20784f, blend),
-                    MathHelper.Lerp(0.2980f, 0.16863f, blend),
-                    MathHelper.Lerp(0f, 1f, blend));
+                    CTRMathHelper.Lerp(0.7882f, 0.98824f, blend),
+                    CTRMathHelper.Lerp(0.2157f, 0.20784f, blend),
+                    CTRMathHelper.Lerp(0.2980f, 0.16863f, blend),
+                    CTRMathHelper.Lerp(0f, 1f, blend));
             }
 
             float fade = (t - 0.7f) * 2f;
             return RGBAColor.MakeRGBA(
-                MathHelper.Lerp(0.98824f, 0.95294f, fade),
-                MathHelper.Lerp(0.20784f, 0.61961f, fade),
-                MathHelper.Lerp(0.16863f, 0.41961f, fade),
+                CTRMathHelper.Lerp(0.98824f, 0.95294f, fade),
+                CTRMathHelper.Lerp(0.20784f, 0.61961f, fade),
+                CTRMathHelper.Lerp(0.16863f, 0.41961f, fade),
                 1f);
         }
     }

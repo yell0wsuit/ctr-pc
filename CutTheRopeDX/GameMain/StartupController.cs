@@ -7,9 +7,6 @@ using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>

@@ -41,6 +41,17 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Converts a Core color to the XNA color the sprite/font APIs consume. Core owns the
+        /// color type now; this Desktop-bound file converts at its own boundary.
+        /// </summary>
+        /// <param name="c">The Core color.</param>
+        /// <returns>The equivalent XNA color.</returns>
+        private static Color ToXnaColor(Core.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+
+        /// <summary>
         /// Loads a FontStashSharp font from a TTF/OTF file.
         /// </summary>
         /// <param name="fontPath">Path to the TTF/OTF font file.</param>
@@ -50,6 +61,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="lineSpacing">Extra spacing between lines.</param>
         /// <param name="topSpacing">Extra spacing above the first line.</param>
         /// <returns>A cached or newly created <see cref="FontStashFont"/> instance.</returns>
+
         public static FontStashFont LoadFont(string fontPath, float fontSize, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
         {
             if (graphicsDevice == null)
@@ -148,11 +160,11 @@ namespace CutTheRopeDX.Framework.Visual
             int hash = 17;
             hash = (hash * 31) + (effects.HasStroke ? 1 : 0);
             hash = (hash * 31) + effects.StrokeAmount;
-            hash = (hash * 31) + (int)effects.StrokeColor.PackedValue;
+            hash = (hash * 31) + (int)ToXnaColor(effects.StrokeColor).PackedValue;
             hash = (hash * 31) + (effects.HasShadow ? 1 : 0);
             hash = (hash * 31) + effects.ShadowOffsetX;
             hash = (hash * 31) + effects.ShadowOffsetY;
-            hash = (hash * 31) + (int)effects.ShadowColor.PackedValue;
+            hash = (hash * 31) + (int)ToXnaColor(effects.ShadowColor).PackedValue;
             return hash;
         }
 

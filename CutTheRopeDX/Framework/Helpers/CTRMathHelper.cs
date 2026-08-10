@@ -95,6 +95,51 @@ namespace CutTheRopeDX.Framework.Helpers
             return MathF.Max(MathF.Min(V, MAXV), MINV);
         }
 
+        /// <summary>
+        /// Restricts <paramref name="value"/> to the range [<paramref name="min"/>, <paramref name="max"/>].
+        /// Body copied verbatim from MonoGame's <c>MathHelper.Clamp</c> so the de-XNA'd build keeps
+        /// bit-identical results; do not replace it with <see cref="Math.Clamp(float, float, float)"/>.
+        /// </summary>
+        /// <param name="value">The value to clamp.</param>
+        /// <param name="min">The minimum value.</param>
+        /// <param name="max">The maximum value.</param>
+        /// <returns>The clamped value.</returns>
+        public static float Clamp(float value, float min, float max)
+        {
+            // First we check to see if we're greater than the max.
+            value = (value > max) ? max : value;
+
+            // Then we check to see if we're less than the min.
+            value = (value < min) ? min : value;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Linearly interpolates between <paramref name="value1"/> and <paramref name="value2"/>.
+        /// Body copied verbatim from MonoGame's <c>MathHelper.Lerp</c> (the imprecise-but-matching
+        /// form) so the de-XNA'd build keeps bit-identical results.
+        /// </summary>
+        /// <param name="value1">Source value.</param>
+        /// <param name="value2">Destination value.</param>
+        /// <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="value2"/>.</param>
+        /// <returns>The interpolated value.</returns>
+        public static float Lerp(float value1, float value2, float amount)
+        {
+            return value1 + ((value2 - value1) * amount);
+        }
+
+        /// <summary>
+        /// Converts <paramref name="degrees"/> to radians.
+        /// Body copied verbatim from MonoGame's <c>MathHelper.ToRadians</c>.
+        /// </summary>
+        /// <param name="degrees">The angle in degrees.</param>
+        /// <returns>The angle in radians.</returns>
+        public static float ToRadians(float degrees)
+        {
+            return degrees * (MathF.PI / 180f);
+        }
+
         /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
         /// <param name="value">The input value.</param>
         /// <returns>The smallest integer greater than or equal to <paramref name="value"/>.</returns>

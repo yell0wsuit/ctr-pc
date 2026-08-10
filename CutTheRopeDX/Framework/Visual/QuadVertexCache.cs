@@ -1,5 +1,7 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using CutTheRopeDX.Framework.Core;
+
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 namespace CutTheRopeDX.Framework.Visual
 {
