@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
@@ -26,6 +27,10 @@ namespace CutTheRopeDX.Tests
         {
             if (!booted)
             {
+                // Headless has no graphics device, but installing a throwing backend (rather than
+                // leaving PlatformServices.Render null) turns "we believe no test's logic path
+                // reaches rendering code" into a verified fact: see ThrowingRenderBackend for why.
+                PlatformServices.Render = new ThrowingRenderBackend();
                 HeadlessHost.Boot(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight, Language.LANGEN);
                 booted = true;
             }
