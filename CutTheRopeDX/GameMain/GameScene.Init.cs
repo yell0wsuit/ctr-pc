@@ -1,7 +1,6 @@
 using System.IO;
 using System.Linq;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
@@ -185,10 +184,6 @@ namespace CutTheRopeDX.GameMain
                 image.y = earthBgPosition.Value.Y;
             }
 
-            if (Canvas.isFullscreen)
-            {
-                _ = Global.ScreenSizeManager.ScreenWidth;
-            }
             image.scaleX = 1f;
             image.scaleY = 1f;
             image.x += xs;

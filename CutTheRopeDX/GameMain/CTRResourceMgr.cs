@@ -1,8 +1,8 @@
 using System;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 namespace CutTheRopeDX.GameMain
@@ -137,8 +137,8 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         protected override float GetAspectRatioScaleX()
         {
-            int width = Global.ScreenSizeManager.CurrentSize.Width;
-            int height = Global.ScreenSizeManager.CurrentSize.Height;
+            int width = ScreenPresentation.Instance.SurfaceWidth;
+            int height = ScreenPresentation.Instance.SurfaceHeight;
             if (width <= 0 || height <= 0)
             {
                 return 1f;

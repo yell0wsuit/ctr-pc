@@ -216,7 +216,9 @@ namespace CutTheRopeDX.Desktop
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(s_RenderTarget, Global.ScreenSizeManager.ScaledViewRect, Color.White);
+                ScreenPresentation presentation = ScreenPresentation.Instance;
+                Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
+                Global.SpriteBatch.Draw(s_RenderTarget, scaledViewRect, Color.White);
                 Global.SpriteBatch.End();
                 BlendParams.InvalidateDeviceCache();
             }

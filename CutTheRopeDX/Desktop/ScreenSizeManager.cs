@@ -1,6 +1,7 @@
 using System;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,17 +9,32 @@ using Microsoft.Xna.Framework.Graphics;
 namespace CutTheRopeDX.Desktop
 {
     /// <summary>
-    /// Manages window, fullscreen, and scaled-view sizing for the desktop renderer.
-    /// Handles aspect-ratio preservation, viewport updates, coordinate transforms, and persisted window settings.
+    /// Manages the OS window, fullscreen toggling, and persisted window settings for the desktop
+    /// renderer. Device-free presentation math (scaled view rect, coordinate transforms) lives in
+    /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="ScreenPresentation.SetSurfaceSize"/>
+    /// whenever the window or fullscreen bounds change, and implements <see cref="IWindowService"/>
+    /// so Core code can command window behavior through <see cref="PlatformServices.Window"/>.
     /// </summary>
     /// <param name="gameWidth">Logical game width.</param>
     /// <param name="gameHeight">Logical game height.</param>
-    internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
+    internal sealed class ScreenSizeManager(int gameWidth, int gameHeight) : IWindowService
     {
         /// <summary>
         /// Maximum allowed window width for the active graphics profile.
         /// </summary>
         public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
+
+        /// <summary>
+        /// Gets the logical game width. Retained from the constructor for API symmetry with
+        /// <see cref="ScreenPresentation"/>, which is the sole consumer of the aspect ratio it implies.
+        /// </summary>
+        public int GameWidth { get; } = gameWidth;
+
+        /// <summary>
+        /// Gets the logical game height. Retained from the constructor for API symmetry with
+        /// <see cref="ScreenPresentation"/>, which is the sole consumer of the aspect ratio it implies.
+        /// </summary>
+        public int GameHeight { get; } = gameHeight;
 
         /// <summary>
         /// Gets the current window back-buffer width.
@@ -51,27 +67,13 @@ namespace CutTheRopeDX.Desktop
         public Rectangle CurrentSize => IsFullScreen ? _fullScreenRect : _windowRect;
 
         /// <summary>
-        /// Gets the logical game width.
-        /// </summary>
-        public int GameWidth { get; } = gameWidth;
-
-        /// <summary>
-        /// Gets the logical game height.
-        /// </summary>
-        public int GameHeight { get; } = gameHeight;
-
-        /// <summary>
-        /// Gets the letterboxed or pillarboxed view rectangle used for rendering the game.
-        /// </summary>
-        public Rectangle ScaledViewRect => _scaledViewRect;
-
-        /// <summary>
         /// Gets a value indicating whether size-change reactions are temporarily disabled.
         /// </summary>
         public bool SkipSizeChanges { get; private set; }
 
         /// <summary>
         /// Sets whether fullscreen view scaling should crop width instead of fitting the full game width.
+        /// Forwarded to <see cref="ScreenPresentation.Instance"/>, which owns the scaled-view-rect math.
         /// </summary>
         public bool FullScreenCropWidth
         {
@@ -86,51 +88,6 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Gets the horizontal scale factor from logical game width to the current scaled view width.
-        /// </summary>
-        public double WidthAspectRatio => _scaledViewRect.Width / (double)GameWidth;
-
-        /// <summary>
-        /// Converts a window-space X coordinate into scaled-view space.
-        /// </summary>
-        /// <param name="x">Window-space X coordinate.</param>
-        /// <returns>Scaled-view X coordinate.</returns>
-        public int TransformWindowToViewX(int x)
-        {
-            return x - _scaledViewRect.X;
-        }
-
-        /// <summary>
-        /// Converts a window-space Y coordinate into scaled-view space.
-        /// </summary>
-        /// <param name="y">Window-space Y coordinate.</param>
-        /// <returns>Scaled-view Y coordinate.</returns>
-        public int TransformWindowToViewY(int y)
-        {
-            return y - _scaledViewRect.Y;
-        }
-
-        /// <summary>
-        /// Converts a scaled-view X coordinate into logical game space.
-        /// </summary>
-        /// <param name="x">Scaled-view X coordinate.</param>
-        /// <returns>Logical game-space X coordinate.</returns>
-        public float TransformViewToGameX(float x)
-        {
-            return x * GameWidth / _scaledViewRect.Width;
-        }
-
-        /// <summary>
-        /// Converts a scaled-view Y coordinate into logical game space.
-        /// </summary>
-        /// <param name="y">Scaled-view Y coordinate.</param>
-        /// <returns>Logical game-space Y coordinate.</returns>
-        public float TransformViewToGameY(float y)
-        {
-            return y * GameHeight / _scaledViewRect.Height;
-        }
-
-        /// <summary>
         /// Initializes screen sizing from the current display mode, preferred window width, and fullscreen state.
         /// </summary>
         /// <param name="displayMode">Current display mode.</param>
@@ -140,7 +97,7 @@ namespace CutTheRopeDX.Desktop
         {
             FullScreenRectChanged(displayMode);
             int targetWindowWidth = ClampWindowWidth(windowWidth, displayMode.Width);
-            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScaledGameHeight(targetWindowWidth)));
+            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScreenPresentation.Instance.ScaledGameHeight(targetWindowWidth)));
             if (isFullScreen)
             {
                 ToggleFullScreen();
@@ -150,21 +107,6 @@ namespace CutTheRopeDX.Desktop
             CenterWindow();
             // Size the canvas to the window that was just established.
             Application.SharedCanvas().Reshape();
-        }
-
-        /// <summary>
-        /// Initializes logical screen metrics with no display device, for headless runs.
-        /// Deliberately skips ApplyWindowSize and CenterWindow: both touch Global.XnaGame.Window,
-        /// which does not exist headless. Only the rectangles the engine reads are set, via the
-        /// same private setters <see cref="Init"/> uses so the scaled view rect stays consistent.
-        /// </summary>
-        /// <param name="width">Logical window width.</param>
-        /// <param name="height">Logical window height.</param>
-        public void InitHeadless(int width, int height)
-        {
-            IsFullScreen = false;
-            FullScreenRectChanged(new Rectangle(0, 0, width, height));
-            WindowRectChanged(new Rectangle(0, 0, width, height));
         }
 
         /// <summary>
@@ -203,56 +145,13 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Returns the logical game width that preserves aspect ratio for the supplied scaled height.
-        /// </summary>
-        /// <param name="scaledHeight">Scaled view height.</param>
-        /// <returns>Aspect-ratio-correct game width.</returns>
-        public int ScaledGameWidth(int scaledHeight)
-        {
-            return (int)((scaledHeight / _gameAspectRatio) + 0.5);
-        }
-
-        /// <summary>
-        /// Returns the logical game height that preserves aspect ratio for the supplied scaled width.
-        /// </summary>
-        /// <param name="scaledWidth">Scaled view width.</param>
-        /// <returns>Aspect-ratio-correct game height.</returns>
-        public int ScaledGameHeight(int scaledWidth)
-        {
-            return (int)((scaledWidth * _gameAspectRatio) + 0.5);
-        }
-
-        /// <summary>
-        /// Recomputes the scaled render rectangle for the current window or fullscreen bounds.
-        /// </summary>
-        private void UpdateScaledView()
-        {
-            if (SkipSizeChanges)
-            {
-                return;
-            }
-            // Always use fullscreen-style letterboxing/pillarboxing for both modes
-            Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
-            if (sourceRect.Width >= sourceRect.Height)
-            {
-                int scaledHeight = _fullScreenCropWidth ? sourceRect.Height : ScaledGameHeight(sourceRect.Width);
-                int scaledWidth = _fullScreenCropWidth ? ScaledGameWidth(scaledHeight) : sourceRect.Width;
-                _scaledViewRect = new Rectangle((sourceRect.Width - scaledWidth) / 2, (sourceRect.Height - scaledHeight) / 2, scaledWidth, scaledHeight);
-                return;
-            }
-            int portraitScaledHeight = _fullScreenCropWidth ? (int)(sourceRect.Width / 5f * 4f) : ScaledGameHeight(sourceRect.Width);
-            int portraitScaledWidth = _fullScreenCropWidth ? ScaledGameWidth(portraitScaledHeight) : sourceRect.Width;
-            _scaledViewRect = new Rectangle((sourceRect.Width - portraitScaledWidth) / 2, (sourceRect.Height - portraitScaledHeight) / 2, portraitScaledWidth, portraitScaledHeight);
-        }
-
-        /// <summary>
         /// Applies a new window back-buffer <paramref name="width"/> and updates the tracked window rectangle.
         /// </summary>
         /// <param name="width">Target window width.</param>
         public void ApplyWindowSize(int width)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
-            int height = ScaledGameHeight(width);
+            int height = ScreenPresentation.Instance.ScaledGameHeight(width);
             // Skip the swapchain rebuild when the back buffer already matches the requested size.
             // At startup the swapchain is created at this size (see Game1), so the first sizing here
             // would otherwise rebuild it needlessly and flash black.
@@ -331,9 +230,9 @@ namespace CutTheRopeDX.Desktop
                     }
                     else if (newWindowRect.Height != WindowHeight)
                     {
-                        targetWidth = ScaledGameWidth(newWindowRect.Height);
+                        targetWidth = ScreenPresentation.Instance.ScaledGameWidth(newWindowRect.Height);
                     }
-                    if (targetWidth < 800 || ScaledGameHeight(targetWidth) < ScaledGameHeight(800))
+                    if (targetWidth < 800 || ScreenPresentation.Instance.ScaledGameHeight(targetWidth) < ScreenPresentation.Instance.ScaledGameHeight(800))
                     {
                         targetWidth = 800;
                     }
@@ -360,7 +259,9 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         public void ApplyViewportToDevice()
         {
-            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(_scaledViewRect, _windowRect) : Rectangle.Intersect(_scaledViewRect, _fullScreenRect);
+            ScreenPresentation presentation = ScreenPresentation.Instance;
+            Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
+            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(scaledViewRect, _windowRect) : Rectangle.Intersect(scaledViewRect, _fullScreenRect);
             try
             {
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
@@ -430,6 +331,23 @@ namespace CutTheRopeDX.Desktop
             }
         }
 
+        /// <summary>
+        /// Feeds the current active (window or fullscreen) bounds and crop-width flag into
+        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the scaled view rect. A no-op
+        /// while <see cref="SkipSizeChanges"/> is set, mirroring the batching <see cref="ToggleFullScreen"/>
+        /// relies on to defer recomputation until every field it touches has settled.
+        /// </summary>
+        private void UpdateScaledView()
+        {
+            if (SkipSizeChanges)
+            {
+                return;
+            }
+            Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
+            ScreenPresentation.Instance.FullScreenCropWidth = _fullScreenCropWidth;
+            ScreenPresentation.Instance.SetSurfaceSize(sourceRect.Width, sourceRect.Height);
+        }
+
         private static void ApplyDesktopVkResize(
             GraphicsDeviceManager graphicsDeviceManager)
         {
@@ -461,16 +379,6 @@ namespace CutTheRopeDX.Desktop
         /// Current fullscreen display rectangle.
         /// </summary>
         private Rectangle _fullScreenRect;
-
-        /// <summary>
-        /// Cached logical game aspect ratio.
-        /// </summary>
-        private readonly double _gameAspectRatio = gameHeight / (double)gameWidth;
-
-        /// <summary>
-        /// Current scaled render rectangle after aspect-ratio fitting or cropping.
-        /// </summary>
-        private Rectangle _scaledViewRect;
 
         /// <summary>
         /// Whether fullscreen scaling should crop width.

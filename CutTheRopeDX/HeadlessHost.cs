@@ -1,5 +1,4 @@
 using CutTheRopeDX.Commons;
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -25,7 +24,7 @@ namespace CutTheRopeDX
         /// <param name="language">Language to initialize with.</param>
         public static void Boot(int width, int height, Language language)
         {
-            Global.ScreenSizeManager.InitHeadless(width, height);
+            ScreenPresentation.Instance.SetSurfaceSize(width, height);
             CtrBootstrap.Initialize(new HeadlessAssetPlatform(), null, width, height, language);
         }
 

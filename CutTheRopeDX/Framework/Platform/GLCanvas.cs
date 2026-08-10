@@ -22,12 +22,10 @@ namespace CutTheRopeDX.Framework.Platform
         {
             get
             {
-                _ = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
-                Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
-                _bounds.Width = currentSize.Width;
-                _bounds.Height = currentSize.Height;
-                _bounds.X = currentSize.X;
-                _bounds.Y = currentSize.Y;
+                _bounds.Width = ScreenPresentation.Instance.SurfaceWidth;
+                _bounds.Height = ScreenPresentation.Instance.SurfaceHeight;
+                _bounds.X = 0;
+                _bounds.Y = 0;
                 return _bounds;
             }
         }
@@ -101,9 +99,9 @@ namespace CutTheRopeDX.Framework.Platform
         public void SetDefaultProjection()
         {
             // Always calculate offsets for proper letterboxing in both windowed and fullscreen modes
-            xOffset = Global.ScreenSizeManager.ScaledViewRect.X;
-            xOffsetScaled = (int)(-xOffset / Global.ScreenSizeManager.WidthAspectRatio);
-            isFullscreen = Global.ScreenSizeManager.IsFullScreen;
+            xOffset = ScreenPresentation.Instance.ScaledViewX;
+            xOffsetScaled = (int)(-xOffset / ScreenPresentation.Instance.WidthAspectRatio);
+            isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
             Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
             Renderer.SetMatrixMode(15);
             Renderer.LoadIdentity();
@@ -140,9 +138,8 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public void Reshape()
         {
-            Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
-            backingWidth = scaledViewRect.Width;
-            backingHeight = scaledViewRect.Height;
+            backingWidth = ScreenPresentation.Instance.ScaledViewWidth;
+            backingHeight = ScreenPresentation.Instance.ScaledViewHeight;
             SetDefaultProjection();
         }
 

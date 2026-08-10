@@ -30,6 +30,7 @@ namespace CutTheRopeDX
             PlatformServices.Updates = new DesktopUpdateService();
             PlatformServices.Cursor = new DesktopCursorService();
             PlatformServices.Host = new DesktopHostApp();
+            PlatformServices.Window = Global.ScreenSizeManager;
             Content.Dispose();
             Content = new DesktopContentManager(Services);
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -73,7 +74,7 @@ namespace CutTheRopeDX
             int displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             int width = ScreenSizeManager.ClampWindowWidth(savedWidth, displayWidth);
             Global.GraphicsDeviceManager.PreferredBackBufferWidth = width;
-            Global.GraphicsDeviceManager.PreferredBackBufferHeight = Global.ScreenSizeManager.ScaledGameHeight(width);
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = ScreenPresentation.Instance.ScaledGameHeight(width);
         }
 
         /// <summary>

@@ -314,7 +314,7 @@ namespace CutTheRopeDX.Commons
         /// <returns>The transformed game-space X coordinate.</returns>
         public static float TransformX(float x)
         {
-            return Global.ScreenSizeManager.TransformViewToGameX(x);
+            return ScreenPresentation.Instance.TransformViewToGameX(x);
         }
 
         /// <summary>
@@ -324,7 +324,7 @@ namespace CutTheRopeDX.Commons
         /// <returns>The transformed game-space Y coordinate.</returns>
         public static float TransformY(float y)
         {
-            return Global.ScreenSizeManager.TransformViewToGameY(y);
+            return ScreenPresentation.Instance.TransformViewToGameY(y);
         }
 
         /// <summary>

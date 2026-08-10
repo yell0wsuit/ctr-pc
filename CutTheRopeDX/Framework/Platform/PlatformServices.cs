@@ -11,6 +11,7 @@ namespace CutTheRopeDX.Framework.Platform
         public static IUpdateService Updates { get; set; }
         public static ICursorService Cursor { get; set; }
         public static IHostApp Host { get; set; }
-        // IRenderBackend / IWindowService slots are added by Tasks 5 and 6.
+        public static IWindowService Window { get; set; }
+        // IRenderBackend slot is added by Task 6.
     }
 }

@@ -210,7 +210,7 @@ namespace CutTheRopeDX.Desktop
             }
 
             // Update scaled cursors if game scale changed
-            UpdateScaledCursors(Global.ScreenSizeManager.WidthAspectRatio);
+            UpdateScaledCursors(ScreenPresentation.Instance.WidthAspectRatio);
 
             if (_nativeCursor == null || _nativeCursorActive == null)
             {
@@ -247,7 +247,7 @@ namespace CutTheRopeDX.Desktop
         /// <returns>The transformed mouse state.</returns>
         private static MouseState TransformMouseState(MouseState mouseState)
         {
-            return new MouseState(Global.ScreenSizeManager.TransformWindowToViewX(mouseState.X), Global.ScreenSizeManager.TransformWindowToViewY(mouseState.Y), mouseState.ScrollWheelValue, mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1, mouseState.XButton2);
+            return new MouseState(ScreenPresentation.Instance.TransformWindowToViewX(mouseState.X), ScreenPresentation.Instance.TransformWindowToViewY(mouseState.Y), mouseState.ScrollWheelValue, mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton, mouseState.XButton1, mouseState.XButton2);
         }
 
         /// <summary>

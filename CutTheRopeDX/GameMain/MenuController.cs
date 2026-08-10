@@ -751,7 +751,7 @@ namespace CutTheRopeDX.GameMain
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString("RESET_TEXT"), Global.ScreenSizeManager.CurrentSize.Width * 0.95f);
+            text.SetStringandWidth(Application.GetString("RESET_TEXT"), ScreenPresentation.Instance.SurfaceWidth * 0.95f);
             text.anchor = text.parentAnchor = 18;
             _ = baseElement.AddChild(text);
             text.y = -200f;
