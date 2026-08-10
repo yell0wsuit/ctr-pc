@@ -10,7 +10,6 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Configuration for a font including size, color, and effects.
     /// </summary>
-    // NOTE: Color fields are still XNA Color. Task 7 switches them to RGBAColor.
     internal sealed class FontConfiguration
     {
         /// <summary>
@@ -51,7 +50,6 @@ namespace CutTheRopeDX.Framework.Visual
     /// <summary>
     /// Configuration for font effects (stroke, shadow).
     /// </summary>
-    // NOTE: Color fields are still XNA Color. Task 7 switches them to RGBAColor.
     internal sealed class FontEffectSettings
     {
         /// <summary>

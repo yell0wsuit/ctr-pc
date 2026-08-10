@@ -131,13 +131,16 @@ namespace CutTheRopeDX.Framework.Helpers
 
         /// <summary>
         /// Converts <paramref name="degrees"/> to radians.
-        /// Body copied verbatim from MonoGame's <c>MathHelper.ToRadians</c>.
+        /// Body copied verbatim from MonoGame's <c>MathHelper.ToRadians</c>, which keeps XNA's
+        /// double-precision constant and rounds to float once at the end. Multiplying by a
+        /// pre-rounded <c>MathF.PI / 180f</c> instead is off by up to 1 ULP on ~9% of inputs,
+        /// so the literal below is load-bearing — do not "simplify" it.
         /// </summary>
         /// <param name="degrees">The angle in degrees.</param>
         /// <returns>The angle in radians.</returns>
         public static float ToRadians(float degrees)
         {
-            return degrees * (MathF.PI / 180f);
+            return (float)(degrees * 0.017453292519943295769236907684886);
         }
 
         /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
