@@ -1,6 +1,12 @@
+using CutTheRopeDX.Framework.Visual;
+
 using Microsoft.Xna.Framework;
 
-namespace CutTheRopeDX.Framework.Visual
+// FontConfiguration keeps its original CutTheRopeDX.GameMain namespace even though it now lives
+// alongside FontEffectSettings in Framework/Visual — the decouple-core refactor plan holds
+// namespaces stable across file moves, so the mismatch here is deliberate.
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+namespace CutTheRopeDX.GameMain
 {
     /// <summary>
     /// Configuration for a font including size, color, and effects.
@@ -38,7 +44,11 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         public float TopSpacing { get; set; }
     }
+}
+#pragma warning restore IDE0130
 
+namespace CutTheRopeDX.Framework.Visual
+{
     /// <summary>
     /// Configuration for font effects (stroke, shadow).
     /// </summary>
