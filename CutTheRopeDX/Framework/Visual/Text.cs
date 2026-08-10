@@ -1,30 +1,17 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
 
-using FontStashSharp;
-
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Framework.Visual
 {
     /// <summary>
-    /// A <see cref="BaseElement"/> that renders formatted text using either sprite-based or FontStashSharp fonts.
+    /// A <see cref="BaseElement"/> that renders formatted text using either sprite-based or self-drawing fonts.
     /// </summary>
     internal class Text : BaseElement
     {
-        /// <summary>
-        /// Rasterizer state with scissor test enabled for text clipping.
-        /// </summary>
-        private static readonly RasterizerState ScissorRasterizerState = new()
-        {
-            CullMode = CullMode.None,
-            ScissorTestEnable = true
-        };
-
         /// <summary>
         /// Creates a text element from a font resource name and string.
         /// </summary>
@@ -89,14 +76,14 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 FormatText();
 
-                // Only update drawer values for sprite fonts, not FontStashSharp fonts
+                // Only update drawer values for sprite fonts, not self-drawing fonts
                 if (font is not FontStashFont)
                 {
                     UpdateDrawerValues();
                 }
                 else
                 {
-                    // Keep width/height in sync for anchoring and layout when using FontStashSharp
+                    // Keep width/height in sync for anchoring and layout when using a self-drawing font
                     if (formattedStrings.Count <= 1)
                     {
                         height = (int)(font.FontHeight() + font.GetTopSpacing());
@@ -256,10 +243,16 @@ namespace CutTheRopeDX.Framework.Visual
 
             PreDraw();
 
-            // Check if this is a FontStashSharp font
-            if (font is FontStashFont fontStashFont && !string.IsNullOrEmpty(string_))
+            if (font.DrawsOwnText && !string.IsNullOrEmpty(string_))
             {
-                DrawFontStashText(fontStashFont, inheritedColor);
+                float pingPongOverflow = pingPongEnabled ? GetPingPongOverflow() : 0f;
+                bool isPingPonging = pingPongOverflow > 0f;
+                float clipLeft = HasParent ? parent.drawX + pingPongPadding : drawX;
+                font.DrawText(new TextDrawCall(
+                    formattedStrings, drawX, drawY, wrapWidth, align, maxHeight,
+                    color, RGBAColor.FromRendererColor(inheritedColor),
+                    isPingPonging, pingPongOffset, clipLeft,
+                    EffectivePingPongClipWidth, maxHeight > 0f ? maxHeight : height));
             }
             else if (stringLength > 0)
             {
@@ -281,302 +274,6 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             PostDraw();
-        }
-
-        /// <summary>
-        /// Cached render targets for compositing text layers (shadow, stroke, fill) at full
-        /// opacity before applying the fade alpha uniformly. Consecutive text draws alternate
-        /// targets so a target is not rewritten immediately after being sampled.
-        /// </summary>
-        private static readonly RenderTarget2D[] s_textCompositeTargets = new RenderTarget2D[2];
-
-        /// <summary>
-        /// Index of the render target used by the previous composite text draw.
-        /// </summary>
-        private static int s_textCompositeTargetIndex = -1;
-
-        /// <summary>
-        /// Selects the other composite render target for the next text draw.
-        /// </summary>
-        /// <param name="currentIndex">The target index used by the previous draw.</param>
-        /// <returns>The target index to use for the next draw.</returns>
-        internal static int GetNextCompositeTargetIndex(int currentIndex)
-        {
-            return (currentIndex + 1) % s_textCompositeTargets.Length;
-        }
-
-        /// <summary>
-        /// Renders text using FontStashSharp with stroke, shadow, and color modulation.
-        /// When fading, all layers are first composited at full opacity onto a render target,
-        /// then drawn to screen with the fade alpha so shadow/stroke/fill fade in sync.
-        /// </summary>
-        /// <param name="fontStashFont">FontStash-backed font used for glyph rendering.</param>
-        /// <param name="parentColor">Inherited parent color modulation.</param>
-        private void DrawFontStashText(FontStashFont fontStashFont, Color parentColor)
-        {
-            SpriteBatch spriteBatch = Renderer.GetSpriteBatch();
-            if (spriteBatch == null)
-            {
-                Debug.WriteLine("FontStash: SpriteBatch is null");
-                return;
-            }
-
-            DynamicSpriteFont internalFont = fontStashFont.GetInternalFont();
-            if (internalFont == null)
-            {
-                Debug.WriteLine("FontStash: Internal font is null");
-                return;
-            }
-
-            if (formattedStrings == null || formattedStrings.Count == 0)
-            {
-                Debug.WriteLine($"FontStash: No formatted strings for text: {string_}");
-                return;
-            }
-
-            FontEffectSettings effects = fontStashFont.GetEffectSettings();
-            Color textColor = fontStashFont.GetColor();
-
-            // Apply element and inherited color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
-            static byte ScaleByte(byte channel, float factor)
-            {
-                float scaled = channel * factor; // factor already 0-1, so no /255
-                if (scaled < 0f)
-                {
-                    scaled = 0f;
-                }
-                if (scaled > 255f)
-                {
-                    scaled = 255f;
-                }
-                return (byte)scaled;
-            }
-
-            static Color MakeColor(Color baseColor, float redScale, float greenScale, float blueScale, float alphaScale)
-            {
-                byte finalAlpha = (byte)MathHelper.Clamp(baseColor.A / 255f * alphaScale * 255f, 0f, 255f);
-
-                return Color.FromNonPremultiplied(
-                    ScaleByte(baseColor.R, redScale),
-                    ScaleByte(baseColor.G, greenScale),
-                    ScaleByte(baseColor.B, blueScale),
-                    finalAlpha
-                );
-            }
-
-            float inheritedRed = MathHelper.Clamp(parentColor.R / 255f, 0f, 1f);
-            float inheritedGreen = MathHelper.Clamp(parentColor.G / 255f, 0f, 1f);
-            float inheritedBlue = MathHelper.Clamp(parentColor.B / 255f, 0f, 1f);
-            float inheritedAlpha = MathHelper.Clamp(color.AlphaChannel * (parentColor.A / 255f), 0f, 1f);
-
-            bool hasEffects = effects?.HasStroke == true || effects?.HasShadow == true;
-            bool needsComposite = hasEffects && inheritedAlpha < 1f;
-
-            // Build colors: when compositing via render target, draw layers at full opacity;
-            // the fade alpha is applied once when blitting the RT to screen.
-            float layerAlpha = needsComposite ? 1f : inheritedAlpha;
-
-            Color finalColor = MakeColor(textColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
-
-            float yPos = drawY + font.GetTopSpacing();
-            int lineHeight = (int)(internalFont.LineHeight + font.GetLineOffset());
-
-            GraphicsDevice graphicsDevice = Global.GraphicsDevice;
-            // Queued sprite quads must render before text draws above them or changes render targets.
-            Renderer.FlushQuads();
-            Viewport viewport = graphicsDevice.Viewport;
-
-            float viewportScaleX = viewport.Width / SCREEN_WIDTH;
-            float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
-
-            Matrix transformMatrix =
-                Renderer.GetModelViewMatrix() *
-                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
-
-            // When fading multi-layer text, composite all layers at full opacity onto a
-            // render target, then blit with the fade alpha so every layer fades uniformly.
-            RenderTargetBinding[] previousTargets = null;
-            RenderTarget2D textCompositeTarget = null;
-            if (needsComposite)
-            {
-                int rtW = viewport.Width;
-                int rtH = viewport.Height;
-                s_textCompositeTargetIndex = GetNextCompositeTargetIndex(s_textCompositeTargetIndex);
-                textCompositeTarget = s_textCompositeTargets[s_textCompositeTargetIndex];
-                if (textCompositeTarget == null || textCompositeTarget.IsDisposed ||
-                    textCompositeTarget.Width != rtW || textCompositeTarget.Height != rtH)
-                {
-                    textCompositeTarget?.Dispose();
-                    textCompositeTarget = new RenderTarget2D(graphicsDevice, rtW, rtH, false,
-                        SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                    s_textCompositeTargets[s_textCompositeTargetIndex] = textCompositeTarget;
-                }
-
-                previousTargets = graphicsDevice.GetRenderTargets();
-                graphicsDevice.SetRenderTarget(textCompositeTarget);
-                graphicsDevice.Clear(Color.Transparent);
-            }
-
-            // Ping-pong clipping: set a scissor rect so overflowing text is clipped
-            float pingPongOverflow = pingPongEnabled ? GetPingPongOverflow() : 0f;
-            bool isPingPonging = pingPongOverflow > 0f;
-            Rectangle previousScissor = graphicsDevice.ScissorRectangle;
-
-            spriteBatch.Begin(
-                SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
-                SamplerState.LinearClamp,
-                null,
-                ScissorRasterizerState,
-                null,
-                transformMatrix
-            );
-
-            if (isPingPonging)
-            {
-                float clipW = EffectivePingPongClipWidth;
-                float clipH = maxHeight > 0f ? maxHeight : height;
-                // Clip to the parent element's bounds (e.g., button background image)
-                float clipX = HasParent ? parent.drawX + pingPongPadding : drawX;
-                float clipY = drawY;
-                // Transform clip rect corners through the full transform matrix (model-view + viewport scale)
-                Vector2 topLeft = Vector2.Transform(new Vector2(clipX, clipY), transformMatrix);
-                Vector2 bottomRight = Vector2.Transform(new Vector2(clipX + clipW, clipY + clipH), transformMatrix);
-                int sx = (int)topLeft.X;
-                int sy = (int)topLeft.Y;
-                int sw = (int)(bottomRight.X - topLeft.X);
-                int sh = (int)(bottomRight.Y - topLeft.Y);
-                graphicsDevice.ScissorRectangle = new Rectangle(sx, sy, sw, sh);
-            }
-
-            // Render each formatted line
-            foreach (FormattedString formattedString in formattedStrings)
-            {
-                if (maxHeight != -1f && yPos >= drawY + maxHeight)
-                {
-                    break;
-                }
-
-                float xPos = drawX;
-
-                if (align == 2) // Center
-                {
-                    xPos += (wrapWidth - formattedString.width) / 2f;
-                }
-                else if (align == 3) // Right
-                {
-                    xPos += wrapWidth - formattedString.width;
-                }
-
-                // When ping-ponging, left-align the text at the clip area's left edge and scroll
-                if (isPingPonging)
-                {
-                    float clipLeft = HasParent ? parent.drawX + pingPongPadding : drawX;
-                    xPos = clipLeft - pingPongOffset;
-                }
-
-                Vector2 position = new(xPos, yPos);
-
-                // Draw shadow if enabled
-                if (effects?.HasShadow == true)
-                {
-                    Vector2 shadowBasePos = position + new Vector2(effects.ShadowOffsetX, effects.ShadowOffsetY);
-                    int shadowStrokeAmount = effects.HasStroke ? effects.StrokeAmount : 1;
-                    Color shadowColor = MakeColor(
-                        effects.ShadowColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
-
-                    for (int x = -shadowStrokeAmount; x <= shadowStrokeAmount; x++)
-                    {
-                        for (int y = -shadowStrokeAmount; y <= shadowStrokeAmount; y++)
-                        {
-                            _ = internalFont.DrawText(
-                                spriteBatch,
-                                formattedString.string_,
-                                shadowBasePos + new Vector2(x, y),
-                                shadowColor
-                            );
-                        }
-                    }
-                }
-
-                // Draw stroke if enabled
-                if (effects?.HasStroke == true)
-                {
-                    Color strokeColor = MakeColor(
-                        effects.StrokeColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
-                    int strokeAmount = effects.StrokeAmount;
-
-                    for (int x = -strokeAmount; x <= strokeAmount; x++)
-                    {
-                        for (int y = -strokeAmount; y <= strokeAmount; y++)
-                        {
-                            if (x != 0 || y != 0)
-                            {
-                                _ = internalFont.DrawText(
-                                    spriteBatch,
-                                    formattedString.string_,
-                                    position + new Vector2(x, y),
-                                    strokeColor
-                                );
-                            }
-                        }
-                    }
-                }
-
-                // Draw main text
-                _ = internalFont.DrawText(
-                    spriteBatch,
-                    formattedString.string_,
-                    position,
-                    finalColor
-                );
-
-                yPos += lineHeight;
-            }
-
-            spriteBatch.End();
-            BlendParams.InvalidateDeviceCache();
-
-            if (isPingPonging)
-            {
-                graphicsDevice.ScissorRectangle = previousScissor;
-            }
-
-            // Blit the composite render target to screen with the uniform fade alpha
-            if (needsComposite)
-            {
-                if (previousTargets != null && previousTargets.Length > 0)
-                {
-                    graphicsDevice.SetRenderTargets(previousTargets);
-                }
-                else
-                {
-                    graphicsDevice.SetRenderTarget(null);
-                }
-
-                byte fadeByte = (byte)MathHelper.Clamp(inheritedAlpha * 255f, 0f, 255f);
-                Color blitColor = new(fadeByte, fadeByte, fadeByte, fadeByte); // premultiplied tint
-
-                spriteBatch.Begin(
-                    SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
-                    SamplerState.LinearClamp,
-                    null,
-                    null,
-                    null,
-                    null
-                );
-                spriteBatch.Draw(textCompositeTarget, Vector2.Zero, blitColor);
-                spriteBatch.End();
-                BlendParams.InvalidateDeviceCache();
-
-                // SpriteBatch leaves its texture in slot zero. Mark it unbound so the next
-                // composite pass cannot retain a sampled binding for a writable target.
-                if (ReferenceEquals(graphicsDevice.Textures[0], textCompositeTarget))
-                {
-                    graphicsDevice.Textures[0] = null;
-                }
-            }
         }
 
         /// <inheritdoc />

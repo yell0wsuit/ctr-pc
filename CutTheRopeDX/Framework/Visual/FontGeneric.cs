@@ -130,6 +130,14 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The charmap <see cref="Image"/> at index <paramref name="i"/>.</returns>
         public abstract Image GetCharmap(int i);
 
+        /// <summary>Whether this font renders text itself (bypassing the sprite-quad path).</summary>
+        public virtual bool DrawsOwnText => false;
+
+        /// <summary>Renders a full text element. Only called when <see cref="DrawsOwnText"/> is true.</summary>
+        public virtual void DrawText(in TextDrawCall call)
+        {
+        }
+
         /// <summary>
         /// Spacing between characters in pixels.
         /// </summary>

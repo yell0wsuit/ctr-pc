@@ -9,9 +9,9 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void GetNextCompositeTargetIndexAlternatesConsecutiveTextDraws()
         {
-            int first = Text.GetNextCompositeTargetIndex(-1);
-            int second = Text.GetNextCompositeTargetIndex(first);
-            int third = Text.GetNextCompositeTargetIndex(second);
+            int first = FontStashFont.GetNextCompositeTargetIndex(-1);
+            int second = FontStashFont.GetNextCompositeTargetIndex(first);
+            int third = FontStashFont.GetNextCompositeTargetIndex(second);
 
             Assert.Equal(0, first);
             Assert.Equal(1, second);

@@ -60,6 +60,16 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
+        /// Converts an XNA <see cref="Color"/> (as returned by the renderer's current color state) to an <see cref="RGBAColor"/>.
+        /// </summary>
+        /// <param name="c">The renderer color to convert.</param>
+        /// <returns>The equivalent <see cref="RGBAColor"/>.</returns>
+        public static RGBAColor FromRendererColor(Color c)
+        {
+            return MakeRGBA(c.R / 255f, c.G / 255f, c.B / 255f, c.A / 255f);
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> if all four channels of <paramref name="a"/> and <paramref name="b"/> are equal.
         /// </summary>
         /// <param name="a">First color.</param>

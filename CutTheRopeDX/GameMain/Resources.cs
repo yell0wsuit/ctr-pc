@@ -450,7 +450,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Font resource names (now using FontStashSharp).
+        /// Font resource names (now backed by self-drawing fonts).
         /// </summary>
         internal static class Fnt
         {
@@ -460,7 +460,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Font configuration for FontStashSharp fonts.
+        /// Font configuration for self-drawing fonts.
         /// </summary>
         internal static class FontConfig
         {
@@ -767,41 +767,5 @@ namespace CutTheRopeDX.GameMain
         {
             public const string MenuStrings = "menu_strings";
         }
-    }
-
-    /// <summary>
-    /// Configuration for a font including size, color, and effects.
-    /// </summary>
-    internal sealed class FontConfiguration
-    {
-        /// <summary>
-        /// Gets or sets the font file name.
-        /// </summary>
-        public string FontFile { get; set; }
-
-        /// <summary>
-        /// Gets or sets the font size in pixels.
-        /// </summary>
-        public float Size { get; set; }
-
-        /// <summary>
-        /// Gets or sets the base text color.
-        /// </summary>
-        public Color Color { get; set; }
-
-        /// <summary>
-        /// Gets or sets stroke and shadow effects applied while drawing the font.
-        /// </summary>
-        public FontEffectSettings Effects { get; set; }
-
-        /// <summary>
-        /// Gets or sets the extra line spacing.
-        /// </summary>
-        public float LineSpacing { get; set; }
-
-        /// <summary>
-        /// Gets or sets the top spacing adjustment.
-        /// </summary>
-        public float TopSpacing { get; set; }
     }
 }
