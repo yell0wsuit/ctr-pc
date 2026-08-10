@@ -241,6 +241,7 @@ namespace CutTheRopeDX.GameMain
             State = MechanicalHandState.HoldingCandy;
             DoRotateCandy = false;
             releaseSoundPlayed = false;
+            graceTimer = MH_BOUNCER_GRACE;
         }
 
         /// <summary>
@@ -354,6 +355,7 @@ namespace CutTheRopeDX.GameMain
             base.Update(delta);
             cPoint.pos = ClawPosition();
             _ = Mover.MoveVariableToTarget(ref clapTimer, 0f, 1f, delta);
+            _ = Mover.MoveVariableToTarget(ref graceTimer, 0f, 1f, delta);
         }
 
         /// <inheritdoc />
@@ -410,6 +412,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Cooldown before a hand can play another clap effect.</summary>
         public const float MH_CLAP_COOLDOWN = 0.3f;
 
+        /// <summary>
+        /// Grace period after a grab during which a bouncer may not strip the candy away. Without it
+        /// a hand can never pick a candy up off a bouncer: the collision would take it back the frame
+        /// after the catch, and the pair would fight each other. Unscaled, matching the original.
+        /// </summary>
+        public const float MH_BOUNCER_GRACE = 0.1f;
+
         /// <summary>Current mechanical hand state.</summary>
         public MechanicalHandState State { get; private set; }
 
@@ -422,8 +431,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Remaining clap cooldown time in seconds.</summary>
         public float ClapTimer { get => clapTimer; private set => clapTimer = value; }
 
+        /// <summary>Whether a bouncer is allowed to take this hand's candy yet.</summary>
+        public bool CanBeDetachedByBouncer => graceTimer <= 0f;
+
         /// <summary>Backing store for <see cref="ClapTimer"/>, needed because it is moved by ref.</summary>
         private float clapTimer;
+
+        /// <summary>Remaining post-grab bouncer grace time in seconds.</summary>
+        private float graceTimer;
 
         /// <summary>Whether the release sound has already played for the current release.</summary>
         private bool releaseSoundPlayed;

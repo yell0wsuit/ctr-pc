@@ -1203,7 +1203,16 @@ namespace CutTheRopeDX.GameMain
                         bouncerCollisionRadius))
                     {
                         anyCandyHit = true;
-                        DetachHandsForPoint(body.Point);
+
+                        // A hand that just caught this candy keeps it for a moment, otherwise the
+                        // bouncer takes it straight back and the two fight over it every frame. The
+                        // window belongs to the individual hold, so a candy held past its own grace
+                        // still drops even while another hand is inside one.
+                        MechanicalHand holder = body.Owner.Lifecycle.Attachments.Hand;
+                        if (holder == null || holder.CanBeDetachedByBouncer)
+                        {
+                            DetachHandsForPoint(body.Point);
+                        }
                         HandleBouncePtDelta(bouncer, body.Point, delta);
                     }
                 }
