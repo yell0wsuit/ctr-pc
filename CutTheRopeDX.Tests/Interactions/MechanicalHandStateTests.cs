@@ -2,7 +2,6 @@ using System;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
-using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
