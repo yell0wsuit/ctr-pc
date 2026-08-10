@@ -1,5 +1,6 @@
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -12,7 +13,7 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float t)
         {
             Application.SharedMovieMgr().Start();
-            Global.MouseCursor.Enable(Application.SharedMovieMgr().IsPaused());
+            PlatformServices.Cursor?.Enable(Application.SharedMovieMgr().IsPaused());
         }
 
         /// <inheritdoc />

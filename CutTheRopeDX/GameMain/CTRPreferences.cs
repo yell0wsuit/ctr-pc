@@ -3,6 +3,7 @@ using System.Globalization;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -662,7 +663,7 @@ namespace CutTheRopeDX.GameMain
             RequestSave();
             SetScoreHash();
             // Show menu presence to use the correct total
-            Game1.RPC?.MenuPresence();
+            PlatformServices.RichPresence?.MenuPresence();
         }
 
         /// <summary>

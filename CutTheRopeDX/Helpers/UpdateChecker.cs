@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 
 namespace CutTheRopeDX.Helpers
@@ -15,27 +16,6 @@ namespace CutTheRopeDX.Helpers
     /// </summary>
     internal static class UpdateChecker
     {
-        /// <summary>
-        /// Holds resolved version and release metadata for a newer update.
-        /// </summary>
-        public sealed class UpdateInfo
-        {
-            /// <summary>
-            /// The currently running version string.
-            /// </summary>
-            public string CurrentVersion { get; init; }
-
-            /// <summary>
-            /// The latest available version string.
-            /// </summary>
-            public string LatestVersion { get; init; }
-
-            /// <summary>
-            /// URL to the release page for the latest version.
-            /// </summary>
-            public string ReleaseUrl { get; init; }
-        }
-
         /// <summary>
         /// Starts the update check in the background if enabled and not already started.
         /// </summary>

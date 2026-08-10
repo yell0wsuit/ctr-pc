@@ -22,16 +22,14 @@ namespace CutTheRopeDX
     public class Game1 : Game
     {
         /// <summary>
-        /// Discord Rich Presence helper instance.
-        /// </summary>
-        public static RPCHelpers RPC { get; private set; }
-
-        /// <summary>
         /// Initializes the game window, graphics device manager, and event handlers.
         /// </summary>
         public Game1()
         {
             Global.XnaGame = this;
+            PlatformServices.Updates = new DesktopUpdateService();
+            PlatformServices.Cursor = new DesktopCursorService();
+            PlatformServices.Host = new DesktopHostApp();
             Content.Dispose();
             Content = new DesktopContentManager(Services);
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -129,11 +127,11 @@ namespace CutTheRopeDX
         /// <param name="e">Event arguments for the exit notification.</param>
         private void Game1_Exiting(object sender, EventArgs e)
         {
-            UpdateChecker.Cancel();
+            PlatformServices.Updates?.Cancel();
             Preferences.RequestSave();
             Preferences.Update();
             //Dispose of RPC
-            RPC?.Dispose();
+            PlatformServices.RichPresence?.Dispose();
             Global.MouseCursor?.Dispose();
         }
 
@@ -162,7 +160,7 @@ namespace CutTheRopeDX
         protected override void Initialize()
         {
             //Create RPC helper instance
-            RPC = new RPCHelpers();
+            PlatformServices.RichPresence = new RPCHelpers();
             string version =
                 Assembly.GetExecutingAssembly()
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()

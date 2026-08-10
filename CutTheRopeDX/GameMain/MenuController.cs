@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Media;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -2274,7 +2275,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (!UpdateChecker.TryConsumeUpdate(out UpdateChecker.UpdateInfo info))
+            if (PlatformServices.Updates == null || !PlatformServices.Updates.TryConsumeUpdate(out UpdateInfo info))
             {
                 return;
             }

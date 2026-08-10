@@ -1,11 +1,11 @@
 using System.Globalization;
 using System.Xml.Linq;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.GameMain
             tummyTeasers = 0;
             starsCollected = 0;
             // Update RPC with current level info (on start/restart)
-            Game1.RPC?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
+            PlatformServices.RichPresence?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 body.Bubble = null;
@@ -114,7 +114,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ResetBungeeHighlight();
             }
-            Global.MouseCursor.ReleaseButtons();
+            PlatformServices.Cursor?.ReleaseButtons();
             CTRRootController.LogEvent("IG_SHOWN");
         }
 

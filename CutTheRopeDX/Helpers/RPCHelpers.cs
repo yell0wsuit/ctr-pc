@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers.Discord;
 
@@ -13,7 +14,7 @@ namespace CutTheRopeDX.Helpers
     /// <summary>
     /// Manages Discord Rich Presence integration, showing menu browsing and level progress.
     /// </summary>
-    public class RPCHelpers : IDisposable
+    public class RPCHelpers : IRichPresence
     {
         /// <summary>
         /// The active Discord IPC client, or <see langword="null"/> if not connected.

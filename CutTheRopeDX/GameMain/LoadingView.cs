@@ -1,5 +1,6 @@
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;
@@ -38,7 +39,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Draw()
         {
-            Global.MouseCursor.Enable(true);
+            PlatformServices.Cursor?.Enable(true);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

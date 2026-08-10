@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Platform;
@@ -493,7 +492,7 @@ namespace CutTheRopeDX.Framework
             /// </summary>
             public static void ExitApp()
             {
-                Global.XnaGame.Exit();
+                PlatformServices.Host?.Exit();
             }
         }
     }

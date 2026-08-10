@@ -4,6 +4,7 @@ using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -65,7 +66,7 @@ namespace CutTheRopeDX.GameMain
             }
             else if (currentPhase == Phase.Animating)
             {
-                Global.MouseCursor.Enable(true);
+                PlatformServices.Cursor?.Enable(true);
                 animRoot?.Update(t);
                 animElapsed += t;
 
@@ -154,9 +155,9 @@ namespace CutTheRopeDX.GameMain
             animRoot = null;
             animParts = null;
             ShowView(1);
-            UpdateChecker.StartIfNeeded();
+            PlatformServices.Updates?.StartIfNeeded();
             // RPC belongs to the desktop host and is absent in headless runs.
-            Game1.RPC?.Setup();
+            PlatformServices.RichPresence?.Setup();
             MoviePlaybackFinished(null);
         }
 

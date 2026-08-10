@@ -5,6 +5,7 @@ using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -405,7 +406,7 @@ namespace CutTheRopeDX.GameMain
             // Update RPC to show win state with stars and score
             CTRRootController ctrRoot = (CTRRootController)Application.SharedRootController();
             LevelResultRpcPayload rpcPayload = LevelResultRpcPayload.From(result);
-            Game1.RPC?.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), rpcPayload.Stars, true, gameScene.levelName, rpcPayload.Score, rpcPayload.ElapsedSeconds);
+            PlatformServices.RichPresence?.SetLevelPresence(ctrRoot.GetPack(), ctrRoot.GetLevel(), rpcPayload.Stars, true, gameScene.levelName, rpcPayload.Score, rpcPayload.ElapsedSeconds);
 
             if (!CustomLevelSession.IsActive)
             {

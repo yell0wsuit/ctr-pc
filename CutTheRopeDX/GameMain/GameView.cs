@@ -1,6 +1,7 @@
 using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 using Microsoft.Xna.Framework;
@@ -27,7 +28,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Draw()
         {
-            Global.MouseCursor.Enable(true);
+            PlatformServices.Cursor?.Enable(true);
             int childCount = ChildsCount();
             for (int i = 0; i < childCount; i++)
             {
