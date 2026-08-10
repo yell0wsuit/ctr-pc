@@ -1698,7 +1698,6 @@ namespace CutTheRopeDX.GameMain
                     }
                     else if (heldCandy.Lifecycle.Attachments.HasActiveRocket)
                     {
-                        _ = hand.IsRotating();
                         hand.BeginCandyRotation();
                     }
                 }
