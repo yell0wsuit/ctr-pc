@@ -53,7 +53,7 @@ namespace CutTheRopeDX.GameMain
             cPoint.SetWeight(0.0001f);
             releaseSoundPlayed = false;
             clapTimer = 0f;
-            canPlayClap = false;
+            CanPlayClap = false;
 
             Vector jointCenter = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 2);
             Vector candyAnchor = Image.GetQuadCenter(Resources.Img.ObjRoboHand, 8);
@@ -277,6 +277,36 @@ namespace CutTheRopeDX.GameMain
             return owed ? HandSettle.SettledOwingDropSound : HandSettle.Settled;
         }
 
+        /// <summary>
+        /// Marks this hand as eligible to clap. Never reset once set, matching the original.
+        /// </summary>
+        public void ArmClap()
+        {
+            CanPlayClap = true;
+        }
+
+        /// <summary>
+        /// Arms the clap cooldown on both hands when they are idle and within clap range, and
+        /// reports whether the pair should emit the clap effect.
+        /// </summary>
+        /// <param name="other">The other hand in the pair.</param>
+        /// <returns><see langword="true"/> when the caller should play the clap effect.</returns>
+        public bool TryClapWith(MechanicalHand other)
+        {
+            if (other == null
+                || State != MechanicalHandState.Idle
+                || other.State != MechanicalHandState.Idle
+                || VectDistance(cPoint.pos, other.cPoint.pos) >= MH_CLAP_DISTANCE)
+            {
+                return false;
+            }
+
+            bool clap = (ClapTimer <= 0f || other.ClapTimer <= 0f) && (CanPlayClap || other.CanPlayClap);
+            ClapTimer = MH_CLAP_COOLDOWN;
+            other.ClapTimer = MH_CLAP_COOLDOWN;
+            return clap;
+        }
+
         /// <summary>Starts rotating the held candy along with the hand's moving segment.</summary>
         public void BeginCandyRotation()
         {
@@ -387,10 +417,13 @@ namespace CutTheRopeDX.GameMain
         public bool DoRotateCandy { get; private set; }
 
         /// <summary>Whether this hand is eligible to play a clap effect.</summary>
-        public bool canPlayClap;
+        public bool CanPlayClap { get; private set; }
 
         /// <summary>Remaining clap cooldown time in seconds.</summary>
-        public float clapTimer;
+        public float ClapTimer { get => clapTimer; private set => clapTimer = value; }
+
+        /// <summary>Backing store for <see cref="ClapTimer"/>, needed because it is moved by ref.</summary>
+        private float clapTimer;
 
         /// <summary>Whether the release sound has already played for the current release.</summary>
         private bool releaseSoundPlayed;

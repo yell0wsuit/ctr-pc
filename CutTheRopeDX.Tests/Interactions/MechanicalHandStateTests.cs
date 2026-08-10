@@ -238,8 +238,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Equal(MechanicalHandState.Idle, first.State);
             Assert.Equal(MechanicalHandState.Idle, second.State);
-            Assert.True(first.clapTimer > 0f, "the first hand's clap cooldown was not armed");
-            Assert.True(second.clapTimer > 0f, "the second hand's clap cooldown was not armed");
+            Assert.True(first.ClapTimer > 0f, "the first hand's clap cooldown was not armed");
+            Assert.True(second.ClapTimer > 0f, "the second hand's clap cooldown was not armed");
         }
 
         [Theory]
@@ -293,6 +293,45 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
             Assert.False(hand.DoRotateCandy);
+        }
+
+        [Theory]
+        [InlineData(true, true)]    // armed and cool: claps
+        [InlineData(false, false)]  // neither armed: no clap
+        public void ClapFiresOnlyWhenAHandIsArmed(bool armFirst, bool expectedClap)
+        {
+            (GameScene scene, CandyContext candy) = DuoRig();
+            MechanicalHand first = scene.Hands()[0];
+            MechanicalHand second = scene.Hands()[1];
+            if (armFirst)
+            {
+                first.ArmClap();
+            }
+
+            Vector meeting = new(candy.WholeBody.Point.pos.X + 400f, candy.WholeBody.Point.pos.Y);
+            Act.MoveClawTo(first, meeting);
+            Act.MoveClawTo(second, new Vector(meeting.X + 50f, meeting.Y));
+
+            Assert.Equal(expectedClap, first.TryClapWith(second));
+            Assert.True(first.ClapTimer > 0f, "the first hand's cooldown was not armed");
+            Assert.True(second.ClapTimer > 0f, "the second hand's cooldown was not armed");
+        }
+
+        [Fact]
+        public void ClapDoesNotFireOutOfRangeAndLeavesCooldownsAlone()
+        {
+            (GameScene scene, CandyContext candy) = DuoRig();
+            MechanicalHand first = scene.Hands()[0];
+            MechanicalHand second = scene.Hands()[1];
+            first.ArmClap();
+
+            Vector meeting = new(candy.WholeBody.Point.pos.X + 400f, candy.WholeBody.Point.pos.Y);
+            Act.MoveClawTo(first, meeting);
+            Act.MoveClawTo(second, new Vector(meeting.X + (MechanicalHand.MH_CLAP_DISTANCE * 2f), meeting.Y));
+
+            Assert.False(first.TryClapWith(second));
+            Assert.Equal(0f, first.ClapTimer);
+            Assert.Equal(0f, second.ClapTimer);
         }
 
         /// <summary>One rotatable hand, parked out of reach; the candy hovers where it loads.</summary>

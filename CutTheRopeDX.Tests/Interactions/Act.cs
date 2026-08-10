@@ -376,7 +376,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="hand">Hand to arm.</param>
         public static void ArmClap(MechanicalHand hand)
         {
-            hand.canPlayClap = true;
+            hand.ArmClap();
         }
 
         /// <summary>

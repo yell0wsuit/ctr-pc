@@ -1721,22 +1721,12 @@ namespace CutTheRopeDX.GameMain
                         distance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
                     }
 
-                    if (hand.State == MechanicalHandState.Idle && otherHand.State == MechanicalHandState.Idle)
+                    if (hand.TryClapWith(otherHand))
                     {
-                        float handDistance = VectDistance(hand.cPoint.pos, otherHand.cPoint.pos);
-                        if (handDistance < MechanicalHand.MH_CLAP_DISTANCE)
-                        {
-                            if ((hand.clapTimer <= 0f || otherHand.clapTimer <= 0f) && (hand.canPlayClap || otherHand.canPlayClap))
-                            {
-                                PlayMechanicalHandClapEffectAt(otherHand.ClawPosition());
-                                hand.AnimateClap();
-                                otherHand.AnimateClap();
-                                CTRSoundMgr.PlaySound(Resources.Snd.ExpHandClap);
-                            }
-
-                            hand.clapTimer = MechanicalHand.MH_CLAP_COOLDOWN;
-                            otherHand.clapTimer = MechanicalHand.MH_CLAP_COOLDOWN;
-                        }
+                        PlayMechanicalHandClapEffectAt(otherHand.ClawPosition());
+                        hand.AnimateClap();
+                        otherHand.AnimateClap();
+                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandClap);
                     }
                 }
 
