@@ -196,7 +196,7 @@ namespace CutTheRopeDX
 
             CtrBootstrap.Initialize(
                 new Framework.Platform.DesktopAssetPlatform(),
-                Content,
+                new MonoGameAudioBackend(Content),
                 Global.ScreenSizeManager.WindowWidth,
                 Global.ScreenSizeManager.WindowHeight,
                 GetSystemLanguage());

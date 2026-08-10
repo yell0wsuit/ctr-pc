@@ -4,13 +4,6 @@ using System.Collections.Generic;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-
-using XnaMediaPlayer = Microsoft.Xna.Framework.Media.MediaPlayer;
-using XnaMediaState = Microsoft.Xna.Framework.Media.MediaState;
-using XnaSong = Microsoft.Xna.Framework.Media.Song;
-
 namespace CutTheRopeDX.Framework.Media
 {
     /// <summary>
@@ -33,17 +26,17 @@ namespace CutTheRopeDX.Framework.Media
         /// An active sound instance paired with the effect that produced it,
         /// so the instance can be stopped when the parent effect is freed.
         /// </summary>
-        /// <param name="Owner">The <see cref="SoundEffect"/> that created <paramref name="Instance"/>.</param>
+        /// <param name="Owner">The <see cref="ISoundEffect"/> that created <paramref name="Instance"/>.</param>
         /// <param name="Instance">The playing sound effect instance.</param>
-        private readonly record struct ActiveSound(SoundEffect Owner, SoundEffectInstance Instance);
+        private readonly record struct ActiveSound(ISoundEffect Owner, ISoundInstance Instance);
 
         /// <summary>
-        /// Sets the content manager used for loading audio assets.
+        /// Sets the audio backend used for loading and playing audio assets.
         /// </summary>
-        /// <param name="contentManager">The MonoGame content manager.</param>
-        public static void SetContentManager(ContentManager contentManager)
+        /// <param name="backend">The platform audio backend, or <see langword="null"/> for silent runs.</param>
+        public static void SetBackend(IAudioBackend backend)
         {
-            _contentManager = contentManager;
+            _backend = backend;
         }
 
         /// <summary>
@@ -54,7 +47,7 @@ namespace CutTheRopeDX.Framework.Media
         public void FreeSound(string soundResourceName)
         {
             string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
-            if (string.IsNullOrEmpty(localizedName) || !loadedSounds.Remove(localizedName, out SoundEffect sound))
+            if (string.IsNullOrEmpty(localizedName) || !loadedSounds.Remove(localizedName, out ISoundEffect sound))
             {
                 return;
             }
@@ -69,7 +62,7 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to resolve and load.</param>
         /// <returns>The loaded sound effect, or <see langword="null" /> when the name is invalid, localized lookup fails, the resource is music, or loading fails.</returns>
-        public SoundEffect GetSound(string soundResourceName)
+        public ISoundEffect GetSound(string soundResourceName)
         {
             if (string.IsNullOrEmpty(soundResourceName))
             {
@@ -88,7 +81,7 @@ namespace CutTheRopeDX.Framework.Media
                 return null;
             }
 
-            if (loadedSounds.TryGetValue(localizedName, out SoundEffect cached))
+            if (loadedSounds.TryGetValue(localizedName, out ISoundEffect cached))
             {
                 return cached;
             }
@@ -96,7 +89,7 @@ namespace CutTheRopeDX.Framework.Media
             try
             {
                 string soundPath = ContentPaths.GetSoundEffectPath(CTRResourceMgr.XNA_ResName(localizedName));
-                SoundEffect loaded = _contentManager.Load<SoundEffect>(soundPath);
+                ISoundEffect loaded = _backend.LoadSound(soundPath);
                 loadedSounds.Add(localizedName, loaded);
                 return loaded;
             }
@@ -111,7 +104,7 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static void ClearStopped(List<ActiveSound> list)
         {
-            _ = list.RemoveAll(static entry => entry.Instance == null || entry.Instance.State == SoundState.Stopped);
+            _ = list.RemoveAll(static entry => entry.Instance == null || entry.Instance.State == AudioPlaybackState.Stopped);
         }
 
         /// <summary>
@@ -129,7 +122,7 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         /// <param name="soundResourceName">Logical sound resource name to play in a loop.</param>
         /// <returns>The sound effect instance for controlling playback, or <see langword="null" /> on failure.</returns>
-        public SoundEffectInstance PlaySoundLooped(string soundResourceName)
+        public ISoundInstance PlaySoundLooped(string soundResourceName)
         {
             ClearStopped(activeLoopedSounds);
             return TryPlay(soundResourceName, loop: true, activeLoopedSounds);
@@ -141,9 +134,9 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="musicResourceName">Logical music resource name to load and play.</param>
         public static void PlayMusic(string musicResourceName)
         {
-            // Headless runs install no content manager and are silent. GetSound already tolerates
+            // Headless runs install no audio backend and are silent. GetSound already tolerates
             // this via its try/catch; the music load below sits outside one, so it is checked here.
-            if (_contentManager == null)
+            if (_backend == null)
             {
                 return;
             }
@@ -156,14 +149,13 @@ namespace CutTheRopeDX.Framework.Media
 
             StopMusic();
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
-            XnaSong song = _contentManager.Load<XnaSong>(musicPath);
-            activeSong = song;
-            XnaMediaPlayer.IsRepeating = true;
+            IMusicTrack track = _backend.LoadMusic(musicPath);
+            activeSong = track;
             try
             {
-                XnaMediaPlayer.Play(song);
+                _backend.PlayMusic(track, true);
                 usesSongCompletionWorkaround =
-                    MonoGameSongCompletionWorkaround.TryInstall(song, OnSongDecoderFinished);
+                    _backend.TryInstallSongCompletionCallback(track, OnSongDecoderFinished);
             }
             catch (Exception)
             {
@@ -179,23 +171,24 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="elapsed">Elapsed game time since the previous update.</param>
         public static void Update(TimeSpan elapsed)
         {
-            if (!usesSongCompletionWorkaround ||
+            if (_backend == null ||
+                !usesSongCompletionWorkaround ||
                 !songLoopScheduler.Advance(
                     elapsed,
-                    XnaMediaPlayer.State == XnaMediaState.Playing))
+                    _backend.MusicState == AudioPlaybackState.Playing))
             {
                 return;
             }
 
-            XnaSong song = activeSong;
-            if (song == null)
+            IMusicTrack track = activeSong;
+            if (track == null)
             {
                 return;
             }
 
             try
             {
-                XnaMediaPlayer.Play(song);
+                _backend.PlayMusic(track, true);
             }
             catch (Exception)
             {
@@ -232,7 +225,7 @@ namespace CutTheRopeDX.Framework.Media
         /// does not silence unrelated audio.
         /// </summary>
         /// <param name="instance">The looped instance to stop; ignored when <see langword="null"/>.</param>
-        public void StopLoopedSound(SoundEffectInstance instance)
+        public void StopLoopedSound(ISoundInstance instance)
         {
             if (instance == null)
             {
@@ -241,7 +234,7 @@ namespace CutTheRopeDX.Framework.Media
 
             try
             {
-                if (instance.State != SoundState.Stopped)
+                if (instance.State != AudioPlaybackState.Stopped)
                 {
                     instance.Stop();
                 }
@@ -270,7 +263,7 @@ namespace CutTheRopeDX.Framework.Media
         /// Stops and disposes any active instances in <paramref name="list"/> that were
         /// produced by <paramref name="owner"/>, and removes them from the list.
         /// </summary>
-        private static void StopAndRemoveByOwner(List<ActiveSound> list, SoundEffect owner)
+        private static void StopAndRemoveByOwner(List<ActiveSound> list, ISoundEffect owner)
         {
             _ = list.RemoveAll(entry =>
             {
@@ -278,12 +271,12 @@ namespace CutTheRopeDX.Framework.Media
                 {
                     return false;
                 }
-                SoundEffectInstance instance = entry.Instance;
+                ISoundInstance instance = entry.Instance;
                 if (instance != null)
                 {
                     try
                     {
-                        if (instance.State != SoundState.Stopped)
+                        if (instance.State != AudioPlaybackState.Stopped)
                         {
                             instance.Stop();
                         }
@@ -307,7 +300,7 @@ namespace CutTheRopeDX.Framework.Media
             songLoopScheduler.Cancel();
             try
             {
-                XnaMediaPlayer.Stop();
+                _backend?.StopMusic();
             }
             catch (Exception)
             {
@@ -325,10 +318,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 if (pauseDepth == 0)
                 {
-                    ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
-                    if (XnaMediaPlayer.State == XnaMediaState.Playing)
+                    ChangeListState(activeLoopedSounds, AudioPlaybackState.Playing, AudioPlaybackState.Paused);
+                    if (_backend != null && _backend.MusicState == AudioPlaybackState.Playing)
                     {
-                        XnaMediaPlayer.Pause();
+                        _backend.PauseMusic();
                     }
                 }
                 pauseDepth++;
@@ -358,11 +351,11 @@ namespace CutTheRopeDX.Framework.Media
                 {
                     if (!sfxSuspended)
                     {
-                        ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                        ChangeListState(activeLoopedSounds, AudioPlaybackState.Paused, AudioPlaybackState.Playing);
                     }
-                    if (XnaMediaPlayer.State == XnaMediaState.Paused)
+                    if (_backend != null && _backend.MusicState == AudioPlaybackState.Paused)
                     {
-                        XnaMediaPlayer.Resume();
+                        _backend.ResumeMusic();
                     }
                 }
             }
@@ -381,7 +374,7 @@ namespace CutTheRopeDX.Framework.Media
             sfxSuspended = true;
             try
             {
-                ChangeListState(activeLoopedSounds, SoundState.Playing, SoundState.Paused);
+                ChangeListState(activeLoopedSounds, AudioPlaybackState.Playing, AudioPlaybackState.Paused);
             }
             catch (Exception)
             {
@@ -403,7 +396,7 @@ namespace CutTheRopeDX.Framework.Media
 
             try
             {
-                ChangeListState(activeLoopedSounds, SoundState.Paused, SoundState.Playing);
+                ChangeListState(activeLoopedSounds, AudioPlaybackState.Paused, AudioPlaybackState.Playing);
             }
             catch (Exception)
             {
@@ -412,21 +405,21 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>
         /// Creates and starts a sound effect instance for the specified resource, appending it
-        /// to <paramref name="destination"/> along with its owning <see cref="SoundEffect"/>.
+        /// to <paramref name="destination"/> along with its owning <see cref="ISoundEffect"/>.
         /// </summary>
         /// <param name="resourceName">Logical sound resource name to resolve.</param>
         /// <param name="loop">Whether the created instance should loop.</param>
         /// <param name="destination">List that receives the active sound entry on success.</param>
         /// <returns>The playing sound effect instance, or <see langword="null" /> if playback could not be started.</returns>
-        private SoundEffectInstance TryPlay(string resourceName, bool loop, List<ActiveSound> destination)
+        private ISoundInstance TryPlay(string resourceName, bool loop, List<ActiveSound> destination)
         {
-            SoundEffect sound = GetSound(resourceName);
+            ISoundEffect sound = GetSound(resourceName);
             if (sound == null)
             {
                 return null;
             }
 
-            SoundEffectInstance instance;
+            ISoundInstance instance;
             try
             {
                 instance = sound.CreateInstance();
@@ -460,11 +453,11 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="list">The list of active sound entries to modify.</param>
         /// <param name="fromState">The current state to match.</param>
         /// <param name="toState">The target state to transition to.</param>
-        private static void ChangeListState(List<ActiveSound> list, SoundState fromState, SoundState toState)
+        private static void ChangeListState(List<ActiveSound> list, AudioPlaybackState fromState, AudioPlaybackState toState)
         {
             foreach (ActiveSound entry in list)
             {
-                SoundEffectInstance instance = entry.Instance;
+                ISoundInstance instance = entry.Instance;
                 if (instance == null || instance.State != fromState)
                 {
                     continue;
@@ -472,13 +465,13 @@ namespace CutTheRopeDX.Framework.Media
 
                 switch (toState)
                 {
-                    case SoundState.Paused:
+                    case AudioPlaybackState.Paused:
                         instance.Pause();
                         break;
-                    case SoundState.Playing:
+                    case AudioPlaybackState.Playing:
                         instance.Resume();
                         break;
-                    case SoundState.Stopped:
+                    case AudioPlaybackState.Stopped:
                     default:
                         break;
                 }
@@ -486,14 +479,14 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Content manager used to load sound effects and songs.
+        /// Audio backend used to load sound effects and songs and control music playback.
         /// </summary>
-        private static ContentManager _contentManager;
+        private static IAudioBackend _backend;
 
         /// <summary>
-        /// Song currently owned by the media player.
+        /// Music track currently owned by the media player.
         /// </summary>
-        private static XnaSong activeSong;
+        private static IMusicTrack activeSong;
 
         /// <summary>
         /// Waits for the native voice's queued tail before restarting <see cref="activeSong"/>.
@@ -508,7 +501,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.
         /// </summary>
-        private readonly Dictionary<string, SoundEffect> loadedSounds;
+        private readonly Dictionary<string, ISoundEffect> loadedSounds;
 
         /// <summary>
         /// Active one-shot sound instances that may still be playing, tracked with their owning effect.

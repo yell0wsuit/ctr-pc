@@ -3,10 +3,9 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework.Audio;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -418,7 +417,7 @@ namespace CutTheRopeDX.GameMain
         /// unrelated one-shot effects. <see langword="null"/> when looped sounds are disabled or
         /// the sound failed to start.
         /// </summary>
-        public SoundEffectInstance flyLoopSound;
+        public ISoundInstance flyLoopSound;
 
         /// <summary>Delegate that receives rocket lifecycle callbacks (e.g., exhaustion).</summary>
         public IRocketDelegate delegateRocketDelegate;

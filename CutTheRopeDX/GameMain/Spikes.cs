@@ -3,9 +3,8 @@ using System;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
-
-using Microsoft.Xna.Framework.Audio;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -281,7 +280,7 @@ namespace CutTheRopeDX.GameMain
         public rotateAllSpikesWithID delegateRotateAllSpikesWithID;
 
         /// <summary>Looping electric sound instance while electrified spikes are on.</summary>
-        private SoundEffectInstance sndElectric;
+        private ISoundInstance sndElectric;
 
         /// <summary>First texture quad index for rotatable spike variants.</summary>
         private const int RotatableSpikeFirstQuad = 0;

@@ -4,8 +4,6 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 
-using Microsoft.Xna.Framework.Content;
-
 namespace CutTheRopeDX
 {
     /// <summary>
@@ -20,19 +18,19 @@ namespace CutTheRopeDX
         /// controller can be ticked.
         /// </summary>
         /// <param name="platform">Asset platform to install before any asset load.</param>
-        /// <param name="soundContent">Content manager for audio, or <see langword="null"/> for silent runs.</param>
+        /// <param name="audioBackend">Audio backend for sound and music, or <see langword="null"/> for silent runs.</param>
         /// <param name="surfaceWidth">Logical surface width.</param>
         /// <param name="surfaceHeight">Logical surface height.</param>
         /// <param name="language">Language to initialize the engine with.</param>
         public static void Initialize(
             IAssetPlatform platform,
-            ContentManager soundContent,
+            IAudioBackend audioBackend,
             int surfaceWidth,
             int surfaceHeight,
             Language language)
         {
             AssetPlatform.Current = platform;
-            SoundMgr.SetContentManager(soundContent);
+            SoundMgr.SetBackend(audioBackend);
             Preferences.LoadPreferences();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(language);
             CtrRenderer.OnSurfaceCreated();

@@ -2,8 +2,6 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
 
-using Microsoft.Xna.Framework.Audio;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -73,8 +71,8 @@ namespace CutTheRopeDX.GameMain
         /// Plays a looped sound effect identified by its resource name.
         /// </summary>
         /// <param name="soundResourceName">The sound resource name to loop.</param>
-        /// <returns>The looping <see cref="SoundEffectInstance"/>, or <see langword="null"/> if looped sounds are disabled.</returns>
-        public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
+        /// <returns>The looping <see cref="ISoundInstance"/>, or <see langword="null"/> if looped sounds are disabled.</returns>
+        public static ISoundInstance PlaySoundLooped(string soundResourceName)
         {
             return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
                 ? null
@@ -207,7 +205,7 @@ namespace CutTheRopeDX.GameMain
         /// <see cref="PlaySoundLooped(string)"/>, leaving other looped and one-shot sounds playing.
         /// </summary>
         /// <param name="instance">The looped instance to stop; ignored when <see langword="null"/>.</param>
-        public static void StopLoopedSound(SoundEffectInstance instance)
+        public static void StopLoopedSound(ISoundInstance instance)
         {
             Application.SharedSoundMgr().StopLoopedSound(instance);
         }
