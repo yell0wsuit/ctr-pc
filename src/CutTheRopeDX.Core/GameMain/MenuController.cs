@@ -2067,17 +2067,17 @@ namespace CutTheRopeDX.GameMain
             if (activeViewID == 5 && ddPackSelect != null)
             {
                 ddPackSelect.Update(delta);
-                if (PlatformServices.Host.IsKeyPressed(KeyCode.Left))
+                if (PlatformServices.Host?.IsKeyPressed(KeyCode.Left) == true)
                 {
                     OnButtonPressed(MenuButtonId.PreviousPack);
                     return;
                 }
-                if (PlatformServices.Host.IsKeyPressed(KeyCode.Right))
+                if (PlatformServices.Host?.IsKeyPressed(KeyCode.Right) == true)
                 {
                     OnButtonPressed(MenuButtonId.NextPack);
                     return;
                 }
-                if ((PlatformServices.Host.IsKeyPressed(KeyCode.Space) || PlatformServices.Host.IsKeyPressed(KeyCode.Enter)) && !bScrolling)
+                if ((PlatformServices.Host?.IsKeyPressed(KeyCode.Space) == true || PlatformServices.Host?.IsKeyPressed(KeyCode.Enter) == true) && !bScrolling)
                 {
                     OnButtonPressed(MenuButtonId.ForPack(currentPack));
                     return;

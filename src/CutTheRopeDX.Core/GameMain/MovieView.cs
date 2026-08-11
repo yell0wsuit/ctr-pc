@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Draw()
         {
-            PlatformServices.Host.DrawMovie();
+            PlatformServices.Host?.DrawMovie();
         }
     }
 }
