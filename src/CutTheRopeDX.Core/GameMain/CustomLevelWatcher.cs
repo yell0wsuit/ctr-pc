@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 
+using CutTheRopeDX.Framework.Platform;
+
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -9,7 +11,8 @@ namespace CutTheRopeDX.GameMain
     internal sealed class CustomLevelWatcher : IDisposable
     {
         /// <summary>
-        /// Starts watching a level file for changes.
+        /// Starts watching a level file for changes. Hosts without a watchable file system install
+        /// no watcher factory, and the level then simply never reloads itself.
         /// </summary>
         /// <param name="levelPath">Absolute path to the level file.</param>
         /// <param name="quietPeriod">How long the file must be idle before a change is reported.</param>
@@ -24,14 +27,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            watcher = new FileSystemWatcher(directory, fileName)
-            {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName
-            };
-            watcher.Changed += OnFileEvent;
-            watcher.Created += OnFileEvent;
-            watcher.Renamed += OnFileEvent;
-            watcher.EnableRaisingEvents = true;
+            watch = PlatformServices.FileWatchers?.Watch(directory, fileName, OnFileEvent);
         }
 
         /// <summary>
@@ -47,25 +43,14 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void Dispose()
         {
-            if (watcher == null)
-            {
-                return;
-            }
-
-            watcher.EnableRaisingEvents = false;
-            watcher.Changed -= OnFileEvent;
-            watcher.Created -= OnFileEvent;
-            watcher.Renamed -= OnFileEvent;
-            watcher.Dispose();
-            watcher = null;
+            watch?.Dispose();
+            watch = null;
         }
 
         /// <summary>
-        /// Records a file system event. Runs on a threadpool thread, so it touches no engine state.
+        /// Records a file system event. Runs off the game thread, so it touches no engine state.
         /// </summary>
-        /// <param name="sender">Event source.</param>
-        /// <param name="e">Event data.</param>
-        private void OnFileEvent(object sender, FileSystemEventArgs e)
+        private void OnFileEvent()
         {
             gate.NotifyChanged(DateTime.UtcNow);
         }
@@ -73,7 +58,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Debounces the raw file system events.</summary>
         private readonly PendingChangeGate gate;
 
-        /// <summary>Underlying file system watcher, or <see langword="null"/> when the path could not be watched.</summary>
-        private FileSystemWatcher watcher;
+        /// <summary>Handle stopping the watch, or <see langword="null"/> when the path is not watched.</summary>
+        private IDisposable watch;
     }
 }

@@ -32,6 +32,7 @@ namespace CutTheRopeDX
             PlatformServices.Updates = new DesktopUpdateService();
             PlatformServices.Cursor = new DesktopCursorService();
             PlatformServices.Host = new DesktopHostApp();
+            PlatformServices.FileWatchers = new DesktopFileWatcherFactory();
             PlatformServices.Window = Global.ScreenSizeManager;
             PlatformServices.VideoPlayerFactory = CreateVideoPlayer;
             Content.Dispose();

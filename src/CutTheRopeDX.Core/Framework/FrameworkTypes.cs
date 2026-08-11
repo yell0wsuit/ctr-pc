@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -431,27 +429,12 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Opens the specified URL in the default system browser.
+        /// Opens the specified URL through the host. Hosts that cannot open one do nothing.
         /// </summary>
         /// <param name="url">URL to open.</param>
         public static void OpenUrl(string url)
         {
-            try
-            {
-                ProcessStartInfo psi = new()
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                };
-                _ = Process.Start(psi);
-            }
-            catch (Win32Exception ex)
-            {
-                int errorCode = ex.ErrorCode;
-            }
-            catch (Exception)
-            {
-            }
+            PlatformServices.Host?.OpenUrl(url);
         }
 
         /// <summary>

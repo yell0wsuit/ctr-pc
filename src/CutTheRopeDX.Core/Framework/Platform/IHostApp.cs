@@ -13,5 +13,9 @@ namespace CutTheRopeDX.Framework.Platform
 
         /// <summary>Renders the current video frame to the screen in place of the game scene.</summary>
         void DrawMovie();
+
+        /// <summary>Opens <paramref name="url"/> in whatever the host uses to show web pages.</summary>
+        /// <param name="url">The absolute URL to open.</param>
+        void OpenUrl(string url);
     }
 }

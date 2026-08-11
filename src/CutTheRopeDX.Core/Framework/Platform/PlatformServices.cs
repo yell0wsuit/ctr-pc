@@ -17,6 +17,7 @@ namespace CutTheRopeDX.Framework.Platform
         public static IHostApp Host { get; set; }
         public static IWindowService Window { get; set; }
         public static IRenderBackend Render { get; set; }
+        public static IFileWatcherFactory FileWatchers { get; set; }
 
         /// <summary>
         /// Creates the video player backend to use for the current platform build. The choice
