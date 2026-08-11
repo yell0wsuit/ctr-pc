@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
 
 using SkiaSharp;
 
@@ -61,13 +63,15 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public FontGeneric Font(string resourceName)
         {
-            return AssetPlatform.Default.Font(resourceName);
+            FontConfiguration config = Resources.FontConfig.GetConfiguration(
+                resourceName, LanguageHelper.CurrentAsInt);
+            return SkiaFontCache.Load(config);
         }
 
         /// <inheritdoc />
         public void ClearFontCache()
         {
-            AssetPlatform.Default.ClearFontCache();
+            SkiaFontCache.Clear();
         }
     }
 }

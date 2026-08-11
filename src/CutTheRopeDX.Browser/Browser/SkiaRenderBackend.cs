@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Browser
         private bool _projectionMode;
 
         /// <summary>The canvas currently targeted by draw calls.</summary>
-        private SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
+        internal SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
 
         /// <inheritdoc />
         public bool IsAvailable => true;
