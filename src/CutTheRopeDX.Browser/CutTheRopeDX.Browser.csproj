@@ -27,13 +27,6 @@
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="../../distribution/icons/CutTheRopeDXIcon.ico"
-             Link="wwwroot/favicon.ico"
-             CopyToOutputDirectory="PreserveNewest"
-             CopyToPublishDirectory="PreserveNewest" />
-  </ItemGroup>
-
   <!--
     The converted content payload is ~30MB of already-compressed webp/ogg. Letting the
     WASM SDK fingerprint and Brotli-compress it would add minutes to publish and gain

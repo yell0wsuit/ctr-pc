@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Platform;
 
@@ -41,26 +40,11 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void IsResidentReflectsExistence()
-        {
-            FileContentStore store = new(_root);
-            Assert.True(store.IsResident("maps/1_1.xml"));
-            Assert.False(store.IsResident("maps/nope.xml"));
-        }
-
-        [Fact]
         public void ReadThrowsForMissingContent()
         {
             FileContentStore store = new(_root);
             _ = Assert.Throws<FileNotFoundException>(() => store.Read("maps/nope.xml"));
         }
 
-        [Fact]
-        public async Task EnsureResidentIsANoOpOnDisk()
-        {
-            FileContentStore store = new(_root);
-            await store.EnsureResidentAsync(["maps/1_1.xml"]);
-            Assert.True(store.IsResident("maps/1_1.xml"));
-        }
     }
 }

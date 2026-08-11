@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Helpers;
-using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
@@ -120,106 +119,6 @@ namespace CutTheRopeDX.Framework.Core
                 : CTRResourceMgr.HandleLocalizedResource(resourceName);
 
             return !string.IsNullOrEmpty(localizedName) && Resources.IsValidResourceName(localizedName);
-        }
-
-        /// <summary>
-        /// Returns the content files a pack will read, without loading anything.
-        /// </summary>
-        /// <remarks>
-        /// The browser host needs this because Core drains its load queue synchronously -
-        /// <see cref="LoadImmediately"/> runs inside a constructor that cannot be retried
-        /// across frames - so residency must be arranged before the drain begins. Pure by
-        /// design: no IO, no caching, no side effects, so it is safe to call speculatively.
-        /// </remarks>
-        /// <param name="pack">A null-terminated pack array of logical resource names.</param>
-        /// <returns>Content-relative paths, forward-slash separated, without the content prefix.</returns>
-        public static IReadOnlyList<string> ResolveFilesForPack(string[] pack)
-        {
-            if (pack == null)
-            {
-                return [];
-            }
-
-            List<string> files = [];
-            for (int i = 0; i < pack.Length && !string.IsNullOrEmpty(pack[i]); i++)
-            {
-                if (!TryResolveResource(pack[i], out string localizedName))
-                {
-                    continue;
-                }
-
-                foreach (string path in ResolveResourceFiles(localizedName))
-                {
-                    if (!files.Contains(path))
-                    {
-                        files.Add(path);
-                    }
-                }
-            }
-            return files;
-        }
-
-        /// <summary>Returns the files one resolved resource name reads.</summary>
-        /// <remarks>
-        /// The type discrimination mirrors the static <see cref="LoadResource(string)"/> exactly -
-        /// sound, font, then texture - because the whole value of this method is
-        /// that it agrees with the real loader.
-        /// </remarks>
-        /// <param name="localizedName">A resolved, localized resource name.</param>
-        private static IEnumerable<string> ResolveResourceFiles(string localizedName)
-        {
-            string path = CTRResourceMgr.XNA_ResName(localizedName);
-
-            if (Resources.IsMusic(localizedName))
-            {
-                yield return Normalize(ContentPaths.GetMusicPath(path) + ".ogg");
-                yield break;
-            }
-
-            if (Resources.IsSound(localizedName))
-            {
-                yield return Normalize(ContentPaths.GetSoundEffectPath(path) + ".ogg");
-                yield break;
-            }
-
-            if (Resources.IsFont(localizedName))
-            {
-                yield break;
-            }
-
-            if (Resources.IsBackgroundImg(localizedName))
-            {
-                yield return Normalize(ContentPaths.GetBackgroundImageContentPath(path) + ".png");
-                yield break;
-            }
-
-            yield return Normalize(ContentPaths.GetImageContentPath(path) + ".png");
-            yield return Normalize($"{ContentPaths.ImagesDirectory}/{path}.json");
-        }
-
-        /// <summary>
-        /// Begins making every physical file required by a logical resource pack resident.
-        /// </summary>
-        /// <param name="pack">A null-terminated pack array of logical resource names.</param>
-        public static void WarmPack(string[] pack)
-        {
-            if (pack == null)
-            {
-                return;
-            }
-
-            _ = PlatformServices.Content.EnsureResidentAsync(ResolveFilesForPack(pack));
-        }
-
-        /// <summary>Normalizes a resolved path to the form <see cref="Platform.IContentStore"/> expects.</summary>
-        /// <param name="path">A path that may use either separator or carry the content prefix.</param>
-        private static string Normalize(string path)
-        {
-            string normalized = path.Replace('\\', '/');
-            string prefix = ContentPaths.RootDirectory + "/";
-            return normalized.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-                ? normalized[prefix.Length..]
-                : normalized;
         }
 
         /// <summary>
@@ -612,8 +511,6 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
-            WarmPack(pack);
-
             int i = 0;
             while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
             {
@@ -633,10 +530,7 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
-            string[] resources = pack as string[] ?? [.. pack];
-            WarmPack(resources);
-
-            foreach (string resourceName in resources)
+            foreach (string resourceName in pack)
             {
                 QueuePrefetchResource(resourceName);
             }

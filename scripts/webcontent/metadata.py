@@ -46,6 +46,7 @@ def minify_xml_bytes(raw: bytes) -> str:
 def _sources(content_root: Path) -> list[Path]:
     found = []
     found += sorted((content_root / "images").rglob("*.json"))
+    found += sorted((content_root / "images" / "animations").rglob("*.xml"))
     found += sorted((content_root / "maps").rglob("*.xml"))
     found += sorted((content_root / "locales").glob("*.json"))
     for name in ("packlist.json", "ctroriginal_packs.json"):

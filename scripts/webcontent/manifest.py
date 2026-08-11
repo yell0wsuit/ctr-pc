@@ -40,6 +40,21 @@ def save_manifest(path: Path, entries: dict[str, str]) -> None:
     )
 
 
+def write_asset_catalog(path: Path, entries: dict[str, str]) -> None:
+    """Writes public runtime asset paths grouped by their top-level directory."""
+    groups: dict[str, list[str]] = {}
+    for relative_path in sorted(entries):
+        asset_type, separator, _ = relative_path.partition("/")
+        if separator:
+            groups.setdefault(asset_type, []).append(relative_path)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(groups, indent=2, sort_keys=True, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
 def is_current(
     entries: dict[str, str], out_rel: str, stamp: str, out_path: Path
 ) -> bool:

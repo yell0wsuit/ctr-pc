@@ -26,6 +26,13 @@ namespace CutTheRopeDX.Browser
         [JSImport("fetchText", "fetch")]
         public static partial Task<string> FetchText(string url);
 
+        /// <summary>Updates the browser splash with content download progress.</summary>
+        /// <param name="type">Asset category currently loading.</param>
+        /// <param name="loaded">Number of assets loaded in the category.</param>
+        /// <param name="total">Total number of assets in the category.</param>
+        [JSImport("reportContentProgress", "fetch")]
+        public static partial void ReportContentProgress(string type, int loaded, int total);
+
         /// <summary>Fetches a URL as bytes, returning an empty array on failure.</summary>
         /// <param name="url">Absolute or root-relative URL.</param>
         public static async Task<byte[]> GetBytesAsync(string url)

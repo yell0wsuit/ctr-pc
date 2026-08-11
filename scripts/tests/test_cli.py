@@ -37,6 +37,9 @@ def test_run_without_audio_produces_images_fonts_and_bundle(tmp_path):
     bundle = json.loads((out / "tier0.json").read_text(encoding="utf-8"))
     assert bundle["locales/en.json"] == '{"hi":"there"}'
     assert (out / ".build-manifest.json").exists()
+    assert json.loads((out / "assets.json").read_text(encoding="utf-8")) == {
+        "images": ["images/a.webp"]
+    }
 
 
 def test_second_run_skips_everything(tmp_path, capsys):

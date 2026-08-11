@@ -82,7 +82,6 @@ namespace CutTheRopeDX.Browser
             }
 
             FlushQuads();
-            surface.Resize(width, height);
             if (width == _renderTargetWidth && height == _renderTargetHeight)
             {
                 return;
@@ -345,8 +344,18 @@ namespace CutTheRopeDX.Browser
                 return;
             }
             using SKImage snapshot = _renderTarget.Snapshot();
+            ScreenPresentation presentation = ScreenPresentation.Instance;
+            SKRect destination = SKRect.Create(
+                presentation.ScaledViewX,
+                presentation.ScaledViewY,
+                presentation.ScaledViewWidth,
+                presentation.ScaledViewHeight);
+            surface.Canvas.Clear(SKColors.Black);
             surface.Canvas.DrawImage(
-                snapshot, 0f, 0f, SKSamplingOptions.Default, paint: null);
+                snapshot,
+                destination,
+                new SKSamplingOptions(SKFilterMode.Linear),
+                paint: null);
         }
 
         /// <inheritdoc />
@@ -371,6 +380,7 @@ namespace CutTheRopeDX.Browser
 
             using SKPaint paint = new()
             {
+                Color = SKColors.White,
                 BlendMode = _blendEnabled ? _batchBlendMode : SKBlendMode.Src,
             };
             if (_batchTexture is not null)

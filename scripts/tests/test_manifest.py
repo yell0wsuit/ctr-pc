@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -34,6 +35,25 @@ def test_round_trip(tmp_path):
     path = tmp_path / "m.json"
     manifest.save_manifest(path, {"images/a.webp": "abc|webp:q80"})
     assert manifest.load_manifest(path) == {"images/a.webp": "abc|webp:q80"}
+
+
+def test_write_asset_catalog_groups_every_runtime_asset(tmp_path):
+    path = tmp_path / "assets.json"
+
+    manifest.write_asset_catalog(
+        path,
+        {
+            "sounds/tap.ogg": "sound-stamp",
+            "images/logo.webp": "image-stamp",
+            "fonts/game.ttf": "font-stamp",
+        },
+    )
+
+    assert json.loads(path.read_text(encoding="utf-8")) == {
+        "fonts": ["fonts/game.ttf"],
+        "images": ["images/logo.webp"],
+        "sounds": ["sounds/tap.ogg"],
+    }
 
 
 def test_is_current_requires_matching_stamp_and_existing_output(tmp_path):

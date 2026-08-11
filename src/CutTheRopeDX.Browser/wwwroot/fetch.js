@@ -2,6 +2,8 @@
 // directly, so a fetch resolves into a JS-side stash keyed by URL; the managed side then
 // copies it out synchronously into a buffer it already sized.
 
+import { setLoadingProgress } from "./loading-progress.js";
+
 const stash = new Map();
 
 export async function fetchBytes(url) {
@@ -27,4 +29,8 @@ export function takeStashed(url, destination) {
 export async function fetchText(url) {
     const response = await fetch(url);
     return response.ok ? await response.text() : null;
+}
+
+export function reportContentProgress(type, loaded, total) {
+    setLoadingProgress(type, loaded, total);
 }

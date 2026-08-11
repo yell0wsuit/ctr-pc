@@ -31,9 +31,13 @@ def test_xml_minification_returns_parseable_xml():
 
 def _seed(content: Path) -> None:
     (content / "images").mkdir(parents=True)
+    (content / "images" / "animations").mkdir()
     (content / "maps").mkdir(parents=True)
     (content / "locales").mkdir(parents=True)
     (content / "images" / "atlas.json").write_text('{\n  "frames": []\n}')
+    (content / "images" / "animations" / "splash.xml").write_text(
+        "<FlashAnimation width='10' height='20' />"
+    )
     (content / "images" / "image_dimensions.json").write_text('{"a": [1, 2]}')
     (content / "maps" / "1_1.xml").write_text("<map>\n  <o />\n</map>")
     (content / "locales" / "en.json").write_text('{\n  "hi": "there"\n}')
@@ -46,6 +50,7 @@ def test_bundle_includes_expected_files(tmp_path):
     _seed(content)
     bundle = metadata.build_tier0(content)
     assert "images/atlas.json" in bundle
+    assert "images/animations/splash.xml" in bundle
     assert "maps/1_1.xml" in bundle
     assert "locales/en.json" in bundle
     assert "packlist.json" in bundle

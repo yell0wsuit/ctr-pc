@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -22,13 +21,6 @@ namespace CutTheRopeDX.Browser
         public static string PathFor(string fontFile)
         {
             return $"fonts/{Path.GetFileNameWithoutExtension(fontFile)}.ttf";
-        }
-
-        /// <summary>Fetches a typeface so <see cref="Load"/> can resolve it synchronously.</summary>
-        /// <param name="fontFile">Font file name from <see cref="FontConfiguration.FontFile"/>.</param>
-        public static Task EnsureTypefaceResidentAsync(string fontFile)
-        {
-            return PlatformServices.Content.EnsureResidentAsync([PathFor(fontFile)]);
         }
 
         /// <summary>Returns the font for a configuration, building it on first use.</summary>

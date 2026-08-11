@@ -108,7 +108,21 @@ namespace CutTheRopeDX.Browser
         /// <param name="contentPath">Content path without extension.</param>
         public Task<int> PreloadAsync(string contentPath)
         {
-            return AudioInterop.Decode(contentPath, $"{contentBaseUrl}{contentPath}.ogg");
+            return PreloadFileAsync($"{contentPath}.ogg");
+        }
+
+        /// <summary>Decodes one cataloged Ogg file so later loads never fetch it again.</summary>
+        /// <param name="relativePath">Content-relative Ogg path including its extension.</param>
+        public Task<int> PreloadFileAsync(string relativePath)
+        {
+            const string extension = ".ogg";
+            if (!relativePath.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Expected an Ogg content path.", nameof(relativePath));
+            }
+
+            string key = relativePath[..^extension.Length];
+            return AudioInterop.Decode(key, contentBaseUrl + relativePath);
         }
 
         /// <inheritdoc />

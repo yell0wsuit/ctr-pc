@@ -75,6 +75,12 @@ def main(argv: list[str] | None = None) -> int:
     print(f"tier0: {size / 1024:.0f} KB")
 
     manifest.save_manifest(manifest_path, entries)
+    runtime_entries = {
+        relative_path: stamp
+        for relative_path, stamp in entries.items()
+        if (out / relative_path).is_file()
+    }
+    manifest.write_asset_catalog(out / "assets.json", runtime_entries)
     return 0
 
 
