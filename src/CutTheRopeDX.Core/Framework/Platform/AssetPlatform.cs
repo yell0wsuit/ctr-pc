@@ -1,7 +1,7 @@
 namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
-    /// Selects the active asset platform. <see cref="CutTheRopeDX.CtrBootstrap.Initialize"/> is the
+    /// Selects the active asset platform. <see cref="CtrBootstrap.Initialize"/> is the
     /// single boot path both hosts use and always overwrites <see cref="Current"/> with a concrete
     /// platform (desktop or headless) before any asset load, so <see cref="Default"/> only needs to be
     /// a safe, device-independent placeholder for the window before that call.
