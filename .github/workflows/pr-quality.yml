@@ -9,6 +9,10 @@ on:
 permissions:
     contents: read
 
+env:
+    # Where BuildContent.targets expects the built content to sit.
+    CONTENT_DIR: content/Builder/bin/DesktopVK/content
+
 jobs:
     code-quality:
         runs-on: ubuntu-latest
@@ -39,6 +43,35 @@ jobs:
 
             - name: Run Roslynator analysis (Desktop)
               run: roslynator analyze src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj
+
+            # The headless tests load the real content tree, and jobs run with CI=true, which leaves
+            # RunMGCB false — so the content has to be here before the build deploys it into the test
+            # output. Keyed on the content sources, so most PRs restore it instead of rebuilding.
+            - name: Cache built content
+              uses: actions/cache@v6
+              id: content-cache
+              with:
+                  path: ${{ env.CONTENT_DIR }}
+                  key: content-DesktopVK-${{ hashFiles('content/file_manifest.json', 'content/Builder/**/*.cs', 'content/maps/**', 'content/locales/**', 'content/*.json') }}
+
+            # MonoGame falls back to ffmpeg on PATH when converting sounds/*.wav.
+            # Ubuntu's build has libvorbis; assert it rather than discovering a
+            # missing encoder halfway through the content build.
+            - name: Install ffmpeg
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              run: |
+                  sudo apt-get update && sudo apt-get install -y ffmpeg
+                  ffmpeg -hide_banner -encoders | grep -q libvorbis
+
+            - name: Fetch and build content
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              run: |
+                  BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
+                  dotnet build content/Builder/CutTheRopeDX.Content.csproj
+                  dotnet "$BUILDER" fetch -s content
+                  dotnet "$BUILDER" verify -s content
+                  dotnet "$BUILDER" build -p DesktopVK -s content \
+                      -o "$CONTENT_DIR" -i content/Builder/obj/DesktopVK --compress
 
             - name: Build
               run: dotnet build --no-restore -c Release
