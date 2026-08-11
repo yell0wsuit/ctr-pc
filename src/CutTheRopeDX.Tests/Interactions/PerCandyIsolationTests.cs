@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -133,7 +135,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         private static (GameScene Scene, CandyContext First, CandyContext Second) TwoCandies(
-            System.Func<Scenario, Scenario> extras)
+            Func<Scenario, Scenario> extras)
         {
             // Two independently keyed candies, far enough apart that an event aimed at one cannot
             // reach the other by proximity.
@@ -151,8 +153,8 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         private static void AssertPreWinEatenCleanup(
-            System.Func<Scenario, Scenario> extras,
-            System.Action<GameScene, CandyContext> attach)
+            Func<Scenario, Scenario> extras,
+            Action<GameScene, CandyContext> attach)
         {
             GameScene scene = extras(
                     Scenario.New()

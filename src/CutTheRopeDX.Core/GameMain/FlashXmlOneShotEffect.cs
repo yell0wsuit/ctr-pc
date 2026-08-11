@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
@@ -61,8 +62,8 @@ namespace CutTheRopeDX.GameMain
             root.useCustomAnchor = true;
             root.customAnchorX = _anchorX;
             root.customAnchorY = _anchorY;
-            root.width = (int)System.MathF.Round(_definition.StageWidth);
-            root.height = (int)System.MathF.Round(_definition.StageHeight);
+            root.width = (int)MathF.Round(_definition.StageWidth);
+            root.height = (int)MathF.Round(_definition.StageHeight);
             root.x = x;
             root.y = y;
 
