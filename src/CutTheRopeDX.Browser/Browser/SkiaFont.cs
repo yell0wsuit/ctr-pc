@@ -237,7 +237,7 @@ namespace CutTheRopeDX.Browser
                     {
                         IsAntialias = true,
                         Style = SKPaintStyle.Stroke,
-                        StrokeWidth = effects.StrokeAmount * 2f,
+                        StrokeWidth = effects.StrokeAmount * 4f,
                         StrokeJoin = SKStrokeJoin.Round,
                         Color = Modulate(effects.StrokeColor, inherited, layerAlpha),
                     };
