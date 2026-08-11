@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -76,17 +77,29 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="degrees">Rotation in degrees.</param>
         public void RotateDegrees(float degrees)
         {
-            Apply(Matrix4x4.CreateRotationZ(degrees * (float)System.Math.PI / 180f));
+            Apply(Matrix4x4.CreateRotationZ(degrees * (float)Math.PI / 180f));
         }
 
-        /// <summary>Applies the shear the original iOS renderer used for skewed sprites.</summary>
-        /// <param name="skewXDegrees">Shear of X by Y, in degrees.</param>
-        /// <param name="skewYDegrees">Shear of Y by X, in degrees.</param>
+        /// <summary>Applies the skew the original renderer used for skewed sprites.</summary>
+        /// <remarks>
+        /// This is Flash's skew, which the animation data is authored against: each axis rotates
+        /// by its own angle rather than shearing while the other axis stays put. That makes the
+        /// matrix <c>[cos(skewY), sin(skewY); -sin(skewX), cos(skewX)]</c> — a plain shear of
+        /// <c>tan</c> without the cosine terms leaves both axes at their original length and
+        /// skews them the wrong way, which pulls animated parts off the bodies they belong to.
+        /// </remarks>
+        /// <param name="skewXDegrees">Rotation of the Y axis, in degrees.</param>
+        /// <param name="skewYDegrees">Rotation of the X axis, in degrees.</param>
         public void Skew(float skewXDegrees, float skewYDegrees)
         {
+            float skewX = skewXDegrees * (float)Math.PI / 180f;
+            float skewY = skewYDegrees * (float)Math.PI / 180f;
+
             Matrix4x4 shear = Matrix4x4.Identity;
-            shear.M21 = (float)System.Math.Tan(skewXDegrees * System.Math.PI / 180.0);
-            shear.M12 = (float)System.Math.Tan(skewYDegrees * System.Math.PI / 180.0);
+            shear.M11 = (float)Math.Cos(skewY);
+            shear.M12 = (float)Math.Sin(skewY);
+            shear.M21 = -(float)Math.Sin(skewX);
+            shear.M22 = (float)Math.Cos(skewX);
             Apply(shear);
         }
 

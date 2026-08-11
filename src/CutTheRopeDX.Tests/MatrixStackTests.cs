@@ -60,13 +60,47 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(1f, moved.Y, Tolerance);
         }
 
+        // Flash's skew, which the FlashXml animation data is authored against, rotates each axis
+        // by its own angle and so leaves both axes unit length. A plain tangent shear keeps the
+        // axis lengths but tilts the wrong one, which is what pulled animated parts off their
+        // bodies. These pin the matrix the desktop backend already produces.
         [Fact]
-        public void SkewShearsAlongX()
+        public void SkewXRotatesTheYAxis()
         {
             MatrixStack stack = new();
             stack.Skew(45f, 0f);
             Vector3 moved = Vector3.Transform(new Vector3(0f, 1f, 0f), stack.ModelView);
-            Assert.Equal(1f, moved.X, Tolerance);
+            Assert.Equal(-0.70710678f, moved.X, Tolerance);
+            Assert.Equal(0.70710678f, moved.Y, Tolerance);
+        }
+
+        [Fact]
+        public void SkewYRotatesTheXAxis()
+        {
+            MatrixStack stack = new();
+            stack.Skew(0f, 45f);
+            Vector3 moved = Vector3.Transform(new Vector3(1f, 0f, 0f), stack.ModelView);
+            Assert.Equal(0.70710678f, moved.X, Tolerance);
+            Assert.Equal(0.70710678f, moved.Y, Tolerance);
+        }
+
+        [Fact]
+        public void SkewLeavesAxesUnitLength()
+        {
+            MatrixStack stack = new();
+            stack.Skew(30f, -20f);
+            Vector3 xAxis = Vector3.Transform(new Vector3(1f, 0f, 0f), stack.ModelView);
+            Vector3 yAxis = Vector3.Transform(new Vector3(0f, 1f, 0f), stack.ModelView);
+            Assert.Equal(1f, xAxis.Length(), Tolerance);
+            Assert.Equal(1f, yAxis.Length(), Tolerance);
+        }
+
+        [Fact]
+        public void ZeroSkewIsIdentity()
+        {
+            MatrixStack stack = new();
+            stack.Skew(0f, 0f);
+            Assert.Equal(Matrix4x4.Identity, stack.ModelView);
         }
 
         [Fact]
