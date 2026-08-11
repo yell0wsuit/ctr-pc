@@ -11,7 +11,7 @@
     <IsAotCompatible>true</IsAotCompatible>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <WindowsDistributionIcon>../distribution/icons/CutTheRopeDXIcon.ico</WindowsDistributionIcon>
+    <WindowsDistributionIcon>../../distribution/icons/CutTheRopeDXIcon.ico</WindowsDistributionIcon>
     <ApplicationIcon Condition="$([MSBuild]::IsOsPlatform('Windows'))">$(WindowsDistributionIcon)</ApplicationIcon>
     <VersionPrefix>1.0.0</VersionPrefix>
     <Company>ZeptoLab</Company>
