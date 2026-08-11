@@ -70,6 +70,25 @@ jobs:
                   dotnet "$BUILDER" build -p DesktopVK -s content \
                       -o "$CONTENT_DIR" -i content/Builder/obj/DesktopVK --compress
 
+            # The headless tests read the checked-in copy of this manifest rather than building
+            # content, so a resized or added PNG would leave them sizing sprites from stale
+            # numbers. This job holds the only fetched images, so it is the only place to notice.
+            - name: Check the checked-in image dimensions are current
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              run: |
+                  python3 - <<'PY'
+                  import json, sys
+                  built = json.load(open("${{ env.CONTENT_DIR }}/images/image_dimensions.json"))
+                  tracked = json.load(open("content/images/image_dimensions.json"))
+                  if built != tracked:
+                      names = set(built["images"]) ^ set(tracked["images"])
+                      resized = {k for k in set(built["images"]) & set(tracked["images"])
+                                 if built["images"][k] != tracked["images"][k]}
+                      sys.exit("content/images/image_dimensions.json is stale. "
+                               f"Added/removed: {sorted(names)}. Resized: {sorted(resized)}. "
+                               "Copy the built manifest over it and commit.")
+                  PY
+
             - uses: actions/upload-artifact@v7
               with:
                   name: built-content

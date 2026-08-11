@@ -24,14 +24,6 @@
       publish directory, only to delete it while assembling the package.
     -->
     <DeployContent Condition="'$(DeployContent)' == ''">true</DeployContent>
-
-    <!--
-      Which of the built content a deploy carries. The game needs all of it; the headless tests read
-      only the data files (maps, locales, pack lists, image_dimensions.json), so they set this and
-      take 8MB instead of the 350MB of xnb textures, audio and video they would never open.
-    -->
-    <ContentDeployInclude Condition="'$(DeployDataFilesOnly)' == 'true'">$(ContentBuildOutput)/**/*.json;$(ContentBuildOutput)/**/*.xml</ContentDeployInclude>
-    <ContentDeployInclude Condition="'$(ContentDeployInclude)' == ''">$(ContentBuildOutput)/**/*</ContentDeployInclude>
   </PropertyGroup>
 
   <!--
@@ -57,7 +49,7 @@
   <Target Name="AddBuiltContent" AfterTargets="BuildGameContent"
           Condition="Exists('$(ContentBuildOutput)') AND '$(DeployContent)' == 'true'">
     <ItemGroup>
-      <_BuiltContent Include="$(ContentDeployInclude)" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
+      <_BuiltContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
       <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
