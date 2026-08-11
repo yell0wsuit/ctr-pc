@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -31,6 +32,9 @@ namespace CutTheRopeDX.Browser
         private readonly List<SKPoint> _texCoords = [];
         private readonly List<SKColor> _colors = [];
 
+        private SKSurface _renderTarget;
+        private int _renderTargetWidth;
+        private int _renderTargetHeight;
         private SkiaTexture _boundTexture;
         private SkiaTexture _batchTexture;
         private SKBlendMode _blendMode = SKBlendMode.SrcOver;
@@ -39,6 +43,9 @@ namespace CutTheRopeDX.Browser
         private SKColor _clearColor = SKColors.Black;
         private bool _blendEnabled = true;
         private bool _projectionMode;
+
+        /// <summary>The canvas currently targeted by draw calls.</summary>
+        private SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
 
         /// <inheritdoc />
         public bool IsAvailable => true;
@@ -62,15 +69,33 @@ namespace CutTheRopeDX.Browser
             else if (cap == GL_SCISSOR_TEST)
             {
                 FlushQuads();
-                surface.Canvas.Restore();
+                Target.Restore();
             }
         }
 
         /// <inheritdoc />
         public void SetViewport(int x, int y, int width, int height)
         {
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
             FlushQuads();
             surface.Resize(width, height);
+            if (width == _renderTargetWidth && height == _renderTargetHeight)
+            {
+                return;
+            }
+
+            _renderTarget?.Dispose();
+            _renderTarget = SKSurface.Create(
+                surface.Context,
+                budgeted: true,
+                new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                ?? throw new InvalidOperationException("Could not create the Skia render target.");
+            _renderTargetWidth = width;
+            _renderTargetHeight = height;
         }
 
         /// <inheritdoc />
@@ -156,7 +181,7 @@ namespace CutTheRopeDX.Browser
         public void Clear(int mask)
         {
             FlushQuads();
-            surface.Canvas.Clear(_clearColor);
+            Target.Clear(_clearColor);
         }
 
         /// <inheritdoc />
@@ -189,8 +214,8 @@ namespace CutTheRopeDX.Browser
         public void SetScissor(float x, float y, float width, float height)
         {
             FlushQuads();
-            _ = surface.Canvas.Save();
-            surface.Canvas.ClipRect(SKRect.Create(x, y, width, height));
+            _ = Target.Save();
+            Target.ClipRect(SKRect.Create(x, y, width, height));
         }
 
         /// <inheritdoc />
@@ -277,7 +302,7 @@ namespace CutTheRopeDX.Browser
                 paint.Color = new SKColor(
                     vertices[i].Color.R, vertices[i].Color.G,
                     vertices[i].Color.B, vertices[i].Color.A);
-                surface.Canvas.DrawLine(
+                Target.DrawLine(
                     vertices[i].Position.X, vertices[i].Position.Y,
                     vertices[i + 1].Position.X, vertices[i + 1].Position.Y,
                     paint);
@@ -287,17 +312,41 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public ITextureHandle DetachRenderTarget()
         {
-            return null;
+            if (_renderTarget is null)
+            {
+                return null;
+            }
+
+            FlushQuads();
+            SKImage snapshot = _renderTarget.Snapshot();
+            _renderTarget.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
+            return new SkiaTexture(snapshot);
         }
 
         /// <inheritdoc />
         public void ResetRenderTarget()
         {
+            FlushQuads();
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
         }
 
         /// <inheritdoc />
         public void CopyFromRenderTargetToScreen()
         {
+            FlushQuads();
+            if (_renderTarget is null)
+            {
+                return;
+            }
+            using SKImage snapshot = _renderTarget.Snapshot();
+            surface.Canvas.DrawImage(
+                snapshot, 0f, 0f, SKSamplingOptions.Default, paint: null);
         }
 
         /// <inheritdoc />
@@ -336,7 +385,7 @@ namespace CutTheRopeDX.Browser
                 _batchTexture is null ? null : [.. _texCoords],
                 [.. _colors]);
 
-            surface.Canvas.DrawVertices(vertices, SKBlendMode.Modulate, paint);
+            Target.DrawVertices(vertices, SKBlendMode.Modulate, paint);
 
             _positions.Clear();
             _texCoords.Clear();
