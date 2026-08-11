@@ -5,9 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-#if MACOS_AVFOUNDATION
-using Foundation;
-#endif
 
 namespace CutTheRopeDX.Framework.Core
 {
@@ -163,21 +160,8 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The path to the save directory.</returns>
         private static string DetermineSaveDirectory()
         {
-#if MACOS_AVFOUNDATION
-            // On macOS, if not in .app bundle (dev mode), try executable directory
-            if (!IsInsideMacAppBundle())
-            {
-                string exeDir = AppContext.BaseDirectory;
-                string exeSaveDir = Path.Combine(exeDir, SaveFolderName);
-                if (TryCreateDirectory(exeSaveDir))
-                {
-                    MigrateOldSaveFiles(exeDir, exeSaveDir);
-                    return exeSaveDir;
-                }
-            }
-            // Otherwise fall through to Documents folder below
-#else
-            // On non-macOS, try executable directory first (excluding macOS .app bundle)
+            // Try the executable's own directory first. A macOS .app is read-only and code-signed,
+            // so a bundled run skips it and saves under Documents instead.
             string exeDir = AppContext.BaseDirectory;
             if (!IsInsideMacAppBundle(exeDir))
             {
@@ -188,7 +172,6 @@ namespace CutTheRopeDX.Framework.Core
                     return exeSaveDir;
                 }
             }
-#endif
 
             // Fallback to Documents/{SaveFolderName}
             string documentsDir = Path.Combine(
@@ -296,18 +279,6 @@ namespace CutTheRopeDX.Framework.Core
             }
         }
 
-#if MACOS_AVFOUNDATION
-        /// <summary>
-        /// Determines whether the app is running from inside a macOS .app bundle using NSBundle.
-        /// </summary>
-        /// <returns><see langword="true" /> if running from a .app bundle; otherwise, <see langword="false" />.</returns>
-        private static bool IsInsideMacAppBundle()
-        {
-            string bundlePath = NSBundle.MainBundle.BundlePath;
-            return bundlePath.EndsWith(".app", StringComparison.OrdinalIgnoreCase);
-        }
-
-#else
         /// <summary>
         /// Determines whether the given <paramref name="path"/> is inside a macOS .app bundle.
         /// Checks for the standard bundle structure: *.app/Contents/MacOS/
@@ -332,7 +303,6 @@ namespace CutTheRopeDX.Framework.Core
 
             return false;
         }
-#endif
 
         /// <summary>
         /// Initializes a preferences instance and loads saved preference data from disk.

@@ -2,10 +2,6 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
-#if MACOS_AVFOUNDATION
-using Foundation;
-#endif
-
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>
@@ -155,13 +151,14 @@ namespace CutTheRopeDX.Helpers
         /// <summary>
         /// Gets the absolute path to the content root directory for the current runtime context.
         /// </summary>
+        /// <remarks>
+        /// Inside a macOS .app the content sits in <c>Contents/Resources</c>, which the walk below
+        /// finds from the executable's own directory — the same path <c>NSBundle</c> would report,
+        /// without Core taking a dependency on the Apple SDK.
+        /// </remarks>
         /// <returns>The absolute content root path for the active platform/runtime.</returns>
         public static string GetContentRootAbsolute()
         {
-#if MACOS_AVFOUNDATION
-            string basePath = NSBundle.MainBundle.ResourcePath;
-            return Path.Combine(basePath, RootDirectory);
-#else
             string basePath = AppContext.BaseDirectory;
             DirectoryInfo dir = new(basePath);
 
@@ -178,7 +175,6 @@ namespace CutTheRopeDX.Helpers
             }
 
             return Path.Combine(basePath, RootDirectory);
-#endif
         }
 
         /// <summary>
