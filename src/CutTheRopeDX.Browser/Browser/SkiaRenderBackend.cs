@@ -37,7 +37,6 @@ namespace CutTheRopeDX.Browser
         private int _renderTargetHeight;
         private SkiaTexture _boundTexture;
         private SkiaTexture _batchTexture;
-        private SKBlendMode _blendMode = SKBlendMode.SrcOver;
         private SKBlendMode _batchBlendMode = SKBlendMode.SrcOver;
         private Color _drawColor = new(255, 255, 255, 255);
         private SKColor _clearColor = SKColors.Black;
@@ -46,6 +45,19 @@ namespace CutTheRopeDX.Browser
 
         /// <summary>The canvas currently targeted by draw calls.</summary>
         internal SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
+
+        /// <summary>The blend mode most recently requested by <see cref="SetBlendFunc"/>.</summary>
+        private SKBlendMode RequestedBlendMode { get; set; } = SKBlendMode.SrcOver;
+
+        /// <summary>
+        /// The blend mode a draw issued right now would use, with blending disabled folded in.
+        /// Disabling blending is <c>Src</c>, which ignores the destination the way the desktop
+        /// backend's opaque blend state does. Batches capture this when geometry is appended,
+        /// never when they flush: Core brackets each view as enable, draw, disable, so reading it
+        /// at flush time would blend every batch as though blending were off.
+        /// </summary>
+        private SKBlendMode EffectiveBlendMode =>
+            _blendEnabled ? RequestedBlendMode : SKBlendMode.Src;
 
         /// <inheritdoc />
         public bool IsAvailable => true;
@@ -186,16 +198,11 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
-            SKBlendMode mode = (sfactor, dfactor) switch
+            RequestedBlendMode = (sfactor, dfactor) switch
             {
                 (BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE) => SKBlendMode.Plus,
                 _ => SKBlendMode.SrcOver,
             };
-            if (mode != _blendMode)
-            {
-                FlushQuads();
-                _blendMode = mode;
-            }
         }
 
         /// <inheritdoc />
@@ -294,7 +301,7 @@ namespace CutTheRopeDX.Browser
                 Style = SKPaintStyle.Stroke,
                 StrokeWidth = 1f,
                 IsAntialias = true,
-                BlendMode = _blendMode,
+                BlendMode = EffectiveBlendMode,
             };
             for (int i = 0; i + 1 < vertexCount; i++)
             {
@@ -381,7 +388,7 @@ namespace CutTheRopeDX.Browser
             using SKPaint paint = new()
             {
                 Color = SKColors.White,
-                BlendMode = _blendEnabled ? _batchBlendMode : SKBlendMode.Src,
+                BlendMode = _batchBlendMode,
             };
             if (_batchTexture is not null)
             {
@@ -420,11 +427,12 @@ namespace CutTheRopeDX.Browser
 
         private void EnsureBatchCompatible()
         {
-            if (!ReferenceEquals(_batchTexture, _boundTexture) || _batchBlendMode != _blendMode)
+            if (!ReferenceEquals(_batchTexture, _boundTexture)
+                || _batchBlendMode != EffectiveBlendMode)
             {
                 FlushQuads();
                 _batchTexture = _boundTexture;
-                _batchBlendMode = _blendMode;
+                _batchBlendMode = EffectiveBlendMode;
             }
         }
 
