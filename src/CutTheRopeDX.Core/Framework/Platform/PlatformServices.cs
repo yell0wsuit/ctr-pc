@@ -1,6 +1,7 @@
 using System;
 
 using CutTheRopeDX.Framework.Media;
+using CutTheRopeDX.Helpers;
 
 namespace CutTheRopeDX.Framework.Platform
 {
@@ -18,6 +19,13 @@ namespace CutTheRopeDX.Framework.Platform
         public static IWindowService Window { get; set; }
         public static IRenderBackend Render { get; set; }
         public static IFileWatcherFactory FileWatchers { get; set; }
+
+        /// <summary>
+        /// Raw content byte access. Defaults to the deployed content directory; the browser
+        /// host replaces it with a fetch-backed store during boot.
+        /// </summary>
+        public static IContentStore Content { get; set; }
+            = new FileContentStore(ContentPaths.GetContentRootAbsolute());
 
         /// <summary>
         /// Creates the video player backend to use for the current platform build. The choice

@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework.Platform;
+
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>
@@ -202,7 +204,8 @@ namespace CutTheRopeDX.Helpers
                 normalizedPath = normalizedPath[alternateRootPrefix.Length..];
             }
 
-            return File.OpenRead(Path.Combine(GetContentRootAbsolute(), normalizedPath));
+            return new MemoryStream(
+                PlatformServices.Content.Read(normalizedPath), writable: false);
         }
 
         /// <summary>
