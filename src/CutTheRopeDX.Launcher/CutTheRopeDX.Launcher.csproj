@@ -21,7 +21,6 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <PublishSingleFile>true</PublishSingleFile>
     <StripSymbols>true</StripSymbols>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <!--

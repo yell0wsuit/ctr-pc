@@ -12,7 +12,6 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <SelfContained>true</SelfContained>
     <StripSymbols>true</StripSymbols>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -20,6 +19,7 @@
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishDocumentationFiles>false</PublishDocumentationFiles>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <NoWarn Condition="$(MSBuildProjectName.EndsWith('.Tests'))">$(NoWarn);CS1573;CS1591</NoWarn>
 
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
