@@ -1,0 +1,388 @@
+using System;
+
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace CutTheRopeDX.Desktop
+{
+    /// <summary>
+    /// Manages the OS window, fullscreen toggling, and persisted window settings for the desktop
+    /// renderer. Device-free presentation math (scaled view rect, coordinate transforms) lives in
+    /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="ScreenPresentation.SetSurfaceSize"/>
+    /// whenever the window or fullscreen bounds change, and implements <see cref="IWindowService"/>
+    /// so Core code can command window behavior through <see cref="PlatformServices.Window"/>.
+    /// </summary>
+    /// <param name="gameWidth">Logical game width.</param>
+    /// <param name="gameHeight">Logical game height.</param>
+    internal sealed class ScreenSizeManager(int gameWidth, int gameHeight) : IWindowService
+    {
+        /// <summary>
+        /// Maximum allowed window width for the active graphics profile.
+        /// </summary>
+        public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;
+
+        /// <summary>
+        /// Gets the logical game width. Retained from the constructor for API symmetry with
+        /// <see cref="ScreenPresentation"/>, which is the sole consumer of the aspect ratio it implies.
+        /// </summary>
+        public int GameWidth { get; } = gameWidth;
+
+        /// <summary>
+        /// Gets the logical game height. Retained from the constructor for API symmetry with
+        /// <see cref="ScreenPresentation"/>, which is the sole consumer of the aspect ratio it implies.
+        /// </summary>
+        public int GameHeight { get; } = gameHeight;
+
+        /// <summary>
+        /// Gets the current window back-buffer width.
+        /// </summary>
+        public int WindowWidth => _windowRect.Width;
+
+        /// <summary>
+        /// Gets the current window back-buffer height.
+        /// </summary>
+        public int WindowHeight => _windowRect.Height;
+
+        /// <summary>
+        /// Gets the current fullscreen display width.
+        /// </summary>
+        public int ScreenWidth => _fullScreenRect.Width;
+
+        /// <summary>
+        /// Gets the current fullscreen display height.
+        /// </summary>
+        public int ScreenHeight => _fullScreenRect.Height;
+
+        /// <summary>
+        /// Gets a value indicating whether fullscreen mode is currently enabled.
+        /// </summary>
+        public bool IsFullScreen { get; private set; }
+
+        /// <summary>
+        /// Gets the active output rectangle, using fullscreen or window bounds as appropriate.
+        /// </summary>
+        public Rectangle CurrentSize => IsFullScreen ? _fullScreenRect : _windowRect;
+
+        /// <summary>
+        /// Gets a value indicating whether size-change reactions are temporarily disabled.
+        /// </summary>
+        public bool SkipSizeChanges { get; private set; }
+
+        /// <summary>
+        /// Sets whether fullscreen view scaling should crop width instead of fitting the full game width.
+        /// Forwarded to <see cref="ScreenPresentation.Instance"/>, which owns the scaled-view-rect math.
+        /// </summary>
+        public bool FullScreenCropWidth
+        {
+            set
+            {
+                if (_fullScreenCropWidth != value)
+                {
+                    _fullScreenCropWidth = value;
+                    UpdateScaledView();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes screen sizing from the current display mode, preferred window width, and fullscreen state.
+        /// </summary>
+        /// <param name="displayMode">Current display mode.</param>
+        /// <param name="windowWidth">Preferred window width, or a non-positive value to derive one automatically.</param>
+        /// <param name="isFullScreen"><see langword="true" /> to start in fullscreen mode.</param>
+        public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
+        {
+            FullScreenRectChanged(displayMode);
+            int targetWindowWidth = ClampWindowWidth(windowWidth, displayMode.Width);
+            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScreenPresentation.Instance.ScaledGameHeight(targetWindowWidth)));
+            if (isFullScreen)
+            {
+                ToggleFullScreen();
+                return;
+            }
+            ApplyWindowSize(WindowWidth);
+            CenterWindow();
+            // Size the canvas to the window that was just established.
+            Application.SharedCanvas().Reshape();
+        }
+
+        /// <summary>
+        /// Centers the game window on the primary display. A programmatic back-buffer resize keeps the
+        /// window's top-left corner pinned, so this must be called after sizing to avoid the window
+        /// hugging a screen corner. Repositioning also forces the window frame to re-layout, which
+        /// restores the title bar after returning from borderless fullscreen.
+        /// </summary>
+        public void CenterWindow()
+        {
+            if (IsFullScreen)
+            {
+                return;
+            }
+            DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+            int x = Math.Max(0, (displayMode.Width - _windowRect.Width) / 2);
+            int y = Math.Max(0, (displayMode.Height - _windowRect.Height) / 2);
+            Global.XnaGame.Window.Position = new Point(x, y);
+        }
+
+        /// <summary>
+        /// Clamps a requested window width to the game's minimum, the graphics profile maximum, and the
+        /// display width, deriving a default from the display when no positive width is supplied.
+        /// Shared by startup swapchain sizing and <see cref="Init"/> so both agree on the target width.
+        /// </summary>
+        /// <param name="windowWidth">Requested window width, or a non-positive value to derive one from the display.</param>
+        /// <param name="displayWidth">Current display width.</param>
+        /// <returns>The clamped window width.</returns>
+        public static int ClampWindowWidth(int windowWidth, int displayWidth)
+        {
+            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayWidth - 100;
+            targetWindowWidth = Math.Max(MIN_WINDOW_WIDTH, targetWindowWidth);
+            targetWindowWidth = Math.Min(targetWindowWidth, MAX_WINDOW_WIDTH);
+            targetWindowWidth = Math.Min(targetWindowWidth, displayWidth);
+            return targetWindowWidth;
+        }
+
+        /// <summary>
+        /// Applies a new window back-buffer <paramref name="width"/> and updates the tracked window rectangle.
+        /// </summary>
+        /// <param name="width">Target window width.</param>
+        public void ApplyWindowSize(int width)
+        {
+            GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
+            int height = ScreenPresentation.Instance.ScaledGameHeight(width);
+            // Skip the swapchain rebuild when the back buffer already matches the requested size.
+            // At startup the swapchain is created at this size (see Game1), so the first sizing here
+            // would otherwise rebuild it needlessly and flash black.
+            GraphicsDevice device = graphicsDeviceManager.GraphicsDevice;
+            bool alreadySized = device != null
+                && device.PresentationParameters.BackBufferWidth == width
+                && device.PresentationParameters.BackBufferHeight == height;
+            graphicsDeviceManager.PreferredBackBufferWidth = width;
+            graphicsDeviceManager.PreferredBackBufferHeight = height;
+            if (!alreadySized)
+            {
+                ApplyDesktopVkResize(graphicsDeviceManager);
+            }
+            WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
+        }
+
+        /// <summary>
+        /// Toggles between windowed and fullscreen mode, updates the viewport, persists settings,
+        /// and notifies the canvas and root controller.
+        /// </summary>
+        public void ToggleFullScreen()
+        {
+            SkipSizeChanges = true;
+            GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
+            bool isFullScreen = graphicsDeviceManager.IsFullScreen;
+            bool fullScreenCropWidth = _fullScreenCropWidth;
+            FullScreenCropWidth = true;
+            if (isFullScreen)
+            {
+                graphicsDeviceManager.PreferredBackBufferWidth = _windowRect.Width;
+                graphicsDeviceManager.PreferredBackBufferHeight = _windowRect.Height;
+            }
+            else
+            {
+                graphicsDeviceManager.PreferredBackBufferWidth = _fullScreenRect.Width;
+                graphicsDeviceManager.PreferredBackBufferHeight = _fullScreenRect.Height;
+            }
+            graphicsDeviceManager.IsFullScreen = !isFullScreen;
+            ApplyDesktopVkResize(graphicsDeviceManager);
+            ApplyViewportToDevice();
+            FullScreenCropWidth = fullScreenCropWidth;
+            SkipSizeChanges = false;
+            EnableFullScreen(!isFullScreen);
+            // Returning to windowed mode: re-center so the restored window is not stuck in a corner
+            // and to force the frame to re-layout, which repaints the title bar the borderless
+            // fullscreen transition would otherwise leave missing until the next manual resize.
+            if (isFullScreen)
+            {
+                CenterWindow();
+            }
+            Save();
+            Application.SharedCanvas().Reshape();
+            Application.SharedRootController().FullscreenToggled(!isFullScreen);
+        }
+
+        /// <summary>
+        /// Normalizes window size changes to the game's aspect-ratio constraints and persists the result.
+        /// </summary>
+        /// <param name="newWindowRect">New window bounds reported by the host window.</param>
+        public void FixWindowSize(Rectangle newWindowRect)
+        {
+            if (SkipSizeChanges)
+            {
+                return;
+            }
+            GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
+            FullScreenRectChanged(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode);
+            if (!IsFullScreen)
+            {
+                try
+                {
+                    int targetWidth = graphicsDeviceManager.PreferredBackBufferWidth;
+                    if (newWindowRect.Width != WindowWidth)
+                    {
+                        targetWidth = newWindowRect.Width;
+                    }
+                    else if (newWindowRect.Height != WindowHeight)
+                    {
+                        targetWidth = ScreenPresentation.Instance.ScaledGameWidth(newWindowRect.Height);
+                    }
+                    if (targetWidth < 800 || ScreenPresentation.Instance.ScaledGameHeight(targetWidth) < ScreenPresentation.Instance.ScaledGameHeight(800))
+                    {
+                        targetWidth = 800;
+                    }
+                    if (targetWidth > MAX_WINDOW_WIDTH)
+                    {
+                        targetWidth = MAX_WINDOW_WIDTH;
+                    }
+                    if (targetWidth > ScreenWidth)
+                    {
+                        targetWidth = ScreenWidth;
+                    }
+                    ApplyWindowSize(targetWidth);
+                }
+                catch (Exception)
+                {
+                }
+            }
+            Save();
+            Application.SharedCanvas().Reshape();
+        }
+
+        /// <summary>
+        /// Applies the current scaled view rectangle to the graphics device viewport.
+        /// </summary>
+        public void ApplyViewportToDevice()
+        {
+            ScreenPresentation presentation = ScreenPresentation.Instance;
+            Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
+            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(scaledViewRect, _windowRect) : Rectangle.Intersect(scaledViewRect, _fullScreenRect);
+            try
+            {
+                Global.GraphicsDevice.Viewport = new Viewport(bounds);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Saves window dimensions and fullscreen state to preferences.
+        /// </summary>
+        public void Save()
+        {
+            Preferences.SetIntForKey(_windowRect.Width, "PREFS_WINDOW_WIDTH", false);
+            Preferences.SetIntForKey(_windowRect.Height, "PREFS_WINDOW_HEIGHT", false);
+            Preferences.SetBooleanForKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
+        }
+
+        /// <summary>
+        /// Updates the stored window rectangle and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="newWindowRect">New window rectangle.</param>
+        private void WindowRectChanged(Rectangle newWindowRect)
+        {
+            if (!SkipSizeChanges)
+            {
+                _windowRect = newWindowRect;
+                _windowRect.X = 0;
+                _windowRect.Y = 0;
+                UpdateScaledView();
+            }
+        }
+
+        /// <summary>
+        /// Updates the stored fullscreen rectangle from a display mode.
+        /// </summary>
+        /// <param name="d">Display mode to copy.</param>
+        private void FullScreenRectChanged(DisplayMode d)
+        {
+            FullScreenRectChanged(new Rectangle(0, 0, d.Width, d.Height));
+        }
+
+        /// <summary>
+        /// Updates the stored fullscreen rectangle and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="r">New fullscreen rectangle.</param>
+        private void FullScreenRectChanged(Rectangle r)
+        {
+            if (!SkipSizeChanges)
+            {
+                _fullScreenRect = r;
+                UpdateScaledView();
+            }
+        }
+
+        /// <summary>
+        /// Updates the tracked fullscreen state and recomputes the scaled view rectangle.
+        /// </summary>
+        /// <param name="bFull"><see langword="true" /> to mark fullscreen as enabled; otherwise <see langword="false" />.</param>
+        private void EnableFullScreen(bool bFull)
+        {
+            if (!SkipSizeChanges)
+            {
+                IsFullScreen = bFull;
+                UpdateScaledView();
+            }
+        }
+
+        /// <summary>
+        /// Feeds the current active (window or fullscreen) bounds and crop-width flag into
+        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the scaled view rect. A no-op
+        /// while <see cref="SkipSizeChanges"/> is set, mirroring the batching <see cref="ToggleFullScreen"/>
+        /// relies on to defer recomputation until every field it touches has settled.
+        /// </summary>
+        private void UpdateScaledView()
+        {
+            if (SkipSizeChanges)
+            {
+                return;
+            }
+            Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
+            ScreenPresentation.Instance.FullScreenCropWidth = _fullScreenCropWidth;
+            ScreenPresentation.Instance.SetSurfaceSize(sourceRect.Width, sourceRect.Height);
+        }
+
+        private static void ApplyDesktopVkResize(
+            GraphicsDeviceManager graphicsDeviceManager)
+        {
+            bool originalSynchronization =
+                graphicsDeviceManager.SynchronizeWithVerticalRetrace;
+
+            // MonoGame 3.8.5 ignores dimension-only DesktopVK swapchain resizes.
+            // Changing the presentation interval forces the native resize path.
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace =
+                !originalSynchronization;
+            graphicsDeviceManager.ApplyChanges();
+
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace =
+                originalSynchronization;
+            graphicsDeviceManager.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Minimum allowed window width.
+        /// </summary>
+        public const int MIN_WINDOW_WIDTH = 800;
+
+        /// <summary>
+        /// Current window rectangle.
+        /// </summary>
+        private Rectangle _windowRect;
+
+        /// <summary>
+        /// Current fullscreen display rectangle.
+        /// </summary>
+        private Rectangle _fullScreenRect;
+
+        /// <summary>
+        /// Whether fullscreen scaling should crop width.
+        /// </summary>
+        private bool _fullScreenCropWidth = true;
+    }
+}

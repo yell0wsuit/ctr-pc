@@ -13,8 +13,8 @@ BUNDLE_ID="page.yell0wsuit.cuttherope.dx"
 # =========================
 # Project / publish paths
 # =========================
-PROJECT="$PROJECT_ROOT/CutTheRopeDX/CutTheRopeDX.csproj"
-PUBLISH_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/Publish/osx-arm64"
+PROJECT="$PROJECT_ROOT/src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj"
+PUBLISH_DIR="$PROJECT_ROOT/src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64"
 APP_DIR="$PUBLISH_DIR/$APP_NAME.app"
 ICON_SOURCE="$PUBLISH_DIR/Resources/CutTheRopeDXIcon.icns"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/macos"
@@ -120,7 +120,7 @@ codesign --force --deep --sign - "$APP_DIR"
 # =========================
 echo "[5/5] Packaging .dmg archive..."
 
-RELEASE_DIR="$PROJECT_ROOT/CutTheRopeDX/bin/release_github"
+RELEASE_DIR="$PROJECT_ROOT/src/CutTheRopeDX.Desktop/bin/release_github"
 mkdir -p "$RELEASE_DIR"
 ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.dmg"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"

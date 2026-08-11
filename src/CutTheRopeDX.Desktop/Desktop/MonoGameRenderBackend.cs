@@ -1,0 +1,1071 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Visual;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using Core = CutTheRopeDX.Framework.Core;
+
+namespace CutTheRopeDX.Desktop
+{
+    /// <summary>
+    /// Provides OpenGL ES 1.x emulation layer for MonoGame/XNA rendering.
+    /// This class translates legacy OpenGL-style API calls to modern MonoGame primitives,
+    /// using vertex buffers for efficient GPU rendering.
+    /// This is the Desktop-backed <see cref="IRenderBackend"/> implementation behind the
+    /// Core-facing <see cref="Renderer"/> facade.
+    /// </summary>
+    /// <remarks>
+    /// Owns GPU-backed resources (effects, buffers, rasterizer/render-target state) for the
+    /// process lifetime of the game; there is no shutdown path that tears the graphics device
+    /// down while this instance is alive, so it does not implement <see cref="IDisposable"/>.
+    /// </remarks>
+#pragma warning disable CA1001 // No disposal path exists or is needed for this process-lifetime backend; see remarks above.
+    internal sealed class MonoGameRenderBackend : IRenderBackend
+#pragma warning restore CA1001
+    {
+        #region OpenGL State Constants
+        /// <summary>
+        /// Enables/disables alpha blending. When enabled, fragments are blended with the framebuffer
+        /// using the blend function set by <see cref="SetBlendFunc"/>.
+        /// OpenGL equivalent: GL_BLEND (0x0BE2)
+        /// </summary>
+        private const int GL_BLEND = 1;
+
+        /// <summary>
+        /// Enables/disables scissor test. When enabled, fragments outside the scissor rectangle
+        /// set by <see cref="SetScissor"/> are discarded.
+        /// OpenGL equivalent: GL_SCISSOR_TEST (0x0C11)
+        /// </summary>
+        private const int GL_SCISSOR_TEST = 4;
+
+        /// <summary>
+        /// Selects the modelview matrix stack for subsequent matrix operations.
+        /// OpenGL equivalent: GL_MODELVIEW (0x1700)
+        /// </summary>
+        private const int MODE_MODELVIEW = 14;
+
+        /// <summary>
+        /// Selects the projection matrix stack for subsequent matrix operations.
+        /// OpenGL equivalent: GL_PROJECTION (0x1701)
+        /// </summary>
+        private const int MODE_PROJECTION = 15;
+        #endregion
+
+        #region Initialization
+
+        /// <summary>
+        /// Gets a value indicating whether a graphics device is present. Headless runs have none,
+        /// so the few render calls that sit outside the draw loop must skip themselves.
+        /// </summary>
+        public bool IsAvailable => Global.GraphicsDevice != null;
+
+        /// <summary>
+        /// Verifies that every Core-owned vertex struct still has the exact size of the XNA
+        /// struct it is reinterpreted as. The draw methods below hand Core vertex arrays
+        /// straight to MonoGame's buffer uploads and <see cref="MemoryMarshal.Cast{TFrom, TTo}(Span{TFrom})"/>
+        /// the sprite path, so a layout change would silently corrupt vertex data instead of
+        /// failing. This throws rather than asserting so the tripwire holds in Release too.
+        /// </summary>
+        static MonoGameRenderBackend()
+        {
+            RequireSameSize<Core.VertexPositionColor, VertexPositionColor>();
+            RequireSameSize<Core.VertexPositionColorTexture, VertexPositionColorTexture>();
+            RequireSameSize<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>();
+            RequireSameSize<Core.Color, Color>();
+        }
+
+        /// <summary>
+        /// Throws when the Core struct and the XNA struct it is reinterpreted as differ in size.
+        /// </summary>
+        /// <typeparam name="TCore">The Core-owned struct.</typeparam>
+        /// <typeparam name="TXna">The XNA struct it is reinterpreted as.</typeparam>
+        private static void RequireSameSize<TCore, TXna>()
+            where TCore : struct
+            where TXna : struct
+        {
+            if (Unsafe.SizeOf<TCore>() != Unsafe.SizeOf<TXna>())
+            {
+                throw new InvalidOperationException(
+                    $"{typeof(TCore)} ({Unsafe.SizeOf<TCore>()} bytes) is no longer layout-compatible with {typeof(TXna)} ({Unsafe.SizeOf<TXna>()} bytes).");
+            }
+        }
+
+        /// <summary>
+        /// Initializes the OpenGL emulation layer. Sets up BasicEffect shaders and rasterizer states.
+        /// </summary>
+        public MonoGameRenderBackend()
+        {
+            InitRasterizerState();
+            s_effectTexture = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = false,
+                TextureEnabled = true,
+                View = Matrix.Identity
+            };
+            s_effectTextureColor = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true,
+                View = Matrix.Identity
+            };
+            s_effectColor = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = false,
+                Alpha = 1f,
+                Texture = null,
+                View = Matrix.Identity
+            };
+            s_indexRing = new IndexBufferRing(IndexRingCapacity);
+            s_quadIndexBuffer = new IndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, QuadIndexPattern.MaxQuads * 6, BufferUsage.WriteOnly);
+            s_quadIndexBuffer.SetData(QuadIndexPattern.Build(QuadIndexPattern.MaxQuads));
+            s_quadBatchEffect = new BasicEffect(Global.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true,
+                View = Matrix.Identity,
+                World = Matrix.Identity,
+                Alpha = 1f,
+                DiffuseColor = Vector3.One
+            };
+        }
+
+        /// <summary>
+        /// Creates the rasterizer states used for textured and non-textured draw calls.
+        /// </summary>
+        private void InitRasterizerState()
+        {
+            s_rasterizerStateSolidColor = new RasterizerState
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.None,
+                ScissorTestEnable = true
+            };
+            s_rasterizerStateTexture = new RasterizerState
+            {
+                CullMode = CullMode.None,
+                ScissorTestEnable = true
+            };
+        }
+
+        #endregion
+
+        #region Enable/Disable State
+
+        /// <summary>
+        /// Enables an OpenGL capability.
+        /// </summary>
+        /// <param name="cap">Capability constant: 1 = GL_BLEND</param>
+        public void Enable(int cap)
+        {
+            if (cap == GL_BLEND)
+            {
+                s_Blend.Enable();
+            }
+        }
+
+        /// <summary>
+        /// Disables an OpenGL capability.
+        /// </summary>
+        /// <param name="cap">Capability constant: 1 = GL_BLEND, 4 = GL_SCISSOR_TEST</param>
+        public void Disable(int cap)
+        {
+            if (cap == GL_SCISSOR_TEST)
+            {
+                SetScissor(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+            }
+            if (cap == GL_BLEND)
+            {
+                s_Blend.Disable();
+            }
+        }
+
+        #endregion
+
+        #region Viewport and Render Target
+        /// <summary>
+        /// Sets the viewport dimensions and manages render target.
+        /// Always creates a render target matching the viewport size for proper scaling.
+        /// </summary>
+        /// <param name="x">The viewport origin on the X axis.</param>
+        /// <param name="y">The viewport origin on the Y axis.</param>
+        /// <param name="width">The viewport width in pixels.</param>
+        /// <param name="height">The viewport height in pixels.</param>
+        public void SetViewport(int x, int y, int width, int height)
+        {
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+            FlushQuads();
+
+            s_Viewport.X = x;
+            s_Viewport.Y = y;
+            s_Viewport.Width = width;
+            s_Viewport.Height = height;
+            // Always use render target for proper scaling in both windowed and fullscreen modes
+            if (s_RenderTarget == null || s_RenderTarget.Bounds.Width != s_Viewport.Bounds.Width || s_RenderTarget.Bounds.Height != s_Viewport.Bounds.Height)
+            {
+                s_RenderTarget?.Dispose();
+                s_RenderTarget = new RenderTarget2D(Global.GraphicsDevice, s_Viewport.Width, s_Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            }
+            Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
+            Global.GraphicsDevice.Clear(Color.Black);
+        }
+
+        /// <summary>
+        /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
+        /// Used for screen capture operations.
+        /// </summary>
+        /// <returns>The detached render target wrapped as a texture handle, or <see langword="null"/> when no render target is active.</returns>
+        public ITextureHandle DetachRenderTarget()
+        {
+            FlushQuads();
+            RenderTarget2D renderTarget2D = s_RenderTarget;
+            s_RenderTarget = null;
+            return renderTarget2D == null ? null : new MonoGameTexture(renderTarget2D);
+        }
+
+        /// <summary>
+        /// Clears the active render target on the graphics device so subsequent draws target the back buffer.
+        /// </summary>
+        public void ResetRenderTarget()
+        {
+            Global.GraphicsDevice.SetRenderTarget(null);
+        }
+
+        /// <summary>
+        /// Copies the render target contents to the screen.
+        /// Applies scaling to fit the display in both windowed and fullscreen modes.
+        /// </summary>
+        public void CopyFromRenderTargetToScreen()
+        {
+            FlushQuads();
+            if (s_RenderTarget != null)
+            {
+                Global.GraphicsDevice.Clear(Color.Black);
+                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
+                ScreenPresentation presentation = ScreenPresentation.Instance;
+                Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
+                Global.SpriteBatch.Draw(s_RenderTarget, scaledViewRect, Color.White);
+                Global.SpriteBatch.End();
+                BlendParams.InvalidateDeviceCache();
+            }
+        }
+
+        #endregion
+
+        #region Matrix Operations
+
+        /// <summary>
+        /// Sets the current matrix <paramref name="mode"/> for subsequent matrix operations.
+        /// </summary>
+        /// <param name="mode">Matrix mode: 14 = GL_MODELVIEW, 15 = GL_PROJECTION</param>
+        public void SetMatrixMode(int mode)
+        {
+            s_glMatrixMode = mode;
+        }
+
+        /// <summary>
+        /// Resets the current matrix to identity based on the active matrix mode.
+        /// </summary>
+        public void LoadIdentity()
+        {
+            if (s_glMatrixMode == MODE_MODELVIEW)
+            {
+                s_matrixModelView = Matrix.Identity;
+                return;
+            }
+            if (s_glMatrixMode == MODE_PROJECTION)
+            {
+                s_matrixProjection = Matrix.Identity;
+                return;
+            }
+            if (s_glMatrixMode is 16 or 17)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Sets up an orthographic projection matrix.
+        /// </summary>
+        /// <param name="left">The left clipping plane.</param>
+        /// <param name="right">The right clipping plane.</param>
+        /// <param name="bottom">The bottom clipping plane.</param>
+        /// <param name="top">The top clipping plane.</param>
+        /// <param name="near">The near clipping plane.</param>
+        /// <param name="far">The far clipping plane.</param>
+        public void SetOrthographic(float left, float right, float bottom, float top, float near, float far)
+        {
+            s_matrixProjection = Matrix.CreateOrthographicOffCenter(left, right, bottom, top, near, far);
+        }
+
+        /// <summary>
+        /// Pushes the current model-view matrix onto the stack.
+        /// </summary>
+        public void PushMatrix()
+        {
+            s_matrixModelViewStack.Add(s_matrixModelView);
+        }
+
+        /// <summary>
+        /// Pops and restores the model-view matrix from the stack.
+        /// </summary>
+        public void PopMatrix()
+        {
+            if (s_matrixModelViewStack.Count > 0)
+            {
+                int index = s_matrixModelViewStack.Count - 1;
+                s_matrixModelView = s_matrixModelViewStack[index];
+                s_matrixModelViewStack.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        /// Applies a scale transformation to the current model-view matrix.
+        /// </summary>
+        /// <param name="x">The scale factor on the X axis.</param>
+        /// <param name="y">The scale factor on the Y axis.</param>
+        /// <param name="z">The scale factor on the Z axis.</param>
+        public void Scale(float x, float y, float z)
+        {
+            s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Applies a rotation transformation around the Z axis (2D rotation).
+        /// </summary>
+        /// <param name="angle">Rotation angle in degrees.</param>
+        /// <param name="_">Unused X axis component (kept for API compatibility).</param>
+        /// <param name="_1">Unused Y axis component (kept for API compatibility).</param>
+        /// <param name="_2">Unused Z axis component (kept for API compatibility).</param>
+        public void Rotate(float angle, float _, float _1, float _2)
+        {
+            s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Applies a skew transformation that matches the legacy OpenGL matrix used by iOS.
+        /// </summary>
+        /// <param name="skewXDegrees">The skew angle on the X axis, in degrees.</param>
+        /// <param name="skewYDegrees">The skew angle on the Y axis, in degrees.</param>
+        public void Skew(float skewXDegrees, float skewYDegrees)
+        {
+            float skewX = MathHelper.ToRadians(skewXDegrees);
+            float skewY = MathHelper.ToRadians(skewYDegrees);
+            float tanX = MathF.Tan(skewX);
+            float tanY = MathF.Tan(skewY);
+            float cosX = MathF.Cos(skewX);
+            float cosY = MathF.Cos(skewY);
+
+            Matrix skew = Matrix.Identity;
+            skew.M11 = cosY;
+            skew.M12 = tanY * cosY;
+            skew.M21 = -tanX * cosX;
+            skew.M22 = cosX;
+
+            s_matrixModelView = skew * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Applies a translation transformation to the current model-view matrix.
+        /// Z component is ignored for 2D rendering.
+        /// </summary>
+        /// <param name="x">The translation on the X axis.</param>
+        /// <param name="y">The translation on the Y axis.</param>
+        /// <param name="_">The translation on the Z axis. Ignored by this 2D renderer.</param>
+        public void Translate(float x, float y, float _)
+        {
+            s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
+        }
+
+        /// <summary>
+        /// Returns the current model-view matrix.
+        /// </summary>
+        /// <returns>The current model-view matrix.</returns>
+        public System.Numerics.Matrix4x4 GetModelViewMatrix()
+        {
+            // MonoGame only defines the Matrix4x4 -> Matrix implicit conversion, so the
+            // Core-facing direction is an element-for-element copy in the same M11..M44 order.
+            Matrix m = s_matrixModelView;
+            return new System.Numerics.Matrix4x4(
+                m.M11, m.M12, m.M13, m.M14,
+                m.M21, m.M22, m.M23, m.M24,
+                m.M31, m.M32, m.M33, m.M34,
+                m.M41, m.M42, m.M43, m.M44);
+        }
+
+        #endregion
+
+        #region Color and Blending
+
+        /// <summary>
+        /// Sets the current drawing color.
+        /// </summary>
+        /// <param name="c">The color to apply to subsequent draw calls.</param>
+        public void SetColor(Core.Color c)
+        {
+            s_Color = ToXna(c);
+        }
+
+        /// <summary>
+        /// Returns the current drawing color.
+        /// </summary>
+        /// <returns>The current draw color.</returns>
+        public Core.Color GetCurrentColor()
+        {
+            return new Core.Color(s_Color.R, s_Color.G, s_Color.B, s_Color.A);
+        }
+
+        /// <summary>
+        /// Sets the clear color for GlClear operations.
+        /// </summary>
+        /// <param name="c">The color used by <see cref="Clear(int)"/>.</param>
+        public void SetClearColor(Core.Color c)
+        {
+            s_glClearColor = ToXna(c);
+        }
+
+        /// <summary>
+        /// Converts a Core color to the XNA color the graphics device consumes.
+        /// </summary>
+        /// <param name="c">The Core color.</param>
+        /// <returns>The equivalent XNA color.</returns>
+        private static Color ToXna(Core.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+
+        /// <summary>
+        /// Clears the screen with the current clear color.
+        /// </summary>
+        /// <param name="_">OpenGL clear mask (ignored, always clears color buffer).</param>
+        public void Clear(int _)
+        {
+            FlushQuads();
+            BlendParams.ApplyDefault();
+            Global.GraphicsDevice.Clear(s_glClearColor);
+        }
+
+        /// <summary>
+        /// Sets the blending function for alpha blending operations.
+        /// </summary>
+        /// <param name="sfactor">The source blend factor.</param>
+        /// <param name="dfactor">The destination blend factor.</param>
+        public void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        {
+            s_Blend = new BlendParams(sfactor, dfactor);
+        }
+
+        #endregion
+
+        #region Texture Binding
+
+        /// <summary>
+        /// Binds a texture for subsequent rendering operations.
+        /// </summary>
+        /// <param name="t">The texture to bind for textured draw calls.</param>
+        public void BindTexture(CTRTexture2D t)
+        {
+            s_Texture = t.textureHandle_ == null ? null : ((MonoGameTexture)t.textureHandle_).Texture;
+        }
+
+        #endregion
+
+        #region Scissor (Clipping)
+
+        /// <summary>
+        /// Sets the scissor rectangle for clipping, scaled to match the current viewport.
+        /// </summary>
+        /// <param name="x">The left edge of the scissor rectangle.</param>
+        /// <param name="y">The top edge of the scissor rectangle.</param>
+        /// <param name="width">The scissor rectangle width.</param>
+        /// <param name="height">The scissor rectangle height.</param>
+        public void SetScissor(float x, float y, float width, float height)
+        {
+            FlushQuads();
+            try
+            {
+                Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
+                float scaleX = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
+                float scaleY = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
+                Rectangle scissorRect = new((int)(x / scaleX), (int)(y / scaleY), (int)(width / scaleX), (int)(height / scaleY));
+                Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRect, bounds);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        #endregion
+
+        #region Drawing Methods
+
+        /// <summary>
+        /// Draws a triangle strip using colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
+        public void DrawTriangleStrip(Core.VertexPositionColor[] vertices, int vertexCount)
+        {
+            FlushQuads();
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            BasicEffect effect = GetEffect(false, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives<Core.VertexPositionColor, VertexPositionColor>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+            }
+            s_LastVertices_PositionColor = vertices;
+        }
+
+        /// <summary>
+        /// Draws a triangle strip using textured <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
+        public void DrawTriangleStrip(Core.VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            if (TrySubmitQuad(vertices, vertexCount))
+            {
+                return;
+            }
+            FlushQuads();
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            BasicEffect effect = GetEffect(true, false);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+            }
+            s_LastVertices_PositionNormalTexture = vertices;
+        }
+
+        /// <summary>
+        /// Draws a triangle strip using textured and colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
+        public void DrawTriangleStrip(Core.VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            FlushQuads();
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            BasicEffect effect = GetEffect(true, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives<Core.VertexPositionColorTexture, VertexPositionColorTexture>(PrimitiveType.TriangleStrip, vertices, vertexCount, vertexCount - 2);
+            }
+        }
+
+        /// <summary>
+        /// Draws an indexed triangle list using textured <paramref name="vertices"/> with explicit index count.
+        /// </summary>
+        /// <param name="vertices">The textured vertex data to draw.</param>
+        /// <param name="indices">The index buffer describing triangle order.</param>
+        /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
+        public void DrawTriangleList(Core.VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
+        {
+            FlushQuads();
+            BasicEffect effect = GetEffect(true, false);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawIndexedPrimitives<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
+            }
+            s_LastVertices_PositionNormalTexture = vertices;
+        }
+
+        /// <summary>
+        /// Draws an indexed triangle list using textured and colored <paramref name="vertices"/>.
+        /// </summary>
+        /// <param name="vertices">The textured and colored vertex data to draw.</param>
+        /// <param name="indices">The index buffer describing triangle order.</param>
+        /// <param name="indexCount">The number of indices from <paramref name="indices"/> to submit.</param>
+        public void DrawTriangleList(Core.VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
+        {
+            FlushQuads();
+            if (indexCount == 0)
+            {
+                return;
+            }
+            BasicEffect effect = GetEffect(true, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawIndexedPrimitives<Core.VertexPositionColorTexture, VertexPositionColorTexture>(PrimitiveType.TriangleList, vertices, indices, indexCount, indexCount / 3);
+            }
+        }
+
+        /// <summary>
+        /// Draws a line strip using colored <paramref name="vertices"/> with an explicit vertex count.
+        /// </summary>
+        /// <param name="vertices">The colored vertex data to draw.</param>
+        /// <param name="vertexCount">The number of vertices from <paramref name="vertices"/> to submit.</param>
+        public void DrawLineStrip(Core.VertexPositionColor[] vertices, int vertexCount)
+        {
+            FlushQuads();
+            if (vertexCount < 2)
+            {
+                return;
+            }
+            BasicEffect effect = GetEffect(false, true);
+            if (effect.Alpha == 0f)
+            {
+                return;
+            }
+            foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                DrawPrimitives<Core.VertexPositionColor, VertexPositionColor>(PrimitiveType.LineStrip, vertices, vertexCount, vertexCount - 1);
+            }
+        }
+
+        #endregion
+
+        #region Vertex Buffer Helpers
+
+        /// <summary>
+        /// Returns the last drawn colored vertices (for debugging/inspection).
+        /// </summary>
+        /// <returns>The last colored vertex array submitted by a matching draw call.</returns>
+        public Core.VertexPositionColor[] GetLastVertices_PositionColor()
+        {
+            return s_LastVertices_PositionColor;
+        }
+
+        /// <summary>
+        /// Returns the last drawn textured vertices (for debugging/inspection).
+        /// </summary>
+        /// <returns>The last textured vertex array submitted by a matching draw call.</returns>
+        public Core.VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
+        {
+            return s_LastVertices_PositionNormalTexture;
+        }
+
+        #endregion
+
+        #region Quad Batching
+
+        /// <summary>
+        /// Establishes a frame boundary and discards stray queued quads from a faulted previous frame.
+        /// </summary>
+        public void BeginFrame()
+        {
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Flushes remaining queued quads at the end of the frame.
+        /// </summary>
+        public void EndFrame()
+        {
+            FlushQuads();
+        }
+
+        /// <summary>
+        /// Draws all queued quads as one indexed draw call, reapplying captured state unconditionally.
+        /// </summary>
+        public void FlushQuads()
+        {
+            if (s_quadBatch.IsEmpty)
+            {
+                return;
+            }
+            QuadBatchKey key = s_quadBatch.Key;
+            BlendParams.ApplySnapshot(key.Blend);
+            Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
+            Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+            Global.GraphicsDevice.ScissorRectangle = key.Scissor;
+            s_quadBatchEffect.Texture = (Texture2D)key.Texture;
+            s_quadBatchEffect.Projection = key.Projection;
+            int vertexCount = s_quadBatch.QuadCount * 4;
+            VertexBufferRing<VertexPositionColorTexture> ring = GetVertexRing<VertexPositionColorTexture>();
+            int baseVertex = ring.Write(s_quadBatch.StagingArray, vertexCount);
+            // A full batch is MaxQuads * 4 vertices, well under the ring capacity, so the ring
+            // never rejects a batch write. Guard the invariant instead of feeding a negative
+            // base vertex to the GPU should MaxQuads ever be raised past the ring's capacity.
+            if (baseVertex < 0)
+            {
+                Debug.Assert(false, "Quad batch exceeded vertex ring capacity; raise VertexRingCapacity or lower MaxQuads.");
+                s_quadBatch.Clear();
+                return;
+            }
+            Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+            Global.GraphicsDevice.Indices = s_quadIndexBuffer;
+            foreach (EffectPass pass in s_quadBatchEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                Global.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, baseVertex, 0, s_quadBatch.QuadCount * 2);
+            }
+            Global.GraphicsDevice.SetVertexBuffer(null);
+            Global.GraphicsDevice.Indices = null;
+            s_quadBatch.Clear();
+        }
+
+        /// <summary>
+        /// Attempts to queue a four-vertex textured sprite.
+        /// </summary>
+        private bool TrySubmitQuad(Core.VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount != 4)
+            {
+                return false;
+            }
+            if (s_Texture == null || s_Texture.IsDisposed)
+            {
+                return false;
+            }
+            if (QuadBaking.IsInvisible(s_Color))
+            {
+                return true;
+            }
+            BlendParams.BlendType blend = s_Blend.Snapshot();
+            if (blend == BlendParams.BlendType.Unknown)
+            {
+                return false;
+            }
+            QuadBatchKey key = new(s_Texture, blend, Global.GraphicsDevice.ScissorRectangle, s_matrixProjection);
+            if (s_quadBatch.IsFull || !s_quadBatch.CanAccept(key))
+            {
+                FlushQuads();
+            }
+            s_quadBatch.Append(
+                MemoryMarshal.Cast<Core.VertexPositionNormalTexture, VertexPositionNormalTexture>(vertices.AsSpan(0, vertexCount)),
+                key,
+                s_matrixModelView,
+                QuadBaking.BakePremultipliedTint(s_Color));
+            s_LastVertices_PositionNormalTexture = vertices;
+            return true;
+        }
+
+        #endregion
+
+        #region Private Rendering Implementation
+
+        /// <summary>
+        /// Selects and configures the effect needed for the current draw call.
+        /// </summary>
+        /// <param name="useTexture">Whether the effect should sample the bound texture.</param>
+        /// <param name="useColor">Whether the effect should use per-vertex color data.</param>
+        /// <returns>The configured effect instance.</returns>
+        private BasicEffect GetEffect(bool useTexture, bool useColor)
+        {
+            BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
+            if (useTexture)
+            {
+                basicEffect.Alpha = s_Color.A / 255f;
+                if (basicEffect.Alpha == 0f)
+                {
+                    return basicEffect;
+                }
+                basicEffect.Texture = s_Texture;
+                basicEffect.DiffuseColor = s_Color.ToVector3();
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateTexture;
+                Global.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+            }
+            else
+            {
+                Global.GraphicsDevice.RasterizerState = s_rasterizerStateSolidColor;
+            }
+            basicEffect.World = s_matrixModelView;
+            basicEffect.Projection = s_matrixProjection;
+            s_Blend.Apply();
+            return basicEffect;
+        }
+
+        /// <summary>
+        /// Uploads vertex data through the shared ring and issues a non-indexed primitive draw call.
+        /// Falls back to the legacy grow-and-discard buffer for writes larger than the ring.
+        /// </summary>
+        /// <typeparam name="TSource">The Core vertex type holding the data. It is uploaded as-is;
+        /// it only has to be layout-identical to <typeparamref name="TVertex"/>.</typeparam>
+        /// <typeparam name="TVertex">The XNA vertex type whose declaration describes the buffer.</typeparam>
+        /// <param name="primitiveType">The primitive topology to draw.</param>
+        /// <param name="vertices">The source vertex data.</param>
+        /// <param name="vertexCount">The number of vertices to upload.</param>
+        /// <param name="primitiveCount">The number of primitives to render.</param>
+        private void DrawPrimitives<TSource, TVertex>(PrimitiveType primitiveType, TSource[] vertices, int vertexCount, int primitiveCount)
+            where TSource : struct
+            where TVertex : struct, IVertexType
+        {
+            VertexBufferRing<TVertex> ring = GetVertexRing<TVertex>();
+            int vertexStart = ring.Write(vertices, vertexCount);
+            if (vertexStart < 0)
+            {
+                DynamicVertexBuffer fallback = GetOversizeVertexBuffer<TVertex>(vertexCount);
+                fallback.SetData(vertices, 0, vertexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallback);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.DrawPrimitives(primitiveType, vertexStart, primitiveCount);
+            }
+            Global.GraphicsDevice.SetVertexBuffer(null);
+        }
+
+        /// <summary>
+        /// Uploads vertex and index data through the shared rings and issues an indexed draw call.
+        /// Falls back to the legacy grow-and-discard buffers for writes larger than a ring.
+        /// </summary>
+        /// <typeparam name="TSource">The Core vertex type holding the data. It is uploaded as-is;
+        /// it only has to be layout-identical to <typeparamref name="TVertex"/>.</typeparam>
+        /// <typeparam name="TVertex">The XNA vertex type whose declaration describes the buffer.</typeparam>
+        /// <param name="primitiveType">The primitive topology to draw.</param>
+        /// <param name="vertices">The source vertex data.</param>
+        /// <param name="indices">The source index data.</param>
+        /// <param name="indexCount">The number of indices to upload.</param>
+        /// <param name="primitiveCount">The number of primitives to render.</param>
+        private void DrawIndexedPrimitives<TSource, TVertex>(PrimitiveType primitiveType, TSource[] vertices, short[] indices, int indexCount, int primitiveCount)
+            where TSource : struct
+            where TVertex : struct, IVertexType
+        {
+            VertexBufferRing<TVertex> ring = GetVertexRing<TVertex>();
+            int baseVertex = ring.Write(vertices, vertices.Length);
+            int startIndex = baseVertex < 0 ? -1 : s_indexRing.Write(indices, indexCount);
+            if (baseVertex < 0 || startIndex < 0)
+            {
+                DynamicVertexBuffer fallbackVertices = GetOversizeVertexBuffer<TVertex>(vertices.Length);
+                fallbackVertices.SetData(vertices, 0, vertices.Length, SetDataOptions.Discard);
+                DynamicIndexBuffer fallbackIndices = GetOversizeIndexBuffer(indexCount);
+                fallbackIndices.SetData(indices, 0, indexCount, SetDataOptions.Discard);
+                Global.GraphicsDevice.SetVertexBuffer(fallbackVertices);
+                Global.GraphicsDevice.Indices = fallbackIndices;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, 0, 0, primitiveCount);
+            }
+            else
+            {
+                Global.GraphicsDevice.SetVertexBuffer(ring.Buffer);
+                Global.GraphicsDevice.Indices = s_indexRing.Buffer;
+                Global.GraphicsDevice.DrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+            }
+            Global.GraphicsDevice.SetVertexBuffer(null);
+            Global.GraphicsDevice.Indices = null;
+        }
+
+        /// <summary>
+        /// Returns the shared vertex ring for the requested vertex type, creating it on first use.
+        /// </summary>
+        /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
+        /// <returns>The shared ring for <typeparamref name="T"/>.</returns>
+        private VertexBufferRing<T> GetVertexRing<T>() where T : struct, IVertexType
+        {
+            if (!s_vertexRings.TryGetValue(typeof(T), out object ring))
+            {
+                ring = new VertexBufferRing<T>(VertexRingCapacity);
+                s_vertexRings[typeof(T)] = ring;
+            }
+            return (VertexBufferRing<T>)ring;
+        }
+
+        /// <summary>
+        /// Returns a legacy grow-and-discard vertex buffer for writes larger than the ring.
+        /// </summary>
+        /// <typeparam name="T">The vertex type stored in the buffer.</typeparam>
+        /// <param name="vertexCount">The minimum vertex capacity required.</param>
+        /// <returns>A reusable dynamic vertex buffer for <typeparamref name="T"/>.</returns>
+        private DynamicVertexBuffer GetOversizeVertexBuffer<T>(int vertexCount) where T : struct, IVertexType
+        {
+            Type vertexType = typeof(T);
+            if (!s_oversizeVertexBuffers.TryGetValue(vertexType, out DynamicVertexBuffer vertexBuffer) || vertexBuffer.VertexCount < vertexCount)
+            {
+                vertexBuffer?.Dispose();
+                vertexBuffer = new DynamicVertexBuffer(Global.GraphicsDevice, default(T).VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+                s_oversizeVertexBuffers[vertexType] = vertexBuffer;
+            }
+            return vertexBuffer;
+        }
+
+        /// <summary>
+        /// Returns a legacy grow-and-discard index buffer for writes larger than the ring.
+        /// </summary>
+        /// <param name="indexCount">The minimum index capacity required.</param>
+        /// <returns>A reusable dynamic index buffer.</returns>
+        private DynamicIndexBuffer GetOversizeIndexBuffer(int indexCount)
+        {
+            if (s_oversizeIndexBuffer == null || s_oversizeIndexBuffer.IndexCount < indexCount)
+            {
+                s_oversizeIndexBuffer?.Dispose();
+                s_oversizeIndexBuffer = new DynamicIndexBuffer(Global.GraphicsDevice, IndexElementSize.SixteenBits, indexCount, BufferUsage.WriteOnly);
+            }
+            return s_oversizeIndexBuffer;
+        }
+
+        #endregion
+
+        #region Instance Fields
+
+        /// <summary>
+        /// The accumulating sprite quad batch.
+        /// </summary>
+        private readonly QuadBatch s_quadBatch = new();
+
+        /// <summary>
+        /// Immutable index buffer holding the full quad index pattern.
+        /// </summary>
+        private readonly IndexBuffer s_quadIndexBuffer;
+
+        /// <summary>
+        /// Dedicated effect for batch flushes.
+        /// </summary>
+        private readonly BasicEffect s_quadBatchEffect;
+
+        /// <summary>
+        /// Holds the off-screen render target used before the final screen blit.
+        /// </summary>
+        private RenderTarget2D s_RenderTarget;
+
+        /// <summary>
+        /// Stores the logical viewport used by the OpenGL-style API surface.
+        /// </summary>
+        private Viewport s_Viewport;
+
+        /// <summary>
+        /// Tracks the currently selected matrix stack.
+        /// </summary>
+        private int s_glMatrixMode;
+
+        /// <summary>
+        /// Stores pushed model-view matrices for nested transforms.
+        /// </summary>
+        private readonly List<Matrix> s_matrixModelViewStack = [];
+
+        /// <summary>
+        /// Stores the current model-view transform.
+        /// </summary>
+        private Matrix s_matrixModelView = Matrix.Identity;
+
+        /// <summary>
+        /// Stores the current projection transform.
+        /// </summary>
+        private Matrix s_matrixProjection = Matrix.Identity;
+
+        /// <summary>
+        /// Stores the unwrapped texture currently bound for textured draw calls.
+        /// </summary>
+        private Texture2D s_Texture;
+
+        /// <summary>
+        /// Stores the clear color used by <see cref="Clear(int)"/>.
+        /// </summary>
+        private Color s_glClearColor = Color.White;
+
+        /// <summary>
+        /// Stores the draw color applied to subsequent primitives.
+        /// </summary>
+        private Color s_Color = Color.White;
+
+        /// <summary>
+        /// Stores the active blend configuration.
+        /// </summary>
+        private BlendParams s_Blend = new();
+
+        /// <summary>
+        /// Caches the effect used for textured draw calls without per-vertex color.
+        /// </summary>
+        private readonly BasicEffect s_effectTexture;
+
+        /// <summary>
+        /// Caches the effect used for solid-color draw calls.
+        /// </summary>
+        private readonly BasicEffect s_effectColor;
+
+        /// <summary>
+        /// Caches the effect used for textured draw calls with per-vertex color.
+        /// </summary>
+        private readonly BasicEffect s_effectTextureColor;
+
+        /// <summary>
+        /// Rasterizer state for non-textured primitives.
+        /// </summary>
+        private RasterizerState s_rasterizerStateSolidColor;
+
+        /// <summary>
+        /// Rasterizer state for textured primitives.
+        /// </summary>
+        private RasterizerState s_rasterizerStateTexture;
+
+        /// <summary>
+        /// Vertex ring capacity per vertex type. 16,384 vertices covers several frames of
+        /// worst-case usage per the pre-implementation baselines; wraps should be rare.
+        /// </summary>
+        private const int VertexRingCapacity = 16384;
+
+        /// <summary>
+        /// Index ring capacity. 49,152 indices matches three frames of ring capacity in quads.
+        /// </summary>
+        private const int IndexRingCapacity = 49152;
+
+        /// <summary>
+        /// Shared vertex rings keyed by vertex type (values are VertexBufferRing&lt;T&gt;).
+        /// </summary>
+        private readonly Dictionary<Type, object> s_vertexRings = [];
+
+        /// <summary>
+        /// Shared index ring for all indexed draws.
+        /// </summary>
+        private readonly IndexBufferRing s_indexRing;
+
+        /// <summary>
+        /// Legacy grow-and-discard vertex buffers, used only for writes larger than a ring.
+        /// </summary>
+        private readonly Dictionary<Type, DynamicVertexBuffer> s_oversizeVertexBuffers = [];
+
+        /// <summary>
+        /// Legacy grow-and-discard index buffer, used only for writes larger than the ring.
+        /// </summary>
+        private DynamicIndexBuffer s_oversizeIndexBuffer;
+
+        /// <summary>
+        /// Captures the last submitted colored vertices for debugging.
+        /// </summary>
+        private Core.VertexPositionColor[] s_LastVertices_PositionColor;
+
+        /// <summary>
+        /// Captures the last submitted textured vertices for debugging.
+        /// </summary>
+        private Core.VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
+
+        #endregion
+    }
+}

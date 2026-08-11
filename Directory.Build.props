@@ -3,7 +3,7 @@
     <GraphicsBackend Condition="'$(GraphicsBackend)' == ''">VK</GraphicsBackend>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX'">
+  <PropertyGroup Condition="'$(GraphicsBackend)' != 'VK' AND '$(MSBuildProjectName)' == 'CutTheRopeDX.Desktop'">
     <BaseOutputPath>bin/$(GraphicsBackend)/</BaseOutputPath>
     <BaseIntermediateOutputPath>obj/$(GraphicsBackend)/</BaseIntermediateOutputPath>
     <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
@@ -12,12 +12,15 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <SelfContained>true</SelfContained>
     <StripSymbols>true</StripSymbols>
-    <DebugType>none</DebugType>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishDocumentationFiles>false</PublishDocumentationFiles>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <NoWarn Condition="$(MSBuildProjectName.EndsWith('.Tests'))">$(NoWarn);CS1573;CS1591</NoWarn>
 
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>Recommended</AnalysisMode>

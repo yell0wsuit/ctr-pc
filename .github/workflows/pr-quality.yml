@@ -34,8 +34,14 @@ jobs:
                     dotnet tool install -g roslynator.dotnet.cli
                   fi
 
-            - name: Run Roslynator analysis
-              run: roslynator analyze CutTheRopeDX/CutTheRopeDX.csproj
+            - name: Run Roslynator analysis (Core)
+              run: roslynator analyze src/CutTheRopeDX.Core/CutTheRopeDX.Core.csproj
+
+            - name: Run Roslynator analysis (Desktop)
+              run: roslynator analyze src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj
 
             - name: Build
               run: dotnet build --no-restore -c Release
+
+            - name: Test
+              run: dotnet test CutTheRopeDX.slnx --no-build -c Release

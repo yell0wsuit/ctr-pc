@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <!--
+    Mirrors the constant the Desktop project defines, so a test that depends on which MonoGame is
+    behind it can say so at compile time. Deriving that from the framework at run time instead
+    would mean a test detecting the absence of the very thing it exists to guard, and passing
+    because of it.
+  -->
+  <PropertyGroup Condition="'$(GraphicsBackend)' == 'GL'">
+    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <!--
+    Desktop-facing tests: these exercise genuinely Desktop/MonoGame-bound implementation details
+    (quad batching/blend state tied to XNA Rectangle/Matrix/vertex types, the MonoGame Song
+    completion workaround, and FontStashFont's composite-target rotation) that CutTheRopeDX.Tests
+    can no longer compile since it references Core only. Core comes in transitively through
+    Desktop's own ProjectReference.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\CutTheRopeDX.Desktop\CutTheRopeDX.Desktop.csproj" />
+  </ItemGroup>
+
+  <!--
+    The reference above also hands over Desktop's deployed content tree, 350MB these tests never
+    open: they exercise quad batching, blend state, song looping and font targets, none of which
+    load an asset. Dropping it keeps the test output the size of the assemblies under test.
+  -->
+  <Target Name="ExcludeGameContentFromTestOutput" BeforeTargets="_CopyOutOfDateSourceItemsToOutputDirectory">
+    <ItemGroup>
+      <_SourceItemsToCopyToOutputDirectory Remove="@(_SourceItemsToCopyToOutputDirectory)"
+                                           Condition="$([System.String]::Copy('%(_SourceItemsToCopyToOutputDirectory.TargetPath)').StartsWith('content'))" />
+      <_SourceItemsToCopyToOutputDirectoryAlways Remove="@(_SourceItemsToCopyToOutputDirectoryAlways)"
+                                                 Condition="$([System.String]::Copy('%(_SourceItemsToCopyToOutputDirectoryAlways.TargetPath)').StartsWith('content'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

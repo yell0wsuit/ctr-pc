@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <!--
+    Mirrors the constant the game project defines, so a test that depends on which MonoGame is behind it
+    can say so at compile time. Deriving that from the framework at run time instead would mean a test
+    detecting the absence of the very thing it exists to guard, and passing because of it.
+  -->
+  <PropertyGroup Condition="'$(GraphicsBackend)' == 'GL'">
+    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CutTheRopeDX.Core\CutTheRopeDX.Core.csproj" />
+    <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
+  </ItemGroup>
+
+  <!--
+    The headless tests read the real content tree from their own output directory: maps, locales,
+    the pack lists and image_dimensions.json. All of it is checked in, so the data files are copied
+    straight from the source tree — running the tests needs no content build, no asset download and
+    no ffmpeg, and none of the textures, audio or video those would produce.
+  -->
+  <ItemGroup>
+    <None Include="../../content/**/*.json;../../content/**/*.xml" Exclude="../../content/Builder/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+</Project>

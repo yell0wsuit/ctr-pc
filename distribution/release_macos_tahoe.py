@@ -9,12 +9,19 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-CSPROJ = PROJECT_ROOT / "CutTheRopeDX" / "CutTheRopeDX.csproj"
+CSPROJ = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "CutTheRopeDX.Desktop.csproj"
 # Kept separate from bundle_macos.sh's osx-arm64 directory: that script builds a
 # different product (net10.0 + ffmpeg dylibs) under the same .app name, and
 # sharing a publish path lets one build inherit the other's leftovers.
-OUTPUT_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "Publish" / "osx-arm64-avfoundation"
-RELEASE_DIR = PROJECT_ROOT / "CutTheRopeDX" / "bin" / "release_github"
+OUTPUT_DIR = (
+    PROJECT_ROOT
+    / "src"
+    / "CutTheRopeDX.Desktop"
+    / "bin"
+    / "Publish"
+    / "osx-arm64-avfoundation"
+)
+RELEASE_DIR = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "release_github"
 APP_BUNDLE = OUTPUT_DIR / "CutTheRope-DX.app"
 
 

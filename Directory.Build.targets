@@ -1,0 +1,10 @@
+<Project>
+  <Target Name="ExcludeReferenceSymbolsFromPublish"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="'$(CopyOutputSymbolsToPublishDirectory)' != 'true'">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                             Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
+    </ItemGroup>
+  </Target>
+</Project>
