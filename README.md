@@ -126,7 +126,7 @@ To test the game during the development process, follow these steps:
 4. To run the unit tests:
 
     ```bash
-    dotnet test src/CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj -p:ExcludeMacOSTarget=true
+    dotnet test CutTheRopeDX.slnx -p:ExcludeMacOSTarget=true
     ```
 
 ## Running a custom level
