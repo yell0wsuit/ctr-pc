@@ -64,9 +64,7 @@ def build_tier0(content_root: Path) -> dict[str, str]:
             continue
         raw = source.read_bytes()
         bundle[relative] = (
-            minify_xml_bytes(raw)
-            if source.suffix == ".xml"
-            else minify_json_bytes(raw)
+            minify_xml_bytes(raw) if source.suffix == ".xml" else minify_json_bytes(raw)
         )
     return bundle
 
