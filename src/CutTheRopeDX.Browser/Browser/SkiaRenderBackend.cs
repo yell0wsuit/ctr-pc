@@ -15,10 +15,17 @@ namespace CutTheRopeDX.Browser
     /// </summary>
     /// <remarks>
     /// Vertices are baked on the CPU by <see cref="QuadBaking"/> before Skia ever sees
-    /// them, so the matrix stack, skew, and premultiplied tint behave exactly as they do on
-    /// desktop and Skia only ever receives finished triangles. Quads accumulate into a
-    /// batch that flushes when the texture or blend mode changes, mirroring the desktop
-    /// backend's one-draw-per-batch behavior.
+    /// them, so the matrix stack and skew behave exactly as they do on desktop and Skia only
+    /// ever receives finished triangles. Quads accumulate into a batch that flushes when the
+    /// texture or blend mode changes, mirroring the desktop backend's one-draw-per-batch
+    /// behavior.
+    /// <para>
+    /// Vertex colors stay in straight alpha here, unlike desktop. Core produces straight
+    /// colors throughout, and desktop premultiplies them on the way out because MonoGame
+    /// composites with One/InverseSourceAlpha; Skia takes <see cref="SKColor"/> vertex colors
+    /// and premultiplies them itself, so premultiplying first would apply alpha twice and
+    /// darken every draw that is not fully opaque.
+    /// </para>
     /// </remarks>
     /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
     internal sealed class SkiaRenderBackend(SkiaSurface surface) : IRenderBackend
@@ -244,7 +251,7 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
-            Color tint = QuadBaking.BakePremultipliedTint(_drawColor);
+            Color tint = _drawColor;
             VertexPositionColorTexture[] baked = new VertexPositionColorTexture[vertexCount];
             for (int i = 0; i < vertexCount; i++)
             {
@@ -273,7 +280,7 @@ namespace CutTheRopeDX.Browser
         public void DrawTriangleList(
             VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
-            Color tint = QuadBaking.BakePremultipliedTint(_drawColor);
+            Color tint = _drawColor;
             EnsureBatchCompatible();
             for (int i = 0; i < indexCount; i++)
             {
