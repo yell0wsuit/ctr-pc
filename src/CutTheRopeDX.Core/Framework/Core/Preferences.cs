@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 
+using CutTheRopeDX.Framework.Platform;
+
 namespace CutTheRopeDX.Framework.Core
 {
     /// <summary>
@@ -58,11 +60,6 @@ namespace CutTheRopeDX.Framework.Core
         private const string SaveFolderName = "CutTheRopeDX_SaveData";
 
         /// <summary>
-        /// Gets the full path to the global preferences JSON file.
-        /// </summary>
-        private static string GlobalSaveFilePath => Path.Combine(SaveDirectory, GlobalSaveFileName);
-
-        /// <summary>
         /// Returns the JSON file name for the specified box <paramref name="slot"/>.
         /// </summary>
         /// <param name="slot">Box slot index.</param>
@@ -70,16 +67,6 @@ namespace CutTheRopeDX.Framework.Core
         private static string GetBoxSaveFileName(int slot)
         {
             return $"{DynamicBoxSaveFilePrefix}{slot:D2}{DynamicBoxSaveFileExtension}";
-        }
-
-        /// <summary>
-        /// Returns the full path to the JSON file for the specified box <paramref name="slot"/>.
-        /// </summary>
-        /// <param name="slot">Box slot index.</param>
-        /// <returns>Box save file path.</returns>
-        private static string GetBoxSaveFilePath(int slot)
-        {
-            return Path.Combine(SaveDirectory, GetBoxSaveFileName(slot));
         }
 
         /// <summary>
@@ -153,6 +140,13 @@ namespace CutTheRopeDX.Framework.Core
                 return field;
             }
         }
+
+        /// <summary>
+        /// The active preference store. Falls back to the discovered save directory so
+        /// desktop and headless runs behave exactly as before.
+        /// </summary>
+        private static IPreferenceStore Store =>
+            PlatformServices.Preferences ??= new FilePreferenceStore(SaveDirectory);
 
         /// <summary>
         /// Determines the best available save directory based on writability and platform constraints.
@@ -603,10 +597,10 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         private static void WritePreferenceFiles()
         {
-            File.WriteAllText(GlobalSaveFilePath, SerializeToJson(GlobalData));
+            Store.Write(GlobalSaveFileName, SerializeToJson(GlobalData));
             for (int b = 0; b < BoxData.Count; b++)
             {
-                File.WriteAllText(GetBoxSaveFilePath(b), SerializeToJson(BoxData[b]));
+                Store.Write(GetBoxSaveFileName(b), SerializeToJson(BoxData[b]));
             }
         }
 
@@ -823,12 +817,12 @@ namespace CutTheRopeDX.Framework.Core
             bool needsSave = false;
 
             // Load global prefs file. Route any stale game data (old pre-split saves) to BoxData[0].
-            if (File.Exists(GlobalSaveFilePath))
+            string globalJson = Store.Read(GlobalSaveFileName);
+            if (globalJson != null)
             {
                 try
                 {
-                    string json = File.ReadAllText(GlobalSaveFilePath);
-                    bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(0));
+                    bool migrated = DeserializeFromJsonRouted(globalJson, GlobalData, EnsureBoxData(0));
                     // If the global file had game data keys in it, we need to rewrite the split files.
                     needsSave |= migrated || BoxData[0].Count > 0;
                 }
@@ -839,26 +833,22 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             // Load dynamic slot save files
-            if (Directory.Exists(SaveDirectory))
+            foreach (string fileName in Store.EnumerateBoxSlots())
             {
-                foreach (string boxFilePath in Directory.EnumerateFiles(SaveDirectory, $"{DynamicBoxSaveFilePrefix}*{DynamicBoxSaveFileExtension}"))
+                if (!TryParseBoxSlotFromFileName(fileName, out int slot))
                 {
-                    string fileName = Path.GetFileName(boxFilePath);
-                    if (!TryParseBoxSlotFromFileName(fileName, out int slot))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        string json = File.ReadAllText(boxFilePath);
-                        // Route non-game-data keys (IAP_*, SOUND_ON, etc.) to GlobalData for migration compat.
-                        bool migrated = DeserializeFromJsonRouted(json, GlobalData, EnsureBoxData(slot));
-                        needsSave |= migrated;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error loading {fileName}: {ex}");
-                    }
+                    continue;
+                }
+                try
+                {
+                    string boxJson = Store.Read(fileName);
+                    // Route non-game-data keys (IAP_*, SOUND_ON, etc.) to GlobalData for migration compat.
+                    bool migrated = DeserializeFromJsonRouted(boxJson, GlobalData, EnsureBoxData(slot));
+                    needsSave |= migrated;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading {fileName}: {ex}");
                 }
             }
 
