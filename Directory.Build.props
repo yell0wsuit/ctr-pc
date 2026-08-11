@@ -13,11 +13,14 @@
     <SelfContained>true</SelfContained>
     <StripSymbols>true</StripSymbols>
     <DebugType>none</DebugType>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishDocumentationFiles>false</PublishDocumentationFiles>
+    <NoWarn Condition="$(MSBuildProjectName.EndsWith('.Tests'))">$(NoWarn);CS1573;CS1591</NoWarn>
 
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>Recommended</AnalysisMode>

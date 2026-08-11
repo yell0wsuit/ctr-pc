@@ -32,7 +32,6 @@
     <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
 
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Output type -->
@@ -51,7 +50,6 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <PublishSingleFile>true</PublishSingleFile>
     <PublishReadyToRun>false</PublishReadyToRun>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- macOS app bundle doesn't support single-file publishing -->
