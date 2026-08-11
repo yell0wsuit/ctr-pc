@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
@@ -183,12 +184,31 @@ namespace CutTheRopeDX.Framework.Core
 
             if (Resources.IsFont(localizedName))
             {
-                yield return Normalize(path);
                 yield break;
             }
 
-            yield return Normalize($"{ContentPaths.ImagesDirectory}/{path}.png");
+            if (Resources.IsBackgroundImg(localizedName))
+            {
+                yield return Normalize(ContentPaths.GetBackgroundImageContentPath(path) + ".png");
+                yield break;
+            }
+
+            yield return Normalize(ContentPaths.GetImageContentPath(path) + ".png");
             yield return Normalize($"{ContentPaths.ImagesDirectory}/{path}.json");
+        }
+
+        /// <summary>
+        /// Begins making every physical file required by a logical resource pack resident.
+        /// </summary>
+        /// <param name="pack">A null-terminated pack array of logical resource names.</param>
+        public static void WarmPack(string[] pack)
+        {
+            if (pack == null)
+            {
+                return;
+            }
+
+            _ = PlatformServices.Content.EnsureResidentAsync(ResolveFilesForPack(pack));
         }
 
         /// <summary>Normalizes a resolved path to the form <see cref="Platform.IContentStore"/> expects.</summary>
@@ -592,6 +612,8 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
+            WarmPack(pack);
+
             int i = 0;
             while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
             {
@@ -611,7 +633,10 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
-            foreach (string resourceName in pack)
+            string[] resources = pack as string[] ?? [.. pack];
+            WarmPack(resources);
+
+            foreach (string resourceName in resources)
             {
                 QueuePrefetchResource(resourceName);
             }

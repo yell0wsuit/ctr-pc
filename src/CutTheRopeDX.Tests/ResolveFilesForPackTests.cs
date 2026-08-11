@@ -39,6 +39,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void BackgroundResourceDoesNotRequestAtlasJson()
+        {
+            Assert.Equal(
+                ["images/backgrounds/bgr_01_p1.png"],
+                ResourceMgr.ResolveFilesForPack([Resources.BackgroundImg.Bgr01P1]));
+        }
+
+        [Fact]
         public void PathsUseForwardSlashesAndNoContentPrefix()
         {
             foreach (string path in ResourceMgr.ResolveFilesForPack([Resources.Img.ObjCandy01New]))
@@ -67,9 +75,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void FontDoesNotResolveAsATexture()
         {
-            Assert.Equal(
-                [CTRResourceMgr.XNA_ResName(Resources.Fnt.BigFont)],
-                ResourceMgr.ResolveFilesForPack([Resources.Fnt.BigFont]));
+            Assert.Empty(ResourceMgr.ResolveFilesForPack([Resources.Fnt.BigFont]));
         }
 
         [Fact]
