@@ -49,6 +49,7 @@ namespace CutTheRopeDX.Browser
         private SKColor _clearColor = SKColors.Black;
         private bool _blendEnabled = true;
         private bool _projectionMode;
+        private bool _scissorSaved;
 
         /// <summary>The canvas currently targeted by draw calls.</summary>
         internal SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
@@ -88,7 +89,7 @@ namespace CutTheRopeDX.Browser
             else if (cap == GL_SCISSOR_TEST)
             {
                 FlushQuads();
-                Target.Restore();
+                EndScissor();
             }
         }
 
@@ -106,6 +107,7 @@ namespace CutTheRopeDX.Browser
                 return;
             }
 
+            DropScissor();
             _renderTarget?.Dispose();
             _renderTarget = SKSurface.Create(
                 surface.Context,
@@ -227,8 +229,34 @@ namespace CutTheRopeDX.Browser
         public void SetScissor(float x, float y, float width, float height)
         {
             FlushQuads();
+            // GL's scissor is one absolute rectangle that each call replaces, and Core relies on
+            // that: the pack selector narrows the scissor to reveal Om Nom, then sets it straight
+            // back to the scrolling container's rectangle. Skia's ClipRect only ever intersects,
+            // so the previous clip is popped first or the two rectangles would compound into a
+            // sliver, and each successive draw would clip smaller than the last.
+            EndScissor();
             _ = Target.Save();
             Target.ClipRect(SKRect.Create(x, y, width, height));
+            _scissorSaved = true;
+        }
+
+        /// <summary>Pops the clip <see cref="SetScissor"/> pushed, if one is outstanding.</summary>
+        private void EndScissor()
+        {
+            if (_scissorSaved)
+            {
+                Target.Restore();
+                _scissorSaved = false;
+            }
+        }
+
+        /// <summary>
+        /// Forgets an outstanding scissor without popping it, for when the canvas holding it is
+        /// about to be replaced and restoring would unbalance whichever canvas comes next.
+        /// </summary>
+        private void DropScissor()
+        {
+            _scissorSaved = false;
         }
 
         /// <inheritdoc />
@@ -331,6 +359,7 @@ namespace CutTheRopeDX.Browser
             }
 
             FlushQuads();
+            DropScissor();
             SKImage snapshot = _renderTarget.Snapshot();
             _renderTarget.Dispose();
             _renderTarget = null;
@@ -343,6 +372,7 @@ namespace CutTheRopeDX.Browser
         public void ResetRenderTarget()
         {
             FlushQuads();
+            DropScissor();
             _renderTarget?.Dispose();
             _renderTarget = null;
             _renderTargetWidth = 0;
@@ -429,6 +459,9 @@ namespace CutTheRopeDX.Browser
         public void EndFrame()
         {
             FlushQuads();
+            // Core leaves the pack selector's scissor set when its draw ends, so the clip is
+            // released here rather than leaking a canvas save into the next frame.
+            EndScissor();
             surface.Flush();
         }
 
