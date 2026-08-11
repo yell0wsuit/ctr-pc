@@ -45,11 +45,22 @@ namespace CutTheRopeDX.Browser
         /// alongside images, so freeing a pack disposes the font while the font cache still holds
         /// it; the cache tests this before handing the instance out again.
         /// </summary>
+        /// <remarks>
+        /// Views outlive the fonts they were built with. Changing language frees the localization
+        /// pack and clears the font cache, then leaves already-built views on screen until they
+        /// are rebuilt, so their text elements go on measuring and drawing through a font whose
+        /// Skia handles are gone. Every member that touches those handles checks this first and
+        /// degrades instead, matching how the desktop backend treats a disposed font.
+        /// </remarks>
         internal bool IsAlive { get; private set; } = true;
 
         /// <inheritdoc />
         public override float FontHeight()
         {
+            if (!IsAlive)
+            {
+                return _config.Size;
+            }
             SKFontMetrics metrics = _font.Metrics;
             return metrics.Descent - metrics.Ascent;
         }
@@ -57,13 +68,13 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public override bool CanDraw(char c)
         {
-            return c == ' ' || _font.ContainsGlyph(c);
+            return IsAlive && (c == ' ' || _font.ContainsGlyph(c));
         }
 
         /// <inheritdoc />
         public override float GetCharWidth(char c)
         {
-            return c == ' ' ? spaceWidth : _font.MeasureText(c.ToString());
+            return !IsAlive ? 0f : c == ' ' ? spaceWidth : _font.MeasureText(c.ToString());
         }
 
         /// <inheritdoc />
@@ -107,6 +118,10 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public override void DrawText(in TextDrawCall call)
         {
+            if (!IsAlive)
+            {
+                return;
+            }
             SkiaTextRenderer.Draw(call, _font, _fill, _config, this);
         }
 
