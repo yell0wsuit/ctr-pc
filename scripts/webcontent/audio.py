@@ -13,6 +13,7 @@ from . import manifest
 
 MUSIC_BITRATE_K = 192
 SFX_BITRATE_K = 96
+SFX_SAMPLE_RATE = 44100
 REQUIRED_ENCODERS = ("libvorbis",)
 
 
@@ -24,7 +25,7 @@ def is_sfx(relative: Path) -> bool:
 def settings_for(relative: Path) -> str:
     """Returns the manifest settings key describing how this file is encoded."""
     if is_sfx(relative):
-        return f"ogg:vorbis:{SFX_BITRATE_K}k:mono"
+        return f"ogg:vorbis:{SFX_BITRATE_K}k:mono:{SFX_SAMPLE_RATE}hz"
     return f"ogg:vorbis:{MUSIC_BITRATE_K}k:stereo"
 
 
@@ -38,7 +39,7 @@ def ogg_command(
     """
     command = [str(ffmpeg), "-y", "-v", "error", "-i", str(source)]
     if mono:
-        command += ["-ac", "1"]
+        command += ["-ac", "1", "-ar", str(SFX_SAMPLE_RATE)]
     command += ["-c:a", "libvorbis", "-b:a", f"{bitrate_k}k", str(dest)]
     return command
 
