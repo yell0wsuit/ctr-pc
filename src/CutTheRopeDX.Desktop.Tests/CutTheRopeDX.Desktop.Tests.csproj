@@ -33,4 +33,18 @@
     <ProjectReference Include="..\CutTheRopeDX.Desktop\CutTheRopeDX.Desktop.csproj" />
   </ItemGroup>
 
+  <!--
+    The reference above also hands over Desktop's deployed content tree, 350MB these tests never
+    open: they exercise quad batching, blend state, song looping and font targets, none of which
+    load an asset. Dropping it keeps the test output the size of the assemblies under test.
+  -->
+  <Target Name="ExcludeGameContentFromTestOutput" BeforeTargets="_CopyOutOfDateSourceItemsToOutputDirectory">
+    <ItemGroup>
+      <_SourceItemsToCopyToOutputDirectory Remove="@(_SourceItemsToCopyToOutputDirectory)"
+                                           Condition="$([System.String]::Copy('%(_SourceItemsToCopyToOutputDirectory.TargetPath)').StartsWith('content'))" />
+      <_SourceItemsToCopyToOutputDirectoryAlways Remove="@(_SourceItemsToCopyToOutputDirectoryAlways)"
+                                                 Condition="$([System.String]::Copy('%(_SourceItemsToCopyToOutputDirectoryAlways.TargetPath)').StartsWith('content'))" />
+    </ItemGroup>
+  </Target>
+
 </Project>

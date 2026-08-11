@@ -10,6 +10,9 @@
 
     <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
     <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
+
+    <!-- Headless tests open no texture, sound or video: deploy the data files only. -->
+    <DeployDataFilesOnly>true</DeployDataFilesOnly>
   </PropertyGroup>
 
   <!--
