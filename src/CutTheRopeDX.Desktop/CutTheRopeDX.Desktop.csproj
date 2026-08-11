@@ -145,11 +145,24 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <!--
+    net10.0-macos (the AVFoundation .app bundle) is built by the Apple SDK's own bundler,
+    which needs a BundleResource item (not None) to place a file in the bundle at all - a
+    plain None here silently produces "will not be copied to the app bundle" and ships
+    without it. Every other TFM keeps the ordinary CopyToOutputDirectory/CopyToPublishDirectory
+    behavior, which already places it next to the executable.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
     <None Include="../../alsoft.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <BundleResource Include="../../alsoft.ini">
+      <Link>alsoft.ini</Link>
+    </BundleResource>
   </ItemGroup>
 
   <!--
