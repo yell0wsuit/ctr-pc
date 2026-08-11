@@ -40,6 +40,13 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public override bool DrawsOwnText => true;
 
+        /// <summary>
+        /// Whether the Skia handles behind this font are still open. Resource packs list fonts
+        /// alongside images, so freeing a pack disposes the font while the font cache still holds
+        /// it; the cache tests this before handing the instance out again.
+        /// </summary>
+        internal bool IsAlive { get; private set; } = true;
+
         /// <inheritdoc />
         public override float FontHeight()
         {
@@ -108,6 +115,7 @@ namespace CutTheRopeDX.Browser
         {
             if (disposing)
             {
+                IsAlive = false;
                 _font.Dispose();
                 _fill.Dispose();
             }

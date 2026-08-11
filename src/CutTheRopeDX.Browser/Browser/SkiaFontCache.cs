@@ -30,7 +30,13 @@ namespace CutTheRopeDX.Browser
             string key = $"{config.FontFile}|{config.Size}|{config.LineSpacing}|{config.TopSpacing}";
             if (Fonts.TryGetValue(key, out SkiaFont cached))
             {
-                return cached;
+                // Rebuild the font if the cached instance was disposed by FreePack/FreeResource.
+                if (cached.IsAlive)
+                {
+                    return cached;
+                }
+
+                _ = Fonts.Remove(key);
             }
 
             SkiaFont font = new(GetTypeface(config.FontFile), config);
