@@ -21,6 +21,8 @@ namespace CutTheRopeDX.Browser
 
         internal static BrowserHostApp Host { get; set; }
 
+        private static bool _pointerDown;
+
         /// <summary>Handles one pointer event in canvas backing pixels.</summary>
         /// <param name="x">Pointer X in canvas backing pixels.</param>
         /// <param name="y">Pointer Y in canvas backing pixels.</param>
@@ -36,14 +38,33 @@ namespace CutTheRopeDX.Browser
 
             _ = Application.SharedRootController().MouseMoved(logicalX, logicalY);
 
-            TouchLocationState state = phase switch
+            // A hovering pointer must produce no touch at all. Desktop synthesises touches from
+            // the mouse only while its button is held, and Core's touch entry point raises began,
+            // moved and ended for whatever it is handed without looking at the state — so
+            // forwarding hover would raise a touch-began on every mouse move. That skips the
+            // startup splash the instant the pointer crosses the canvas, and presses buttons
+            // under the cursor for the rest of the game.
+            TouchLocationState? state = phase switch
             {
                 PhaseDown => TouchLocationState.Pressed,
-                PhaseUp => TouchLocationState.Released,
-                _ => TouchLocationState.Moved,
+                PhaseUp => _pointerDown ? TouchLocationState.Released : null,
+                _ => _pointerDown ? TouchLocationState.Moved : null,
             };
+
+            _pointerDown = phase switch
+            {
+                PhaseDown => true,
+                PhaseUp => false,
+                _ => _pointerDown,
+            };
+
+            if (state is null)
+            {
+                return;
+            }
+
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(
-                [new TouchLocation(0, state, new Vector2(viewX, viewY))]);
+                [new TouchLocation(0, state.Value, new Vector2(viewX, viewY))]);
         }
 
         /// <summary>Handles one keyboard transition.</summary>
