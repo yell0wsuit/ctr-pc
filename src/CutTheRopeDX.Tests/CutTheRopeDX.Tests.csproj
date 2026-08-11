@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <OutputType>Library</OutputType>
+
+    <!-- Default: build content -->
+    <RunMGCB>true</RunMGCB>
+
+    <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
+    <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
   </PropertyGroup>
 
   <!--
@@ -25,5 +31,13 @@
     <ProjectReference Include="..\CutTheRopeDX.Core\CutTheRopeDX.Core.csproj" />
     <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
   </ItemGroup>
+
+  <!--
+    The headless tests read the real content tree from their own output directory: maps, locales,
+    the pack lists, and images/image_dimensions.json, which only the content build emits. Before the
+    src/ split this arrived transitively through a ProjectReference to the game project; referencing
+    Core alone leaves the tests with nothing to load, so they import the content build directly.
+  -->
+  <Import Project="../../content/Builder/BuildContent.targets" />
 
 </Project>
