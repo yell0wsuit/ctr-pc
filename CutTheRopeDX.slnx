@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="src/CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+  <Project Path="src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop.Tests/CutTheRopeDX.Desktop.Tests.csproj" />
   <Project Path="src/CutTheRopeDX.Launcher/CutTheRopeDX.Launcher.csproj" />
