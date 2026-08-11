@@ -9,5 +9,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="CutTheRope-DX" />
     <InternalsVisibleTo Include="CutTheRopeDX.Tests" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Browser" />
   </ItemGroup>
 </Project>
