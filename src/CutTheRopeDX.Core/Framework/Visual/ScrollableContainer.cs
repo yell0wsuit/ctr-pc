@@ -407,7 +407,12 @@ namespace CutTheRopeDX.Framework.Visual
             canSkipScrollPoints = false;
             shouldBounceHorizontally = false;
             shouldBounceVertically = false;
-            touchMoveIgnoreLength = 0f;
+            // A tap has to survive the pointer wobbling by a unit or two. At zero, a single unit
+            // of drag between press and release zeroes touchTimer, which skips the tap rescue in
+            // OnTouchUpXY and swallows the click outright — and a unit is sub-pixel once the
+            // window is smaller than the 2560-wide logical screen, so a plain click routinely
+            // produces one. PopupBuilder already overrides this to the same tolerance.
+            touchMoveIgnoreLength = 5f;
             maxTouchMoveLength = 40f;
             touchPassTimeout = 0.5f;
             minAutoScrollToSpointLength = -1f;
