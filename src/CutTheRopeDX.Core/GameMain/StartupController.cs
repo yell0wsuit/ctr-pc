@@ -162,6 +162,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void AllResourcesLoaded()
         {
+            // Building the menu is the last expensive step of startup, and it used to run in the
+            // frame that hands this controller over — after the bar had already reported 100%,
+            // so it read as a freeze on a blank screen. Doing it here puts it under the bar,
+            // which is still short of full and goes on animating while this returns.
+            ((CTRRootController)Application.SharedRootController()).PrebuildMenuControllers();
             resourcesLoaded = true;
         }
 
