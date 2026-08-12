@@ -34,10 +34,16 @@ jobs:
                       echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
                   fi
 
+    # The raw asset download is shared with the Pages deploy, so both agree on what "the
+    # assets" are and neither re-implements the fetch.
+    assets:
+        uses: ./.github/workflows/content.yml
+
     # Content is DesktopVK on every platform, so it is built once here and handed
     # to the three packaging jobs. They run with CI=true, which leaves RunMGCB
     # false, so they consume this output instead of refetching the 308MB archive.
     content:
+        needs: assets
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v7
@@ -51,6 +57,20 @@ jobs:
                   path: ${{ env.CONTENT_DIR }}
                   key: content-DesktopVK-${{ hashFiles('content/file_manifest.json', 'content/Builder/**/*.cs', 'content/maps/**', 'content/locales/**', 'content/*.json') }}
 
+            # Only needed to convert; a hit on the built content above means the raw assets
+            # are not required at all.
+            - name: Restore fetched assets
+              if: steps.content-cache.outputs.cache-hit != 'true'
+              uses: actions/cache/restore@v6
+              with:
+                  path: |
+                      content/images
+                      content/sounds
+                      content/fonts
+                      content/video_hd
+                  key: ${{ needs.assets.outputs.cache-key }}
+                  fail-on-cache-miss: true
+
             # MonoGame falls back to ffmpeg on PATH when converting sounds/*.wav.
             # Ubuntu's build has libvorbis; assert it rather than discovering a
             # missing encoder halfway through the content build.
@@ -60,13 +80,12 @@ jobs:
                   sudo apt-get update && sudo apt-get install -y ffmpeg
                   ffmpeg -hide_banner -encoders | grep -q libvorbis
 
-            - name: Fetch and build content
+            # The assets arrive already fetched and verified from the shared content workflow.
+            - name: Build content
               if: steps.content-cache.outputs.cache-hit != 'true'
               run: |
                   BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
                   dotnet build content/Builder/CutTheRopeDX.Content.csproj
-                  dotnet "$BUILDER" fetch -s content
-                  dotnet "$BUILDER" verify -s content
                   dotnet "$BUILDER" build -p DesktopVK -s content \
                       -o "$CONTENT_DIR" -i content/Builder/obj/DesktopVK --compress
 

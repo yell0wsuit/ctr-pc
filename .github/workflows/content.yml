@@ -1,0 +1,60 @@
+name: Fetch Content
+
+# Reusable: fetches the raw asset tree into content/ and leaves it in the Actions cache.
+# Both the release and the Pages deploy start from these assets — release converts them for
+# the desktop with the MonoGame builder, Pages converts them for the browser with
+# scripts/build_web_content.py — so the download itself lives here rather than in each.
+#
+# The assets are ~336MB, far past what is sensible to pass around as an artifact on every run,
+# so callers restore the cache this job populates instead. The key is returned as an output so
+# only this file decides what invalidates it.
+on:
+    workflow_call:
+        outputs:
+            cache-key:
+                description: "Key of the cache holding the fetched content/ tree."
+                value: ${{ jobs.fetch.outputs.cache-key }}
+
+permissions:
+    contents: read
+
+env:
+    DOTNET_VERSION: "10.x"
+
+jobs:
+    fetch:
+        runs-on: ubuntu-latest
+        outputs:
+            cache-key: ${{ steps.key.outputs.value }}
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            # The manifest names every asset and its hash, so it alone decides what a fetch
+            # would produce; the fetch code is included so a change in how assets are laid
+            # down also invalidates.
+            - name: Compute cache key
+              id: key
+              run: |
+                  echo "value=raw-content-${{ hashFiles('content/file_manifest.json', 'content/Builder/Commands/**/*.cs') }}" >> "$GITHUB_OUTPUT"
+
+            - uses: actions/cache@v6
+              id: cache
+              with:
+                  path: |
+                      content/images
+                      content/sounds
+                      content/fonts
+                      content/video_hd
+                  key: ${{ steps.key.outputs.value }}
+
+            - name: Fetch and verify assets
+              if: steps.cache.outputs.cache-hit != 'true'
+              run: |
+                  BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
+                  dotnet build content/Builder/CutTheRopeDX.Content.csproj
+                  dotnet "$BUILDER" fetch -s content
+                  dotnet "$BUILDER" verify -s content
