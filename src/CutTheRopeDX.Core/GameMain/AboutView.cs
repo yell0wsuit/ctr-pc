@@ -162,8 +162,8 @@ namespace CutTheRopeDX.GameMain
             Image ZeptolabLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
             _ = vBox.AddChild(ZeptolabLogo);
 
-            string aboutText = Application.GetString("ABOUT_TEXT").ToString()
-                .Replace("%versionNo%", GetAssemblyVersion(), StringComparison.Ordinal);
+            string aboutText = ResolveVersionPlaceholder(
+                Application.GetString("ABOUT_TEXT").ToString());
             Text aboutBody = CreateCenteredTextBlock(aboutText, containerWidth);
             _ = vBox.AddChild(aboutBody);
 
@@ -216,14 +216,17 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Title line shown in place of the versioned one on hosts that carry no version.
+        /// </summary>
+        private const string WebEditionTitle = "Cut the Rope: DX - Web Edition";
+
+        /// <summary>
         /// Builds the fanwork main text with version substitution.
         /// </summary>
         /// <returns>The localized fanwork body text with version placeholders resolved.</returns>
         private static string BuildFanworkMainText()
         {
-            string text = Application.GetString("ABOUT_FANWORK_MAIN").ToString();
-            string version = GetAssemblyVersion();
-            return text.Replace("%versionNo%", version, StringComparison.Ordinal);
+            return ResolveVersionPlaceholder(Application.GetString("ABOUT_FANWORK_MAIN").ToString());
         }
 
         /// <summary>
@@ -234,6 +237,29 @@ namespace CutTheRopeDX.GameMain
         {
             string fullName = Assembly.GetExecutingAssembly().FullName;
             return fullName.Split('=', StringSplitOptions.None)[1].Split(',', StringSplitOptions.None)[0];
+        }
+
+        /// <summary>
+        /// Resolves the <c>%versionNo%</c> placeholder in an About string.
+        /// </summary>
+        /// <param name="text">Localized text that may carry the placeholder.</param>
+        /// <returns>The text with the placeholder resolved for the running host.</returns>
+        private static string ResolveVersionPlaceholder(string text)
+        {
+            if (!OperatingSystem.IsBrowser())
+            {
+                return text.Replace("%versionNo%", GetAssemblyVersion(), StringComparison.Ordinal);
+            }
+
+            string[] lines = text.Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains("%versionNo%", StringComparison.Ordinal))
+                {
+                    lines[i] = WebEditionTitle;
+                }
+            }
+            return string.Join('\n', lines);
         }
 
         /// <summary>
