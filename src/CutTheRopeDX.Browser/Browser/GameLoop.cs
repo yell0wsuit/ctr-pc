@@ -40,6 +40,7 @@ namespace CutTheRopeDX.Browser
             {
                 SoundMgr.Update(TimeSpan.FromSeconds(StepSeconds));
                 CtrRenderer.Update();
+                Preferences.Update();
                 _accumulator -= StepSeconds;
                 steps++;
             }
@@ -50,6 +51,16 @@ namespace CutTheRopeDX.Browser
             CtrRenderer.OnDrawFrame();
             Present();
             Host?.EndFrame();
+        }
+
+        /// <summary>
+        /// Writes any pending preference save immediately. The page can go away between two
+        /// animation frames, so the loop's per-step flush needs a lifecycle-driven partner.
+        /// </summary>
+        [JSExport]
+        internal static void Flush()
+        {
+            Preferences.Update();
         }
 
         private static void ResizeIfNeeded()

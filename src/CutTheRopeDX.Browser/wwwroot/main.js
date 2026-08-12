@@ -60,6 +60,15 @@ const sendKey = (event, down) => {
 globalThis.addEventListener("keydown", (event) => sendKey(event, true));
 globalThis.addEventListener("keyup", (event) => sendKey(event, false));
 
+// Both events are needed: mobile Safari often terminates a backgrounded tab without
+// ever firing pagehide, and visibilitychange is the only signal it does deliver.
+globalThis.addEventListener("pagehide", () => loop.Flush());
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        loop.Flush();
+    }
+});
+
 let started = false;
 const frame = (timestamp) => {
     loop.Tick(timestamp);
