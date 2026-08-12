@@ -83,7 +83,9 @@ def test_convert_skips_an_unchanged_source(tmp_path, monkeypatch):
 
 
 def test_convert_handles_a_content_tree_with_no_videos(tmp_path):
-    assert video.convert_videos(tmp_path / "content", tmp_path / "out", {}, Path("/ff")) == (
+    assert video.convert_videos(
+        tmp_path / "content", tmp_path / "out", {}, Path("/ff")
+    ) == (
         0,
         0,
     )
