@@ -51,12 +51,20 @@ namespace CutTheRopeDX.Browser
                 _ => _pointerDown ? TouchLocationState.Moved : null,
             };
 
+            bool wasDown = _pointerDown;
             _pointerDown = phase switch
             {
                 PhaseDown => true,
                 PhaseUp => false,
                 _ => _pointerDown,
             };
+
+            // Desktop picks its cursor bitmap from the live button state each frame; this host
+            // has no such poll, so the transition drives it.
+            if (_pointerDown != wasDown)
+            {
+                BrowserCursorService.SetHeld(_pointerDown);
+            }
 
             if (state is null)
             {
