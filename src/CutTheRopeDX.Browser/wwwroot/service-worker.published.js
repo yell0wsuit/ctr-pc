@@ -152,6 +152,13 @@ async function onFetch(event) {
  * @param {string} hash Manifest hash to record against the stored entry.
  */
 async function serveContent(request, hash) {
+    // Media elements ask for byte ranges. A cache match is by URL alone, so a stored full
+    // response would answer a range request with the whole file, which Safari refuses to
+    // play. Ranges go straight to the network; a whole-file request still fills the cache.
+    if (request.headers.has("range")) {
+        return fetch(request);
+    }
+
     const cache = await caches.open(contentCacheName);
     const cached = await cache.match(request);
     if (cached) {

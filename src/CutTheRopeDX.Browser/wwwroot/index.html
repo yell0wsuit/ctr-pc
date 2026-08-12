@@ -33,6 +33,22 @@
                 max-width: calc(100vh * 16 / 9);
                 max-height: 100vh;
             }
+            /* Shares the canvas's letterboxed box. z-index puts it over the game but
+               under the splash, so a cutscene can never show through the loading screen. */
+            #movie {
+                display: block;
+                position: absolute;
+                width: 100vw;
+                height: calc(100vw * 9 / 16);
+                max-width: calc(100vh * 16 / 9);
+                max-height: 100vh;
+                z-index: 5;
+                background: #000;
+                object-fit: contain;
+            }
+            #movie[hidden] {
+                display: none;
+            }
             #splash {
                 position: fixed;
                 inset: 0;
@@ -140,6 +156,7 @@
     </head>
     <body>
         <canvas id="game"></canvas>
+        <video id="movie" playsinline hidden></video>
         <div id="splash">
             <img
                 src="./icon-512.png"

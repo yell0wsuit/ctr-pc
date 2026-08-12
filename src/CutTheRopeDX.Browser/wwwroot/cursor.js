@@ -10,6 +10,9 @@ const GAME_WIDTH = 2560;
 const SCALE_EPSILON = 0.01;
 
 const canvas = document.getElementById("game");
+// The cutscene overlay covers the canvas, so a cursor set only there would be invisible
+// for the whole of a cutscene - including the paused state, where Core asks for it back.
+const surfaces = [canvas, document.getElementById("movie")];
 const sources = {
     idle: "./content/images/cursor.webp",
     pressed: "./content/images/cursor_active.webp",
@@ -24,12 +27,17 @@ let appliedScale = 0;
 /** Applies the cursor the current state calls for. */
 function apply() {
     if (!enabled) {
-        canvas.style.cursor = "none";
+        for (const surface of surfaces) {
+            surface.style.cursor = "none";
+        }
         return;
     }
     const url = scaled[pressed ? "pressed" : "idle"];
     // Until the bitmaps load there is nothing to show, so the pointer stays the system one.
-    canvas.style.cursor = url ? `url("${url}") 0 0, auto` : "auto";
+    const value = url ? `url("${url}") 0 0, auto` : "auto";
+    for (const surface of surfaces) {
+        surface.style.cursor = value;
+    }
 }
 
 /** Redraws both bitmaps for the canvas's current size, if that size changed enough. */
