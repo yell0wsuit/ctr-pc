@@ -9,8 +9,11 @@
     <RunAOTCompilation>true</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <!--
-      GitHub Pages cannot send COOP/COEP headers, so SharedArrayBuffer is unavailable
-      and wasm threads can never be enabled for this host.
+      Keep the browser host single-threaded. GitHub Pages can obtain cross-origin
+      isolation through a service worker, but .NET's managed worker is not correlated
+      with Emscripten's WebGL context owner: proxied and worker-owned contexts both fail
+      before Skia initializes. Re-evaluate when the .NET/Emscripten integration exposes
+      a supported canvas-transfer or main-thread GL path.
     -->
     <WasmEnableThreads>false</WasmEnableThreads>
     <!-- The game ships its own locale JSON; ICU would add ~1MB for nothing. -->
