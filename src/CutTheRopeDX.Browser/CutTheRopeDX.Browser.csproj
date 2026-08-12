@@ -7,6 +7,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- The physics loop is unusable on the interpreter. -->
     <RunAOTCompilation>true</RunAOTCompilation>
+    <!--
+      AOT is a publish-time step and the most expensive one there is, so CI opts out: a check
+      that the project builds does not need it. Note this does not affect `dotnet build`, which
+      never AOTs — its Emscripten link comes from SkiaSharp's native assets instead.
+    -->
+    <RunAOTCompilation Condition="'$(CI)' == 'true'">false</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <!--
       Keep the browser host single-threaded. GitHub Pages can obtain cross-origin
