@@ -33,6 +33,7 @@ namespace CutTheRopeDX.Browser
             _lastTimestampMs = timestampMs;
 
             ResizeIfNeeded();
+            HandleBackKey();
 
             _accumulator += Math.Min(elapsed, StepSeconds * MaxCatchUpSteps);
 
@@ -96,6 +97,18 @@ namespace CutTheRopeDX.Browser
         internal static void Flush()
         {
             Preferences.Update();
+        }
+
+        /// <summary>
+        /// Runs the back action, which the desktop host drives from its own update loop.
+        /// </summary>
+        private static void HandleBackKey()
+        {
+            if (Host?.IsKeyPressed(KeyCode.Escape) == true)
+            {
+                Application.SharedMovieMgr().Stop();
+                _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
+            }
         }
 
         private static void ResizeIfNeeded()

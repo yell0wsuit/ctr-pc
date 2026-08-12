@@ -84,12 +84,15 @@ namespace CutTheRopeDX.Browser
         {
             return code switch
             {
-                "Escape" => KeyCode.Escape,
+                // Q and R stand in for Escape and F5: a browser keeps both of those for itself,
+                // leaving fullscreen on one and reloading the page on the other, and neither can
+                // be reliably taken back from it.
+                "KeyQ" => KeyCode.Escape,
+                "KeyR" => KeyCode.F5,
                 "Space" => KeyCode.Space,
                 "Enter" => KeyCode.Enter,
                 "ArrowLeft" => KeyCode.Left,
                 "ArrowRight" => KeyCode.Right,
-                "F5" => KeyCode.F5,
                 _ => null,
             };
         }

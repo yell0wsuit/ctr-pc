@@ -5,6 +5,12 @@ namespace CutTheRopeDX.Framework.Platform
     /// <summary>Host-application operations Core may request.</summary>
     internal interface IHostApp
     {
+        /// <summary>
+        /// Whether <see cref="Exit"/> can actually close the game. A browser tab cannot close
+        /// itself, so the menu offers no way to quit there.
+        /// </summary>
+        bool CanExit { get; }
+
         void Exit();
 
         /// <summary>Returns whether <paramref name="key"/> transitioned from up to down this frame.</summary>

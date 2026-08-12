@@ -43,6 +43,9 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <inheritdoc />
+        public bool CanExit => false;
+
+        /// <inheritdoc />
         public void Exit()
         {
         }

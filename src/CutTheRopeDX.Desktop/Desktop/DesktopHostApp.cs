@@ -11,6 +11,9 @@ namespace CutTheRopeDX.Desktop
     internal sealed class DesktopHostApp : IHostApp
     {
         /// <inheritdoc />
+        public bool CanExit => true;
+
+        /// <inheritdoc />
         public void Exit()
         {
             Global.XnaGame.Exit();

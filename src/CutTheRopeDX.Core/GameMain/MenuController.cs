@@ -628,8 +628,11 @@ namespace CutTheRopeDX.GameMain
             _ = vBox.AddChild(c);
             Button c2 = CreateButtonWithTextIDDelegate(Application.GetString("OPTIONS"), MenuButtonId.Options, this);
             _ = vBox.AddChild(c2);
-            Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup, this);
-            _ = vBox.AddChild(c3);
+            if (PlatformServices.Host?.CanExit == true)
+            {
+                Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup, this);
+                _ = vBox.AddChild(c3);
+            }
             _ = baseElement.AddChild(vBox);
             bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
             if (flag)
@@ -2195,8 +2198,10 @@ namespace CutTheRopeDX.GameMain
                 {
                     OnButtonPressed(MenuButtonId.ClosePopup);
                 }
-                else
+                else if (PlatformServices.Host?.CanExit == true)
                 {
+                    // Where the game cannot close itself there is no quit prompt to raise, so
+                    // back on the main menu does nothing rather than offering a dead button.
                     OnButtonPressed(MenuButtonId.ShowQuitPopup);
                 }
             }
