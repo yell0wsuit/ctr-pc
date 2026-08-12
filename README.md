@@ -20,7 +20,7 @@ The logo is designed by Bingies24 and darealmrcatz.
 ### Related projects
 
 - [Cut the Rope DX: Level Editor](https://github.com/yell0wsuit/ctrdx-editor/): a standalone app for creating and editing levels for Cut the Rope: DX.
-- [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version, currently being developed to improve the game's experience further.
+- [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version. Deprecated, superseded by this project's browser edition.
 
 ## Download
 
