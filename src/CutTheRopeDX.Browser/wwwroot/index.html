@@ -6,7 +6,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
-        <title>Cut the Rope: DX</title>
+        <title>Cut the Rope: DX - Web Edition</title>
         <link rel="icon" type="image/x-icon" href="./favicon.ico" />
         <link rel="apple-touch-icon" href="./icon-512.png" />
         <link rel="manifest" href="./manifest.webmanifest" />
@@ -150,7 +150,7 @@
             />
             <div class="spinner" id="splash-spinner"></div>
             <p id="splash-progress">Loading…</p>
-            <h1>Cut the Rope: DX</h1>
+            <h1>Cut the Rope: DX - Web Edition</h1>
             <button id="start" hidden>Play</button>
             <p id="splash-hint" role="status" hidden>
                 Taking too long? You might want to check your internet speed, or
@@ -176,6 +176,7 @@
             const splash = document.getElementById("splash");
             const spinner = document.getElementById("splash-spinner");
             const hint = document.getElementById("splash-hint");
+            const progress = document.getElementById("splash-progress");
             const hintTimer = setTimeout(() => {
                 hint.hidden = false;
             }, HINT_DELAY_MS);
@@ -184,8 +185,8 @@
                 clearTimeout(hintTimer);
                 hint.hidden = true;
                 spinner.hidden = true;
+                progress.remove();
                 start.hidden = false;
-                document.getElementById("splash-progress").textContent = "";
             };
             start.addEventListener("click", async () => {
                 await globalThis.ctrdxStart();
