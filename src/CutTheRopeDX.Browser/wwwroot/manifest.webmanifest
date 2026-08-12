@@ -1,0 +1,18 @@
+{
+    "name": "Cut the Rope: DX",
+    "short_name": "Cut the Rope DX",
+    "description": "A fan-made enhancement of the PC version of Cut the Rope.",
+    "start_url": "./",
+    "scope": "./",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "#202329",
+    "theme_color": "#202329",
+    "icons": [
+        {
+            "src": "./icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Visual;
@@ -35,7 +36,7 @@ namespace CutTheRopeDX.Tests
                     controller.OnButtonPressed(GameControllerButtonId.Pause);
                     break;
                 default:
-                    throw new System.ArgumentOutOfRangeException(nameof(input));
+                    throw new ArgumentOutOfRangeException(nameof(input));
             }
         }
 
@@ -54,9 +55,9 @@ namespace CutTheRopeDX.Tests
 
         public static IEnumerable<object[]> GatedInputCases()
         {
-            foreach (GameControllerInputKind input in System.Enum.GetValues<GameControllerInputKind>())
+            foreach (GameControllerInputKind input in Enum.GetValues<GameControllerInputKind>())
             {
-                foreach (GameControllerOverlayMode overlay in System.Enum.GetValues<GameControllerOverlayMode>())
+                foreach (GameControllerOverlayMode overlay in Enum.GetValues<GameControllerOverlayMode>())
                 {
                     yield return [(int)input, (int)overlay, (int)RestartPhase.FadingOut];
                     yield return [(int)input, (int)overlay, (int)RestartPhase.FadingIn];

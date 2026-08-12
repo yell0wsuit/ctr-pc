@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 using CutTheRopeDX.Launcher;
 using CutTheRopeDX.Launcher.Graphics;
 
@@ -119,8 +122,8 @@ namespace CutTheRopeDX.Tests
             // platform it is developed on, where the published builds carry no extension.
             string[] candidates = BackendSelection.CandidatePaths("/base", GraphicsBackend.Vulkan);
 
-            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable + ".exe", System.StringComparison.Ordinal));
-            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable, System.StringComparison.Ordinal));
+            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable + ".exe", StringComparison.Ordinal));
+            Assert.Contains(candidates, p => p.EndsWith(BackendSelection.VulkanExecutable, StringComparison.Ordinal));
         }
 
         [Fact]
@@ -130,7 +133,7 @@ namespace CutTheRopeDX.Tests
             // subdirectory or above itself for them.
             foreach (string candidate in BackendSelection.CandidatePaths("/base", GraphicsBackend.OpenGl))
             {
-                Assert.Equal("/base", System.IO.Path.GetDirectoryName(candidate));
+                Assert.Equal("/base", Path.GetDirectoryName(candidate));
             }
         }
 

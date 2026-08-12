@@ -1,0 +1,108 @@
+name: Deploy Browser to GitHub Pages
+
+# Manual only. The browser build is a 56MB payload and a long publish, so it goes out when
+# someone decides a deploy is due rather than on every push to main.
+on:
+    workflow_dispatch:
+
+# Least-privilege token plus the OIDC id-token the Pages deploy needs.
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+# Never run two Pages deploys at once; let a newer run supersede an in-flight one.
+concurrency:
+    group: pages
+    cancel-in-progress: true
+
+env:
+    DOTNET_VERSION: "10.x"
+
+jobs:
+    # Shared with the release workflow, so the asset download is defined in one place.
+    content:
+        uses: ./.github/workflows/content.yml
+
+    build:
+        needs: content
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Set up .NET
+              uses: actions/setup-dotnet@v6
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            # Required for the browser-wasm publish (native relink; WasmNativeStrip).
+            - name: Install wasm-tools workload
+              run: dotnet workload install wasm-tools
+
+            # Avoids re-downloading NuGet packages every run. No packages.lock.json in this
+            # repo, so key off the project/props files instead.
+            - name: Cache NuGet packages
+              uses: actions/cache@v6
+              with:
+                  path: ~/.nuget/packages
+                  key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.Packages.props', 'Directory.Build.props') }}
+                  restore-keys: nuget-${{ runner.os }}-
+
+            - name: Restore fetched assets
+              uses: actions/cache/restore@v6
+              with:
+                  path: |
+                      content/images
+                      content/sounds
+                      content/fonts
+                      content/video_hd
+                  key: ${{ needs.content.outputs.cache-key }}
+                  # The content job just populated this; a miss means something is wrong and
+                  # publishing an assetless game would only hide it.
+                  fail-on-cache-miss: true
+
+            # build_web_content.py converts with the NuGet-pinned ffmpeg and refuses the one on
+            # PATH, since distro builds routinely lack libvorbis and libwebp. Restoring the
+            # content builder is what puts that package in the NuGet cache.
+            - name: Provision the pinned ffmpeg
+              run: dotnet restore content/Builder/CutTheRopeDX.Content.csproj
+
+            - name: Install web content tooling
+              run: python3 -m pip install --upgrade pillow fonttools
+
+            - name: Convert content for the browser
+              run: python3 scripts/build_web_content.py
+
+            # CI=true switches AOT off for PR builds, which must not follow the payload people
+            # actually play: the physics loop is unusable on the interpreter.
+            - name: Publish Browser
+              run: >
+                  dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
+                  -c Release -o dist -p:RunAOTCompilation=true
+
+            # GitHub Pages project sites live under /<repo>/, so the app's assets must resolve
+            # from there. Injected only into the published index.html, leaving the source
+            # (which serves from / during local dev) unchanged.
+            - name: Set base href for project page
+              run: |
+                  sed -i "s#<head>#<head>\n        <base href=\"/${{ github.event.repository.name }}/\" />#" dist/wwwroot/index.html
+
+            # Without this, GitHub Pages (Jekyll) drops the _framework/ runtime folder.
+            - name: Disable Jekyll
+              run: touch dist/wwwroot/.nojekyll
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v5
+              with:
+                  path: dist/wwwroot
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v5

@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework.Platform;
+
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>
@@ -189,20 +191,25 @@ namespace CutTheRopeDX.Helpers
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
 
-            string normalizedPath = relativePath;
-            string rootPrefix = RootDirectory + Path.DirectorySeparatorChar;
-            string alternateRootPrefix = RootDirectory + Path.AltDirectorySeparatorChar;
-
-            if (normalizedPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+            string normalizedPath = relativePath.Replace('\\', '/');
+            string rootedMarker = "/" + RootDirectory + "/";
+            int rootedIndex = normalizedPath.LastIndexOf(
+                rootedMarker, StringComparison.OrdinalIgnoreCase);
+            if (rootedIndex >= 0)
             {
-                normalizedPath = normalizedPath[rootPrefix.Length..];
+                normalizedPath = normalizedPath[(rootedIndex + rootedMarker.Length)..];
             }
-            else if (normalizedPath.StartsWith(alternateRootPrefix, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                normalizedPath = normalizedPath[alternateRootPrefix.Length..];
+                string rootPrefix = RootDirectory + "/";
+                if (normalizedPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    normalizedPath = normalizedPath[rootPrefix.Length..];
+                }
             }
 
-            return File.OpenRead(Path.Combine(GetContentRootAbsolute(), normalizedPath));
+            return new MemoryStream(
+                PlatformServices.Content.Read(normalizedPath), writable: false);
         }
 
         /// <summary>

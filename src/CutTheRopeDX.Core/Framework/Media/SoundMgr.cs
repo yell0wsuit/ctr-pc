@@ -256,6 +256,7 @@ namespace CutTheRopeDX.Framework.Media
             activeSounds.Clear();
             StopLoopedSounds();
             pauseDepth = 0;
+            musicPauseTickets.Clear();
             sfxSuspended = false;
         }
 
@@ -308,9 +309,9 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Pauses all looped sound effects and background music. Calls stack: if multiple
-        /// independent sources (e.g. gameplay pause and app deactivation) both pause, the same
-        /// number of <see cref="Unpause"/> calls is required before playback actually resumes.
+        /// Pauses looped sound effects and any background music currently playing. Calls stack:
+        /// each pause records whether it suspended music so its matching <see cref="Unpause"/>
+        /// can restore that music independently of an outer pause.
         /// </summary>
         public void Pause()
         {
@@ -319,11 +320,15 @@ namespace CutTheRopeDX.Framework.Media
                 if (pauseDepth == 0)
                 {
                     ChangeListState(activeLoopedSounds, AudioPlaybackState.Playing, AudioPlaybackState.Paused);
-                    if (_backend != null && _backend.MusicState == AudioPlaybackState.Playing)
-                    {
-                        _backend.PauseMusic();
-                    }
                 }
+
+                bool pausedMusic = _backend != null
+                    && _backend.MusicState == AudioPlaybackState.Playing;
+                if (pausedMusic)
+                {
+                    _backend.PauseMusic();
+                }
+                musicPauseTickets.Push(pausedMusic);
                 pauseDepth++;
             }
             catch (Exception)
@@ -332,9 +337,9 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
-        /// Decrements the pause stack and, when it reaches zero, resumes all paused looped
-        /// sound effects and background music. Calls beyond the outermost pause are ignored.
-        /// Loops stay paused if sound effects have been independently suspended via
+        /// Decrements the pause stack, resumes music if this specific pause suspended it, and
+        /// resumes looped effects when the outermost pause ends. Calls beyond the outermost pause
+        /// are ignored. Loops stay paused if sound effects have been independently suspended via
         /// <see cref="SuspendSoundEffects"/>.
         /// </summary>
         public void Unpause()
@@ -347,16 +352,19 @@ namespace CutTheRopeDX.Framework.Media
                 }
 
                 pauseDepth--;
+                bool resumeMusic = musicPauseTickets.Count > 0 && musicPauseTickets.Pop();
                 if (pauseDepth == 0)
                 {
                     if (!sfxSuspended)
                     {
                         ChangeListState(activeLoopedSounds, AudioPlaybackState.Paused, AudioPlaybackState.Playing);
                     }
-                    if (_backend != null && _backend.MusicState == AudioPlaybackState.Paused)
-                    {
-                        _backend.ResumeMusic();
-                    }
+                }
+                if (resumeMusic
+                    && _backend != null
+                    && _backend.MusicState == AudioPlaybackState.Paused)
+                {
+                    _backend.ResumeMusic();
                 }
             }
             catch (Exception)
@@ -514,10 +522,15 @@ namespace CutTheRopeDX.Framework.Media
         private readonly List<ActiveSound> activeLoopedSounds;
 
         /// <summary>
-        /// Nesting depth of pause calls. Resume only happens when the outermost pause unwinds,
-        /// so stacked sources (gameplay pause + app deactivation) don't resume prematurely.
+        /// Nesting depth of pause calls, used to keep looped sound effects suspended until the
+        /// outermost pause unwinds.
         /// </summary>
         private int pauseDepth;
+
+        /// <summary>
+        /// One entry per transient pause, recording whether that pause suspended the music voice.
+        /// </summary>
+        private readonly Stack<bool> musicPauseTickets = [];
 
         /// <summary>
         /// Whether looped sound effects are suspended by the user's sound-effects toggle.

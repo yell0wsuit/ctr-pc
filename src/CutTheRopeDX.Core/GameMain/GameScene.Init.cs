@@ -1,5 +1,7 @@
+using System;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -105,13 +107,13 @@ namespace CutTheRopeDX.GameMain
             if (CustomLevelSession.IsActive)
             {
                 string customPath = CustomLevelSession.LevelPath;
-                if (CustomLevelFile.TryLoad(customPath, out System.Xml.Linq.XElement customMap, out string error))
+                if (CustomLevelFile.TryLoad(customPath, out XElement customMap, out string error))
                 {
                     XmlLoaderFinishedWithfromwithSuccess(customMap, customPath, true);
                 }
                 else
                 {
-                    System.Console.Error.WriteLine(error);
+                    Console.Error.WriteLine(error);
                 }
 
                 return;

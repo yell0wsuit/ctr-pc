@@ -265,9 +265,12 @@ namespace CutTheRopeDX.GameMain
                 case 0:
                     {
                         SetViewTransition(4);
-                        LoadingController c2 = new(this);
+                        PrebuildMenuControllers();
+                        LoadingController c2 = prebuiltLoading;
+                        prebuiltLoading = null;
                         AddChildwithID(c2, 2);
-                        MenuController menuController2 = new(this);
+                        MenuController menuController2 = prebuiltMenu;
+                        prebuiltMenu = null;
                         AddChildwithID(menuController2, 1);
                         DeleteChild(0);
                         resourceMgr.FreePack(PackStartup);
@@ -852,6 +855,28 @@ namespace CutTheRopeDX.GameMain
             Resources.Fnt.FontNumbersBig,
             null
         ];
+
+        /// <summary>
+        /// Builds the menu and loading controllers ahead of the handover from the startup screen,
+        /// so their cost lands while the startup progress bar is still on screen and reporting.
+        /// Safe to call more than once; the second call is a no-op.
+        /// </summary>
+        /// <remarks>
+        /// Both are constructed only, never activated. <see cref="MenuController.Activate"/> reads
+        /// the pack and view to show when it runs, so nothing here depends on state that the
+        /// handover sets afterwards.
+        /// </remarks>
+        public void PrebuildMenuControllers()
+        {
+            prebuiltLoading ??= new LoadingController(this);
+            prebuiltMenu ??= new MenuController(this);
+        }
+
+        /// <summary>Loading controller built ahead of the startup handover, or <see langword="null"/>.</summary>
+        private LoadingController prebuiltLoading;
+
+        /// <summary>Menu controller built ahead of the startup handover, or <see langword="null"/>.</summary>
+        private MenuController prebuiltMenu;
 
         /// <summary>Set of resource names loaded during the current gameplay session, freed on exit.</summary>
         private readonly HashSet<string> sessionResources = [];

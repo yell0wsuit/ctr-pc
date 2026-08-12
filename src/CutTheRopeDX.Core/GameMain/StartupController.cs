@@ -162,6 +162,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void AllResourcesLoaded()
         {
+            // Building the menu is the last expensive step of startup, and it used to run in the
+            // frame that hands this controller over — after the bar had already reported 100%,
+            // so it read as a freeze on a blank screen. Doing it here puts it under the bar,
+            // which is still short of full and goes on animating while this returns.
+            ((CTRRootController)Application.SharedRootController()).PrebuildMenuControllers();
             resourcesLoaded = true;
         }
 
@@ -322,17 +327,28 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Main menu image resources loaded before entering the menu, terminated by <see langword="null"/>.
         /// </summary>
+        /// <remarks>
+        /// Every image the menu controller's constructor reaches for belongs here. Anything left
+        /// out is still decoded and uploaded — just in the single frame that builds the menu,
+        /// after the progress bar has already reported completion, which reads as a freeze on
+        /// slower texture paths like the browser's.
+        /// </remarks>
         private static readonly string[] PackMenu =
         [
             Resources.Img.MenuBgr,
             Resources.Img.MenuPopup,
             Resources.Img.MenuLogo,
+            Resources.Img.MenuLogoNew,
             Resources.Img.CutTheRopeDXLogo,
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,
+            Resources.Img.MenuPackUI,
             Resources.Img.MenuExtraButtons,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
+            Resources.BackgroundImg.SkinBackground,
+            Resources.Img.SkinSelection,
+            Resources.Img.CandySelectionFx,
             null
         ];
 

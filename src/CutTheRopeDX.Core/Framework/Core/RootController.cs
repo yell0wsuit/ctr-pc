@@ -285,7 +285,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <inheritdoc />
         public override bool MouseMoved(float x, float y)
         {
-            return currentController.MouseMoved(x, y);
+            return currentController != null
+                && !suspended
+                && transitionTime == -1f
+                && currentController.MouseMoved(x, y);
         }
 
         /// <inheritdoc />
@@ -297,37 +300,45 @@ namespace CutTheRopeDX.Framework.Core
         /// <inheritdoc />
         public override bool BackButtonPressed()
         {
-            return suspended || transitionTime != -1f || currentController.BackButtonPressed();
+            return currentController != null
+                && (suspended || transitionTime != -1f || currentController.BackButtonPressed());
         }
 
         /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
-            return suspended || transitionTime != -1f || currentController.MenuButtonPressed();
+            return currentController != null
+                && (suspended || transitionTime != -1f || currentController.MenuButtonPressed());
         }
 
         /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            return !suspended && (transitionTime != -1f || currentController.TouchesBeganwithEvent(touches));
+            return currentController != null
+                && !suspended
+                && (transitionTime != -1f || currentController.TouchesBeganwithEvent(touches));
         }
 
         /// <inheritdoc />
         public override bool TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            return !suspended && (transitionTime != -1f || currentController.TouchesMovedwithEvent(touches));
+            return currentController != null
+                && !suspended
+                && (transitionTime != -1f || currentController.TouchesMovedwithEvent(touches));
         }
 
         /// <inheritdoc />
         public override bool TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            return !suspended && (transitionTime != -1f || currentController.TouchesEndedwithEvent(touches));
+            return currentController != null
+                && !suspended
+                && (transitionTime != -1f || currentController.TouchesEndedwithEvent(touches));
         }
 
         /// <inheritdoc />
         public override bool TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            return currentController.TouchesCancelledwithEvent(touches);
+            return currentController != null && currentController.TouchesCancelledwithEvent(touches);
         }
 
         /// <summary>
@@ -336,7 +347,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="controller">Controller to make current, or <see langword="null" /> to clear routing.</param>
         public virtual void SetCurrentController(ViewController controller)
         {
-            currentController = controller;
+            currentController = ReferenceEquals(controller, this) ? null : controller;
         }
 
         /// <summary>

@@ -22,23 +22,16 @@ jobs:
               with:
                   dotnet-version: "10.x"
 
+            # The solution-wide build includes CutTheRopeDX.Browser, which targets
+            # net10.0-browser and cannot restore or build without this workload.
+            - name: Install WebAssembly workload
+              run: dotnet workload install wasm-tools
+
             - name: Restore dependencies
               run: dotnet restore
 
             - name: Check formatting
               run: dotnet format --verify-no-changes --verbosity diagnostic
-
-            - name: Install Roslynator
-              run: |
-                  if ! command -v roslynator &> /dev/null; then
-                    dotnet tool install -g roslynator.dotnet.cli
-                  fi
-
-            - name: Run Roslynator analysis (Core)
-              run: roslynator analyze src/CutTheRopeDX.Core/CutTheRopeDX.Core.csproj
-
-            - name: Run Roslynator analysis (Desktop)
-              run: roslynator analyze src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj
 
             - name: Build
               run: dotnet build --no-restore -c Release

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+        />
+        <title>Cut the Rope: DX - Web Edition</title>
+        <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+        <link rel="apple-touch-icon" href="./icon-512.png" />
+        <link rel="manifest" href="./manifest.webmanifest" />
+        <meta name="theme-color" content="#202329" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <style>
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                background: #000;
+                overflow: hidden;
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: none;
+                overscroll-behavior: none;
+            }
+            #game {
+                display: block;
+                position: absolute;
+                width: 100vw;
+                height: calc(100vw * 9 / 16);
+                max-width: calc(100vh * 16 / 9);
+                max-height: 100vh;
+            }
+            /* Shares the canvas's letterboxed box. z-index puts it over the game but
+               under the splash, so a cutscene can never show through the loading screen. */
+            #movie {
+                display: block;
+                position: absolute;
+                width: 100vw;
+                height: calc(100vw * 9 / 16);
+                max-width: calc(100vh * 16 / 9);
+                max-height: 100vh;
+                z-index: 5;
+                background: #000;
+                object-fit: contain;
+            }
+            #movie[hidden] {
+                display: none;
+            }
+            #splash {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+                background: #202329;
+                color: #e6e6e6;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                z-index: 10;
+                transition: opacity 0.25s ease-out;
+            }
+            /* Faded rather than removed, so the canvas underneath is already painted when the
+               splash goes; pointer-events keeps the invisible overlay from eating taps. */
+            #splash.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+            #splash img {
+                width: 96px;
+                height: 96px;
+            }
+            #splash p,
+            #splash h1 {
+                margin: 0;
+                text-align: center;
+            }
+            #splash h1 {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+            #splash-hint {
+                max-width: 320px;
+                padding: 0 24px;
+                font-size: 0.8rem;
+                line-height: 1.45;
+                opacity: 0.6;
+            }
+            #splash .spinner {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 4px solid #3a3f47;
+                border-top-color: #e6e6e6;
+                animation: splash-spin 0.8s linear infinite;
+            }
+            #splash .spinner[hidden] {
+                display: none;
+            }
+            @keyframes splash-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            #start {
+                padding: 12px 28px;
+                font-size: 1rem;
+                border: 0;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            #start[hidden] {
+                display: none;
+            }
+            #update {
+                padding: 20px 24px;
+                border: 0;
+                border-radius: 10px;
+                background: #202329;
+                color: #e6e6e6;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                box-shadow: 0 8px 32px rgb(0 0 0 / 50%);
+            }
+            #update::backdrop {
+                background: rgb(0 0 0 / 50%);
+            }
+            #update p {
+                margin: 0 0 16px;
+            }
+            #update-actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+            #update button {
+                padding: 8px 18px;
+                font-size: 0.95rem;
+                border: 0;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="game"></canvas>
+        <video id="movie" playsinline hidden></video>
+        <div id="splash">
+            <img
+                src="./icon-512.png"
+                width="96"
+                height="96"
+                alt="Cut the Rope: DX icon"
+                decoding="async"
+            />
+            <div class="spinner" id="splash-spinner"></div>
+            <p id="splash-progress">Loading…</p>
+            <h1>Cut the Rope: DX - Web Edition</h1>
+            <button id="start" hidden>Play</button>
+            <p id="splash-hint" role="status" hidden>
+                Taking too long? You might want to check your internet speed, or
+                reload the page.
+            </p>
+        </div>
+        <dialog id="update">
+            <p>A new version of the game is ready.</p>
+            <div id="update-actions">
+                <button id="update-later">Later</button>
+                <button id="update-now">Update</button>
+            </div>
+        </dialog>
+        <script type="module" src="./pwa.js"></script>
+        <script type="module">
+            // Loading has two stretches with no reporting of their own — compiling what was
+            // downloaded, and decoding the audio — so a slow device and a wedged one look alike
+            // from here. The advice waits out a comfortably slow start rather than accusing
+            // every one of them of being broken.
+            const HINT_DELAY_MS = 30000;
+
+            const start = document.getElementById("start");
+            const splash = document.getElementById("splash");
+            const spinner = document.getElementById("splash-spinner");
+            const hint = document.getElementById("splash-hint");
+            const progress = document.getElementById("splash-progress");
+            const hintTimer = setTimeout(() => {
+                hint.hidden = false;
+            }, HINT_DELAY_MS);
+
+            globalThis.ctrdxReady = () => {
+                clearTimeout(hintTimer);
+                hint.hidden = true;
+                spinner.hidden = true;
+                progress.remove();
+                start.hidden = false;
+            };
+            start.addEventListener("click", async () => {
+                await globalThis.ctrdxStart();
+                splash.classList.add("hidden");
+            });
+        </script>
+        <script type="module" src="./main.js"></script>
+    </body>
+</html>

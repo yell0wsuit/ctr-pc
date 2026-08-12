@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Xml.Linq;
+
+using CutTheRopeDX.Helpers;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -249,7 +252,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The parsed Flash XML animation definition.</returns>
         private static FlashXmlAnimationDefinition ParseFileCore(string xmlPath)
         {
-            XElement root = XDocument.Load(xmlPath).Root
+            using Stream stream = ContentPaths.OpenStream(xmlPath);
+            XElement root = XDocument.Load(stream).Root
                 ?? throw new InvalidOperationException("Flash XML is missing a root element.");
             if (root.Name.LocalName != "FlashAnimation")
             {

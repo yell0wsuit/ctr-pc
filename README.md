@@ -20,7 +20,7 @@ The logo is designed by Bingies24 and darealmrcatz.
 ### Related projects
 
 - [Cut the Rope DX: Level Editor](https://github.com/yell0wsuit/ctrdx-editor/): a standalone app for creating and editing levels for Cut the Rope: DX.
-- [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version, currently being developed to improve the game's experience further.
+- [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version. Deprecated, superseded by this project's browser edition.
 
 ## Download
 
@@ -33,6 +33,7 @@ Download the latest release from the [Releases page](https://github.com/yell0wsu
 - Dynamic level UI, supports variable numbers of levels. Currently, the code only supports fewer than 25 levels.
 - Support loading custom sprites and animations from [TexturePacker](https://www.codeandweb.com/texturepacker) in JSON array format. This allows easier modding and adding new assets.
 - Improved experience and bug fixes over the original PC version.
+- Runs in the browser: a WebAssembly build renders through Skia and installs as a PWA, so it plays offline once loaded. Saves live in `localStorage` rather than a file.
 - Better save file format. The save file (`ctr_preferences.json`) is stored in a `CutTheRopeDX_SaveData` folder, with the following fallback priority:
     - Next to the game executable (preferred for portability)
     - `Documents/CutTheRopeDX_SaveData` -- if the above is not writable. Usually on macOS with `.app` bundle installation, or some Linux setups.
@@ -59,33 +60,32 @@ The development of _Cut the Rope: DX_ is an ongoing process, and contributions a
 
 ### Testing the code
 
-To test the game during the development process, follow these steps:
+Do these steps to test the game while you develop it.
 
-1. Ensure you have [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/) installed on your machine.
+1. Install [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/).
 
-> [!note]
-> The minimum is pinned in `global.json` with `rollForward: latestFeature`, so newer 10.0.x SDKs work automatically. However, if your SDK is older than that, `dotnet` commands will fail with a version-mismatch error until you update.
+    > [!NOTE]  
+    > The `global.json` file sets the minimum SDK version. It uses `rollForward: latestFeature`. Thus a newer 10.0.x SDK also works.
+    > If your SDK is older than the minimum, each `dotnet` command stops with a version-mismatch error. Install a newer SDK to correct this.
 
-2. Clone the repository to your PC:
+2. Clone the repository to your computer:
 
     ```bash
     git clone https://github.com/yell0wsuit/cuttherope-dx.git
     cd cuttherope-dx
     ```
 
-    You can also use [GitHub Desktop](https://desktop.github.com/) for ease of cloning.
+    You can also use [GitHub Desktop](https://desktop.github.com/) to clone the repository.
 
-    > ⚠️ **Note:**  
-    > Content assets (images, audio, fonts, cursors, video) are no longer stored in
-    > this repository. They now live in [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets).
-    > You don't need to do anything: on your first local build, the assets are downloaded
-    > automatically from the latest `ctrdx-assets` release and extracted into
-    > `content/`. CI skips this, as it does not compile content.
+    > [!NOTE]  
+    > This repository does not contain the content assets. The content assets are the images, the audio, the fonts, the cursors and the video. They are in the [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets) repository.
+    > You do not have to do anything. Your first local build downloads the assets from the most recent `ctrdx-assets` release. The build then extracts the assets into the `content/` directory.
+    > CI does not do this, because CI does not compile the content.
 
-3. For most cases, you can build the game using the following commands:
+3. Build the game with one of these commands.
 
-    > Note:  
-    > To make `PublishAot` work, you need to follow the [AOT prerequisites](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#prerequisites) based on your OS.
+    > [!NOTE]  
+    > The `PublishAot` option has prerequisites. Obey the [AOT prerequisites](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#prerequisites) for your operating system.
 
     a. Windows
 
@@ -95,22 +95,20 @@ To test the game during the development process, follow these steps:
 
     b. macOS
 
-    _Without AVFoundation (will use FFmpeg for video playback):_
+    Use this command if you do not use AVFoundation. The game then plays the video with FFmpeg. Install FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg) first.
 
     ```bash
     dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -r osx-arm64 -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
     ```
 
-    Make sure you have installed FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg).
-
-    _With AVFoundation (only for macOS 26.0 and later, requires Xcode installed):_
+    Use this command if you use AVFoundation. AVFoundation needs macOS 26.0 or later, and Xcode.
 
     ```bash
     dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
     ```
 
-    > Note:  
-    > You can change `osx-arm64` to `osx-x64` for Intel-based version. However, we do not guarantee the game will work properly on Intel Macs.
+    > [!NOTE]  
+    > Change `osx-arm64` to `osx-x64` to build the game for an Intel Mac. We do not know if the game operates correctly on an Intel Mac.
 
     c. Linux
 
@@ -118,12 +116,45 @@ To test the game during the development process, follow these steps:
     dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/linux-x64
     ```
 
-    > Warning:  
-    > A native AOT binary built on Linux is only guaranteed to run on the same or newer Linux distribution version.
+    > [!WARNING]  
+    > A native AOT binary from Linux operates only on the same Linux version, or on a newer Linux version.
 
-    If you encounter issues with native AOT, you can try removing the `-p:PublishAot=true` flag.
+    If native AOT causes a problem, remove the `-p:PublishAot=true` option. Then build the game again.
 
-4. To run the unit tests:
+    d. Browser (WebAssembly)
+
+    The browser build needs the WebAssembly workload. It also needs its own content. A Python script converts the desktop assets to WebP files, Ogg Vorbis files, WebM videos and subset fonts. Do this conversion before you build the game. The script needs Python 3.11 or a newer version.
+
+    ```bash
+    dotnet workload install wasm-tools
+    python3 -m pip install pillow fonttools
+    dotnet restore content/Builder/CutTheRopeDX.Content.csproj
+    python3 scripts/build_web_content.py
+    ```
+
+    > [!NOTE]  
+    > The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
+
+    > [!NOTE]
+    > The cutscene conversion is the one exception. The pinned FFmpeg has no video encoder, so this step uses the FFmpeg from your `PATH` and needs the `libvpx-vp9` encoder and the `libopus` encoder. If your FFmpeg does not have them, the script prints a warning and continues. The game then works, but it plays no cutscenes.
+
+    The conversion is incremental. Do the conversion again only after you change an asset.
+
+    Start the game in your browser:
+
+    ```bash
+    dotnet run --project src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
+    ```
+
+    Or publish the static site:
+
+    ```bash
+    dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj -c Release -o dist
+    ```
+
+    The build writes the site to the `dist/wwwroot` directory. The [Deploy Browser to GitHub Pages](.github/workflows/deploy-pages.yml) workflow sends this site to GitHub Pages. You must start this workflow manually.
+
+4. Run the unit tests:
 
     ```bash
     dotnet test CutTheRopeDX.slnx -p:ExcludeMacOSTarget=true

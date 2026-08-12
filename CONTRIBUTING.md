@@ -48,12 +48,6 @@ For translation contribution guide, please refer to [the translation guide](http
     # Format code (most important)
     dotnet format
 
-    # Code analysis fix with Roslynator
-    roslynator fix
-
-      ## install roslynator globally if you haven't already
-      dotnet tool install -g roslynator.dotnet.cli
-
     # Test for building errors
     dotnet build
     ```

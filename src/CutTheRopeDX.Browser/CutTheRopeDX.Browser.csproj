@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <RootNamespace>CutTheRopeDX</RootNamespace>
+    <TargetFramework>net10.0-browser</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- The physics loop is unusable on the interpreter. -->
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <!--
+      AOT is a publish-time step and the most expensive one there is, so CI opts out: a check
+      that the project builds does not need it. Note this does not affect `dotnet build`, which
+      never AOTs — its Emscripten link comes from SkiaSharp's native assets instead.
+    -->
+    <RunAOTCompilation Condition="'$(CI)' == 'true'">false</RunAOTCompilation>
+    <WasmNativeStrip>true</WasmNativeStrip>
+    <!--
+      Keep the browser host single-threaded. GitHub Pages can obtain cross-origin
+      isolation through a service worker, but .NET's managed worker is not correlated
+      with Emscripten's WebGL context owner: proxied and worker-owned contexts both fail
+      before Skia initializes. Re-evaluate when the .NET/Emscripten integration exposes
+      a supported canvas-transfer or main-thread GL path.
+    -->
+    <WasmEnableThreads>false</WasmEnableThreads>
+    <!-- The game ships its own locale JSON; ICU would add ~1MB for nothing. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!--
+      Setting this makes the static web assets SDK generate service-worker-assets.js — every
+      published asset with its integrity hash — and stamp a version derived from those hashes
+      into the service worker. The version changes only when an asset does, which is what
+      drives the cache purge.
+    -->
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+    <EmccExportedRuntimeMethod Include="GL" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+  </ItemGroup>
+
+  <!--
+    The converted content payload is ~30MB of already-compressed webp/ogg. Letting the
+    WASM SDK fingerprint and Brotli-compress it would add minutes to publish and gain
+    nothing, so it ships as plain static files.
+  -->
+  <ItemGroup>
+    <Content Update="wwwroot/content/**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    wwwroot/favicon.ico and wwwroot/icon-512.png are copies of distribution/icons/
+    CutTheRopeDXIcon.ico and CutTheRopeDXIcon_512.png. They are copied rather than linked in
+    from there: linking gives the asset a content root of wwwroot while its identity stays in
+    distribution, and the dev server reads content from the content root, so `dotnet run`
+    answers both with an empty 200 and the page shows a broken image. Publish copies by
+    identity and is unaffected, which is what made this look like a publish-only concern.
+    Refresh them from distribution/icons if the app icon ever changes.
+  -->
+
+  <!-- Development serves the inert worker; publish swaps in the caching one. -->
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot/service-worker.js"
+                   PublishedContent="wwwroot/service-worker.published.js" />
+  </ItemGroup>
+
+</Project>

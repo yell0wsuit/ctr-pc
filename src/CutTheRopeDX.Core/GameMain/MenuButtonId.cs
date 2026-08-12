@@ -45,6 +45,7 @@ namespace CutTheRopeDX.GameMain
         TraceSelect,
         ShowLanguage,
         BackFromLanguage,
+        LevelEditor,
     }
 
     /// <summary>
@@ -204,6 +205,11 @@ namespace CutTheRopeDX.GameMain
         /// Opens quit gmae confirmation.
         /// </summary>
         public static readonly MenuButtonId ShowQuitPopup = MenuButton.ShowQuitPopup;
+
+        /// <summary>
+        /// Opens the level editor.
+        /// </summary>
+        public static readonly MenuButtonId LevelEditor = MenuButton.LevelEditor;
 
         /// <summary>
         /// Opens candy skin selection.

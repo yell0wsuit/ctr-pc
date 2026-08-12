@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 
 using Xunit;
@@ -10,7 +12,7 @@ namespace CutTheRopeDX.Tests
     // from the atlas silently changes collision whenever art is re-packed.
     public class TextureCollisionWidthTests
     {
-        private static T WithMobilePhysics<T>(bool mobile, System.Func<T> body)
+        private static T WithMobilePhysics<T>(bool mobile, Func<T> body)
         {
             bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
             try

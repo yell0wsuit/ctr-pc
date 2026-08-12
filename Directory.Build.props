@@ -15,8 +15,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <LangVersion>preview</LangVersion>
-
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishDocumentationFiles>false</PublishDocumentationFiles>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>

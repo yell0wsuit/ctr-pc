@@ -166,8 +166,17 @@
   <!--
     macOS: codesign dylibs and the app bundle after build.
     This must be done to avoid app crashes when opening (thanks macOS).
+
+    Skipped for the per-RID inner builds of a universal build, which the macOS SDK marks with
+    _IsMultiRidBuild. Those slices are merged afterwards, and MergeAppBundles refuses a merge
+    when a file differs between bundles — signing each slice first produces exactly that, since
+    a signature over arm64 binaries cannot match one over x64.
+
+    A RID-less build leaves the per-RID slices in the output rather than a merged bundle, so
+    there is nothing further here for this target to sign. Shipping builds are unaffected
+    either way: distribution/bundle_macos.sh publishes a single RID and assembles its own app.
   -->
-  <Target Name="CodesignMacOSBundle" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
+  <Target Name="CodesignMacOSBundle" AfterTargets="Build" Condition="'$(_IsMultiRidBuild)' != 'true' AND '$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
     <PropertyGroup>
       <AppBundlePath>$([MSBuild]::NormalizePath($([MSBuild]::EnsureTrailingSlash('$(OutputPath)'))$(AssemblyName).app))</AppBundlePath>
     </PropertyGroup>
