@@ -20,11 +20,11 @@ namespace CutTheRopeDX.Browser
     /// texture or blend mode changes, mirroring the desktop backend's one-draw-per-batch
     /// behavior.
     /// <para>
-    /// Vertex colors stay in straight alpha here, unlike desktop. Core produces straight
-    /// colors throughout, and desktop premultiplies them on the way out because MonoGame
-    /// composites with One/InverseSourceAlpha; Skia takes <see cref="SKColor"/> vertex colors
-    /// and premultiplies them itself, so premultiplying first would apply alpha twice and
-    /// darken every draw that is not fully opaque.
+    /// Skia takes straight-alpha <see cref="SKColor"/> values and premultiplies them internally.
+    /// Ordinary sprite tints and the source-alpha blend paths are already straight. Explicit
+    /// vertex colors submitted with One/InverseSourceAlpha are premultiplied for the desktop
+    /// fixed-function pipeline, so this backend converts those colors back to straight exactly
+    /// once before giving them to Skia.
     /// </para>
     /// </remarks>
     /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
@@ -50,6 +50,8 @@ namespace CutTheRopeDX.Browser
         private bool _blendEnabled = true;
         private bool _projectionMode;
         private bool _scissorSaved;
+        private BlendingFactor _requestedSourceFactor = BlendingFactor.GLONE;
+        private BlendingFactor _requestedDestinationFactor = BlendingFactor.GLONEMINUSSRCALPHA;
 
         /// <summary>The canvas currently targeted by draw calls.</summary>
         internal SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
@@ -207,6 +209,8 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
+            _requestedSourceFactor = sfactor;
+            _requestedDestinationFactor = dfactor;
             RequestedBlendMode = (sfactor, dfactor) switch
             {
                 (BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE) => SKBlendMode.Plus,
@@ -318,9 +322,9 @@ namespace CutTheRopeDX.Browser
             EnsureBatchCompatible();
             for (int i = 0; i + 2 < vertexCount; i++)
             {
-                Append(vertices[i]);
-                Append(vertices[i + 1]);
-                Append(vertices[i + 2]);
+                AppendRendererTint(vertices[i]);
+                AppendRendererTint(vertices[i + 1]);
+                AppendRendererTint(vertices[i + 2]);
             }
         }
 
@@ -332,7 +336,8 @@ namespace CutTheRopeDX.Browser
             EnsureBatchCompatible();
             for (int i = 0; i < indexCount; i++)
             {
-                Append(QuadBaking.Bake(vertices[indices[i]], _matrices.ModelView, tint));
+                AppendRendererTint(
+                    QuadBaking.Bake(vertices[indices[i]], _matrices.ModelView, tint));
             }
         }
 
@@ -360,9 +365,7 @@ namespace CutTheRopeDX.Browser
             };
             for (int i = 0; i + 1 < vertexCount; i++)
             {
-                paint.Color = new SKColor(
-                    vertices[i].Color.R, vertices[i].Color.G,
-                    vertices[i].Color.B, vertices[i].Color.A);
+                paint.Color = ToSkiaExplicitColor(vertices[i].Color);
                 SKPoint from = ToViewSpace(vertices[i].Position);
                 SKPoint to = ToViewSpace(vertices[i + 1].Position);
                 Target.DrawLine(from.X, from.Y, to.X, to.Y, paint);
@@ -495,11 +498,20 @@ namespace CutTheRopeDX.Browser
             }
         }
 
-        private void Append(in VertexPositionColorTexture vertex)
+        private void AppendRendererTint(in VertexPositionColorTexture vertex)
+        {
+            Append(vertex, VertexColorEncoding.ForRendererTint(vertex.Color));
+        }
+
+        private void AppendExplicitVertex(in VertexPositionColorTexture vertex)
+        {
+            Append(vertex, DecodeExplicitColor(vertex.Color));
+        }
+
+        private void Append(in VertexPositionColorTexture vertex, Color straightColor)
         {
             _positions.Add(new SKPoint(vertex.Position.X, vertex.Position.Y));
-            _colors.Add(new SKColor(
-                vertex.Color.R, vertex.Color.G, vertex.Color.B, vertex.Color.A));
+            _colors.Add(ToSkiaColor(straightColor));
 
             float width = _batchTexture?.Width ?? 1;
             float height = _batchTexture?.Height ?? 1;
@@ -515,7 +527,7 @@ namespace CutTheRopeDX.Browser
         /// <param name="vertex">The untransformed vertex.</param>
         private void AppendTransformed(in VertexPositionColorTexture vertex)
         {
-            Append(new VertexPositionColorTexture(
+            AppendExplicitVertex(new VertexPositionColorTexture(
                 Vector3.Transform(vertex.Position, _matrices.ModelView),
                 vertex.Color,
                 vertex.TextureCoordinate));
@@ -524,8 +536,25 @@ namespace CutTheRopeDX.Browser
         private void AppendColorOnly(in VertexPositionColor vertex)
         {
             _positions.Add(ToViewSpace(vertex.Position));
-            _colors.Add(new SKColor(
-                vertex.Color.R, vertex.Color.G, vertex.Color.B, vertex.Color.A));
+            _colors.Add(ToSkiaExplicitColor(vertex.Color));
+        }
+
+        private SKColor ToSkiaExplicitColor(Color color)
+        {
+            return ToSkiaColor(DecodeExplicitColor(color));
+        }
+
+        private Color DecodeExplicitColor(Color color)
+        {
+            return VertexColorEncoding.ForExplicitVertex(
+                color,
+                _requestedSourceFactor,
+                _requestedDestinationFactor);
+        }
+
+        private static SKColor ToSkiaColor(Color straight)
+        {
+            return new SKColor(straight.R, straight.G, straight.B, straight.A);
         }
 
         /// <summary>Transforms a model-space position by the current matrix stack.</summary>
