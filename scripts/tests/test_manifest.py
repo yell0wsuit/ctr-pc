@@ -56,6 +56,23 @@ def test_write_asset_catalog_groups_every_runtime_asset(tmp_path):
     }
 
 
+def test_write_asset_catalog_omits_url_fetched_groups(tmp_path):
+    """Video is fetched by <video> src, not read through the content store."""
+    path = tmp_path / "assets.json"
+
+    manifest.write_asset_catalog(
+        path,
+        {
+            "images/logo.webp": "image-stamp",
+            "video_hd/ctr_intro.webm": "video-stamp",
+        },
+    )
+
+    assert json.loads(path.read_text(encoding="utf-8")) == {
+        "images": ["images/logo.webp"]
+    }
+
+
 def test_is_current_requires_matching_stamp_and_existing_output(tmp_path):
     out = tmp_path / "a.webp"
     entries = {"a.webp": "abc|webp:q80"}

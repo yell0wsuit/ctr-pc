@@ -40,12 +40,18 @@ def save_manifest(path: Path, entries: dict[str, str]) -> None:
     )
 
 
+# Top-level groups the browser fetches by URL rather than reading through the content
+# store. Listing one here would make the store preload it into a byte cache nothing
+# ever reads, and stall the loading screen on the download.
+URL_FETCHED_GROUPS = frozenset({"video_hd"})
+
+
 def write_asset_catalog(path: Path, entries: dict[str, str]) -> None:
     """Writes public runtime asset paths grouped by their top-level directory."""
     groups: dict[str, list[str]] = {}
     for relative_path in sorted(entries):
         asset_type, separator, _ = relative_path.partition("/")
-        if separator:
+        if separator and asset_type not in URL_FETCHED_GROUPS:
             groups.setdefault(asset_type, []).append(relative_path)
 
     path.parent.mkdir(parents=True, exist_ok=True)
