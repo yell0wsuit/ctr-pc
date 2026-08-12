@@ -7,11 +7,11 @@
             content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
         <title>Cut the Rope: DX</title>
-        <link
-            rel="icon"
-            type="image/webp"
-            href="./content/images/CutTheRopeDXLogo.webp"
-        />
+        <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+        <link rel="apple-touch-icon" href="./icon-512.png" />
+        <link rel="manifest" href="./manifest.webmanifest" />
+        <meta name="theme-color" content="#1b1b1f" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <style>
             html,
             body {
@@ -64,6 +64,38 @@
             #start[hidden] {
                 display: none;
             }
+            #update {
+                padding: 20px 24px;
+                border: 0;
+                border-radius: 10px;
+                background: #1b1b1f;
+                color: #e6e6e6;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                box-shadow: 0 8px 32px rgb(0 0 0 / 50%);
+            }
+            #update::backdrop {
+                background: rgb(0 0 0 / 50%);
+            }
+            #update p {
+                margin: 0 0 16px;
+            }
+            #update-actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+            #update button {
+                padding: 8px 18px;
+                font-size: 0.95rem;
+                border: 0;
+                border-radius: 6px;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -72,6 +104,14 @@
             <p id="splash-progress">Loading…</p>
             <button id="start" hidden>Play</button>
         </div>
+        <dialog id="update">
+            <p>A new version of the game is ready.</p>
+            <div id="update-actions">
+                <button id="update-later">Later</button>
+                <button id="update-now">Update</button>
+            </div>
+        </dialog>
+        <script type="module" src="./pwa.js"></script>
         <script type="module">
             const start = document.getElementById("start");
             const splash = document.getElementById("splash");

@@ -18,6 +18,13 @@
     <WasmEnableThreads>false</WasmEnableThreads>
     <!-- The game ships its own locale JSON; ICU would add ~1MB for nothing. -->
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!--
+      Setting this makes the static web assets SDK generate service-worker-assets.js — every
+      published asset with its integrity hash — and stamp a version derived from those hashes
+      into the service worker. The version changes only when an asset does, which is what
+      drives the cache purge.
+    -->
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +44,18 @@
   -->
   <ItemGroup>
     <Content Update="wwwroot/content/**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- The desktop installers' icons, served directly rather than copied into wwwroot. -->
+  <ItemGroup>
+    <Content Include="../../distribution/icons/CutTheRopeDXIcon.ico" Link="wwwroot/favicon.ico" />
+    <Content Include="../../distribution/icons/CutTheRopeDXIcon_512.png" Link="wwwroot/icon-512.png" />
+  </ItemGroup>
+
+  <!-- Development serves the inert worker; publish swaps in the caching one. -->
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot/service-worker.js"
+                   PublishedContent="wwwroot/service-worker.published.js" />
   </ItemGroup>
 
 </Project>
