@@ -45,14 +45,53 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Returns a renderer tint unchanged because Skia itself converts straight colors to its
-        /// premultiplied internal representation.
+        /// Returns the renderer tint a straight-alpha backend must receive for the requested
+        /// source blend factor.
         /// </summary>
+        /// <remarks>
+        /// Skia converts the straight tint to its premultiplied internal representation, which is
+        /// what the fixed-function pipeline modulates the texture by, so the tint normally passes
+        /// through. <c>GL_SRC_ALPHA</c> is the exception: see
+        /// <see cref="ScalesSourceByAlpha"/> for why it needs the extra factor, and note that
+        /// scaling the tint's RGB while leaving its alpha alone survives Skia's premultiply as one
+        /// more multiplication by the tint alpha.
+        /// </remarks>
         /// <param name="color">The renderer's straight-alpha tint.</param>
-        /// <returns><paramref name="color"/> unchanged.</returns>
-        public static Color ForRendererTint(Color color)
+        /// <param name="source">The requested source blend factor.</param>
+        /// <returns>A tint suitable for a straight-alpha backend.</returns>
+        public static Color ForRendererTint(Color color, BlendingFactor source)
         {
-            return color;
+            return ScalesSourceByAlpha(source)
+                ? new Color(
+                    Scale(color.R, color.A),
+                    Scale(color.G, color.A),
+                    Scale(color.B, color.A),
+                    color.A)
+                : color;
+        }
+
+        /// <summary>
+        /// Whether the source blend factor makes the fixed-function pipeline multiply an
+        /// already-premultiplied fragment by its own alpha a second time.
+        /// </summary>
+        /// <remarks>
+        /// Both the built textures and the baked renderer tint are premultiplied, so the fragment
+        /// leaving the sampler is premultiplied too. <c>GL_ONE</c> consumes that directly, which is
+        /// what Skia's blend modes assume. <c>GL_SRC_ALPHA</c> instead multiplies it by source
+        /// alpha once more; Skia has no blend mode that does the same, so a backend reproducing
+        /// this pipeline has to fold that factor into the source it hands Skia. Skipping it leaves
+        /// every partially transparent draw brighter than the fixed-function pipeline renders it.
+        /// </remarks>
+        /// <param name="source">The requested source blend factor.</param>
+        /// <returns><see langword="true"/> when the source needs the extra alpha factor.</returns>
+        public static bool ScalesSourceByAlpha(BlendingFactor source)
+        {
+            return source == BlendingFactor.GLSRCALPHA;
+        }
+
+        private static byte Scale(byte channel, byte alpha)
+        {
+            return (byte)(((channel * alpha) + (byte.MaxValue / 2)) / byte.MaxValue);
         }
 
         private static byte Unpremultiply(byte channel, byte alpha)

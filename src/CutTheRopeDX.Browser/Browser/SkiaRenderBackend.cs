@@ -26,6 +26,13 @@ namespace CutTheRopeDX.Browser
     /// fixed-function pipeline, so this backend converts those colors back to straight exactly
     /// once before giving them to Skia.
     /// </para>
+    /// <para>
+    /// A <c>GL_SRC_ALPHA</c> source factor needs more than a blend mode: it multiplies the
+    /// premultiplied fragment by its own alpha again, which no Skia blend mode reproduces. Those
+    /// batches therefore fold the factor into the source itself, weighting the texture by its
+    /// alpha through <see cref="AlphaWeightMatrix"/> and the tint through
+    /// <see cref="VertexColorEncoding.ForRendererTint"/>.
+    /// </para>
     /// </remarks>
     /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
     internal sealed class SkiaRenderBackend(SkiaSurface surface) : IRenderBackend
@@ -33,6 +40,32 @@ namespace CutTheRopeDX.Browser
         private const int GL_BLEND = 1;
         private const int GL_SCISSOR_TEST = 4;
         private const int MODE_PROJECTION = 15;
+
+        /// <summary>
+        /// Rewrites a color to opaque grey carrying its own alpha, so multiplying a texture by it
+        /// weights the texture's color by its alpha and leaves its alpha untouched. Skia applies
+        /// color matrices to straight colors, so the row that fixes alpha at one is what keeps the
+        /// weighting off the alpha channel, and the destination factor still sees the source alpha
+        /// the fixed-function pipeline would have produced.
+        /// </summary>
+        private static readonly float[] AlphaWeightMatrix =
+        [
+            0f, 0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 0f, 1f,
+        ];
+
+        /// <summary>
+        /// Filtering for every image this backend samples, both the sprite batches and the
+        /// presented render target. It matches the <c>SamplerState.LinearClamp</c> the desktop
+        /// backend draws quads and presents with, down to carrying no mipmaps: the textures are
+        /// uploaded without them, and the game only ever scales by the modest factor between its
+        /// internal resolution and the window. Skia defaults to nearest when a draw does not say
+        /// otherwise, which would leave every scaled or rotated sprite aliased.
+        /// </summary>
+        private static readonly SKSamplingOptions LinearSampling =
+            new(SKFilterMode.Linear, SKMipmapMode.None);
 
         private readonly MatrixStack _matrices = new();
         private readonly List<SKPoint> _positions = [];
@@ -45,6 +78,7 @@ namespace CutTheRopeDX.Browser
         private SkiaTexture _boundTexture;
         private SkiaTexture _batchTexture;
         private SKBlendMode _batchBlendMode = SKBlendMode.SrcOver;
+        private bool _batchWeightsSourceByAlpha;
         private Color _drawColor = new(255, 255, 255, 255);
         private SKColor _clearColor = SKColors.Black;
         private bool _blendEnabled = true;
@@ -68,6 +102,17 @@ namespace CutTheRopeDX.Browser
         /// </summary>
         private SKBlendMode EffectiveBlendMode =>
             _blendEnabled ? RequestedBlendMode : SKBlendMode.Src;
+
+        /// <summary>
+        /// The source blend factor a draw issued right now would use. Disabling blending leaves
+        /// the fragment untouched, which is the <c>GL_ONE</c> source factor.
+        /// </summary>
+        private BlendingFactor EffectiveSourceFactor =>
+            _blendEnabled ? _requestedSourceFactor : BlendingFactor.GLONE;
+
+        /// <summary>Whether a draw issued right now consumes a source weighted by its own alpha.</summary>
+        private bool WeightsSourceByAlpha =>
+            VertexColorEncoding.ScalesSourceByAlpha(EffectiveSourceFactor);
 
         /// <inheritdoc />
         public bool IsAvailable => true;
@@ -417,11 +462,7 @@ namespace CutTheRopeDX.Browser
                 presentation.ScaledViewWidth,
                 presentation.ScaledViewHeight);
             surface.Canvas.Clear(SKColors.Black);
-            surface.Canvas.DrawImage(
-                snapshot,
-                destination,
-                new SKSamplingOptions(SKFilterMode.Linear),
-                paint: null);
+            surface.Canvas.DrawImage(snapshot, destination, LinearSampling, paint: null);
         }
 
         /// <inheritdoc />
@@ -449,11 +490,23 @@ namespace CutTheRopeDX.Browser
                 Color = SKColors.White,
                 BlendMode = _batchBlendMode,
             };
-            if (_batchTexture is not null)
-            {
-                paint.Shader = SKShader.CreateImage(
-                    _batchTexture.Image, SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
-            }
+            using SKShader image = _batchTexture is null
+                ? null
+                : SKShader.CreateImage(
+                    _batchTexture.Image,
+                    SKShaderTileMode.Clamp,
+                    SKShaderTileMode.Clamp,
+                    LinearSampling);
+            using SKColorFilter alphaWeight = image is null || !_batchWeightsSourceByAlpha
+                ? null
+                : SKColorFilter.CreateColorMatrix(AlphaWeightMatrix);
+            using SKShader alphaOnly = alphaWeight is null
+                ? null
+                : image.WithColorFilter(alphaWeight);
+            using SKShader weighted = alphaOnly is null
+                ? null
+                : SKShader.CreateBlend(SKBlendMode.Modulate, image, alphaOnly);
+            paint.Shader = weighted ?? image;
 
             using SKVertices vertices = SKVertices.CreateCopy(
                 SKVertexMode.Triangles,
@@ -489,18 +542,26 @@ namespace CutTheRopeDX.Browser
 
         private void EnsureBatchCompatible()
         {
+            // Source weighting is tracked alongside the blend mode rather than derived from it:
+            // SourceAlpha/InverseSourceAlpha and One/InverseSourceAlpha both draw as SrcOver and
+            // differ only in the weighting, so a batch that ignored it would render one pair with
+            // the other's shader.
             if (!ReferenceEquals(_batchTexture, _boundTexture)
-                || _batchBlendMode != EffectiveBlendMode)
+                || _batchBlendMode != EffectiveBlendMode
+                || _batchWeightsSourceByAlpha != WeightsSourceByAlpha)
             {
                 FlushQuads();
                 _batchTexture = _boundTexture;
                 _batchBlendMode = EffectiveBlendMode;
+                _batchWeightsSourceByAlpha = WeightsSourceByAlpha;
             }
         }
 
         private void AppendRendererTint(in VertexPositionColorTexture vertex)
         {
-            Append(vertex, VertexColorEncoding.ForRendererTint(vertex.Color));
+            Append(
+                vertex,
+                VertexColorEncoding.ForRendererTint(vertex.Color, EffectiveSourceFactor));
         }
 
         private void AppendExplicitVertex(in VertexPositionColorTexture vertex)

@@ -66,9 +66,40 @@ namespace CutTheRopeDX.Tests
         {
             Color input = new(200, 100, 50, 128);
 
-            Color result = VertexColorEncoding.ForRendererTint(input);
+            Color result = VertexColorEncoding.ForRendererTint(input, BlendingFactor.GLONE);
 
             Assert.Equal(input, result);
+        }
+
+        [Fact]
+        public void RendererTintIsWeightedByAlphaUnderSourceAlphaBlend()
+        {
+            Color input = new(200, 100, 50, 128);
+
+            Color result = VertexColorEncoding.ForRendererTint(input, BlendingFactor.GLSRCALPHA);
+
+            // Straight RGB scaled by the tint alpha, alpha itself untouched: Skia's premultiply
+            // then applies the alpha a second time, which is what GL_SRC_ALPHA does.
+            Assert.Equal(new Color(100, 50, 25, 128), result);
+        }
+
+        [Fact]
+        public void OpaqueRendererTintIsUnchangedUnderSourceAlphaBlend()
+        {
+            Color input = new(200, 100, 50, 255);
+
+            Color result = VertexColorEncoding.ForRendererTint(input, BlendingFactor.GLSRCALPHA);
+
+            Assert.Equal(input, result);
+        }
+
+        [Theory]
+        [InlineData(BlendingFactor.GLSRCALPHA, true)]
+        [InlineData(BlendingFactor.GLONE, false)]
+        [InlineData(BlendingFactor.GLONEMINUSSRCALPHA, false)]
+        public void OnlySourceAlphaScalesTheSource(BlendingFactor source, bool expected)
+        {
+            Assert.Equal(expected, VertexColorEncoding.ScalesSourceByAlpha(source));
         }
     }
 }
