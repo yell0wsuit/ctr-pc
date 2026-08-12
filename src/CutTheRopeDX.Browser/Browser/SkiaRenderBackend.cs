@@ -285,11 +285,31 @@ namespace CutTheRopeDX.Browser
             {
                 baked[i] = QuadBaking.Bake(vertices[i], _matrices.ModelView, tint);
             }
-            DrawTriangleStrip(baked, vertexCount);
+            DrawBakedTriangleStrip(baked, vertexCount);
         }
 
         /// <inheritdoc />
         public void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            EnsureBatchCompatible();
+            for (int i = 0; i + 2 < vertexCount; i++)
+            {
+                AppendTransformed(vertices[i]);
+                AppendTransformed(vertices[i + 1]);
+                AppendTransformed(vertices[i + 2]);
+            }
+        }
+
+        /// <summary>
+        /// Appends a strip whose positions <see cref="QuadBaking"/> has already transformed.
+        /// </summary>
+        /// <param name="vertices">Vertices already in view space.</param>
+        /// <param name="vertexCount">Number of vertices to submit.</param>
+        private void DrawBakedTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
         {
             if (vertexCount < 3)
             {
@@ -323,7 +343,7 @@ namespace CutTheRopeDX.Browser
             EnsureBatchCompatible();
             for (int i = 0; i < indexCount; i++)
             {
-                Append(vertices[indices[i]]);
+                AppendTransformed(vertices[indices[i]]);
             }
         }
 
@@ -343,10 +363,9 @@ namespace CutTheRopeDX.Browser
                 paint.Color = new SKColor(
                     vertices[i].Color.R, vertices[i].Color.G,
                     vertices[i].Color.B, vertices[i].Color.A);
-                Target.DrawLine(
-                    vertices[i].Position.X, vertices[i].Position.Y,
-                    vertices[i + 1].Position.X, vertices[i + 1].Position.Y,
-                    paint);
+                SKPoint from = ToViewSpace(vertices[i].Position);
+                SKPoint to = ToViewSpace(vertices[i + 1].Position);
+                Target.DrawLine(from.X, from.Y, to.X, to.Y, paint);
             }
         }
 
@@ -488,11 +507,33 @@ namespace CutTheRopeDX.Browser
                 vertex.TextureCoordinate.X * width, vertex.TextureCoordinate.Y * height));
         }
 
+        /// <summary>
+        /// Appends a vertex Core handed over untransformed, applying the matrix stack on the way
+        /// in. Only the sprite paths arrive pre-baked; every other draw reaches the backend in
+        /// model space and would otherwise ignore the camera and any enclosing transform.
+        /// </summary>
+        /// <param name="vertex">The untransformed vertex.</param>
+        private void AppendTransformed(in VertexPositionColorTexture vertex)
+        {
+            Append(new VertexPositionColorTexture(
+                Vector3.Transform(vertex.Position, _matrices.ModelView),
+                vertex.Color,
+                vertex.TextureCoordinate));
+        }
+
         private void AppendColorOnly(in VertexPositionColor vertex)
         {
-            _positions.Add(new SKPoint(vertex.Position.X, vertex.Position.Y));
+            _positions.Add(ToViewSpace(vertex.Position));
             _colors.Add(new SKColor(
                 vertex.Color.R, vertex.Color.G, vertex.Color.B, vertex.Color.A));
+        }
+
+        /// <summary>Transforms a model-space position by the current matrix stack.</summary>
+        /// <param name="position">The untransformed position.</param>
+        private SKPoint ToViewSpace(in Vector3 position)
+        {
+            Vector3 transformed = Vector3.Transform(position, _matrices.ModelView);
+            return new SKPoint(transformed.X, transformed.Y);
         }
     }
 }
