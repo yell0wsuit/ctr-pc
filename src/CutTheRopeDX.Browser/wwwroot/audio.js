@@ -56,6 +56,10 @@ function startVoice(handle, buffer) {
     if (voice === undefined) {
         return;
     }
+    voice.buffer = buffer;
+    if (voice.paused) {
+        return;
+    }
 
     const ctx = ensureContext();
     const source = ctx.createBufferSource();
@@ -65,10 +69,15 @@ function startVoice(handle, buffer) {
     gain.gain.value = voice.volume;
     source.connect(gain).connect(ctx.destination);
 
-    source.onended = () => voices.delete(handle);
+    source.onended = () => {
+        if (voices.get(handle)?.source === source) {
+            voices.delete(handle);
+        }
+    };
     voice.source = source;
     voice.gain = gain;
-    source.start();
+    voice.startedAt = ctx.currentTime;
+    source.start(0, voice.offset);
 }
 
 export function play(key, loop, volume) {
@@ -80,7 +89,16 @@ export function play(key, loop, volume) {
     }
 
     const handle = nextVoice++;
-    voices.set(handle, { source: null, gain: null, loop, volume });
+    voices.set(handle, {
+        source: null,
+        gain: null,
+        buffer: null,
+        loop,
+        volume,
+        paused: false,
+        offset: 0,
+        startedAt: 0,
+    });
     void ensureContext()
         .resume()
         .catch(() => {
@@ -118,6 +136,49 @@ export function setVolume(handle, volume) {
         if (voice.gain !== null) {
             voice.gain.gain.value = volume;
         }
+    }
+}
+
+export function pauseVoice(handle) {
+    const voice = voices.get(handle);
+    if (voice === undefined || voice.paused) {
+        return;
+    }
+
+    voice.paused = true;
+    if (voice.source === null) {
+        return;
+    }
+
+    const elapsed = Math.max(0, ensureContext().currentTime - voice.startedAt);
+    const duration = voice.buffer?.duration ?? 0;
+    voice.offset += elapsed;
+    if (duration > 0) {
+        voice.offset = voice.loop
+            ? voice.offset % duration
+            : Math.min(voice.offset, duration);
+    }
+
+    const source = voice.source;
+    voice.source = null;
+    voice.gain = null;
+    source.onended = null;
+    try {
+        source.stop();
+    } catch {
+        // The source ended between the state check and stop; the retained offset still resumes.
+    }
+}
+
+export function resumeVoice(handle) {
+    const voice = voices.get(handle);
+    if (voice === undefined || !voice.paused) {
+        return;
+    }
+
+    voice.paused = false;
+    if (voice.buffer !== null) {
+        startVoice(handle, voice.buffer);
     }
 }
 

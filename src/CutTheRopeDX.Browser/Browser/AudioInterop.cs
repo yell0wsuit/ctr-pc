@@ -32,6 +32,14 @@ namespace CutTheRopeDX.Browser
         [JSImport("setVolume", "audio")]
         public static partial void SetVolume(int handle, float volume);
 
+        /// <summary>Pauses a voice at its current playback position.</summary>
+        [JSImport("pauseVoice", "audio")]
+        public static partial void PauseVoice(int handle);
+
+        /// <summary>Resumes a voice from its retained playback position.</summary>
+        [JSImport("resumeVoice", "audio")]
+        public static partial void ResumeVoice(int handle);
+
         /// <summary>Whether a voice is queued or playing.</summary>
         [JSImport("isPlaying", "audio")]
         public static partial bool IsPlaying(int handle);

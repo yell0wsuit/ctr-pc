@@ -166,7 +166,7 @@ namespace CutTheRopeDX.Browser
         {
             if (_musicHandle != 0)
             {
-                AudioInterop.SetVolume(_musicHandle, 0f);
+                AudioInterop.PauseVoice(_musicHandle);
                 _musicPaused = true;
             }
         }
@@ -176,7 +176,7 @@ namespace CutTheRopeDX.Browser
         {
             if (_musicHandle != 0)
             {
-                AudioInterop.SetVolume(_musicHandle, 1f);
+                AudioInterop.ResumeVoice(_musicHandle);
                 _musicPaused = false;
             }
         }
