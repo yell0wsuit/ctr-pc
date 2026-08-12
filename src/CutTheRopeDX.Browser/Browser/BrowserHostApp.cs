@@ -10,9 +10,14 @@ namespace CutTheRopeDX.Browser
     internal sealed partial class BrowserHostApp : IHostApp
     {
         private readonly HashSet<KeyCode> _down = [];
-        private readonly HashSet<KeyCode> _pressedThisFrame = [];
+        private readonly HashSet<KeyCode> _pressedThisStep = [];
 
         /// <summary>Records a key transition from the DOM.</summary>
+        /// <remarks>
+        /// Only the up-to-down edge counts as a press. Holding a key makes the browser repeat
+        /// <c>keydown</c> at the system repeat rate, and the held set is what filters those back
+        /// out, so a held arrow key scrolls the pack selector once rather than continuously.
+        /// </remarks>
         /// <param name="key">The mapped key.</param>
         /// <param name="down">Whether the key went down.</param>
         public void SetKey(KeyCode key, bool down)
@@ -21,7 +26,7 @@ namespace CutTheRopeDX.Browser
             {
                 if (_down.Add(key))
                 {
-                    _ = _pressedThisFrame.Add(key);
+                    _ = _pressedThisStep.Add(key);
                 }
             }
             else
@@ -30,16 +35,23 @@ namespace CutTheRopeDX.Browser
             }
         }
 
-        /// <summary>Clears the per-frame key transitions.</summary>
-        public void EndFrame()
+        /// <summary>
+        /// Clears the key presses the simulation step just consumed.
+        /// </summary>
+        /// <remarks>
+        /// This belongs to the step rather than the animation frame. One frame can run several
+        /// catch-up steps or none at all, and a press left standing across steps is acted on more
+        /// than once, while one cleared without a step having run is never acted on at all.
+        /// </remarks>
+        public void EndStep()
         {
-            _pressedThisFrame.Clear();
+            _pressedThisStep.Clear();
         }
 
         /// <inheritdoc />
         public bool IsKeyPressed(KeyCode key)
         {
-            return _pressedThisFrame.Contains(key);
+            return _pressedThisStep.Contains(key);
         }
 
         /// <inheritdoc />

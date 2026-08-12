@@ -33,7 +33,6 @@ namespace CutTheRopeDX.Browser
             _lastTimestampMs = timestampMs;
 
             ResizeIfNeeded();
-            HandleBackKey();
 
             _accumulator += Math.Min(elapsed, StepSeconds * MaxCatchUpSteps);
 
@@ -41,8 +40,16 @@ namespace CutTheRopeDX.Browser
             while (_accumulator >= StepSeconds && steps < MaxCatchUpSteps)
             {
                 SoundMgr.Update(TimeSpan.FromSeconds(StepSeconds));
+                // Every key read happens inside a step, and the step ends by clearing the
+                // presses it consumed. Core asks "was this pressed since I last looked" once per
+                // Update, which is once per step, so a frame that runs two catch-up steps would
+                // otherwise hand the same arrow press to both and skip two packs at once. The
+                // desktop host reaches the same place from the other side: its back key is read
+                // in Update, and its key edges latch per read rather than per frame.
+                HandleBackKey();
                 CtrRenderer.Update();
                 Preferences.Update();
+                Host?.EndStep();
                 _accumulator -= StepSeconds;
                 steps++;
             }
@@ -52,7 +59,6 @@ namespace CutTheRopeDX.Browser
             PlatformServices.Render.BeginFrame();
             CtrRenderer.OnDrawFrame();
             Present();
-            Host?.EndFrame();
         }
 
         /// <summary>
