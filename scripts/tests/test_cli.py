@@ -116,3 +116,28 @@ def test_missing_video_encoder_warns_but_still_succeeds(tmp_path, monkeypatch, c
 
     assert code == 0
     assert "no libvpx-vp9" in capsys.readouterr().err
+
+
+def test_require_video_fails_when_no_usable_ffmpeg(tmp_path, monkeypatch, capsys):
+    """An automated build must not publish a payload that quietly lost its cutscenes."""
+    content = tmp_path / "content"
+    _seed(content)
+
+    def missing() -> Path:
+        raise build_web_content.ffmpeg_tool.FfmpegNotFoundError("no ffmpeg on PATH")
+
+    monkeypatch.setattr(build_web_content.ffmpeg_tool, "find_system_ffmpeg", missing)
+
+    code = build_web_content.main(
+        [
+            "--source",
+            str(content),
+            "--out",
+            str(tmp_path / "out"),
+            "--skip-audio",
+            "--require-video",
+        ]
+    )
+
+    assert code == 3
+    assert "no ffmpeg on PATH" in capsys.readouterr().err

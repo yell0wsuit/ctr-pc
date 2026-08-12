@@ -9,6 +9,7 @@ Usage:
     python3 scripts/build_web_content.py
     python3 scripts/build_web_content.py --skip-audio
     python3 scripts/build_web_content.py --skip-video
+    python3 scripts/build_web_content.py --require-video
 """
 
 from __future__ import annotations
@@ -39,6 +40,14 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
         "--skip-video",
         action="store_true",
         help="Skip MP4 conversion; the browser build then plays no cutscenes.",
+    )
+    parser.add_argument(
+        "--require-video",
+        action="store_true",
+        help=(
+            "Fail instead of warning when no usable video ffmpeg is found. Automated "
+            "builds want this: a silent warning ships a payload with no cutscenes."
+        ),
     )
     return parser.parse_args(argv)
 
@@ -86,7 +95,11 @@ def main(argv: list[str] | None = None) -> int:
         ) as error:
             # Unlike audio, this warns instead of failing: the browser player reports a
             # missing video as a finished playback, so the build stays usable and simply
-            # has no cutscenes.
+            # has no cutscenes. --require-video turns that judgement around for callers
+            # whose output ships, where the quiet loss of the cutscenes is the worse bug.
+            if args.require_video:
+                print(f"error: video: {error}", file=sys.stderr)
+                return 3
             print(f"warning: video skipped: {error}", file=sys.stderr)
         else:
             converted, skipped = video.convert_videos(
