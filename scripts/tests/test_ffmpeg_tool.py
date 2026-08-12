@@ -63,3 +63,23 @@ def test_real_pinned_ffmpeg_has_libvorbis():
     except ffmpeg_tool.FfmpegNotFoundError:
         pytest.skip("MonoGame.Tool.FFmpeg not restored")
     assert "libvorbis" in ffmpeg_tool.available_encoders(binary)
+
+
+def test_find_system_ffmpeg_returns_the_binary_on_path(monkeypatch):
+    monkeypatch.setattr(ffmpeg_tool.shutil, "which", lambda _: "/usr/bin/ffmpeg")
+    assert ffmpeg_tool.find_system_ffmpeg() == Path("/usr/bin/ffmpeg")
+
+
+def test_find_system_ffmpeg_raises_when_absent(monkeypatch):
+    monkeypatch.setattr(ffmpeg_tool.shutil, "which", lambda _: None)
+    with pytest.raises(ffmpeg_tool.FfmpegNotFoundError):
+        ffmpeg_tool.find_system_ffmpeg()
+
+
+def test_pinned_ffmpeg_cannot_encode_video():
+    """The reason the video step may not use the pinned binary: it is audio-only."""
+    try:
+        binary = ffmpeg_tool.find_pinned_ffmpeg()
+    except ffmpeg_tool.FfmpegNotFoundError:
+        pytest.skip("MonoGame.Tool.FFmpeg not restored")
+    assert "libvpx-vp9" not in ffmpeg_tool.available_encoders(binary)

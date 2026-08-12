@@ -1,14 +1,15 @@
-"""Locates the NuGet-pinned ffmpeg and verifies it can encode what we need.
+"""Locates ffmpeg binaries and verifies they can encode what we need.
 
-The system ffmpeg on PATH must never be used: builds in the wild routinely lack
-libvorbis (and libwebp), and ffmpeg reports that only as a late "Unknown encoder"
-failure -- or, worse, silently picks a different encoder.
+Audio uses the NuGet-pinned ffmpeg because builds in the wild routinely lack libvorbis.
+Video uses the system ffmpeg only after its required encoders have been verified because
+the pinned build is audio-only.
 """
 
 from __future__ import annotations
 
 import platform
 import re
+import shutil
 import subprocess
 from collections.abc import Iterable
 from pathlib import Path
@@ -57,6 +58,24 @@ def find_pinned_ffmpeg(nuget_root: Path | None = None) -> Path:
             "Restore the solution first; the ffmpeg on PATH must not be used."
         )
     return max(candidates)[1]
+
+
+def find_system_ffmpeg() -> Path:
+    """Returns the ffmpeg on PATH.
+
+    Only the video step may use this. The pinned build is audio-only -- no VP9, no VP8,
+    no Opus, no WebM muxer -- so for video there is nothing to pin against. Audio must
+    keep using `find_pinned_ffmpeg`, because the silent-substitution hazard this module
+    exists to prevent is real; for video it is headed off instead by calling
+    `require_encoders` before any conversion runs.
+    """
+    found = shutil.which("ffmpeg")
+    if found is None:
+        raise FfmpegNotFoundError(
+            "No ffmpeg on PATH. Converting the cutscenes needs one that can encode "
+            "VP9 and Opus."
+        )
+    return Path(found)
 
 
 def available_encoders(ffmpeg: Path) -> set[str]:
