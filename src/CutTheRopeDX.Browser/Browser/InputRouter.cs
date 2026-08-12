@@ -67,6 +67,16 @@ namespace CutTheRopeDX.Browser
                 [new TouchLocation(0, state.Value, new Vector2(viewX, viewY))]);
         }
 
+        /// <summary>Scrolls the active view, as the desktop host does from its update loop.</summary>
+        /// <param name="delta">
+        /// Wheel movement in the desktop's units, where one notch is 120 and positive scrolls up.
+        /// </param>
+        [JSExport]
+        internal static void OnWheel(int delta)
+        {
+            _ = Application.SharedRootController().HandleMouseWheel(delta);
+        }
+
         /// <summary>Handles one keyboard transition.</summary>
         /// <param name="code">The DOM <c>KeyboardEvent.code</c> value.</param>
         /// <param name="down">Whether the key went down.</param>
