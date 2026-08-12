@@ -12,6 +12,7 @@ await FetchInterop.ImportAsync();
 await AudioInterop.ImportAsync();
 await StorageInterop.ImportAsync();
 await BrowserCursorService.ImportAsync();
+await BrowserVideoPlayer.ImportAsync();
 
 int fbo = GLContextInterop.CreateContext("game");
 int[] size = GLContextInterop.CanvasSize("game");
@@ -30,6 +31,7 @@ PlatformServices.Host = host;
 PlatformServices.Render = new SkiaRenderBackend(surface);
 PlatformServices.Preferences = new LocalStoragePreferenceStore();
 PlatformServices.Cursor = new BrowserCursorService();
+PlatformServices.VideoPlayerFactory = () => new BrowserVideoPlayer();
 
 BrowserAssetPlatform assets = new(surface);
 

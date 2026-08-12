@@ -53,6 +53,11 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public void DrawMovie()
         {
+            // The video element composites itself over the canvas, so there is no frame to
+            // draw here - only the scene underneath to get rid of, which would otherwise
+            // sit frozen in the letterbox around the video.
+            Renderer.SetClearColor(Color.Black);
+            Renderer.Clear(0);
         }
 
         /// <inheritdoc />
