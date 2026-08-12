@@ -123,7 +123,7 @@ Do these steps to test the game while you develop it.
 
     d. Browser (WebAssembly)
 
-    The browser build needs the WebAssembly workload. It also needs its own content. A Python script converts the desktop assets to WebP files, Ogg Vorbis files and subset fonts. Do this conversion before you build the game. The script needs Python 3.11 or a newer version.
+    The browser build needs the WebAssembly workload. It also needs its own content. A Python script converts the desktop assets to WebP files, Ogg Vorbis files, WebM videos and subset fonts. Do this conversion before you build the game. The script needs Python 3.11 or a newer version.
 
     ```bash
     dotnet workload install wasm-tools
@@ -134,6 +134,9 @@ Do these steps to test the game while you develop it.
 
     > [!NOTE]  
     > The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
+
+    > [!NOTE]
+    > The cutscene conversion is the one exception. The pinned FFmpeg has no video encoder, so this step uses the FFmpeg from your `PATH` and needs the `libvpx-vp9` encoder and the `libopus` encoder. If your FFmpeg does not have them, the script prints a warning and continues. The game then works, but it plays no cutscenes.
 
     The conversion is incremental. Do the conversion again only after you change an asset.
 

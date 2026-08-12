@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Converts the desktop content tree into the browser payload.
 
-Four jobs: PNG to WebP, WAV to Ogg Vorbis, font subsetting, and the tier-0
-metadata bundle. Every job is incremental, so a rerun after changing one asset
+Five jobs: PNG to WebP, WAV to Ogg Vorbis, MP4 to WebM, font subsetting, and the
+tier-0 metadata bundle. Every job is incremental, so a rerun after changing one asset
 reconverts only that asset.
 
 Usage:
     python3 scripts/build_web_content.py
     python3 scripts/build_web_content.py --skip-audio
+    python3 scripts/build_web_content.py --skip-video
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from webcontent import audio, ffmpeg_tool, fonts, images, manifest, metadata
+from webcontent import audio, ffmpeg_tool, fonts, images, manifest, metadata, video
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -33,6 +34,11 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
         "--skip-audio",
         action="store_true",
         help="Skip WAV conversion; useful when the pinned ffmpeg is unavailable.",
+    )
+    parser.add_argument(
+        "--skip-video",
+        action="store_true",
+        help="Skip MP4 conversion; the browser build then plays no cutscenes.",
     )
     return parser.parse_args(argv)
 
@@ -67,6 +73,26 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         converted, skipped = audio.convert_audio(source, out, entries, ffmpeg)
         print(f"audio: {converted} converted, {skipped} skipped")
+
+    if args.skip_video:
+        print("video: skipped")
+    else:
+        try:
+            system_ffmpeg = ffmpeg_tool.find_system_ffmpeg()
+            ffmpeg_tool.require_encoders(system_ffmpeg, video.REQUIRED_ENCODERS)
+        except (
+            ffmpeg_tool.FfmpegNotFoundError,
+            ffmpeg_tool.MissingEncoderError,
+        ) as error:
+            # Unlike audio, this warns instead of failing: the browser player reports a
+            # missing video as a finished playback, so the build stays usable and simply
+            # has no cutscenes.
+            print(f"warning: video skipped: {error}", file=sys.stderr)
+        else:
+            converted, skipped = video.convert_videos(
+                source, out, entries, system_ffmpeg
+            )
+            print(f"video: {converted} converted, {skipped} skipped")
 
     converted, skipped = fonts.convert_fonts(source, out, entries)
     print(f"fonts: {converted} converted, {skipped} skipped")

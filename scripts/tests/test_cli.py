@@ -74,3 +74,45 @@ def test_module_runs_as_a_script(tmp_path):
         check=False,
     )
     assert result.returncode == 0, result.stderr
+
+
+def test_skip_video_reports_and_succeeds(tmp_path, capsys):
+    content = tmp_path / "content"
+    _seed(content)
+
+    code = build_web_content.main(
+        [
+            "--source",
+            str(content),
+            "--out",
+            str(tmp_path / "out"),
+            "--skip-audio",
+            "--skip-video",
+        ]
+    )
+
+    assert code == 0
+    assert "video: skipped" in capsys.readouterr().out
+
+
+def test_missing_video_encoder_warns_but_still_succeeds(tmp_path, monkeypatch, capsys):
+    """A web build without cutscenes is the status quo, so this must not fail the build."""
+    content = tmp_path / "content"
+    _seed(content)
+    monkeypatch.setattr(
+        build_web_content.ffmpeg_tool,
+        "find_system_ffmpeg",
+        lambda: Path("/ff"),
+    )
+
+    def missing(_ffmpeg, _required):
+        raise build_web_content.ffmpeg_tool.MissingEncoderError("no libvpx-vp9")
+
+    monkeypatch.setattr(build_web_content.ffmpeg_tool, "require_encoders", missing)
+
+    code = build_web_content.main(
+        ["--source", str(content), "--out", str(tmp_path / "out"), "--skip-audio"]
+    )
+
+    assert code == 0
+    assert "no libvpx-vp9" in capsys.readouterr().err
