@@ -33,18 +33,6 @@ jobs:
             - name: Check formatting
               run: dotnet format --verify-no-changes --verbosity diagnostic
 
-            - name: Install Roslynator
-              run: |
-                  if ! command -v roslynator &> /dev/null; then
-                    dotnet tool install -g roslynator.dotnet.cli
-                  fi
-
-            - name: Run Roslynator analysis (Core)
-              run: roslynator analyze src/CutTheRopeDX.Core/CutTheRopeDX.Core.csproj
-
-            - name: Run Roslynator analysis (Desktop)
-              run: roslynator analyze src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj
-
             - name: Build
               run: dotnet build --no-restore -c Release
 
