@@ -196,6 +196,46 @@ namespace CutTheRopeDX.Browser
             int lineHeight = (int)(metrics.FontHeight() + metrics.GetLineOffset());
             SKColor textColor = Modulate(config.Color, inherited, layerAlpha);
 
+            // Skia strokes and shadows glyphs itself, so neither effect needs the offset redraws
+            // the desktop font performs — FontStashSharp has no such primitives, and dilating the
+            // glyphs by hand is only its way around that. A drop shadow is cast from whatever the
+            // paint draws, so hanging it on the outline pass shadows the outlined glyph, which is
+            // the shape desktop's kernel arrives at the long way. Sigma stays at zero because the
+            // original shadow is hard-edged. Stroking alone would leave the glyph interior
+            // translucent, hence StrokeAndFill.
+            using SKImageFilter dropShadow = effects?.HasShadow != true
+                ? null
+                : effects.HasStroke
+                    ? SKImageFilter.CreateDropShadow(
+                        effects.ShadowOffsetX,
+                        effects.ShadowOffsetY,
+                        0f,
+                        0f,
+                        Modulate(effects.ShadowColor, inherited, layerAlpha))
+                    : SKImageFilter.CreateDropShadowOnly(
+                        effects.ShadowOffsetX,
+                        effects.ShadowOffsetY,
+                        0f,
+                        0f,
+                        Modulate(effects.ShadowColor, inherited, layerAlpha));
+
+            // A centered stroke reaches half its width past the outline, so the width is the
+            // dilation desktop shows doubled. Without a stroke there is nothing to hang the
+            // shadow on, and the pass falls back to a shadow-only filter over the bare glyphs.
+            using SKPaint effectPaint = !hasEffects
+                ? null
+                : new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = effects.HasStroke ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill,
+                    StrokeJoin = SKStrokeJoin.Round,
+                    StrokeWidth = effects.HasStroke ? effects.StrokeAmount * 3f : 0f,
+                    Color = effects.HasStroke
+                        ? Modulate(effects.StrokeColor, inherited, layerAlpha)
+                        : textColor,
+                    ImageFilter = dropShadow,
+                };
+
             foreach (FormattedString line in call.Lines)
             {
                 if (call.MaxHeight != -1f && y >= call.DrawY + call.MaxHeight)
@@ -219,30 +259,10 @@ namespace CutTheRopeDX.Browser
                 }
 
                 float baseline = y + baselineOffset;
-                if (effects?.HasShadow == true)
+                if (effectPaint is not null)
                 {
-                    fill.Color = Modulate(effects.ShadowColor, inherited, layerAlpha);
                     canvas.DrawText(
-                        line.string_,
-                        x + effects.ShadowOffsetX,
-                        baseline + effects.ShadowOffsetY,
-                        SKTextAlign.Left,
-                        font,
-                        fill);
-                }
-
-                if (effects?.HasStroke == true)
-                {
-                    using SKPaint stroke = new()
-                    {
-                        IsAntialias = true,
-                        Style = SKPaintStyle.Stroke,
-                        StrokeWidth = effects.StrokeAmount * 4f,
-                        StrokeJoin = SKStrokeJoin.Round,
-                        Color = Modulate(effects.StrokeColor, inherited, layerAlpha),
-                    };
-                    canvas.DrawText(
-                        line.string_, x, baseline, SKTextAlign.Left, font, stroke);
+                        line.string_, x, baseline, SKTextAlign.Left, font, effectPaint);
                 }
 
                 fill.Color = textColor;
