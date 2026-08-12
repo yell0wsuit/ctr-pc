@@ -16,6 +16,7 @@ namespace CutTheRopeDX.Browser
 
         private static double _lastTimestampMs;
         private static double _accumulator;
+        private static bool _active = true;
 
         internal static SkiaSurface Surface { get; set; }
 
@@ -51,6 +52,40 @@ namespace CutTheRopeDX.Browser
             CtrRenderer.OnDrawFrame();
             Present();
             Host?.EndFrame();
+        }
+
+        /// <summary>
+        /// Pauses or resumes the game as the page gains and loses focus, mirroring the desktop
+        /// host's activate and deactivate handlers.
+        /// </summary>
+        /// <param name="active">Whether the page is both visible and focused.</param>
+        /// <remarks>
+        /// A blurred but still visible window keeps receiving animation frames, so the browser
+        /// alone never stops the simulation — only the pause seam does.
+        /// </remarks>
+        [JSExport]
+        internal static void SetActive(bool active)
+        {
+            if (active == _active)
+            {
+                return;
+            }
+
+            _active = active;
+            if (active)
+            {
+                // The blurred interval is time the player did not see. Restarting the clock
+                // drops it rather than letting the loop burn catch-up steps on it.
+                _lastTimestampMs = 0;
+                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
+            }
+            else
+            {
+                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                // Resigning active requests a save; the loop is about to stop advancing, so
+                // nothing else would write it.
+                Preferences.Update();
+            }
         }
 
         /// <summary>

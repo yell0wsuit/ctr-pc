@@ -60,14 +60,21 @@ const sendKey = (event, down) => {
 globalThis.addEventListener("keydown", (event) => sendKey(event, true));
 globalThis.addEventListener("keyup", (event) => sendKey(event, false));
 
-// Both events are needed: mobile Safari often terminates a backgrounded tab without
-// ever firing pagehide, and visibilitychange is the only signal it does deliver.
+// Focus and visibility are separate losses and either one must freeze the game: a hidden
+// tab stops getting animation frames but keeps its audio, while a window merely pushed
+// behind another stays visible and keeps ticking at full speed.
+const syncActive = () =>
+    loop.SetActive(
+        document.visibilityState === "visible" && document.hasFocus(),
+    );
+globalThis.addEventListener("focus", syncActive);
+globalThis.addEventListener("blur", syncActive);
+document.addEventListener("visibilitychange", syncActive);
+syncActive();
+
+// Pausing already flushes the save, but a page can be discarded without ever going
+// inactive first.
 globalThis.addEventListener("pagehide", () => loop.Flush());
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-        loop.Flush();
-    }
-});
 
 let started = false;
 const frame = (timestamp) => {
