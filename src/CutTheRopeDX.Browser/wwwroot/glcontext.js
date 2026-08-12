@@ -24,22 +24,26 @@ export function fitCanvasToViewport(viewportWidth, viewportHeight) {
     };
 }
 
-function resizeCanvasElement(canvas) {
+function resizeViewportSurfaces(canvas) {
     const layout = fitCanvasToViewport(window.innerWidth, window.innerHeight);
     const width = `${layout.width}px`;
     const height = `${layout.height}px`;
     const left = `${layout.left}px`;
     const top = `${layout.top}px`;
-    if (
-        canvas.style.width !== width ||
-        canvas.style.height !== height ||
-        canvas.style.left !== left ||
-        canvas.style.top !== top
-    ) {
-        canvas.style.width = width;
-        canvas.style.height = height;
-        canvas.style.left = left;
-        canvas.style.top = top;
+    const surfaces = [canvas, document.getElementById("movie")];
+    for (const surface of surfaces) {
+        if (
+            surface !== null &&
+            (surface.style.width !== width ||
+                surface.style.height !== height ||
+                surface.style.left !== left ||
+                surface.style.top !== top)
+        ) {
+            surface.style.width = width;
+            surface.style.height = height;
+            surface.style.left = left;
+            surface.style.top = top;
+        }
     }
 }
 
@@ -48,7 +52,7 @@ export function createContext(canvasId) {
     if (canvas === null) {
         return 0;
     }
-    resizeCanvasElement(canvas);
+    resizeViewportSurfaces(canvas);
     const attributes = {
         alpha: 1,
         depth: 1,
@@ -75,7 +79,7 @@ export function canvasSize(canvasId) {
     if (canvas === null) {
         return [0, 0];
     }
-    resizeCanvasElement(canvas);
+    resizeViewportSurfaces(canvas);
     const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
     const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
     const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
