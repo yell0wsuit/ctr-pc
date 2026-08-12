@@ -152,24 +152,89 @@ async function onFetch(event) {
  * @param {string} hash Manifest hash to record against the stored entry.
  */
 async function serveContent(request, hash) {
-    // Media elements ask for byte ranges. A cache match is by URL alone, so a stored full
-    // response would answer a range request with the whole file, which Safari refuses to
-    // play. Ranges go straight to the network; a whole-file request still fills the cache.
-    if (request.headers.has("range")) {
-        return fetch(request);
-    }
-
     const cache = await caches.open(contentCacheName);
-    const cached = await cache.match(request);
-    if (cached) {
-        return cached;
+    let response = await cache.match(request);
+    if (!response) {
+        // A range response cannot be stored in Cache Storage. Fetch the whole asset once so
+        // every later range can be served from the same cached bytes, including offline.
+        const fetchRequest = request.headers.has("range")
+            ? requestWithoutRange(request)
+            : request;
+        response = await fetch(fetchRequest);
+        if (response.ok && response.status === 200) {
+            await cache.put(fetchRequest, withHash(response.clone(), hash));
+        }
     }
 
-    const response = await fetch(request);
-    if (response.ok && response.status === 200) {
-        await cache.put(request, withHash(response.clone(), hash));
+    const range = request.headers.get("range");
+    if (range && response.ok && response.status === 200) {
+        return serveByteRange(response, range);
     }
     return response;
+}
+
+/**
+ * Copies a media request without its Range header so the network returns a cacheable 200.
+ *
+ * @param {Request} request
+ */
+function requestWithoutRange(request) {
+    const headers = new Headers(request.headers);
+    headers.delete("range");
+    return new Request(request, { headers });
+}
+
+/**
+ * Returns the requested slice of a full response as a media-compatible 206 response.
+ *
+ * @param {Response} response
+ * @param {string} rangeHeader
+ */
+async function serveByteRange(response, rangeHeader) {
+    const bytes = await response.arrayBuffer();
+    const length = bytes.byteLength;
+    const match = /^bytes=(\d*)-(\d*)$/.exec(rangeHeader);
+    if (!match) {
+        return rangeNotSatisfiable(length);
+    }
+
+    let start = match[1] === "" ? undefined : Number(match[1]);
+    let end = match[2] === "" ? undefined : Number(match[2]);
+    if (start === undefined) {
+        const suffixLength = end;
+        if (!suffixLength) {
+            return rangeNotSatisfiable(length);
+        }
+        start = Math.max(0, length - suffixLength);
+        end = length - 1;
+    } else {
+        end = end === undefined ? length - 1 : Math.min(end, length - 1);
+        if (start >= length || start > end) {
+            return rangeNotSatisfiable(length);
+        }
+    }
+
+    const headers = new Headers(response.headers);
+    headers.set("accept-ranges", "bytes");
+    headers.set("content-length", String(end - start + 1));
+    headers.set("content-range", `bytes ${start}-${end}/${length}`);
+    return new Response(bytes.slice(start, end + 1), {
+        status: 206,
+        statusText: "Partial Content",
+        headers,
+    });
+}
+
+/** Returns a 416 response describing the available byte length. */
+function rangeNotSatisfiable(length) {
+    return new Response(null, {
+        status: 416,
+        statusText: "Range Not Satisfiable",
+        headers: {
+            "accept-ranges": "bytes",
+            "content-range": `bytes */${length}`,
+        },
+    });
 }
 
 /**

@@ -66,7 +66,10 @@ export function resume() {
     if (finished || !started) {
         return;
     }
-    video.play().catch(() => {});
+    video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(finish);
+    });
 }
 
 /** Ends playback early, as a skip does. */
