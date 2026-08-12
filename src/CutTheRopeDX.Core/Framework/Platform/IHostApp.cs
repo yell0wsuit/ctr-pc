@@ -11,6 +11,13 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         bool CanExit { get; }
 
+        /// <summary>
+        /// The level editor to offer from the main menu, or <see langword="null"/> when this host
+        /// has none. The editor is a web application, so only a host that can keep the player
+        /// alongside a second page has anywhere to send them.
+        /// </summary>
+        string LevelEditorUrl { get; }
+
         void Exit();
 
         /// <summary>Returns whether <paramref name="key"/> transitioned from up to down this frame.</summary>

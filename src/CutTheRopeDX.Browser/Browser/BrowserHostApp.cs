@@ -58,6 +58,13 @@ namespace CutTheRopeDX.Browser
         public bool CanExit => false;
 
         /// <inheritdoc />
+        /// <remarks>
+        /// This takes the main menu slot the quit button leaves empty in a browser, which cannot
+        /// close its own tab.
+        /// </remarks>
+        public string LevelEditorUrl => "https://yell0wsuit.github.io/ctrdx-editor/";
+
+        /// <inheritdoc />
         public void Exit()
         {
         }

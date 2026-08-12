@@ -633,6 +633,13 @@ namespace CutTheRopeDX.GameMain
                 Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup, this);
                 _ = vBox.AddChild(c3);
             }
+            else if (!string.IsNullOrEmpty(PlatformServices.Host?.LevelEditorUrl))
+            {
+                // A host that cannot quit leaves the third slot empty, so the editor takes it and
+                // the menu keeps the three-button shape it was laid out for.
+                Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor, this);
+                _ = vBox.AddChild(c3);
+            }
             _ = baseElement.AddChild(vBox);
             bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
             if (flag)
@@ -1858,6 +1865,15 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == MenuButtonId.OpenFacebook:
                     OpenUrl("http://www.facebook.com/cuttherope");
+                    return;
+                case var id when id == MenuButtonId.LevelEditor:
+                    {
+                        string editorUrl = PlatformServices.Host?.LevelEditorUrl;
+                        if (!string.IsNullOrEmpty(editorUrl))
+                        {
+                            OpenUrl(editorUrl);
+                        }
+                    }
                     return;
                 case var id when id == MenuButtonId.FanworkProjectWebsite:
                     OpenUrl(Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE").ToString());
