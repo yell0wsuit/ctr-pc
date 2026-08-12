@@ -13,13 +13,18 @@ namespace CutTheRopeDX.Browser
     /// <summary>A self-drawing font rendered directly by Skia.</summary>
     internal sealed class SkiaFont : FontGeneric
     {
-        private readonly SKFont _font;
-        private readonly SKPaint _fill;
-        private readonly FontConfiguration _config;
+        // Effects are a property of the font, so the objects expressing them belong to the font
+        // too. Only their colors vary per draw, and a paint's color is a setter while an image
+        // filter is immutable - so the paint is mutated in place and the filter is rebuilt only
+        // when the shadow color actually changes, which for a given font it usually does not.
+        private SKPaint _effectPaint;
+        private SKPaint _layerPaint;
+        private SKImageFilter _dropShadow;
+        private SKColor _dropShadowColor;
 
         public SkiaFont(SKTypeface typeface, FontConfiguration config)
         {
-            _config = config;
+            Config = config;
 
             using SKFont probe = new(typeface, 100f);
             SKFontMetrics metrics = probe.Metrics;
@@ -28,13 +33,13 @@ namespace CutTheRopeDX.Browser
                 ? config.Size * 100f / heightPer100
                 : config.Size;
 
-            _font = new SKFont(typeface, emSize);
-            _fill = new SKPaint { IsAntialias = true };
+            Font = new SKFont(typeface, emSize);
+            Fill = new SKPaint { IsAntialias = true };
 
             lineOffset = config.LineSpacing;
             topSpacing = config.TopSpacing;
             charOffset = 0f;
-            spaceWidth = _font.MeasureText(" ");
+            spaceWidth = Font.MeasureText(" ");
         }
 
         /// <inheritdoc />
@@ -54,27 +59,36 @@ namespace CutTheRopeDX.Browser
         /// </remarks>
         internal bool IsAlive { get; private set; } = true;
 
+        /// <summary>The glyph source, sized to the configuration.</summary>
+        internal SKFont Font { get; }
+
+        /// <summary>The paint the fill pass draws with.</summary>
+        internal SKPaint Fill { get; }
+
+        /// <summary>The configuration this font was built from.</summary>
+        internal FontConfiguration Config { get; }
+
         /// <inheritdoc />
         public override float FontHeight()
         {
             if (!IsAlive)
             {
-                return _config.Size;
+                return Config.Size;
             }
-            SKFontMetrics metrics = _font.Metrics;
+            SKFontMetrics metrics = Font.Metrics;
             return metrics.Descent - metrics.Ascent;
         }
 
         /// <inheritdoc />
         public override bool CanDraw(char c)
         {
-            return IsAlive && (c == ' ' || _font.ContainsGlyph(c));
+            return IsAlive && (c == ' ' || Font.ContainsGlyph(c));
         }
 
         /// <inheritdoc />
         public override float GetCharWidth(char c)
         {
-            return !IsAlive ? 0f : c == ' ' ? spaceWidth : _font.MeasureText(c.ToString());
+            return !IsAlive ? 0f : c == ' ' ? spaceWidth : Font.MeasureText(c.ToString());
         }
 
         /// <inheritdoc />
@@ -122,7 +136,67 @@ namespace CutTheRopeDX.Browser
             {
                 return;
             }
-            SkiaTextRenderer.Draw(call, _font, _fill, _config, this);
+            SkiaTextRenderer.Draw(call, this);
+        }
+
+        /// <summary>
+        /// Returns the paint for the stroke and shadow pass, or <see langword="null"/> when the
+        /// font carries neither effect.
+        /// </summary>
+        /// <param name="color">The color the pass draws with, already modulated.</param>
+        /// <param name="shadowColor">The shadow color, already modulated.</param>
+        internal SKPaint EffectPaint(SKColor color, SKColor shadowColor)
+        {
+            FontEffectSettings effects = Config.Effects;
+            bool hasStroke = effects?.HasStroke == true;
+            if (!hasStroke && effects?.HasShadow != true)
+            {
+                return null;
+            }
+
+            // A centered stroke reaches half its width past the outline, so the width is the
+            // dilation desktop shows doubled. Without a stroke there is nothing to hang the
+            // shadow on, and the pass falls back to a shadow-only filter over the bare glyphs.
+            _effectPaint ??= new SKPaint
+            {
+                IsAntialias = true,
+                Style = hasStroke ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill,
+                StrokeJoin = SKStrokeJoin.Round,
+                StrokeWidth = hasStroke ? effects.StrokeAmount * 3f : 0f,
+            };
+            _effectPaint.Color = color;
+
+            if (effects.HasShadow && (_dropShadow is null || _dropShadowColor != shadowColor))
+            {
+                // Skia strokes and shadows glyphs itself, so neither effect needs the offset
+                // redraws the desktop font performs -- FontStashSharp has no such primitives, and
+                // dilating the glyphs by hand is only its way around that. A drop shadow is cast
+                // from whatever the paint draws, so hanging it on the outline pass shadows the
+                // outlined glyph, which is the shape desktop's kernel arrives at the long way.
+                // Sigma stays at zero because the original shadow is hard-edged.
+                SKImageFilter replaced = _dropShadow;
+                _dropShadow = hasStroke
+                    ? SKImageFilter.CreateDropShadow(
+                        effects.ShadowOffsetX, effects.ShadowOffsetY, 0f, 0f, shadowColor)
+                    : SKImageFilter.CreateDropShadowOnly(
+                        effects.ShadowOffsetX, effects.ShadowOffsetY, 0f, 0f, shadowColor);
+                _dropShadowColor = shadowColor;
+                // The paint takes its own reference before the previous filter is released.
+                _effectPaint.ImageFilter = _dropShadow;
+                replaced?.Dispose();
+            }
+
+            return _effectPaint;
+        }
+
+        /// <summary>Returns the paint that composites an effected layer at a partial alpha.</summary>
+        /// <param name="alpha">The layer alpha, from 0 to 1.</param>
+        internal SKPaint LayerPaint(float alpha)
+        {
+            _layerPaint ??= new SKPaint();
+            _layerPaint.Color = new SKColor(
+                255, 255, 255, (byte)Math.Clamp(alpha * 255f, 0f, 255f));
+            return _layerPaint;
         }
 
         /// <inheritdoc />
@@ -131,8 +205,14 @@ namespace CutTheRopeDX.Browser
             if (disposing)
             {
                 IsAlive = false;
-                _font.Dispose();
-                _fill.Dispose();
+                Font.Dispose();
+                Fill.Dispose();
+                _effectPaint?.Dispose();
+                _layerPaint?.Dispose();
+                _dropShadow?.Dispose();
+                _effectPaint = null;
+                _layerPaint = null;
+                _dropShadow = null;
             }
             base.Dispose(disposing);
         }
@@ -141,18 +221,17 @@ namespace CutTheRopeDX.Browser
     /// <summary>Draws a Core text call onto the active Skia render target.</summary>
     internal static class SkiaTextRenderer
     {
-        public static void Draw(
-            in TextDrawCall call,
-            SKFont font,
-            SKPaint fill,
-            FontConfiguration config,
-            FontGeneric metrics)
+        public static void Draw(in TextDrawCall call, SkiaFont metrics)
         {
             if (call.Lines is null || call.Lines.Count == 0
                 || PlatformServices.Render is not SkiaRenderBackend renderer)
             {
                 return;
             }
+
+            SKFont font = metrics.Font;
+            SKPaint fill = metrics.Fill;
+            FontConfiguration config = metrics.Config;
 
             renderer.FlushQuads();
             SKCanvas canvas = renderer.Target;
@@ -184,11 +263,7 @@ namespace CutTheRopeDX.Browser
 
             if (needsLayer)
             {
-                using SKPaint layer = new()
-                {
-                    Color = new SKColor(255, 255, 255, ToByte(inheritedAlpha * 255f)),
-                };
-                _ = canvas.SaveLayer(layer);
+                _ = canvas.SaveLayer(metrics.LayerPaint(inheritedAlpha));
             }
 
             float y = call.DrawY + metrics.GetTopSpacing();
@@ -196,45 +271,17 @@ namespace CutTheRopeDX.Browser
             int lineHeight = (int)(metrics.FontHeight() + metrics.GetLineOffset());
             SKColor textColor = Modulate(config.Color, inherited, layerAlpha);
 
-            // Skia strokes and shadows glyphs itself, so neither effect needs the offset redraws
-            // the desktop font performs — FontStashSharp has no such primitives, and dilating the
-            // glyphs by hand is only its way around that. A drop shadow is cast from whatever the
-            // paint draws, so hanging it on the outline pass shadows the outlined glyph, which is
-            // the shape desktop's kernel arrives at the long way. Sigma stays at zero because the
-            // original shadow is hard-edged. Stroking alone would leave the glyph interior
-            // translucent, hence StrokeAndFill.
-            using SKImageFilter dropShadow = effects?.HasShadow != true
+            // Stroking alone would leave the glyph interior translucent, so the effect pass fills
+            // as well and the fill pass then draws over it.
+            SKPaint effectPaint = !hasEffects
                 ? null
-                : effects.HasStroke
-                    ? SKImageFilter.CreateDropShadow(
-                        effects.ShadowOffsetX,
-                        effects.ShadowOffsetY,
-                        0f,
-                        0f,
-                        Modulate(effects.ShadowColor, inherited, layerAlpha))
-                    : SKImageFilter.CreateDropShadowOnly(
-                        effects.ShadowOffsetX,
-                        effects.ShadowOffsetY,
-                        0f,
-                        0f,
-                        Modulate(effects.ShadowColor, inherited, layerAlpha));
-
-            // A centered stroke reaches half its width past the outline, so the width is the
-            // dilation desktop shows doubled. Without a stroke there is nothing to hang the
-            // shadow on, and the pass falls back to a shadow-only filter over the bare glyphs.
-            using SKPaint effectPaint = !hasEffects
-                ? null
-                : new SKPaint
-                {
-                    IsAntialias = true,
-                    Style = effects.HasStroke ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill,
-                    StrokeJoin = SKStrokeJoin.Round,
-                    StrokeWidth = effects.HasStroke ? effects.StrokeAmount * 3f : 0f,
-                    Color = effects.HasStroke
+                : metrics.EffectPaint(
+                    effects.HasStroke
                         ? Modulate(effects.StrokeColor, inherited, layerAlpha)
                         : textColor,
-                    ImageFilter = dropShadow,
-                };
+                    effects.HasShadow
+                        ? Modulate(effects.ShadowColor, inherited, layerAlpha)
+                        : default);
 
             foreach (FormattedString line in call.Lines)
             {
