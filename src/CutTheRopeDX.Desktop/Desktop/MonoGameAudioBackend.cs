@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 
+using XnaMediaPlayer = Microsoft.Xna.Framework.Media.MediaPlayer;
+
 namespace CutTheRopeDX.Desktop
 {
     /// <summary>
     /// MonoGame implementation of <see cref="IAudioBackend"/>, backed by a
-    /// <see cref="ContentManager"/> for loading and MonoGame's <see cref="MediaPlayer"/> for
+    /// <see cref="ContentManager"/> for loading and MonoGame's <see cref="XnaMediaPlayer"/> for
     /// music playback.
     /// </summary>
     internal sealed class MonoGameAudioBackend(ContentManager contentManager) : IAudioBackend
@@ -105,26 +107,26 @@ namespace CutTheRopeDX.Desktop
         public void PlayMusic(IMusicTrack track, bool repeating)
         {
             Song song = ((XnaMusicTrack)track).Song;
-            MediaPlayer.IsRepeating = repeating;
-            MediaPlayer.Play(song);
+            XnaMediaPlayer.IsRepeating = repeating;
+            XnaMediaPlayer.Play(song);
         }
 
         public void StopMusic()
         {
-            MediaPlayer.Stop();
+            XnaMediaPlayer.Stop();
         }
 
         public void PauseMusic()
         {
-            MediaPlayer.Pause();
+            XnaMediaPlayer.Pause();
         }
 
         public void ResumeMusic()
         {
-            MediaPlayer.Resume();
+            XnaMediaPlayer.Resume();
         }
 
-        public AudioPlaybackState MusicState => MediaPlayer.State switch
+        public AudioPlaybackState MusicState => XnaMediaPlayer.State switch
         {
             MediaState.Playing => AudioPlaybackState.Playing,
             MediaState.Paused => AudioPlaybackState.Paused,
