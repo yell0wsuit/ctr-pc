@@ -136,9 +136,9 @@ Do these steps to test the game while you develop it.
     > The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
 
     > [!NOTE]
-    > The cutscene conversion is the one exception. The pinned FFmpeg has no video encoder, so this step uses the FFmpeg from your `PATH` and needs the `libvpx-vp9` encoder and the `libopus` encoder. If your FFmpeg does not have them, the script prints a warning and continues. The game then works, but it plays no cutscenes.
+    > The cutscene conversion is the one exception. The pinned FFmpeg has no video encoder, so this step uses the FFmpeg from your `PATH` and needs the `libvpx-vp9` encoder and the `libopus` encoder. If your FFmpeg does not have them, the script prints a warning and continues. The game then works, but it plays no cutscenes. Add `--require-video` to make this an error instead; the GitHub Pages workflow does this, because a published build must not lose its cutscenes without a word.
 
-    The conversion is incremental. Do the conversion again only after you change an asset.
+    The conversion is incremental. Do the conversion again only after you change an asset. The script reports each file as it converts it: a terminal gets one line that updates in place, and a log file or a CI job gets a line every few seconds. Add `--no-progress` for the stage totals alone.
 
     Start the game in your browser:
 

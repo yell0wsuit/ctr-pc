@@ -70,8 +70,19 @@ jobs:
             - name: Install web content tooling
               run: python3 -m pip install --upgrade pillow fonttools
 
+            # The cutscenes are the one step the pinned ffmpeg cannot do -- that build is
+            # audio-only -- and the runner image ships no ffmpeg at all, so without this the
+            # conversion warned and deployed a site with no cutscenes. Ubuntu's package is
+            # built with libvpx and libopus, which is all the video step asks for.
+            - name: Install ffmpeg for the cutscenes
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y ffmpeg
+
+            # --require-video makes a missing or unusable ffmpeg fail the deploy rather than
+            # warn: a published build silently losing its cutscenes is the bug this had.
             - name: Convert content for the browser
-              run: python3 scripts/build_web_content.py
+              run: python3 scripts/build_web_content.py --require-video
 
             # CI=true switches AOT off for PR builds, which must not follow the payload people
             # actually play: the physics loop is unusable on the interpreter.

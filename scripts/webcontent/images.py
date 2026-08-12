@@ -13,7 +13,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from . import manifest
+from . import manifest, progress
 
 QUALITY = 80
 LOSSLESS_FALLBACK_RATIO = 0.60
@@ -64,25 +64,34 @@ def encode_webp(source: Path) -> tuple[bytes, str]:
 
 
 def convert_images(
-    content_root: Path, out_root: Path, entries: dict[str, str]
+    content_root: Path,
+    out_root: Path,
+    entries: dict[str, str],
+    report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every PNG under content_root/images, skipping unchanged outputs."""
     converted = 0
     skipped = 0
-    for source in sorted((content_root / "images").rglob("*.png")):
-        relative = source.relative_to(content_root).with_suffix(".webp")
-        out_rel = relative.as_posix()
-        out_path = out_root / relative
-        stamp = manifest.stamp_for(source, SETTINGS)
+    sources = sorted((content_root / "images").rglob("*.png"))
+    report.start("images", len(sources))
+    try:
+        for source in sources:
+            relative = source.relative_to(content_root).with_suffix(".webp")
+            out_rel = relative.as_posix()
+            out_path = out_root / relative
+            report.advance(out_rel)
+            stamp = manifest.stamp_for(source, SETTINGS)
 
-        if manifest.is_current(entries, out_rel, stamp, out_path):
-            skipped += 1
-            continue
+            if manifest.is_current(entries, out_rel, stamp, out_path):
+                skipped += 1
+                continue
 
-        data, _kind = encode_webp(source)
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_bytes(data)
-        entries[out_rel] = stamp
-        converted += 1
+            data, _kind = encode_webp(source)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_bytes(data)
+            entries[out_rel] = stamp
+            converted += 1
+    finally:
+        report.finish()
 
     return converted, skipped

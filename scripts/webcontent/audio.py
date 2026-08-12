@@ -9,7 +9,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from . import manifest
+from . import manifest, progress
 
 MUSIC_BITRATE_K = 192
 SFX_BITRATE_K = 96
@@ -45,35 +45,45 @@ def ogg_command(
 
 
 def convert_audio(
-    content_root: Path, out_root: Path, entries: dict[str, str], ffmpeg: Path
+    content_root: Path,
+    out_root: Path,
+    entries: dict[str, str],
+    ffmpeg: Path,
+    report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every WAV under content_root/sounds, skipping unchanged outputs."""
     converted = 0
     skipped = 0
-    for source in sorted((content_root / "sounds").rglob("*.wav")):
-        relative = source.relative_to(content_root)
-        out_relative = relative.with_suffix(".ogg")
-        out_rel = out_relative.as_posix()
-        out_path = out_root / out_relative
-        stamp = manifest.stamp_for(source, settings_for(relative))
+    sources = sorted((content_root / "sounds").rglob("*.wav"))
+    report.start("audio", len(sources))
+    try:
+        for source in sources:
+            relative = source.relative_to(content_root)
+            out_relative = relative.with_suffix(".ogg")
+            out_rel = out_relative.as_posix()
+            out_path = out_root / out_relative
+            report.advance(out_rel)
+            stamp = manifest.stamp_for(source, settings_for(relative))
 
-        if manifest.is_current(entries, out_rel, stamp, out_path):
-            skipped += 1
-            continue
+            if manifest.is_current(entries, out_rel, stamp, out_path):
+                skipped += 1
+                continue
 
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        sfx = is_sfx(relative)
-        subprocess.run(
-            ogg_command(
-                ffmpeg,
-                source,
-                out_path,
-                SFX_BITRATE_K if sfx else MUSIC_BITRATE_K,
-                mono=sfx,
-            ),
-            check=True,
-        )
-        entries[out_rel] = stamp
-        converted += 1
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            sfx = is_sfx(relative)
+            subprocess.run(
+                ogg_command(
+                    ffmpeg,
+                    source,
+                    out_path,
+                    SFX_BITRATE_K if sfx else MUSIC_BITRATE_K,
+                    mono=sfx,
+                ),
+                check=True,
+            )
+            entries[out_rel] = stamp
+            converted += 1
+    finally:
+        report.finish()
 
     return converted, skipped
