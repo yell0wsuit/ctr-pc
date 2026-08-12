@@ -9,8 +9,8 @@ non-binary content read is served synchronously from memory.
 from __future__ import annotations
 
 import json
-import xml.etree.ElementTree as ElementTree
 from pathlib import Path
+from xml.etree import ElementTree
 
 #: Paths that must never enter the bundle, relative to the content root.
 EXCLUDED_RELATIVE = ("images/image_dimensions.json",)

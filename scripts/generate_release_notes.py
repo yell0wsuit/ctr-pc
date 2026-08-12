@@ -8,6 +8,12 @@ BASE_URL = f"https://github.com/{REPO}/releases/download"
 
 
 def generate(version: str) -> str:
+    """Builds the download section for a release, linking every published artifact.
+
+    The names below are reproduced, not discovered: the release workflow uploads
+    whatever the packaging scripts emit, by glob. A rename on that side has to be
+    mirrored here or the notes will link to assets that do not exist.
+    """
     tag = f"v{version}"
     dl = f"{BASE_URL}/{tag}"
 
@@ -55,6 +61,7 @@ def generate(version: str) -> str:
 
 
 def main():
+    """Prompts for a version and prints the generated markdown."""
     version = input("Version (without 'v' prefix, e.g. 2.12.0.1): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)

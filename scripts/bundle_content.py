@@ -57,6 +57,7 @@ def collect(content: Path) -> list[Path]:
 
 
 def main() -> int:
+    """Writes the manifest and the asset zip. Returns a process exit code."""
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
