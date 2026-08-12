@@ -141,3 +141,29 @@ def test_require_video_fails_when_no_usable_ffmpeg(tmp_path, monkeypatch, capsys
 
     assert code == 3
     assert "no ffmpeg on PATH" in capsys.readouterr().err
+
+
+def test_progress_reports_each_file_and_no_progress_suppresses_it(tmp_path, capsys):
+    content = tmp_path / "content"
+    _seed(content)
+
+    build_web_content.main(
+        ["--source", str(content), "--out", str(tmp_path / "out"), "--skip-audio"]
+    )
+    with_progress = capsys.readouterr().err
+
+    build_web_content.main(
+        [
+            "--source",
+            str(content),
+            "--out",
+            str(tmp_path / "out2"),
+            "--skip-audio",
+            "--no-progress",
+        ]
+    )
+    without_progress = capsys.readouterr().err
+
+    assert "images 1/1 100%" in with_progress
+    assert "images/a.webp" in with_progress
+    assert "images/a.webp" not in without_progress

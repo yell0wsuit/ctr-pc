@@ -14,15 +14,21 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import logging
 from collections.abc import Sequence
 from pathlib import Path
 
 from fontTools.subset import Options, Subsetter
 from fontTools.ttLib import TTFont
 
-from . import manifest
+from . import manifest, progress
 
 SETTINGS = "ttf:subset:v1"
+
+# fontTools warns once per table it has no subsetter for (meta, FFTM, webf). Dropping
+# them is the intended outcome -- none holds glyph or layout data the game reads -- so
+# the warnings are noise that only obscures the real output.
+logging.getLogger("fontTools.subset").setLevel(logging.ERROR)
 
 #: Font file -> the locale codes whose text it must cover. Mirrors
 #: CutTheRopeDX.Core/GameMain/Resources.cs FontConfig.GetFontFile.
@@ -93,31 +99,41 @@ def _settings_for_charset(charset: set[str]) -> str:
 
 
 def convert_fonts(
-    content_root: Path, out_root: Path, entries: dict[str, str]
+    content_root: Path,
+    out_root: Path,
+    entries: dict[str, str],
+    report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Subsets every mapped font, skipping unchanged outputs."""
     converted = 0
     skipped = 0
     locales_dir = content_root / "locales"
+    present = [
+        (font_file, languages)
+        for font_file, languages in sorted(FONT_LANGUAGES.items())
+        if (content_root / "fonts" / font_file).exists()
+    ]
 
-    for font_file, languages in sorted(FONT_LANGUAGES.items()):
-        source = content_root / "fonts" / font_file
-        if not source.exists():
-            continue
+    report.start("fonts", len(present))
+    try:
+        for font_file, languages in present:
+            source = content_root / "fonts" / font_file
+            relative = Path("fonts") / f"{Path(font_file).stem}.ttf"
+            out_rel = relative.as_posix()
+            out_path = out_root / relative
+            report.advance(out_rel)
+            charset = collect_charset(locales_dir, languages)
+            stamp = manifest.stamp_for(source, _settings_for_charset(charset))
 
-        relative = Path("fonts") / f"{Path(font_file).stem}.ttf"
-        out_rel = relative.as_posix()
-        out_path = out_root / relative
-        charset = collect_charset(locales_dir, languages)
-        stamp = manifest.stamp_for(source, _settings_for_charset(charset))
+            if manifest.is_current(entries, out_rel, stamp, out_path):
+                skipped += 1
+                continue
 
-        if manifest.is_current(entries, out_rel, stamp, out_path):
-            skipped += 1
-            continue
-
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_bytes(subset_font(source, charset))
-        entries[out_rel] = stamp
-        converted += 1
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_bytes(subset_font(source, charset))
+            entries[out_rel] = stamp
+            converted += 1
+    finally:
+        report.finish()
 
     return converted, skipped

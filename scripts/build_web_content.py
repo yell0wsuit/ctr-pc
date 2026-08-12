@@ -17,7 +17,16 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from webcontent import audio, ffmpeg_tool, fonts, images, manifest, metadata, video
+from webcontent import (
+    audio,
+    ffmpeg_tool,
+    fonts,
+    images,
+    manifest,
+    metadata,
+    progress,
+    video,
+)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -49,7 +58,22 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
             "builds want this: a silent warning ships a payload with no cutscenes."
         ),
     )
+    parser.add_argument(
+        "--no-progress",
+        action="store_true",
+        help="Report only the per-stage totals, without the per-file progress line.",
+    )
     return parser.parse_args(argv)
+
+
+def _say(message: str) -> None:
+    """Prints a stage summary, flushed.
+
+    Progress goes to stderr, which is unbuffered, while a redirected stdout is not: with
+    the default buffering a log would show every progress line first and every summary
+    afterwards, in a heap at the end.
+    """
+    print(message, flush=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -64,12 +88,13 @@ def main(argv: list[str] | None = None) -> int:
 
     manifest_path = out / MANIFEST_NAME
     entries = manifest.load_manifest(manifest_path)
+    report = progress.SILENT if args.no_progress else progress.LiveReporter()
 
-    converted, skipped = images.convert_images(source, out, entries)
-    print(f"images: {converted} converted, {skipped} skipped")
+    converted, skipped = images.convert_images(source, out, entries, report)
+    _say(f"images: {converted} converted, {skipped} skipped")
 
     if args.skip_audio:
-        print("audio: skipped")
+        _say("audio: skipped")
     else:
         try:
             ffmpeg = ffmpeg_tool.find_pinned_ffmpeg()
@@ -80,11 +105,11 @@ def main(argv: list[str] | None = None) -> int:
         ) as error:
             print(f"error: {error}", file=sys.stderr)
             return 2
-        converted, skipped = audio.convert_audio(source, out, entries, ffmpeg)
-        print(f"audio: {converted} converted, {skipped} skipped")
+        converted, skipped = audio.convert_audio(source, out, entries, ffmpeg, report)
+        _say(f"audio: {converted} converted, {skipped} skipped")
 
     if args.skip_video:
-        print("video: skipped")
+        _say("video: skipped")
     else:
         try:
             system_ffmpeg = ffmpeg_tool.find_system_ffmpeg()
@@ -103,15 +128,15 @@ def main(argv: list[str] | None = None) -> int:
             print(f"warning: video skipped: {error}", file=sys.stderr)
         else:
             converted, skipped = video.convert_videos(
-                source, out, entries, system_ffmpeg
+                source, out, entries, system_ffmpeg, report
             )
-            print(f"video: {converted} converted, {skipped} skipped")
+            _say(f"video: {converted} converted, {skipped} skipped")
 
-    converted, skipped = fonts.convert_fonts(source, out, entries)
-    print(f"fonts: {converted} converted, {skipped} skipped")
+    converted, skipped = fonts.convert_fonts(source, out, entries, report)
+    _say(f"fonts: {converted} converted, {skipped} skipped")
 
     size = metadata.write_tier0(metadata.build_tier0(source), out / "tier0.json")
-    print(f"tier0: {size / 1024:.0f} KB")
+    _say(f"tier0: {size / 1024:.0f} KB")
 
     manifest.save_manifest(manifest_path, entries)
     runtime_entries = {

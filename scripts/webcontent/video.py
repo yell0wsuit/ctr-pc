@@ -13,7 +13,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from . import manifest
+from . import manifest, progress
 
 CRF = 32
 AUDIO_BITRATE_K = 96
@@ -58,25 +58,35 @@ def webm_command(ffmpeg: Path, source: Path, dest: Path) -> list[str]:
 
 
 def convert_videos(
-    content_root: Path, out_root: Path, entries: dict[str, str], ffmpeg: Path
+    content_root: Path,
+    out_root: Path,
+    entries: dict[str, str],
+    ffmpeg: Path,
+    report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every MP4 under content_root/video_hd, skipping unchanged outputs."""
     converted = 0
     skipped = 0
-    for source in sorted((content_root / "video_hd").rglob("*.mp4")):
-        relative = source.relative_to(content_root)
-        out_relative = relative.with_suffix(".webm")
-        out_rel = out_relative.as_posix()
-        out_path = out_root / out_relative
-        stamp = manifest.stamp_for(source, SETTINGS)
+    sources = sorted((content_root / "video_hd").rglob("*.mp4"))
+    report.start("video", len(sources))
+    try:
+        for source in sources:
+            relative = source.relative_to(content_root)
+            out_relative = relative.with_suffix(".webm")
+            out_rel = out_relative.as_posix()
+            out_path = out_root / out_relative
+            report.advance(out_rel)
+            stamp = manifest.stamp_for(source, SETTINGS)
 
-        if manifest.is_current(entries, out_rel, stamp, out_path):
-            skipped += 1
-            continue
+            if manifest.is_current(entries, out_rel, stamp, out_path):
+                skipped += 1
+                continue
 
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(webm_command(ffmpeg, source, out_path), check=True)
-        entries[out_rel] = stamp
-        converted += 1
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            subprocess.run(webm_command(ffmpeg, source, out_path), check=True)
+            entries[out_rel] = stamp
+            converted += 1
+    finally:
+        report.finish()
 
     return converted, skipped
