@@ -77,79 +77,74 @@ Do these steps to test the game while you develop it.
 
     You can also use [GitHub Desktop](https://desktop.github.com/) to clone the repository.
 
-> [!NOTE]  
-> This repository does not contain the content assets. The content assets are the images, the audio, the fonts, the cursors and the video. They are in the [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets) repository.
-> You do not have to do anything. Your first local build downloads the assets from the most recent `ctrdx-assets` release. The build then extracts the assets into the `content/` directory.
-> CI does not do this, because CI does not compile the content.
-
 3. Build the game with one of these commands.
 
-    > [!NOTE]  
-    > The `PublishAot` option has prerequisites. Obey the [AOT prerequisites](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#prerequisites) for your operating system.
+> [!NOTE]  
+> The `PublishAot` option has prerequisites. Obey the [AOT prerequisites](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#prerequisites) for your operating system.
 
-    a. Windows
+a. Windows
 
-    ```bash
-    dotnet publish src\CutTheRopeDX.Desktop\CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o .\src\CutTheRopeDX.Desktop\bin\Publish\win-x64
-    ```
+```bash
+dotnet publish src\CutTheRopeDX.Desktop\CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o .\src\CutTheRopeDX.Desktop\bin\Publish\win-x64
+```
 
-    b. macOS
+b. macOS
 
-    Use this command if you do not use AVFoundation. The game then plays the video with FFmpeg. Install FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg) first.
+Use this command if you do not use AVFoundation. The game then plays the video with FFmpeg. Install FFmpeg from [Homebrew](https://formulae.brew.sh/formula/ffmpeg) first.
 
-    ```bash
-    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -r osx-arm64 -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
-    ```
+```bash
+dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -r osx-arm64 -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
+```
 
-    Use this command if you use AVFoundation. AVFoundation needs macOS 26.0 or later, and Xcode.
+Use this command if you use AVFoundation. AVFoundation needs macOS 26.0 or later, and Xcode.
 
-    ```bash
-    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
-    ```
+```bash
+dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
+```
 
 > [!NOTE]  
 > Change `osx-arm64` to `osx-x64` to build the game for an Intel Mac. We do not know if the game operates correctly on an Intel Mac.
 
-    c. Linux
+c. Linux
 
-    ```bash
-    dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/linux-x64
-    ```
+```bash
+dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/linux-x64
+```
 
 > [!WARNING]  
 > A native AOT binary from Linux operates only on the same Linux version, or on a newer Linux version.
 
-    If native AOT causes a problem, remove the `-p:PublishAot=true` option. Then build the game again.
+If native AOT causes a problem, remove the `-p:PublishAot=true` option. Then build the game again.
 
-    d. Browser (WebAssembly)
+d. Browser (WebAssembly)
 
-    The browser build needs the WebAssembly workload. It also needs its own content. A Python script converts the desktop assets to WebP files, Ogg Vorbis files, WebM videos and subset fonts. Do this conversion before you build the game. The script needs Python 3.11 or a newer version.
+The browser build needs the WebAssembly workload. It also needs its own content. A Python script converts the desktop assets to WebP files, Ogg Vorbis files, WebM videos and subset fonts. Do this conversion before you build the game. The script needs Python 3.11 or a newer version.
 
-    ```bash
-    dotnet workload install wasm-tools
-    python3 -m pip install pillow fonttools
-    dotnet restore content/Builder/CutTheRopeDX.Content.csproj
-    python3 scripts/build_web_content.py
-    ```
+```bash
+dotnet workload install wasm-tools
+python3 -m pip install pillow fonttools
+dotnet restore content/Builder/CutTheRopeDX.Content.csproj
+python3 scripts/build_web_content.py
+```
 
 > [!NOTE]  
 > The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
 
-    The conversion is incremental. Do the conversion again only after you change an asset. The script reports each file as it converts it: a terminal gets one line that updates in place, and a log file or a CI job gets a line every few seconds. Add `--no-progress` for the stage totals alone.
+The conversion is incremental. Do the conversion again only after you change an asset. The script reports each file as it converts it: a terminal gets one line that updates in place, and a log file or a CI job gets a line every few seconds. Add `--no-progress` for the stage totals alone.
 
-    Start the game in your browser:
+Start the game in your browser:
 
-    ```bash
-    dotnet run --project src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
-    ```
+```bash
+dotnet run --project src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
+```
 
-    Or publish the static site:
+Or publish the static site:
 
-    ```bash
-    dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj -c Release -o dist
-    ```
+```bash
+dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj -c Release -o dist
+```
 
-    The build writes the site to the `dist/wwwroot` directory. The [Deploy Browser to GitHub Pages](.github/workflows/deploy-pages.yml) workflow sends this site to GitHub Pages. You must start this workflow manually.
+The build writes the site to the `dist/wwwroot` directory. The [Deploy Browser to GitHub Pages](.github/workflows/deploy-pages.yml) workflow sends this site to GitHub Pages. You must start this workflow manually.
 
 4. Run the unit tests:
 
