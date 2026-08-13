@@ -64,9 +64,9 @@ Do these steps to test the game while you develop it.
 
 1. Install [.NET 10 or higher](https://dotnet.microsoft.com/en-us/download/dotnet/).
 
-    > [!NOTE]  
-    > The `global.json` file sets the minimum SDK version. It uses `rollForward: latestFeature`. Thus a newer 10.0.x SDK also works.
-    > If your SDK is older than the minimum, each `dotnet` command stops with a version-mismatch error. Install a newer SDK to correct this.
+> [!NOTE]  
+> The `global.json` file sets the minimum SDK version. It uses `rollForward: latestFeature`. Thus a newer 10.0.x SDK also works.
+> If your SDK is older than the minimum, each `dotnet` command stops with a version-mismatch error. Install a newer SDK to correct this.
 
 2. Clone the repository to your computer:
 
@@ -77,10 +77,10 @@ Do these steps to test the game while you develop it.
 
     You can also use [GitHub Desktop](https://desktop.github.com/) to clone the repository.
 
-    > [!NOTE]  
-    > This repository does not contain the content assets. The content assets are the images, the audio, the fonts, the cursors and the video. They are in the [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets) repository.
-    > You do not have to do anything. Your first local build downloads the assets from the most recent `ctrdx-assets` release. The build then extracts the assets into the `content/` directory.
-    > CI does not do this, because CI does not compile the content.
+> [!NOTE]  
+> This repository does not contain the content assets. The content assets are the images, the audio, the fonts, the cursors and the video. They are in the [ctrdx-assets](https://github.com/yell0wsuit/ctrdx-assets) repository.
+> You do not have to do anything. Your first local build downloads the assets from the most recent `ctrdx-assets` release. The build then extracts the assets into the `content/` directory.
+> CI does not do this, because CI does not compile the content.
 
 3. Build the game with one of these commands.
 
@@ -107,8 +107,8 @@ Do these steps to test the game while you develop it.
     dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0-macos -r osx-arm64 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/osx-arm64
     ```
 
-    > [!NOTE]  
-    > Change `osx-arm64` to `osx-x64` to build the game for an Intel Mac. We do not know if the game operates correctly on an Intel Mac.
+> [!NOTE]  
+> Change `osx-arm64` to `osx-x64` to build the game for an Intel Mac. We do not know if the game operates correctly on an Intel Mac.
 
     c. Linux
 
@@ -116,8 +116,8 @@ Do these steps to test the game while you develop it.
     dotnet publish src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj -c Release -f net10.0 -p:PublishAot=true -o ./src/CutTheRopeDX.Desktop/bin/Publish/linux-x64
     ```
 
-    > [!WARNING]  
-    > A native AOT binary from Linux operates only on the same Linux version, or on a newer Linux version.
+> [!WARNING]  
+> A native AOT binary from Linux operates only on the same Linux version, or on a newer Linux version.
 
     If native AOT causes a problem, remove the `-p:PublishAot=true` option. Then build the game again.
 
@@ -132,11 +132,8 @@ Do these steps to test the game while you develop it.
     python3 scripts/build_web_content.py
     ```
 
-    > [!NOTE]  
-    > The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
-
-    > [!NOTE]
-    > The cutscene conversion is the one exception. The pinned FFmpeg has no video encoder, so this step uses the FFmpeg from your `PATH` and needs the `libvpx-vp9` encoder and the `libopus` encoder. If your FFmpeg does not have them, the script prints a warning and continues. The game then works, but it plays no cutscenes. Add `--require-video` to make this an error instead; the GitHub Pages workflow does this, because a published build must not lose its cutscenes without a word.
+> [!NOTE]  
+> The `dotnet restore` command puts the correct FFmpeg in your NuGet cache. The script does not use the FFmpeg from the `PATH`. Many FFmpeg builds do not have the `libvorbis` encoder and the `libwebp` encoder. Such a build fails at a later time.
 
     The conversion is incremental. Do the conversion again only after you change an asset. The script reports each file as it converts it: a terminal gets one line that updates in place, and a log file or a CI job gets a line every few seconds. Add `--no-progress` for the stage totals alone.
 
