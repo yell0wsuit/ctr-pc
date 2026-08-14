@@ -23,6 +23,35 @@ namespace CutTheRopeDX.Framework.Core
             ViewportLayout.DesignHeight);
 
         /// <summary>
+        /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
+        /// on read from the published viewport rather than cached, so it is correct the instant
+        /// the viewport changes and there is no second copy to keep in step.
+        /// </summary>
+        protected CTRRectangle FittedBox => LayoutMath.FitInside(
+            DesignBox.w,
+            DesignBox.h,
+            ScreenPresentation.Instance.Snapshot.VisibleBounds);
+
+        /// <summary>
+        /// Uniform scale from design-box coordinates to logical space.
+        /// </summary>
+        protected float FittedScale => FittedBox.w / DesignBox.w;
+
+        /// <summary>
+        /// Converts a pointer position in logical space into this controller's design space, so a
+        /// hit test against unscaled element rectangles lands where the element was drawn.
+        /// </summary>
+        /// <param name="logicalX">Pointer X in logical space.</param>
+        /// <param name="logicalY">Pointer Y in logical space.</param>
+        /// <returns>The pointer position in design space.</returns>
+        protected Vector PointerToDesignSpace(float logicalX, float logicalY)
+        {
+            CTRRectangle fitted = FittedBox;
+            float scale = fitted.w / DesignBox.w;
+            return Vect((logicalX - fitted.x) / scale, (logicalY - fitted.y) / scale);
+        }
+
+        /// <summary>
         /// Initializes a controller with no parent.
         /// </summary>
         protected ViewController()
