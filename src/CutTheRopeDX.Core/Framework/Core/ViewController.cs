@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.Framework.Core
@@ -11,6 +12,16 @@ namespace CutTheRopeDX.Framework.Core
     /// </summary>
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {
+        /// <summary>
+        /// The coordinate box this controller's fixed content is authored in. Defaults to the
+        /// full design size, which reproduces the fixed layout the game shipped with.
+        /// </summary>
+        protected CTRRectangle DesignBox { get; set; } = new(
+            0f,
+            0f,
+            ViewportLayout.DesignWidth,
+            ViewportLayout.DesignHeight);
+
         /// <summary>
         /// Initializes a controller with no parent.
         /// </summary>
@@ -109,6 +120,29 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Positions this controller's content for the given viewport. Called when the viewport
+        /// changes and when this controller becomes active, never on an ordinary frame.
+        /// </summary>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        protected virtual void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+        }
+
+        /// <summary>
+        /// Lays out this controller and every active descendant. Inactive children are skipped;
+        /// they lay out when they are activated.
+        /// </summary>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        public void RelayoutTree(ViewportLayoutSnapshot snapshot)
+        {
+            Relayout(snapshot);
+            if (activeChildID != -1)
+            {
+                GetChild(activeChildID)?.RelayoutTree(snapshot);
+            }
+        }
+
+        /// <summary>
         /// Registers a view under the specified identifier.
         /// </summary>
         /// <param name="v">View to register.</param>
@@ -157,6 +191,7 @@ namespace CutTheRopeDX.Framework.Core
             View view = views[n];
             Application.SharedRootController().OnControllerViewShow(view);
             view.Show();
+            Relayout(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>

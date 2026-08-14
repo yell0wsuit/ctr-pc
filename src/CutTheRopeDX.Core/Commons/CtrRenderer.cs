@@ -40,8 +40,12 @@ namespace CutTheRopeDX.Commons
         /// </param>
         public static void OnSurfaceChanged(int width, int height, bool cropWidth = true)
         {
-            _ = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
+            if (changed)
+            {
+                Application.SharedRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+            }
         }
 
         /// <summary>
