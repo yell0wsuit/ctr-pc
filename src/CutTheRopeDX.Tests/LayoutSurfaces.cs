@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         {
             try
             {
-                ScreenPresentation.Instance.SetSurfaceSize(width, height);
+                _ = ScreenPresentation.Instance.SetSurfaceSize(width, height, true);
                 body();
             }
             finally
@@ -69,9 +69,10 @@ namespace CutTheRopeDX.Tests
                 // called OnSurfaceChanged also moved REAL_SCREEN_*, VIEW_SCREEN_* and the
                 // expanded-screen globals, and those would otherwise leak into every later test.
                 CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
-                ScreenPresentation.Instance.SetSurfaceSize(
+                _ = ScreenPresentation.Instance.SetSurfaceSize(
                     HeadlessHost.DefaultWidth,
-                    HeadlessHost.DefaultHeight);
+                    HeadlessHost.DefaultHeight,
+                    true);
             }
         }
     }

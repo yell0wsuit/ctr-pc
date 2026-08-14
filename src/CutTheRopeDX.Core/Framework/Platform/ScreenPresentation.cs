@@ -26,47 +26,46 @@ namespace CutTheRopeDX.Framework.Platform
         public int GameHeight { get; } = gameHeight;
 
         /// <summary>
-        /// Gets the current drawable surface width, as last reported via <see cref="SetSurfaceSize"/>.
+        /// The published viewport state. Every other member of this type derives from it, and
+        /// nothing else in the engine holds a copy, so there is no second value to keep in step.
         /// </summary>
-        public int SurfaceWidth { get; private set; }
+        public ViewportLayoutSnapshot Snapshot { get; private set; } =
+            ViewportLayout.Compute(gameWidth, gameHeight, true);
 
         /// <summary>
-        /// Gets the current drawable surface height, as last reported via <see cref="SetSurfaceSize"/>.
+        /// Gets the current drawable surface width.
         /// </summary>
-        public int SurfaceHeight { get; private set; }
+        public int SurfaceWidth => Snapshot.SurfaceWidth;
 
         /// <summary>
-        /// Whether fullscreen-style view scaling should crop width instead of fitting the full game
-        /// width. Consulted the next time <see cref="SetSurfaceSize"/> recomputes the scaled view rect.
+        /// Gets the current drawable surface height.
         /// </summary>
-        public bool FullScreenCropWidth { get; set; } = true;
+        public int SurfaceHeight => Snapshot.SurfaceHeight;
 
         /// <summary>
-        /// Gets the X coordinate of the letterboxed or pillarboxed view rectangle used for rendering
-        /// the game.
+        /// Gets the X coordinate of the rectangle fixed-layout content renders into.
         /// </summary>
-        public int ScaledViewX { get; private set; }
+        public int ScaledViewX => (int)Snapshot.LegacyContentBounds.x;
 
         /// <summary>
-        /// Gets the Y coordinate of the letterboxed or pillarboxed view rectangle used for rendering
-        /// the game.
+        /// Gets the Y coordinate of the rectangle fixed-layout content renders into.
         /// </summary>
-        public int ScaledViewY { get; private set; }
+        public int ScaledViewY => (int)Snapshot.LegacyContentBounds.y;
 
         /// <summary>
-        /// Gets the width of the letterboxed or pillarboxed view rectangle used for rendering the game.
+        /// Gets the width of the rectangle fixed-layout content renders into.
         /// </summary>
-        public int ScaledViewWidth { get; private set; }
+        public int ScaledViewWidth => (int)Snapshot.LegacyContentBounds.w;
 
         /// <summary>
-        /// Gets the height of the letterboxed or pillarboxed view rectangle used for rendering the game.
+        /// Gets the height of the rectangle fixed-layout content renders into.
         /// </summary>
-        public int ScaledViewHeight { get; private set; }
+        public int ScaledViewHeight => (int)Snapshot.LegacyContentBounds.h;
 
         /// <summary>
         /// Gets the horizontal scale factor from logical game width to the current scaled view width.
         /// </summary>
-        public double WidthAspectRatio => ScaledViewWidth / (double)GameWidth;
+        public double WidthAspectRatio => Snapshot.LegacyScale;
 
         /// <summary>
         /// Converts a window-space X coordinate into scaled-view space.
@@ -128,40 +127,30 @@ namespace CutTheRopeDX.Framework.Platform
             return (int)((scaledWidth * _gameAspectRatio) + 0.5);
         }
 
-        /// <summary>The single input: the drawable surface is now <paramref name="w"/>×<paramref name="h"/>.</summary>
+        /// <summary>
+        /// Publishes the viewport state for a surface of the given size. Every input arrives in
+        /// this one call, so a caller cannot set part of the state and publish the rest later.
+        /// </summary>
         /// <param name="w">Drawable surface width.</param>
         /// <param name="h">Drawable surface height.</param>
-        public void SetSurfaceSize(int w, int h)
+        /// <param name="cropWidth">
+        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
+        /// aspect. An input to this transition rather than stored state.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the published snapshot differs from the previous one.
+        /// Callers react to it immediately; storing it would recreate the shadow state this
+        /// design exists to remove.
+        /// </returns>
+        public bool SetSurfaceSize(int w, int h, bool cropWidth)
         {
-            SurfaceWidth = w;
-            SurfaceHeight = h;
-            UpdateScaledView();
-        }
-
-        /// <summary>
-        /// Recomputes the scaled render rectangle for the current surface size.
-        /// </summary>
-        private void UpdateScaledView()
-        {
-            // Always use fullscreen-style letterboxing/pillarboxing for both modes
-            int sourceWidth = SurfaceWidth;
-            int sourceHeight = SurfaceHeight;
-            if (sourceWidth >= sourceHeight)
+            ViewportLayoutSnapshot next = ViewportLayout.Compute(w, h, cropWidth);
+            if (next == Snapshot)
             {
-                int scaledHeight = FullScreenCropWidth ? sourceHeight : ScaledGameHeight(sourceWidth);
-                int scaledWidth = FullScreenCropWidth ? ScaledGameWidth(scaledHeight) : sourceWidth;
-                ScaledViewX = (sourceWidth - scaledWidth) / 2;
-                ScaledViewY = (sourceHeight - scaledHeight) / 2;
-                ScaledViewWidth = scaledWidth;
-                ScaledViewHeight = scaledHeight;
-                return;
+                return false;
             }
-            int portraitScaledHeight = FullScreenCropWidth ? (int)(sourceWidth / 5f * 4f) : ScaledGameHeight(sourceWidth);
-            int portraitScaledWidth = FullScreenCropWidth ? ScaledGameWidth(portraitScaledHeight) : sourceWidth;
-            ScaledViewX = (sourceWidth - portraitScaledWidth) / 2;
-            ScaledViewY = (sourceHeight - portraitScaledHeight) / 2;
-            ScaledViewWidth = portraitScaledWidth;
-            ScaledViewHeight = portraitScaledHeight;
+            Snapshot = next;
+            return true;
         }
 
         /// <summary>

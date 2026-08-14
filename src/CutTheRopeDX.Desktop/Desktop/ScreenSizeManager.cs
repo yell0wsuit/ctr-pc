@@ -344,8 +344,10 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
-            ScreenPresentation.Instance.FullScreenCropWidth = _fullScreenCropWidth;
-            ScreenPresentation.Instance.SetSurfaceSize(sourceRect.Width, sourceRect.Height);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(
+                sourceRect.Width,
+                sourceRect.Height,
+                _fullScreenCropWidth);
         }
 
         private static void ApplyDesktopVkResize(

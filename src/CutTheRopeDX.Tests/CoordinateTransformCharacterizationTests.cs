@@ -17,8 +17,8 @@ namespace CutTheRopeDX.Tests
         [MemberData(nameof(Surfaces))]
         public void ScaledViewRectIsPinnedWithoutCropWidth(string name, int width, int height)
         {
-            ScreenPresentation presentation = new(2560, 1440) { FullScreenCropWidth = false };
-            presentation.SetSurfaceSize(width, height);
+            ScreenPresentation presentation = new(2560, 1440);
+            _ = presentation.SetSurfaceSize(width, height, false);
 
             (int expectedX, int expectedY, int expectedWidth, int expectedHeight) = name switch
             {
@@ -44,8 +44,8 @@ namespace CutTheRopeDX.Tests
         {
             // Recorded, not endorsed. Crop-width keeps full height and derives width from the
             // design aspect, which at 1:1 is wider than the surface, so x goes negative.
-            ScreenPresentation presentation = new(2560, 1440) { FullScreenCropWidth = true };
-            presentation.SetSurfaceSize(1000, 1000);
+            ScreenPresentation presentation = new(2560, 1440);
+            _ = presentation.SetSurfaceSize(1000, 1000, true);
 
             Assert.Equal(1778, presentation.ScaledViewWidth);
             Assert.Equal(1000, presentation.ScaledViewHeight);
@@ -56,8 +56,8 @@ namespace CutTheRopeDX.Tests
         [MemberData(nameof(Surfaces))]
         public void ViewToGameRoundTripsTheCenterOfTheScaledView(string name, int width, int height)
         {
-            ScreenPresentation presentation = new(2560, 1440) { FullScreenCropWidth = false };
-            presentation.SetSurfaceSize(width, height);
+            ScreenPresentation presentation = new(2560, 1440);
+            _ = presentation.SetSurfaceSize(width, height, false);
 
             int viewX = presentation.ScaledViewWidth / 2;
             int viewY = presentation.ScaledViewHeight / 2;

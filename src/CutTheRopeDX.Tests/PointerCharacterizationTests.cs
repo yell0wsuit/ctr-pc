@@ -20,8 +20,8 @@ namespace CutTheRopeDX.Tests
         [MemberData(nameof(Surfaces))]
         public void SurfaceCenterMapsToTheLogicalCenter(string name, int width, int height)
         {
-            ScreenPresentation presentation = new(2560, 1440) { FullScreenCropWidth = false };
-            presentation.SetSurfaceSize(width, height);
+            ScreenPresentation presentation = new(2560, 1440);
+            _ = presentation.SetSurfaceSize(width, height, false);
 
             int surfaceX = presentation.ScaledViewX + (presentation.ScaledViewWidth / 2);
             int surfaceY = presentation.ScaledViewY + (presentation.ScaledViewHeight / 2);
@@ -40,8 +40,8 @@ namespace CutTheRopeDX.Tests
         [MemberData(nameof(Surfaces))]
         public void ScaledViewCornersMapToTheLogicalCorners(string name, int width, int height)
         {
-            ScreenPresentation presentation = new(2560, 1440) { FullScreenCropWidth = false };
-            presentation.SetSurfaceSize(width, height);
+            ScreenPresentation presentation = new(2560, 1440);
+            _ = presentation.SetSurfaceSize(width, height, false);
 
             float topLeftX = presentation.TransformViewToGameX(
                 presentation.TransformWindowToViewX(presentation.ScaledViewX));
