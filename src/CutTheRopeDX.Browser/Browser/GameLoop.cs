@@ -126,7 +126,6 @@ namespace CutTheRopeDX.Browser
             }
 
             Surface.Resize(canvas[0], canvas[1]);
-            _ = ScreenPresentation.Instance.SetSurfaceSize(canvas[0], canvas[1], true);
             CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1]);
         }
 

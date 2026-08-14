@@ -36,7 +36,6 @@ PlatformServices.VideoPlayerFactory = () => new BrowserVideoPlayer();
 BrowserAssetPlatform assets = new(surface);
 
 ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-_ = ScreenPresentation.Instance.SetSurfaceSize(size[0], size[1], true);
 CutTheRopeDX.CtrBootstrap.Initialize(assets, audio, size[0], size[1], LanguageHelper.Current);
 
 GameLoop.Surface = surface;

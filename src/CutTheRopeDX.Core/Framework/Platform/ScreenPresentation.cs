@@ -2,8 +2,8 @@ namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Logical-resolution presentation state: fixed game resolution, current surface size, scaled
-    /// view rect, and coordinate transforms. Its only input is <see cref="SetSurfaceSize"/>; both
-    /// the desktop host (via <c>ScreenSizeManager</c>) and the headless host feed it.
+    /// view rect, and coordinate transforms. <c>CtrRenderer</c> publishes its snapshot for every
+    /// host through the engine's single surface-change transition.
     /// </summary>
     /// <param name="gameWidth">Logical game width.</param>
     /// <param name="gameHeight">Logical game height.</param>

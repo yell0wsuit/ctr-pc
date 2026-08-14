@@ -8,13 +8,13 @@ using Xunit;
 namespace CutTheRopeDX.Desktop.Tests
 {
     /// <summary>
-    /// Pins the desktop resize wiring as it behaves today. The window and presentation rectangle
-    /// update, but the older Core REAL_SCREEN globals remain at their startup values.
+    /// Covers the desktop resize wiring from the window bounds through the shared presentation
+    /// snapshot and legacy Core screen globals.
     /// </summary>
     public sealed class ScreenSizeManagerCharacterizationTests
     {
         [Fact]
-        public void WindowResizeDoesNotRefreshCoreRealScreenGlobals()
+        public void WindowResizeRefreshesCoreRealScreenGlobals()
         {
             Assembly coreAssembly = Assembly.Load("CutTheRopeDX.Core");
             Type frameworkTypes = coreAssembly.GetType("CutTheRopeDX.Framework.FrameworkTypes");
@@ -27,9 +27,6 @@ namespace CutTheRopeDX.Desktop.Tests
                 BindingFlags.Public | BindingFlags.Static);
             Assert.NotNull(realWidth);
             Assert.NotNull(realHeight);
-            float startupWidth = Assert.IsType<float>(realWidth.GetValue(null));
-            float startupHeight = Assert.IsType<float>(realHeight.GetValue(null));
-
             ScreenSizeManager manager = new(2560, 1440);
             MethodInfo windowRectChanged = typeof(ScreenSizeManager).GetMethod(
                 "WindowRectChanged",
@@ -40,8 +37,8 @@ namespace CutTheRopeDX.Desktop.Tests
 
             Assert.Equal(1024, manager.WindowWidth);
             Assert.Equal(768, manager.WindowHeight);
-            Assert.Equal(startupWidth, Assert.IsType<float>(realWidth.GetValue(null)));
-            Assert.Equal(startupHeight, Assert.IsType<float>(realHeight.GetValue(null)));
+            Assert.Equal(1024f, Assert.IsType<float>(realWidth.GetValue(null)));
+            Assert.Equal(768f, Assert.IsType<float>(realHeight.GetValue(null)));
         }
     }
 }
