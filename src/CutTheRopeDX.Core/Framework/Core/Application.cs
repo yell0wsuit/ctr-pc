@@ -42,6 +42,15 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Returns the shared root controller only when application startup has already created it.
+        /// </summary>
+        /// <returns>The existing shared root controller, or <see langword="null"/> before launch.</returns>
+        public static RootController ExistingRootController()
+        {
+            return root;
+        }
+
+        /// <summary>
         /// Returns the shared application-settings instance.
         /// </summary>
         /// <returns>Shared application settings.</returns>

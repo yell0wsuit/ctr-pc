@@ -1,5 +1,6 @@
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
 using Xunit;
@@ -12,6 +13,30 @@ namespace CutTheRopeDX.Tests
     /// </summary>
     public sealed class SurfaceChangeTests
     {
+        private sealed class ProbeApplication : Application
+        {
+            public static RootController Root
+            {
+                get => root;
+                set => root = value;
+            }
+        }
+
+        private sealed class CountingRootController : RootController
+        {
+            public CountingRootController()
+                : base(null)
+            {
+            }
+
+            public int RelayoutCount { get; private set; }
+
+            protected override void Relayout(ViewportLayoutSnapshot snapshot)
+            {
+                RelayoutCount++;
+            }
+        }
+
         [Fact]
         public void OnSurfaceChangedPublishesTheSnapshot()
         {
@@ -71,6 +96,53 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(2560f, FrameworkTypes.REAL_SCREEN_WIDTH);
             Assert.Equal(1440f, FrameworkTypes.REAL_SCREEN_HEIGHT);
+        }
+
+        [Fact]
+        public void SurfaceChangeBeforeApplicationLaunchDoesNotCreateTheRootController()
+        {
+            RootController previousRoot = ProbeApplication.Root;
+            try
+            {
+                ProbeApplication.Root = null;
+                ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+
+                CtrRenderer.OnSurfaceChanged(1600, 900);
+
+                Assert.Null(ProbeApplication.Root);
+            }
+            finally
+            {
+                ProbeApplication.Root = previousRoot;
+            }
+        }
+
+        [Fact]
+        public void GenuineChangePushesOnceWhileEqualCallbackOnlyRefreshesLegacyGlobals()
+        {
+            RootController previousRoot = ProbeApplication.Root;
+            try
+            {
+                CountingRootController root = new();
+                ProbeApplication.Root = root;
+                ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+
+                CtrRenderer.OnSurfaceChanged(1600, 900);
+
+                Assert.Equal(1, root.RelayoutCount);
+
+                FrameworkTypes.REAL_SCREEN_WIDTH = 480f;
+                FrameworkTypes.REAL_SCREEN_HEIGHT = 800f;
+                CtrRenderer.OnSurfaceChanged(1600, 900);
+
+                Assert.Equal(1, root.RelayoutCount);
+                Assert.Equal(1600f, FrameworkTypes.REAL_SCREEN_WIDTH);
+                Assert.Equal(900f, FrameworkTypes.REAL_SCREEN_HEIGHT);
+            }
+            finally
+            {
+                ProbeApplication.Root = previousRoot;
+            }
         }
     }
 }

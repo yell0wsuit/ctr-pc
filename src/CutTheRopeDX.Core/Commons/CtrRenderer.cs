@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Commons
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
             if (changed)
             {
-                Application.SharedRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+                Application.ExistingRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
             }
         }
 
