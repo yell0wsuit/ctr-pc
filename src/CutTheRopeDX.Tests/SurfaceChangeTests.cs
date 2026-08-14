@@ -59,5 +59,18 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(afterFirst, ScreenPresentation.Instance.Snapshot);
         }
+
+        [Fact]
+        public void MatchingInitialSurfaceStillInitializesTheLegacyGlobals()
+        {
+            ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+            FrameworkTypes.REAL_SCREEN_WIDTH = 480f;
+            FrameworkTypes.REAL_SCREEN_HEIGHT = 800f;
+
+            CtrRenderer.OnSurfaceChanged(2560, 1440);
+
+            Assert.Equal(2560f, FrameworkTypes.REAL_SCREEN_WIDTH);
+            Assert.Equal(1440f, FrameworkTypes.REAL_SCREEN_HEIGHT);
+        }
     }
 }

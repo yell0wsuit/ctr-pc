@@ -40,10 +40,7 @@ namespace CutTheRopeDX.Commons
         /// </param>
         public static void OnSurfaceChanged(int width, int height, bool cropWidth = true)
         {
-            if (!ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth))
-            {
-                return;
-            }
+            _ = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
         }
 
