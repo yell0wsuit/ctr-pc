@@ -81,6 +81,37 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
+        /// Converts a point in screen space into world space.
+        /// </summary>
+        /// <param name="sx">Screen-space X coordinate.</param>
+        /// <param name="sy">Screen-space Y coordinate.</param>
+        /// <returns>The corresponding world-space point.</returns>
+        public Vector ScreenToWorld(float sx, float sy)
+        {
+            return Vect(ScreenToWorldX(sx), ScreenToWorldY(sy));
+        }
+
+        /// <summary>
+        /// Converts a screen-space X coordinate into world space.
+        /// </summary>
+        /// <param name="sx">Screen-space X coordinate.</param>
+        /// <returns>The corresponding world-space X coordinate.</returns>
+        public float ScreenToWorldX(float sx)
+        {
+            return sx + pos.X;
+        }
+
+        /// <summary>
+        /// Converts a screen-space Y coordinate into world space.
+        /// </summary>
+        /// <param name="sy">Screen-space Y coordinate.</param>
+        /// <returns>The corresponding world-space Y coordinate.</returns>
+        public float ScreenToWorldY(float sy)
+        {
+            return sy + pos.Y;
+        }
+
+        /// <summary>
         /// Current movement mode used when approaching the target.
         /// </summary>
         public CAMERATYPE type;
