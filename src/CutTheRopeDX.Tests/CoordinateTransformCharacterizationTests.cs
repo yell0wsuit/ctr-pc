@@ -74,8 +74,9 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(Surfaces))]
-        public void LegacyPortraitViewGlobalsArePinnedAtEachSurface(string name, int width, int height)
+        public void LegacyViewGlobalsArePinnedAtEachSurface(string name, int width, int height)
         {
+            _ = HeadlessGame.Boot();
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 CtrRenderer.OnSurfaceChanged(width, height);
@@ -83,14 +84,14 @@ namespace CutTheRopeDX.Tests
                 (float expectedX, float expectedY, float expectedWidth, float expectedHeight) =
                     name switch
                     {
-                        "Native" => (800f, 0f, 960f, 1440f),
-                        "SixteenNine" => (400f, 0f, 480f, 720f),
-                        "FourThree" => (256f, 0f, 512f, 768f),
-                        "Ultrawide" => (920f, 0f, 720f, 1080f),
-                        "Superwide" => (1560f, 0f, 720f, 1080f),
-                        "Square" => (166.66666f, 0f, 666.6667f, 1000f),
-                        "Portrait" => (0f, 100f, 720f, 1080f),
-                        "TallPortrait" => (0f, 340f, 400f, 600f),
+                        "Native" => (0f, 0f, 2560f, 1440f),
+                        "SixteenNine" => (0f, 0f, 1280f, 720f),
+                        "FourThree" => (0f, 96f, 1024f, 576f),
+                        "Ultrawide" => (320f, 0f, 1920f, 1080f),
+                        "Superwide" => (960f, 0f, 1920f, 1080f),
+                        "Square" => (0f, 218.75f, 1000f, 562.5f),
+                        "Portrait" => (0f, 437.5f, 720f, 405f),
+                        "TallPortrait" => (0f, 527.5f, 400f, 225f),
                         _ => throw new Xunit.Sdk.XunitException($"Missing expectations for {name}."),
                     };
 
@@ -105,6 +106,7 @@ namespace CutTheRopeDX.Tests
         [MemberData(nameof(Surfaces))]
         public void RealAndLogicalTransformsAreInverses(string name, int width, int height)
         {
+            _ = HeadlessGame.Boot();
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 CtrRenderer.OnSurfaceChanged(width, height);
@@ -133,6 +135,7 @@ namespace CutTheRopeDX.Tests
             int width,
             int height)
         {
+            _ = HeadlessGame.Boot();
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 CtrRenderer.OnSurfaceChanged(width, height);
