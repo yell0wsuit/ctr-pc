@@ -176,7 +176,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            Vector touchWorld = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+            Vector touchWorld = camera.ScreenToWorld(tx, ty);
             float halfSize = AntConveyorLogic.GetCarrierTouchHalfSize(GetAntConveyorScale());
 
             if (!AntConveyorLogic.IsPointInCarrierTouchZone(touchWorld, point.pos, halfSize))

@@ -1523,7 +1523,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ResetBungeeHighlight();
                 bool flag12 = false;
-                Vector p = VectAdd(slastTouch, camera.pos);
+                Vector p = camera.ScreenToWorld(slastTouch.X, slastTouch.Y);
                 if (gravityState.IsInToggleTouchZone(p.X, p.Y))
                 {
                     flag12 = true;
@@ -1586,7 +1586,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     Vector s = default;
                     Grab grab2 = null;
-                    Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, slastTouch.X + camera.pos.X, slastTouch.Y + camera.pos.Y, ref grab2);
+                    Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, camera.ScreenToWorldX(slastTouch.X), camera.ScreenToWorldY(slastTouch.Y), ref grab2);
                     _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
             }

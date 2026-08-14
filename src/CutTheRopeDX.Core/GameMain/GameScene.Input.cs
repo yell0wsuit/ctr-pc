@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the bubble was touched and popped; otherwise, <see langword="false"/>.</returns>
         public bool HandleBubbleTouchXY(CandyBody body, float tx, float ty)
         {
-            if (PointInRect(tx + camera.pos.X, ty + camera.pos.Y, body.Point.pos.X - 60f, body.Point.pos.Y - 60f, 120f, 120f))
+            if (PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), body.Point.pos.X - 60f, body.Point.pos.Y - 60f, 120f, 120f))
             {
                 PopCandyBubble(body);
                 RegisterBubblePopped();
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.GameMain
             // Outcome input owns only the visual trace; it must not reach any gameplay object.
             if (AcceptsVisualOnlyPointerInput)
             {
-                gesture.Begin(Vect(tx, ty), Vect(tx + camera.pos.X, ty + camera.pos.Y));
+                gesture.Begin(Vect(tx, ty), camera.ScreenToWorld(tx, ty));
                 return true;
             }
             if (ignoreTouches)
@@ -95,12 +95,13 @@ namespace CutTheRopeDX.GameMain
                 }
                 return true;
             }
-            if (gravityState.IsInToggleTouchZone(tx + camera.pos.X, ty + camera.pos.Y))
+            if (gravityState.IsInToggleTouchZone(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
             {
                 gravityState.CaptureToggleTouch(ti);
             }
-            float worldX = tx + camera.pos.X;
-            float worldY = ty + camera.pos.Y;
+            Vector world = camera.ScreenToWorld(tx, ty);
+            float worldX = world.X;
+            float worldY = world.Y;
             waterLayer?.AddParticlesAtXY(worldX, worldY);
             if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
             {
@@ -112,7 +113,6 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             Vector vector = Vect(tx, ty);
-            Vector world = Vect(worldX, worldY);
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
@@ -157,7 +157,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj in spikes)
             {
                 Spikes spike = (Spikes)obj;
-                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
+                if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     spike.touchIndex = ti;
                     return true;
@@ -167,7 +167,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < pumpCount; i++)
             {
                 Pump pump = pumps[i];
-                if (GameObject.PointInObject(Vect(tx + camera.pos.X, ty + camera.pos.Y), pump))
+                if (GameObject.PointInObject(camera.ScreenToWorld(tx, ty), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
                     pump.pumpTouch = ti;
@@ -189,7 +189,7 @@ namespace CutTheRopeDX.GameMain
                         bool candyInMapBounds = GameObject.RectInObject(mapLeftX, 0f, mapRightX, mapHeight, candy);
                         bool canFireFromWaterState = waterLayer == null || candyInMapBounds || waterLayer.y > star.pos.Y;
                         float tapRadius = Grab.GUN_TAP_RADIUS;
-                        if (canFireFromWaterState && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        if (canFireFromWaterState && PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
                             gun.Fire(Vect(grab.x, grab.y), star.pos, candyMain.rotation);
                             gun.Cup.rotation = gun.InitialRotation;
@@ -223,7 +223,7 @@ namespace CutTheRopeDX.GameMain
             }
             foreach (SteamTube steamTube in tubes)
             {
-                if (steamTube != null && steamTube.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
+                if (steamTube != null && steamTube.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     return true;
                 }
@@ -307,7 +307,7 @@ namespace CutTheRopeDX.GameMain
 
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
-                if (lantern != null && lantern.OnTouchDown(tx + camera.pos.X, ty + camera.pos.Y, out ConstraintedPoint releasedCandyPoint))
+                if (lantern != null && lantern.OnTouchDown(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), out ConstraintedPoint releasedCandyPoint))
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), releasedCandyPoint, Lantern.LanternCandyRevealTime);
                     return true;
@@ -319,8 +319,8 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj2 in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
-                float distanceToLeftHandle = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle1);
-                float distanceToRightHandle = VectDistance(Vect(tx + camera.pos.X, ty + camera.pos.Y), rotatedCircle2.handle2);
+                float distanceToLeftHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle1);
+                float distanceToRightHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle2);
                 if ((distanceToLeftHandle < 90f && !rotatedCircle2.HasOneHandle()) || distanceToRightHandle < 90f)
                 {
                     foreach (object obj3 in rotatedCircles)
@@ -339,7 +339,7 @@ namespace CutTheRopeDX.GameMain
                             }
                         }
                     }
-                    rotatedCircle2.lastTouch = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+                    rotatedCircle2.lastTouch = camera.ScreenToWorld(tx, ty);
                     rotatedCircle2.operating = ti;
                     if (distanceToLeftHandle < 90f)
                     {
@@ -374,7 +374,7 @@ namespace CutTheRopeDX.GameMain
                 foreach (object objGhost in ghosts)
                 {
                     Ghost ghost = (Ghost)objGhost;
-                    if (ghost != null && ghost.OnTouchDownXY(tx + camera.pos.X, ty + camera.pos.Y))
+                    if (ghost != null && ghost.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                     {
                         return true;
                     }
@@ -388,7 +388,7 @@ namespace CutTheRopeDX.GameMain
                 Grab bungee = (Grab)obj4;
                 float tapRadius = Grab.KICK_TAP_RADIUS;
                 if (bungee.Mount is SuctionMount tapped && tapped.IsMounted
-                    && PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                    && PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                 {
                     touchedMountedCup = true;
                     break;
@@ -405,13 +405,13 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj4 in bungees)
             {
                 Grab bungee = (Grab)obj4;
-                if (bungee.Wheel?.TryBeginOperating(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
+                if (bungee.Wheel?.TryBeginOperating(bungee, camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ti) == true)
                 {
                     // A touch that lands on the wheel belongs to the wheel: without this, a wheel
                     // hook riding a manual belt let the same touch also start a belt drag.
                     return true;
                 }
-                if (bungee.Rail?.TryBeginDrag(bungee, tx + camera.pos.X, ty + camera.pos.Y, ti) == true)
+                if (bungee.Rail?.TryBeginDrag(bungee, camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ti) == true)
                 {
                     return true;
                 }
@@ -425,7 +425,7 @@ namespace CutTheRopeDX.GameMain
             {
                 Vector s = default;
                 Grab grab2 = null;
-                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.X, ty + camera.pos.Y, ref grab2);
+                Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ref grab2);
                 if (nearestBungeeSegmentByBeziersPointsatXYgrab != null && nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted && GetNearestBungeeSegmentByConstraintsforGrab(ref s, grab2) != null)
                 {
                     _ = CutWithRazorOrLine1Line2Immediate(null, s, s, false);
@@ -489,7 +489,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (gravityState.ReleaseToggleTouch(ti))
             {
-                if (gravityState.IsInToggleTouchZone(tx + camera.pos.X, ty + camera.pos.Y))
+                if (gravityState.IsInToggleTouchZone(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     OnButtonPressed(0);
                 }
@@ -515,7 +515,7 @@ namespace CutTheRopeDX.GameMain
 
                     foreach (MechanicalHandSegment segment in hand.segments)
                     {
-                        _ = (segment?.button?.OnTouchUpXY(tx + camera.pos.X, ty + camera.pos.Y));
+                        _ = (segment?.button?.OnTouchUpXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)));
                     }
                 }
             }
@@ -525,7 +525,7 @@ namespace CutTheRopeDX.GameMain
                 if (spike.rotateButton != null && spike.touchIndex == ti)
                 {
                     spike.touchIndex = -1;
-                    if (spike.rotateButton.OnTouchUpXY(tx + camera.pos.X, ty + camera.pos.Y))
+                    if (spike.rotateButton.OnTouchUpXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                     {
                         return true;
                     }
@@ -551,7 +551,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     float tapRadius = Grab.KICK_TAP_RADIUS;
                     if (mount.IsMounted && bungee.Rope.cut == -1 &&
-                        PointInRect(tx + camera.pos.X, ty + camera.pos.Y, bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
+                        PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                     {
                         if (mount.TakeStain(out float stainAlpha))
                         {
@@ -579,7 +579,7 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            _ = conveyors.OnPointerUp(tx + camera.pos.X, ty + camera.pos.Y, ti);
+            _ = conveyors.OnPointerUp(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ti);
             return true;
         }
 
@@ -598,7 +598,7 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             Vector vector = Vect(tx, ty);
-            Vector world = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+            Vector world = camera.ScreenToWorld(tx, ty);
             // Outcome input advances only the visual trace; no cuts or object handlers run.
             if (AcceptsVisualOnlyPointerInput)
             {
@@ -660,7 +660,7 @@ namespace CutTheRopeDX.GameMain
                     if (rotatedCircle != null && rotatedCircle.operating == ti)
                     {
                         Vector v = Vect(rotatedCircle.x, rotatedCircle.y);
-                        Vector vector2 = Vect(tx + camera.pos.X, ty + camera.pos.Y);
+                        Vector vector2 = camera.ScreenToWorld(tx, ty);
                         Vector v2 = VectSub(rotatedCircle.lastTouch, v);
                         float rotationDelta = VectAngleNormalized(VectSub(vector2, v)) - VectAngleNormalized(v2);
                         float initial_rotation = DEGREES_TO_RADIANS(rotatedCircle.rotation);
@@ -779,12 +779,12 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (grab2.Wheel is WheelControl wheel && wheel.OperatingTouch == ti)
                     {
-                        wheel.HandleRotate(grab2, Vect(tx + camera.pos.X, ty + camera.pos.Y));
+                        wheel.HandleRotate(grab2, camera.ScreenToWorld(tx, ty));
                         return true;
                     }
                     if (grab2.Rail is RailMotion rail && rail.DraggingTouch == ti)
                     {
-                        rail.DragTo(grab2, tx + camera.pos.X, ty + camera.pos.Y);
+                        rail.DragTo(grab2, camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty));
                         grab2.SyncRopeAnchor();
                         grab2.ReCalcCircle();
                         return true;
@@ -797,14 +797,14 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            if (conveyors.OnPointerMove(tx + camera.pos.X, ty + camera.pos.Y, ti))
+            if (conveyors.OnPointerMove(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ti))
             {
                 return true;
             }
             if (gesture.Move(vector, world, out Vector segmentStart))
             {
-                Vector start = VectAdd(segmentStart, camera.pos);
-                Vector end = VectAdd(Vect(tx, ty), camera.pos);
+                Vector start = camera.ScreenToWorld(segmentStart.X, segmentStart.Y);
+                Vector end = camera.ScreenToWorld(tx, ty);
                 FingerCut fingerCut = new()
                 {
                     start = start,
