@@ -14,9 +14,24 @@ namespace CutTheRopeDX.Framework.Platform
     /// <param name="LegacyScale">
     /// Uniform scale from design-size coordinates to <paramref name="LegacyContentBounds"/>.
     /// </param>
+    /// <param name="RenderViewport">
+    /// Sub-rectangle of the surface the game draws into, in surface pixels. Equals the whole
+    /// surface unless the aspect ratio falls outside the supported range, in which case it is
+    /// the centered crop at the nearest supported limit.
+    /// </param>
+    /// <param name="VisibleBounds">
+    /// <paramref name="RenderViewport"/> expressed in logical units, positioned at the origin.
+    /// How much logical space the current viewport exposes.
+    /// </param>
+    /// <param name="Scale">Uniform scale from logical units to surface pixels.</param>
+    /// <param name="Orientation">Which way round the viewport is.</param>
     internal readonly record struct ViewportLayoutSnapshot(
         int SurfaceWidth,
         int SurfaceHeight,
         CTRRectangle LegacyContentBounds,
-        float LegacyScale);
+        float LegacyScale,
+        CTRRectangle RenderViewport,
+        CTRRectangle VisibleBounds,
+        float Scale,
+        LayoutOrientation Orientation);
 }
