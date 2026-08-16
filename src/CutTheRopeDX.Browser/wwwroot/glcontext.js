@@ -74,6 +74,10 @@ export function createContext(canvasId) {
     return 0;
 }
 
+// The ratio canvasSize last applied to the backing store. Read by canvasDevicePixelRatio
+// so the ratio and the size a caller acts on always describe the same measurement.
+let appliedDevicePixelRatio = 1;
+
 export function canvasSize(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
@@ -81,6 +85,7 @@ export function canvasSize(canvasId) {
     }
     resizeViewportSurfaces(canvas);
     const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
+    appliedDevicePixelRatio = ratio;
     const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
     const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
     if (canvas.width !== width || canvas.height !== height) {
@@ -88,6 +93,10 @@ export function canvasSize(canvasId) {
         canvas.height = height;
     }
     return [width, height];
+}
+
+export function canvasDevicePixelRatio() {
+    return appliedDevicePixelRatio;
 }
 
 export function documentBaseUrl() {

@@ -120,13 +120,16 @@ namespace CutTheRopeDX.Browser
         private static void ResizeIfNeeded()
         {
             int[] canvas = GLContextInterop.CanvasSize("game");
-            if (canvas[0] == Surface.Width && canvas[1] == Surface.Height)
+            float ratio = (float)GLContextInterop.CanvasDevicePixelRatio();
+            if (canvas[0] == Surface.Width
+                && canvas[1] == Surface.Height
+                && ratio == ScreenPresentation.Instance.Snapshot.DevicePixelRatio)
             {
                 return;
             }
 
             Surface.Resize(canvas[0], canvas[1]);
-            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1]);
+            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1], true, ratio);
         }
 
         private static void Present()
