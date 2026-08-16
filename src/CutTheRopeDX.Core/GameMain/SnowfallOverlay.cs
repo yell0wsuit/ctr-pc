@@ -125,8 +125,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private SnowfallOverlay()
         {
-            width = (int)SCREEN_WIDTH;
-            height = (int)SCREEN_HEIGHT;
+            width = (int)VisibleBounds.w;
+            height = (int)VisibleBounds.h;
             touchable = false;
             updateable = SpecialEvents.IsXmas;
             visible = SpecialEvents.IsXmas;
@@ -314,7 +314,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Snowflake count scaled to screen size.</returns>
         private static int ComputeSnowflakeCount()
         {
-            float scaleRatio = SCREEN_WIDTH * SCREEN_HEIGHT / BaseCanvasArea;
+            float scaleRatio = VisibleBounds.w * VisibleBounds.h / BaseCanvasArea;
             int scaled = (int)MathF.Round(scaleRatio * MaxSnowflakes);
             return Math.Clamp(scaled, MinSnowflakes, MaxSnowflakes);
         }

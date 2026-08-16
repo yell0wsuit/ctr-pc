@@ -223,8 +223,8 @@ namespace CutTheRopeDX.GameMain
         {
             BaseElement baseElement = new()
             {
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h
             };
 
             // Select secondary background based on special events
@@ -831,8 +831,8 @@ namespace CutTheRopeDX.GameMain
             MovieView movieView = new();
             RectangleElement rectangleElement = new()
             {
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT,
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h,
                 color = RGBAColor.blackRGBA
             };
             _ = movieView.AddChild(rectangleElement);

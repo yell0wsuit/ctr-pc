@@ -16,8 +16,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The initialized processing overlay.</returns>
         public Processing InitWithLoading(bool loading)
         {
-            width = (int)SCREEN_WIDTH_EXPANDED;
-            height = (int)SCREEN_HEIGHT_EXPANDED + 1;
+            width = (int)VisibleBounds.w;
+            height = (int)VisibleBounds.h + 1;
             x = 0f - SCREEN_OFFSET_X;
             y = 0f - SCREEN_OFFSET_Y;
             blendingMode = 0;

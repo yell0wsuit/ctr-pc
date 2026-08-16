@@ -311,6 +311,14 @@ namespace CutTheRopeDX.Framework
         public static float SCREEN_HEIGHT = 480f;
 
         /// <summary>
+        /// The logical region the viewport currently exposes. Elements that span the whole screen
+        /// size to this; world logic stays on <see cref="SCREEN_WIDTH"/> and
+        /// <see cref="SCREEN_HEIGHT"/>, which describe the fixed space levels are authored in.
+        /// </summary>
+        protected static CTRRectangle VisibleBounds =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds;
+
+        /// <summary>
         /// Actual device screen width in pixels.
         /// </summary>
         public static float REAL_SCREEN_WIDTH = 480f;

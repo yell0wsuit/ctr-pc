@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -1098,10 +1099,11 @@ namespace CutTheRopeDX.GameMain
             omNomWarmupState = null;
             omNomXmlPreparseTask = null;
 
+            CTRRectangle visibleBounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
             BaseElement background = new()
             {
-                width = (int)FrameworkTypes.SCREEN_WIDTH,
-                height = (int)FrameworkTypes.SCREEN_HEIGHT
+                width = (int)visibleBounds.w,
+                height = (int)visibleBounds.h
             }; // ensure child anchors use the full screen bounds instead of 0x0
 
             Image bgImage = Image.Image_createWithResID(Resources.BackgroundImg.SkinBackground);

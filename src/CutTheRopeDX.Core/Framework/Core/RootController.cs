@@ -118,7 +118,7 @@ namespace CutTheRopeDX.Framework.Core
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fadeOverlayColor);
+                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, fadeOverlayColor);
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
                     else
@@ -143,7 +143,7 @@ namespace CutTheRopeDX.Framework.Core
                     Renderer.Disable(Renderer.GL_TEXTURE_2D);
                     Renderer.Enable(Renderer.GL_BLEND);
                     Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                    DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, revealOverlayColor);
+                    DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, revealOverlayColor);
                     Renderer.Disable(Renderer.GL_BLEND);
                 }
                 else

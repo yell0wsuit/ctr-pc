@@ -17,8 +17,8 @@ namespace CutTheRopeDX.Commons
         {
             ContentRoot = new BaseElement
             {
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT,
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h,
                 anchor = CENTER,
                 parentAnchor = CENTER
             };
@@ -34,8 +34,8 @@ namespace CutTheRopeDX.Commons
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
-            width = (int)SCREEN_WIDTH;
-            height = (int)SCREEN_HEIGHT;
+            width = (int)VisibleBounds.w;
+            height = (int)VisibleBounds.h;
             _ = AddTimeline(timeline);
             timeline.delegateTimelineDelegate = this;
 
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.Commons
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0, 0, 0, 0.5f));
+            DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, RGBAColor.MakeRGBA(0, 0, 0, 0.5f));
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);
             PreDraw();

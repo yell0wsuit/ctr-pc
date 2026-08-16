@@ -37,7 +37,7 @@ namespace CutTheRopeDX.GameMain
                         Renderer.Disable(Renderer.GL_TEXTURE_2D);
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.1f, 0.1f, 0.1f, 0.5f));
+                        DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, RGBAColor.MakeRGBA(0.1f, 0.1f, 0.1f, 0.5f));
                         Renderer.SetColor(Color.White);
                         Renderer.Enable(Renderer.GL_TEXTURE_2D);
                     }
@@ -55,7 +55,7 @@ namespace CutTheRopeDX.GameMain
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
                 Renderer.Enable(Renderer.GL_BLEND);
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(1, 1, 1, dimAlpha));
+                DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, RGBAColor.MakeRGBA(1, 1, 1, dimAlpha));
                 Renderer.SetColor(Color.White);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
             }
