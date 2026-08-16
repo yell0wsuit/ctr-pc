@@ -85,7 +85,8 @@ namespace CutTheRopeDX.GameMain
                 text.SetName("levelLabel");
                 text.x = 15f + Canvas.xOffsetScaled;
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-                text.y = isChinese ? SCREEN_HEIGHT : SCREEN_HEIGHT + 15f; // the box and level number or level name in game
+                // Reduces to the shipped position at 16:9, where VisibleBounds is the design size.
+                text.y = isChinese ? VisibleBounds.h : VisibleBounds.h - LevelLabelInsetY; // the box and level number or level name in game
                 if (levelLabel.Secondary != null)
                 {
                     Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
@@ -118,6 +119,13 @@ namespace CutTheRopeDX.GameMain
             PlatformServices.Cursor?.ReleaseButtons();
             CTRRootController.LogEvent("IG_SHOWN");
         }
+
+        /// <summary>
+        /// Vertical offset, in design units, subtracted from <see cref="FrameworkTypes.VisibleBounds"/>'s
+        /// height to place the non-CJK level-number label. Negative because the shipped position
+        /// sits slightly below the design bounds.
+        /// </summary>
+        private const float LevelLabelInsetY = -15f;
 
         /// <summary>
         /// Resolves the level's display name from its <c>levelName</c> attribute.
