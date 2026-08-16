@@ -1002,6 +1002,18 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private float mapOriginY;
 
+        /// <summary>
+        /// The level's extent in world units. The camera fits this region into the viewport.
+        /// </summary>
+        private CTRRectangle cameraBounds;
+
+        /// <summary>
+        /// The region the camera can show at once, in world units. Equal to the level extent on
+        /// an axis the level does not exceed, and to the design size on an axis it does, which is
+        /// the axis the camera scrolls along.
+        /// </summary>
+        private CTRRectangle cameraWindow;
+
         // private bool spiderTookCandy;
 
         /// <summary>

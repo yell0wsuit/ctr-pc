@@ -1,7 +1,9 @@
 using System.Reflection;
 
 using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -99,6 +101,37 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(expectedTargetY, camera.target.Y, 0.01);
         }
 
+        [Fact]
+        public void CameraBoundsAreTheWholeMapForANonScrollingLevel()
+        {
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(0, 0);
+
+            // The pinned map for this level is 960x1440 at origin (800, 0).
+            CTRRectangle bounds = ReadRectangle(scene, "cameraBounds");
+
+            Assert.Equal(800f, bounds.x, 0.01);
+            Assert.Equal(0f, bounds.y, 0.01);
+            Assert.Equal(960f, bounds.w, 0.01);
+            Assert.Equal(1440f, bounds.h, 0.01);
+        }
+
+        [Fact]
+        public void CameraFitReproducesTodaysCentringAtSixteenNine()
+        {
+            // FitCamera over a 960x1440 level in a 2560x1440 viewport must land the level exactly
+            // where offsetX = (2560 - 960) / 2 put it.
+            CameraFit fit = LayoutMath.FitCamera(
+                new CTRRectangle(0f, 0f, 960f, 1440f),
+                new CTRRectangle(0f, 0f, 2560f, 1440f),
+                0.5f,
+                0.5f);
+
+            Assert.Equal(1f, fit.Scale, 0.001);
+            Assert.Equal(-800f, fit.VisibleWorld.x, 0.01);
+            Assert.Equal(2560f, fit.VisibleWorld.w, 0.01);
+        }
+
         private static Camera2D ReadCamera(GameScene scene)
         {
             FieldInfo field = typeof(GameScene).GetField(
@@ -113,6 +146,14 @@ namespace CutTheRopeDX.Tests
                 fieldName,
                 BindingFlags.Instance | BindingFlags.NonPublic);
             return Assert.IsType<float>(field?.GetValue(scene));
+        }
+
+        private static CTRRectangle ReadRectangle(GameScene scene, string fieldName)
+        {
+            FieldInfo field = typeof(GameScene).GetField(
+                fieldName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            return Assert.IsType<CTRRectangle>(field?.GetValue(scene));
         }
 
         public static TheoryData<string, int, int> Surfaces()
