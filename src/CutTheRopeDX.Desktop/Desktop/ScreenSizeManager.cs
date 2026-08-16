@@ -345,10 +345,15 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
+
+            // MonoGame exposes no portable DPI scale, so the surface size is reported as-is at a
+            // unit ratio. If the backbuffer is ever allocated at a drawable size that differs from
+            // the client size, this becomes that ratio.
             CtrRenderer.OnSurfaceChanged(
                 sourceRect.Width,
                 sourceRect.Height,
-                _fullScreenCropWidth);
+                _fullScreenCropWidth,
+                1f);
         }
 
         private static void ApplyDesktopVkResize(

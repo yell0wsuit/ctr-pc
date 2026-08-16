@@ -40,5 +40,42 @@ namespace CutTheRopeDX.Desktop.Tests
             Assert.Equal(1024f, Assert.IsType<float>(realWidth.GetValue(null)));
             Assert.Equal(768f, Assert.IsType<float>(realHeight.GetValue(null)));
         }
+
+        [Fact]
+        public void WindowResizePublishesAUnitDevicePixelRatio()
+        {
+            // MonoGame exposes no portable DPI scale, so desktop reports 1. That is correct on a
+            // non-Retina display and conservative elsewhere: it can only make a physically-sized
+            // element larger than today, never smaller.
+            ScreenSizeManager manager = new(2560, 1440);
+            MethodInfo windowRectChanged = typeof(ScreenSizeManager).GetMethod(
+                "WindowRectChanged",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(windowRectChanged);
+
+            _ = windowRectChanged.Invoke(manager, [new Rectangle(0, 0, 1920, 1080)]);
+
+            Assert.Equal(1f, ReadPublishedDevicePixelRatio());
+        }
+
+        private static float ReadPublishedDevicePixelRatio()
+        {
+            Assembly coreAssembly = Assembly.Load("CutTheRopeDX.Core");
+            Type presentation = coreAssembly.GetType(
+                "CutTheRopeDX.Framework.Platform.ScreenPresentation");
+            Assert.NotNull(presentation);
+            object instance = presentation
+                .GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)
+                ?.GetValue(null);
+            Assert.NotNull(instance);
+            object snapshot = presentation
+                .GetProperty("Snapshot", BindingFlags.Public | BindingFlags.Instance)
+                ?.GetValue(instance);
+            Assert.NotNull(snapshot);
+            object ratio = snapshot.GetType()
+                .GetProperty("DevicePixelRatio", BindingFlags.Public | BindingFlags.Instance)
+                ?.GetValue(snapshot);
+            return Assert.IsType<float>(ratio);
+        }
     }
 }
