@@ -7,6 +7,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -304,6 +305,40 @@ namespace CutTheRopeDX.GameMain
                 back.scaleX = backgroundScale;
                 back.scaleY = backgroundScale;
             }
+        }
+
+        /// <summary>
+        /// Fits the camera to the level for the current viewport, holding it centred when the
+        /// whole level is already visible.
+        /// </summary>
+        /// <param name="snapshot">The viewport to fit against.</param>
+        private void ApplyCameraFit(ViewportLayoutSnapshot snapshot)
+        {
+            if (cameraBounds.w <= 0f || cameraBounds.h <= 0f)
+            {
+                return;
+            }
+
+            CTRRectangle viewport = snapshot.VisibleBounds;
+            bool locked = GameplayCamera.ScrollIsLocked(
+                cameraBounds.w, cameraBounds.h, viewport.w, viewport.h);
+            float anchorX = locked ? 0.5f : cameraAnchorX;
+            float anchorY = locked ? 0.5f : cameraAnchorY;
+
+            // On an axis the level exceeds, cameraWindow is capped to the design size rather than
+            // the full map, so it is the window - not the whole map - that fits the viewport; the
+            // anchor slides that window through the map's scrollable range first, exactly where
+            // the legacy bounded-pixel camera put it, before the fit's own anchor distributes
+            // whatever slack remains on an axis the level does not exceed.
+            float scrollableX = MathF.Max(0f, cameraBounds.w - cameraWindow.w);
+            float scrollableY = MathF.Max(0f, cameraBounds.h - cameraWindow.h);
+            CTRRectangle window = new CTRRectangle(
+                cameraBounds.x + (scrollableX * anchorX),
+                cameraBounds.y + (scrollableY * anchorY),
+                cameraWindow.w,
+                cameraWindow.h);
+
+            camera.ApplyFit(LayoutMath.FitCamera(window, viewport, anchorX, anchorY));
         }
 
         /// <summary>
@@ -1013,6 +1048,20 @@ namespace CutTheRopeDX.GameMain
         /// the axis the camera scrolls along.
         /// </summary>
         private CTRRectangle cameraWindow;
+
+        /// <summary>
+        /// The camera's horizontal position within its scrollable range and, on an axis the level
+        /// does not exceed, within the slack a wider viewport reveals. 0 is the level's left/top
+        /// edge and 1 its right/bottom edge; 0.5 centres it.
+        /// </summary>
+        private float cameraAnchorX = 0.5f;
+
+        /// <summary>
+        /// The camera's vertical position within its scrollable range and, on an axis the level
+        /// does not exceed, within the slack a wider viewport reveals. 0 is the level's left/top
+        /// edge and 1 its right/bottom edge; 0.5 centres it.
+        /// </summary>
+        private float cameraAnchorY = 0.5f;
 
         // private bool spiderTookCandy;
 
