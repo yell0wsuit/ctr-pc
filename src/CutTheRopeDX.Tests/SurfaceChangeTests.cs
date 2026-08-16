@@ -169,5 +169,17 @@ namespace CutTheRopeDX.Tests
 
             Assert.False(changed);
         }
+
+        [Fact]
+        public void BootPublishesTheHostDevicePixelRatio()
+        {
+            // A first frame published at the wrong ratio sizes physically-constrained chrome wrongly
+            // and then corrects itself, which reads as a flicker rather than as a bug.
+            ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+
+            CtrRenderer.OnSurfaceChanged(1280, 720, true, 2f);
+
+            Assert.Equal(2f, ScreenPresentation.Instance.Snapshot.DevicePixelRatio);
+        }
     }
 }
