@@ -30,7 +30,6 @@ namespace CutTheRopeDX.GameMain
 
             Button backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackToOptions);
             backButton.SetName("backb");
-            backButton.x = FrameworkTypes.Canvas.xOffsetScaled;
             _ = menuView.AddChild(backButton);
 
             return menuView;

@@ -540,7 +540,7 @@ namespace CutTheRopeDX.GameMain
             float baseSlotWidth = spriteSheetSlotWidth * spriteSheetScale;
             float baseSlotHeight = spriteSheetSlotHeight * spriteSheetScale;
             float baseSpacing = 20f;
-            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
+            float containerWidth = GridContainerWidth;
             float totalBaseWidth = (baseSlotWidth * GridItemsPerRow) + (baseSpacing * (GridItemsPerRow - 1));
             float slotScale = containerWidth / totalBaseWidth;
             float slotHeight = baseSlotHeight * slotScale;
@@ -1077,6 +1077,53 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Width the selection grid and its scroll container span: the visible width less a margin
+        /// on each side. It reduces to the width the grid was authored against when the viewport
+        /// exposes the design box.
+        /// </summary>
+        private static float GridContainerWidth =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds.w - 20f;
+
+        /// <summary>
+        /// Covers the visible bounds with the selection background.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private static void CoverBackground(CTRRectangle visible)
+        {
+            backgroundImage.scaleX = backgroundImage.scaleY =
+                LayoutMath.Cover(backgroundImage.width, backgroundImage.height, visible).Scale;
+        }
+
+        /// <summary>
+        /// Spans the selection view across the visible bounds.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <remarks>
+        /// The grid's slot scale, column spacing and container width are all derived from one width
+        /// when the grid is built, and rebuilding it would recreate the animated previews the slots
+        /// own. So the view is correct for the viewport it was built under, and a viewport that
+        /// changes shape afterwards moves the backdrop but leaves the grid at the width it was
+        /// built for.
+        /// </remarks>
+        public static void Relayout(CTRRectangle visible)
+        {
+            if (backgroundRoot == null)
+            {
+                return;
+            }
+
+            backgroundRoot.width = (int)visible.w;
+            backgroundRoot.height = (int)visible.h;
+            CoverBackground(visible);
+        }
+
+        /// <summary>The element the selection view's contents hang from.</summary>
+        private static BaseElement backgroundRoot;
+
+        /// <summary>The painted background behind the selection grid.</summary>
+        private static Image backgroundImage;
+
+        /// <summary>
         /// Creates the full candy and skin selection menu view.
         /// </summary>
         /// <param name="buttonDelegate">Button delegate that receives tab, slot, and back button events.</param>
@@ -1108,11 +1155,10 @@ namespace CutTheRopeDX.GameMain
 
             Image bgImage = Image.Image_createWithResID(Resources.BackgroundImg.SkinBackground);
             bgImage.anchor = bgImage.parentAnchor = 18; // center
-
-            // Scale background to cover the whole screen (match other menu backgrounds)
-            float bgScale = MathF.Max(FrameworkTypes.SCREEN_WIDTH / bgImage.width, FrameworkTypes.SCREEN_HEIGHT / bgImage.height);
-            bgImage.scaleX = bgImage.scaleY = bgScale;
             _ = background.AddChild(bgImage);
+            backgroundRoot = background;
+            backgroundImage = bgImage;
+            CoverBackground(visibleBounds);
 
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             candyTabButton = CreateTabButton("CANDIES_BTN", MenuButtonId.CandySelect, font, buttonDelegate, out float candyTabWidth);
@@ -1133,7 +1179,7 @@ namespace CutTheRopeDX.GameMain
             traceTabButton.x = SkinSelectionTabLayout.GetCenteredX(3, 4, tabStride);
 
             // Create scrollable container (initially empty, will be populated by RebuildGrid)
-            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
+            float containerWidth = GridContainerWidth;
             float containerHeight = 1100f;
 
             // Create empty container initially
@@ -1160,7 +1206,6 @@ namespace CutTheRopeDX.GameMain
             // Back button to return to main menu
             Button backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackFromCandySelect);
             backButton.SetName("backb");
-            backButton.x = FrameworkTypes.Canvas.xOffsetScaled;
             _ = menuView.AddChild(backButton);
 
             return menuView;

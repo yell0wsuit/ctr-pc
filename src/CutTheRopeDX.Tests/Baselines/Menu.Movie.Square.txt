@@ -1,2 +1,2 @@
-MovieView 0 0 2560 1440 1 1 0
-  RectangleElement 0 0 2560 1440 1 1 0
+MovieView 0 0 1440 1440 1 1 0
+  RectangleElement 0 0 1440 1440 1 1 0
