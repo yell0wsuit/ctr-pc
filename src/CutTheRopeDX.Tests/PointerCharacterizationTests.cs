@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Tests
         public void SurfaceCenterMapsToTheLogicalCenter(string name, int width, int height)
         {
             ScreenPresentation presentation = new(2560, 1440);
-            _ = presentation.SetSurfaceSize(width, height, false);
+            _ = presentation.SetSurfaceSize(width, height);
 
             ViewportLayoutSnapshot snapshot = presentation.Snapshot;
             CTRRectangle render = snapshot.RenderViewport;
@@ -43,10 +43,10 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(Surfaces))]
-        public void ScaledViewCornersMapToTheLogicalCorners(string name, int width, int height)
+        public void RenderViewportCornersMapToTheLogicalCorners(string name, int width, int height)
         {
             ScreenPresentation presentation = new(2560, 1440);
-            _ = presentation.SetSurfaceSize(width, height, false);
+            _ = presentation.SetSurfaceSize(width, height);
 
             ViewportLayoutSnapshot snapshot = presentation.Snapshot;
             CTRRectangle render = snapshot.RenderViewport;

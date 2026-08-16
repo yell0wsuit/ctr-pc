@@ -18,8 +18,8 @@ namespace CutTheRopeDX.GameMain
         {
             width = (int)VisibleBounds.w;
             height = (int)VisibleBounds.h + 1;
-            x = 0f - SCREEN_OFFSET_X;
-            y = 0f - SCREEN_OFFSET_Y;
+            x = 0f;
+            y = 0f;
             blendingMode = 0;
             if (loading)
             {

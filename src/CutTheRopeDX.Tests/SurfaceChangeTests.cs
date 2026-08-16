@@ -151,9 +151,9 @@ namespace CutTheRopeDX.Tests
             // Moving a window between displays of different density changes nothing about the
             // surface size but must still reach HUD sizing, so it has to republish.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true, 1f);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, 1f);
 
-            bool changed = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true, 2f);
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, 2f);
 
             Assert.True(changed);
             Assert.Equal(2f, ScreenPresentation.Instance.Snapshot.DevicePixelRatio);
@@ -163,9 +163,9 @@ namespace CutTheRopeDX.Tests
         public void RepublishingAnIdenticalSurfaceAndRatioIsStillANoOp()
         {
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true, 2f);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, 2f);
 
-            bool changed = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true, 2f);
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, 2f);
 
             Assert.False(changed);
         }
@@ -177,7 +177,7 @@ namespace CutTheRopeDX.Tests
             // and then corrects itself, which reads as a flicker rather than as a bug.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(1280, 720, true, 2f);
+            CtrRenderer.OnSurfaceChanged(1280, 720, 2f);
 
             Assert.Equal(2f, ScreenPresentation.Instance.Snapshot.DevicePixelRatio);
         }

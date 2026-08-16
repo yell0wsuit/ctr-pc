@@ -39,30 +39,19 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
         /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <param name="fullScreenCropWidth">
-        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
-        /// aspect. Preserves the behavior the desktop host selects.
-        /// </param>
         /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         /// <returns>The snapshot describing that surface.</returns>
         public static ViewportLayoutSnapshot Compute(
             int surfaceWidth,
             int surfaceHeight,
-            bool fullScreenCropWidth,
             float devicePixelRatio = 1f)
         {
-            CTRRectangle legacy = ComputeLegacyContentBounds(
-                surfaceWidth,
-                surfaceHeight,
-                fullScreenCropWidth);
             CTRRectangle render = ClampToSupportedAspect(surfaceWidth, surfaceHeight);
             float scale = MathF.Min(render.w, render.h) / LogicalShortSide;
 
             return new ViewportLayoutSnapshot(
                 surfaceWidth,
                 surfaceHeight,
-                legacy,
-                legacy.w / DesignWidth,
                 render,
                 new CTRRectangle(0f, 0f, render.w / scale, render.h / scale),
                 scale,
@@ -93,66 +82,6 @@ namespace CutTheRopeDX.Framework.Platform
                 return new CTRRectangle(0f, (surfaceHeight - height) / 2f, surfaceWidth, height);
             }
             return new CTRRectangle(0f, 0f, surfaceWidth, surfaceHeight);
-        }
-
-        /// <summary>
-        /// Reproduces the scaled view rectangle the fixed-layout presentation has always used.
-        /// </summary>
-        /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
-        /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <param name="fullScreenCropWidth">Whether portrait surfaces crop width to a 5:4 band.</param>
-        /// <returns>The destination rectangle for fixed-layout content.</returns>
-        private static CTRRectangle ComputeLegacyContentBounds(
-            int surfaceWidth,
-            int surfaceHeight,
-            bool fullScreenCropWidth)
-        {
-            if (surfaceWidth >= surfaceHeight)
-            {
-                int scaledHeight = fullScreenCropWidth
-                    ? surfaceHeight
-                    : ScaledDesignHeight(surfaceWidth);
-                int scaledWidth = fullScreenCropWidth
-                    ? ScaledDesignWidth(scaledHeight)
-                    : surfaceWidth;
-                return new CTRRectangle(
-                    (surfaceWidth - scaledWidth) / 2,
-                    (surfaceHeight - scaledHeight) / 2,
-                    scaledWidth,
-                    scaledHeight);
-            }
-
-            int portraitHeight = fullScreenCropWidth
-                ? (int)(surfaceWidth / 5f * 4f)
-                : ScaledDesignHeight(surfaceWidth);
-            int portraitWidth = fullScreenCropWidth
-                ? ScaledDesignWidth(portraitHeight)
-                : surfaceWidth;
-            return new CTRRectangle(
-                (surfaceWidth - portraitWidth) / 2,
-                (surfaceHeight - portraitHeight) / 2,
-                portraitWidth,
-                portraitHeight);
-        }
-
-        /// <summary>
-        /// Returns the aspect-preserving design width for a scaled height.
-        /// </summary>
-        /// <param name="scaledHeight">Scaled height in surface pixels.</param>
-        /// <returns>Aspect-correct width.</returns>
-        private static int ScaledDesignWidth(int scaledHeight)
-        {
-            return (int)((scaledHeight / (DesignHeight / DesignWidth)) + 0.5);
-        }
-
-        /// <summary>
-        /// Returns the aspect-preserving design height for a scaled width.
-        /// </summary>
-        /// <param name="scaledWidth">Scaled width in surface pixels.</param>
-        /// <returns>Aspect-correct height.</returns>
-        private static int ScaledDesignHeight(int scaledWidth)
-        {
-            return (int)((scaledWidth * (DesignHeight / DesignWidth)) + 0.5);
         }
     }
 }

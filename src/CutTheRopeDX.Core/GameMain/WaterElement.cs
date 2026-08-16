@@ -227,7 +227,7 @@ namespace CutTheRopeDX.GameMain
 
             Renderer.SetColor(color.ToWhiteAlphaColor());
             float bottomY = drawY + height > SCREEN_HEIGHT ? drawY + height : SCREEN_HEIGHT;
-            DrawHelper.DrawImageTiled(texture, 0, drawX, bottomY - bottomShadowSize.Y + SCREEN_OFFSET_Y, width, topShadowSize.Y);
+            DrawHelper.DrawImageTiled(texture, 0, drawX, bottomY - bottomShadowSize.Y, width, topShadowSize.Y);
             DrawHelper.DrawImageTiled(texture, 2, drawX - MathF.Ceiling(xOffsetBack), drawY, width + MathF.Floor(xOffsetBack), backTileSize.Y);
             Renderer.SetColor(Color.White);
         }

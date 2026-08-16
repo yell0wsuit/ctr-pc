@@ -5,91 +5,14 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Covers the pure surface-size to snapshot computation. The legacy content bounds
-    /// must reproduce the scaled view rectangle the game shipped with, so these values are
-    /// asserted against the same arithmetic <see cref="ScreenPresentation"/> already uses.
+    /// Covers the pure surface-size to snapshot computation.
     /// </summary>
     public sealed class ViewportLayoutTests
     {
         [Fact]
-        public void MatchingAspectRatioFillsTheWholeSurface()
-        {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
-
-            // 1280x720 is exactly 16:9, so a 2560x1440 screen fits with no bars.
-            Assert.Equal(0f, snapshot.LegacyContentBounds.x);
-            Assert.Equal(0f, snapshot.LegacyContentBounds.y);
-            Assert.Equal(1280f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(720f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(0.5f, snapshot.LegacyScale);
-        }
-
-        [Fact]
-        public void UltrawideSurfacePillarboxesTheLegacyContent()
-        {
-            // 21:9. Height is the limiting axis, so the legacy rect keeps the full height
-            // and is centered horizontally.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(2560, 1080, true);
-
-            Assert.Equal(1080f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(1920f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(320f, snapshot.LegacyContentBounds.x);
-            Assert.Equal(0f, snapshot.LegacyContentBounds.y);
-        }
-
-        [Fact]
-        public void FourThreeSurfaceLetterboxesTheLegacyContent()
-        {
-            // 4:3. Width is the limiting axis, so the legacy rect keeps the full width
-            // and is centered vertically.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1024, 768, false);
-
-            Assert.Equal(1024f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(576f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(0f, snapshot.LegacyContentBounds.x);
-            Assert.Equal(96f, snapshot.LegacyContentBounds.y);
-        }
-
-        [Fact]
-        public void SquareSurfaceLetterboxesTheLegacyContent()
-        {
-            // Crop-width is off here deliberately. With it on, a square surface produces a
-            // 1778x1000 rectangle that overflows the surface horizontally and sits at a negative
-            // x -- that is what cropping width means, and it is existing shipped behavior.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1000, 1000, false);
-
-            Assert.Equal(1000f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(563f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(0f, snapshot.LegacyContentBounds.x);
-            Assert.Equal(218f, snapshot.LegacyContentBounds.y);
-        }
-
-        [Fact]
-        public void SquareSurfaceWithCropWidthOverflowsHorizontally()
-        {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1000, 1000, true);
-
-            Assert.Equal(1778f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(1000f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(-389f, snapshot.LegacyContentBounds.x);
-        }
-
-        [Fact]
-        public void PortraitSurfaceLetterboxesTheLegacyContent()
-        {
-            // 9:16. The legacy 16:9 content becomes a centered horizontal strip.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(720, 1280, false);
-
-            Assert.Equal(720f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(405f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(0f, snapshot.LegacyContentBounds.x);
-            Assert.Equal(437f, snapshot.LegacyContentBounds.y);
-        }
-
-        [Fact]
         public void SnapshotCarriesTheSurfaceSizeItWasComputedFrom()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1600, 900, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1600, 900);
 
             Assert.Equal(1600, snapshot.SurfaceWidth);
             Assert.Equal(900, snapshot.SurfaceHeight);
@@ -98,8 +21,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void EqualSurfaceSizesProduceEqualSnapshots()
         {
-            ViewportLayoutSnapshot a = ViewportLayout.Compute(1600, 900, true);
-            ViewportLayoutSnapshot b = ViewportLayout.Compute(1600, 900, true);
+            ViewportLayoutSnapshot a = ViewportLayout.Compute(1600, 900);
+            ViewportLayoutSnapshot b = ViewportLayout.Compute(1600, 900);
 
             Assert.Equal(a, b);
         }
@@ -107,7 +30,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void SixteenNineExposesExactlyTheDesignSpace()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720);
 
             Assert.Equal(0.5f, snapshot.Scale);
             Assert.Equal(2560f, snapshot.VisibleBounds.w, 0.01);
@@ -119,7 +42,7 @@ namespace CutTheRopeDX.Tests
         public void WideSurfaceInsideTheClampExposesExtraWidth()
         {
             // 2560x1080 is 2.370, inside the 2.5 limit, so nothing is cropped.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(2560, 1080, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(2560, 1080);
 
             Assert.Equal(2560f, snapshot.RenderViewport.w);
             Assert.Equal(1080f, snapshot.RenderViewport.h);
@@ -132,7 +55,7 @@ namespace CutTheRopeDX.Tests
         public void SurfaceWiderThanTheClampIsCroppedToTheLimit()
         {
             // 3840x1080 is 3.555. The render viewport narrows to 2.5 and centers.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080);
 
             Assert.Equal(2700f, snapshot.RenderViewport.w, 0.01);
             Assert.Equal(1080f, snapshot.RenderViewport.h, 0.01);
@@ -145,7 +68,7 @@ namespace CutTheRopeDX.Tests
         public void PortraitInsideTheClampExposesExtraHeight()
         {
             // 720x1280 is 0.5625, inside the 0.4 limit.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(720, 1280, false);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(720, 1280);
 
             Assert.Equal(0.5f, snapshot.Scale);
             Assert.Equal(1440f, snapshot.VisibleBounds.w, 0.01);
@@ -157,7 +80,7 @@ namespace CutTheRopeDX.Tests
         public void SurfaceTallerThanTheClampIsCroppedToTheLimit()
         {
             // 400x1280 is 0.3125. The render viewport shortens to 0.4 and centers.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280, false);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280);
 
             Assert.Equal(400f, snapshot.RenderViewport.w, 0.01);
             Assert.Equal(1000f, snapshot.RenderViewport.h, 0.01);
@@ -167,21 +90,9 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheClampDoesNotAffectLegacyContentBounds()
-        {
-            // Unconverted scenes must be unaffected by the clamp, so the legacy rectangle is
-            // still computed against the full surface.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080, true);
-
-            Assert.Equal(1080f, snapshot.LegacyContentBounds.h);
-            Assert.Equal(1920f, snapshot.LegacyContentBounds.w);
-            Assert.Equal(960f, snapshot.LegacyContentBounds.x);
-        }
-
-        [Fact]
         public void SquareSurfaceIsLandscape()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1000, 1000, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1000, 1000);
 
             Assert.Equal(LayoutOrientation.Landscape, snapshot.Orientation);
             Assert.Equal(1440f, snapshot.VisibleBounds.w, 0.01);
@@ -191,7 +102,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void SixteenNineSurfaceReportsSixteenNineAspect()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720);
 
             Assert.Equal(16f / 9f, snapshot.Aspect, 0.001);
         }
@@ -201,7 +112,7 @@ namespace CutTheRopeDX.Tests
         {
             // 3840x1080 is 3.556 raw, outside the supported range, so the render viewport is
             // cropped to 2.5. Layout must see the ratio it actually draws into.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080);
 
             Assert.Equal(2.5f, snapshot.Aspect, 0.001);
         }
@@ -210,7 +121,7 @@ namespace CutTheRopeDX.Tests
         public void TallPortraitSurfaceClampsToTheNarrowLimit()
         {
             // 400x1280 is 0.3125 raw, below the 0.4 limit.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280);
 
             Assert.Equal(0.4f, snapshot.Aspect, 0.001);
         }
@@ -218,7 +129,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void DevicePixelRatioDefaultsToOne()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720);
 
             Assert.Equal(1f, snapshot.DevicePixelRatio);
         }
@@ -226,7 +137,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void DevicePixelRatioIsCarriedOntoTheSnapshot()
         {
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true, 2f);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, 2f);
 
             Assert.Equal(2f, snapshot.DevicePixelRatio);
         }
@@ -235,13 +146,12 @@ namespace CutTheRopeDX.Tests
         public void DevicePixelRatioDoesNotAffectAnyGeometry()
         {
             // It is a reporting channel for physical sizing, not an input to the layout maths.
-            ViewportLayoutSnapshot one = ViewportLayout.Compute(1280, 720, true, 1f);
-            ViewportLayoutSnapshot two = ViewportLayout.Compute(1280, 720, true, 3f);
+            ViewportLayoutSnapshot one = ViewportLayout.Compute(1280, 720, 1f);
+            ViewportLayoutSnapshot two = ViewportLayout.Compute(1280, 720, 3f);
 
             Assert.Equal(one.VisibleBounds, two.VisibleBounds);
             Assert.Equal(one.RenderViewport, two.RenderViewport);
             Assert.Equal(one.Scale, two.Scale);
-            Assert.Equal(one.LegacyContentBounds, two.LegacyContentBounds);
         }
     }
 }

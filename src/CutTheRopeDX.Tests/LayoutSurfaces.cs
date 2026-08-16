@@ -65,8 +65,8 @@ namespace CutTheRopeDX.Tests
             finally
             {
                 // Restore through the resize entry point, not just the presentation: a body that
-                // called OnSurfaceChanged also moved REAL_SCREEN_*, VIEW_SCREEN_* and the
-                // expanded-screen globals, and those would otherwise leak into every later test.
+                // called OnSurfaceChanged also moved REAL_SCREEN_* and the other Core screen
+                // globals, and those would otherwise leak into every later test.
                 CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
             }
         }

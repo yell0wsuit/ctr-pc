@@ -456,7 +456,7 @@ namespace CutTheRopeDX.Browser
                 return;
             }
             using SKImage snapshot = _renderTarget.Snapshot();
-            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.LegacyContentBounds;
+            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.RenderViewport;
             SKRect destination = SKRect.Create(bounds.x, bounds.y, bounds.w, bounds.h);
             surface.Canvas.Clear(SKColors.Black);
             surface.Canvas.DrawImage(snapshot, destination, LinearSampling, paint: null);

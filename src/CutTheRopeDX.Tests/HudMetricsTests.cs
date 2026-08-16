@@ -15,8 +15,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ChromeGrowsWithTheLargerSurfaceDimension()
         {
-            ViewportLayoutSnapshot small = ViewportLayout.Compute(1280, 720, true);
-            ViewportLayoutSnapshot large = ViewportLayout.Compute(3840, 2160, true);
+            ViewportLayoutSnapshot small = ViewportLayout.Compute(1280, 720);
+            ViewportLayoutSnapshot large = ViewportLayout.Compute(3840, 2160);
 
             // Compared in physical pixels, like the other two tests in this file: a design-unit
             // comparison would be resolution-invariant here, since both surfaces share an aspect
@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
         public void ChromeNeverFallsBelowThePhysicalFloorOnDesktop()
         {
             // A small window must still produce a chrome size of at least 70 physical pixels.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(640, 360, true);
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(640, 360);
 
             float logical = HudMetrics.ChromeSize(snapshot, false);
 
@@ -42,8 +42,8 @@ namespace CutTheRopeDX.Tests
         {
             // Famobi trims chrome by a tenth when the viewport is landscape, where vertical room
             // is the scarce axis.
-            ViewportLayoutSnapshot landscape = ViewportLayout.Compute(2560, 1440, true);
-            ViewportLayoutSnapshot portrait = ViewportLayout.Compute(1440, 2560, true);
+            ViewportLayoutSnapshot landscape = ViewportLayout.Compute(2560, 1440);
+            ViewportLayoutSnapshot portrait = ViewportLayout.Compute(1440, 2560);
 
             Assert.True(
                 HudMetrics.ChromeSize(landscape, false) * landscape.Scale

@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Desktop
 {
     /// <summary>
     /// Manages the OS window, fullscreen toggling, and persisted window settings for the desktop
-    /// renderer. Device-free presentation math (scaled view rect, coordinate transforms) lives in
+    /// renderer. Device-free presentation math (render viewport, coordinate transforms) lives in
     /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="CtrRenderer.OnSurfaceChanged"/>
     /// whenever the window or fullscreen bounds change, and implements <see cref="IWindowService"/>
     /// so Core code can command window behavior through <see cref="PlatformServices.Window"/>.
@@ -71,22 +71,6 @@ namespace CutTheRopeDX.Desktop
         /// Gets a value indicating whether size-change reactions are temporarily disabled.
         /// </summary>
         public bool SkipSizeChanges { get; private set; }
-
-        /// <summary>
-        /// Sets whether fullscreen view scaling should crop width instead of fitting the full game width.
-        /// Forwarded to <see cref="ScreenPresentation.Instance"/>, which owns the scaled-view-rect math.
-        /// </summary>
-        public bool FullScreenCropWidth
-        {
-            set
-            {
-                if (_fullScreenCropWidth != value)
-                {
-                    _fullScreenCropWidth = value;
-                    UpdateScaledView();
-                }
-            }
-        }
 
         /// <summary>
         /// Initializes screen sizing from the current display mode, preferred window width, and fullscreen state.
@@ -178,8 +162,6 @@ namespace CutTheRopeDX.Desktop
             SkipSizeChanges = true;
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             bool isFullScreen = graphicsDeviceManager.IsFullScreen;
-            bool fullScreenCropWidth = _fullScreenCropWidth;
-            FullScreenCropWidth = true;
             if (isFullScreen)
             {
                 graphicsDeviceManager.PreferredBackBufferWidth = _windowRect.Width;
@@ -193,7 +175,6 @@ namespace CutTheRopeDX.Desktop
             graphicsDeviceManager.IsFullScreen = !isFullScreen;
             ApplyDesktopVkResize(graphicsDeviceManager);
             ApplyViewportToDevice();
-            FullScreenCropWidth = fullScreenCropWidth;
             SkipSizeChanges = false;
             EnableFullScreen(!isFullScreen);
             // Returning to windowed mode: re-center so the restored window is not stuck in a corner
@@ -256,13 +237,13 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Applies the current scaled view rectangle to the graphics device viewport.
+        /// Applies the current render viewport to the graphics device viewport.
         /// </summary>
         public void ApplyViewportToDevice()
         {
-            ScreenPresentation presentation = ScreenPresentation.Instance;
-            Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
-            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(scaledViewRect, _windowRect) : Rectangle.Intersect(scaledViewRect, _fullScreenRect);
+            Framework.CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            Rectangle renderViewRect = new((int)render.x, (int)render.y, (int)render.w, (int)render.h);
+            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(renderViewRect, _windowRect) : Rectangle.Intersect(renderViewRect, _fullScreenRect);
             try
             {
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
@@ -333,10 +314,11 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Feeds the current active (window or fullscreen) bounds and crop-width flag into
-        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the scaled view rect. A no-op
-        /// while <see cref="SkipSizeChanges"/> is set, mirroring the batching <see cref="ToggleFullScreen"/>
-        /// relies on to defer recomputation until every field it touches has settled.
+        /// Feeds the current active (window or fullscreen) bounds into
+        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the published viewport. A
+        /// no-op while <see cref="SkipSizeChanges"/> is set, mirroring the batching
+        /// <see cref="ToggleFullScreen"/> relies on to defer recomputation until every field it
+        /// touches has settled.
         /// </summary>
         private void UpdateScaledView()
         {
@@ -352,7 +334,6 @@ namespace CutTheRopeDX.Desktop
             CtrRenderer.OnSurfaceChanged(
                 sourceRect.Width,
                 sourceRect.Height,
-                _fullScreenCropWidth,
                 1f);
         }
 
@@ -387,10 +368,5 @@ namespace CutTheRopeDX.Desktop
         /// Current fullscreen display rectangle.
         /// </summary>
         private Rectangle _fullScreenRect;
-
-        /// <summary>
-        /// Whether fullscreen scaling should crop width.
-        /// </summary>
-        private bool _fullScreenCropWidth = true;
     }
 }

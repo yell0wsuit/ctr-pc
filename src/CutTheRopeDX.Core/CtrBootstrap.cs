@@ -36,7 +36,7 @@ namespace CutTheRopeDX
             Preferences.LoadPreferences();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(language);
             CtrRenderer.OnSurfaceCreated();
-            CtrRenderer.OnSurfaceChanged(surfaceWidth, surfaceHeight, true, devicePixelRatio);
+            CtrRenderer.OnSurfaceChanged(surfaceWidth, surfaceHeight, devicePixelRatio);
         }
     }
 }

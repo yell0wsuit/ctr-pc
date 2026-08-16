@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests
             // ShowView rather than Activate: every real controller calls base.Activate() before
             // it builds its views, so laying out from Activate would always see an empty tree.
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
 
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests
         public void OrdinaryFramesDoNotLayOut()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
             controller.ShowView(0);
@@ -66,12 +66,12 @@ namespace CutTheRopeDX.Tests
         public void APushLaysOutExactlyOnce()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
             controller.ShowView(0);
 
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1600, 900, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1600, 900);
             controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
             Assert.Equal(2, controller.RelayoutCount);
@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests
         public void APushReachesTheActiveChild()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController parent = new();
             CountingController child = new();
             parent.AddChildwithID(child, 0);
@@ -100,7 +100,7 @@ namespace CutTheRopeDX.Tests
             // ActiveChild() would throw here: activeChildID is -1 and childs is a dictionary.
             // The walk must guard on that rather than rely on a null return.
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController parent = new();
             CountingController inactive = new();
             parent.AddChildwithID(inactive, 1);

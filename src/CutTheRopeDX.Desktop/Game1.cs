@@ -385,7 +385,6 @@ namespace CutTheRopeDX
             }
             Global.GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
-            Global.ScreenSizeManager.FullScreenCropWidth = false;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             Rectangle destinationRectangle = new(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
@@ -399,7 +398,6 @@ namespace CutTheRopeDX
         {
             frameCounter++;
             GraphicsDevice.Clear(Color.Black);
-            Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
             Renderer.BeginFrame();

@@ -1,9 +1,9 @@
 namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
-    /// Logical-resolution presentation state: fixed game resolution, current surface size, scaled
-    /// view rect, and coordinate transforms. <c>CtrRenderer</c> publishes its snapshot for every
-    /// host through the engine's single surface-change transition.
+    /// Logical-resolution presentation state: fixed game resolution, current surface size, and
+    /// coordinate transforms. <c>CtrRenderer</c> publishes its snapshot for every host through
+    /// the engine's single surface-change transition.
     /// </summary>
     /// <param name="gameWidth">Logical game width.</param>
     /// <param name="gameHeight">Logical game height.</param>
@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// nothing else in the engine holds a copy, so there is no second value to keep in step.
         /// </summary>
         public ViewportLayoutSnapshot Snapshot { get; private set; } =
-            ViewportLayout.Compute(gameWidth, gameHeight, true);
+            ViewportLayout.Compute(gameWidth, gameHeight);
 
         /// <summary>
         /// Gets the current drawable surface width.
@@ -41,31 +41,6 @@ namespace CutTheRopeDX.Framework.Platform
         /// Gets the current drawable surface height.
         /// </summary>
         public int SurfaceHeight => Snapshot.SurfaceHeight;
-
-        /// <summary>
-        /// Gets the X coordinate of the rectangle fixed-layout content renders into.
-        /// </summary>
-        public int ScaledViewX => (int)Snapshot.LegacyContentBounds.x;
-
-        /// <summary>
-        /// Gets the Y coordinate of the rectangle fixed-layout content renders into.
-        /// </summary>
-        public int ScaledViewY => (int)Snapshot.LegacyContentBounds.y;
-
-        /// <summary>
-        /// Gets the width of the rectangle fixed-layout content renders into.
-        /// </summary>
-        public int ScaledViewWidth => (int)Snapshot.LegacyContentBounds.w;
-
-        /// <summary>
-        /// Gets the height of the rectangle fixed-layout content renders into.
-        /// </summary>
-        public int ScaledViewHeight => (int)Snapshot.LegacyContentBounds.h;
-
-        /// <summary>
-        /// Gets the horizontal scale factor from logical game width to the current scaled view width.
-        /// </summary>
-        public double WidthAspectRatio => Snapshot.LegacyScale;
 
         /// <summary>
         /// Converts a window-space X coordinate into the drawn region's space.
@@ -133,19 +108,15 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         /// <param name="w">Drawable surface width.</param>
         /// <param name="h">Drawable surface height.</param>
-        /// <param name="cropWidth">
-        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
-        /// aspect. An input to this transition rather than stored state.
-        /// </param>
         /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         /// <returns>
         /// <see langword="true"/> when the published snapshot differs from the previous one.
         /// Callers react to it immediately; storing it would recreate the shadow state this
         /// design exists to remove.
         /// </returns>
-        public bool SetSurfaceSize(int w, int h, bool cropWidth, float devicePixelRatio = 1f)
+        public bool SetSurfaceSize(int w, int h, float devicePixelRatio = 1f)
         {
-            ViewportLayoutSnapshot next = ViewportLayout.Compute(w, h, cropWidth, devicePixelRatio);
+            ViewportLayoutSnapshot next = ViewportLayout.Compute(w, h, devicePixelRatio);
             if (next == Snapshot)
             {
                 return false;

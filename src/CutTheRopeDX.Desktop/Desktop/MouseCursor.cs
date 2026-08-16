@@ -211,7 +211,7 @@ namespace CutTheRopeDX.Desktop
             }
 
             // Update scaled cursors if game scale changed
-            UpdateScaledCursors(ScreenPresentation.Instance.WidthAspectRatio);
+            UpdateScaledCursors(ScreenPresentation.Instance.Snapshot.Scale);
 
             if (_nativeCursor == null || _nativeCursorActive == null)
             {

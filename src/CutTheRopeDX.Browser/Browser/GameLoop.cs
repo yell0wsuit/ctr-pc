@@ -129,7 +129,7 @@ namespace CutTheRopeDX.Browser
             }
 
             Surface.Resize(canvas[0], canvas[1]);
-            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1], true, ratio);
+            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1], ratio);
         }
 
         private static void Present()

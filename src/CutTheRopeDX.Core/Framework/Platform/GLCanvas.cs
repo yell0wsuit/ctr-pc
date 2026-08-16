@@ -103,7 +103,6 @@ namespace CutTheRopeDX.Framework.Platform
             origWidth = visible.w;
             origHeight = visible.h;
 
-            xOffsetScaled = (int)(-xOffset / ScreenPresentation.Instance.WidthAspectRatio);
             isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
             Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
             Renderer.SetMatrixMode(15);
@@ -318,29 +317,22 @@ namespace CutTheRopeDX.Framework.Platform
         public int touchesCount;
 
         /// <summary>
-        /// Horizontal viewport offset used for letterboxing.
+        /// Horizontal surface-pixel origin of the render viewport.
         /// </summary>
         public int xOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.x;
 
         /// <summary>
-        /// Vertical viewport offset used for letterboxing.
+        /// Vertical surface-pixel origin of the render viewport.
         /// </summary>
         public int yOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.y;
 
         /// <summary>
-        /// Horizontal viewport offset converted into logical screen space.
-        /// </summary>
-        public int xOffsetScaled;
-
-        // public int yOffsetScaled;
-
-        /// <summary>
-        /// Current backing-surface width after scaling and letterboxing.
+        /// Width of the render viewport in surface pixels.
         /// </summary>
         public int backingWidth => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.w;
 
         /// <summary>
-        /// Current backing-surface height after scaling and letterboxing.
+        /// Height of the render viewport in surface pixels.
         /// </summary>
         public int backingHeight => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.h;
     }

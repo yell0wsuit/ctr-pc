@@ -18,10 +18,10 @@ namespace CutTheRopeDX.Tests
         [InlineData(1024, 768)]
         [InlineData(1000, 1000)]
         [InlineData(720, 1280)]
-        public void PointerRoundTripsThroughTheLegacyContentBounds(int width, int height)
+        public void PointerRoundTripsThroughTheRenderViewport(int width, int height)
         {
             ScreenPresentation presentation = new(2560, 1440);
-            _ = presentation.SetSurfaceSize(width, height, true);
+            _ = presentation.SetSurfaceSize(width, height);
 
             // Take the center of the drawn rectangle in surface pixels.
             CTRRectangle render = presentation.Snapshot.RenderViewport;

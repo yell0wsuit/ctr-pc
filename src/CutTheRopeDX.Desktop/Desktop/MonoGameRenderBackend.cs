@@ -253,9 +253,9 @@ namespace CutTheRopeDX.Desktop
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                ScreenPresentation presentation = ScreenPresentation.Instance;
-                Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
-                Global.SpriteBatch.Draw(s_RenderTarget, scaledViewRect, Color.White);
+                CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
+                Rectangle renderViewRect = new((int)render.x, (int)render.y, (int)render.w, (int)render.h);
+                Global.SpriteBatch.Draw(s_RenderTarget, renderViewRect, Color.White);
                 Global.SpriteBatch.End();
                 BlendParams.InvalidateDeviceCache();
             }

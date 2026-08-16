@@ -34,19 +34,14 @@ namespace CutTheRopeDX.Commons
         /// </summary>
         /// <param name="width">The new surface width in pixels.</param>
         /// <param name="height">The new surface height in pixels.</param>
-        /// <param name="cropWidth">
-        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
-        /// aspect.
-        /// </param>
         /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         public static void OnSurfaceChanged(
             int width,
             int height,
-            bool cropWidth = true,
             float devicePixelRatio = 1f)
         {
             bool changed = ScreenPresentation.Instance.SetSurfaceSize(
-                width, height, cropWidth, devicePixelRatio);
+                width, height, devicePixelRatio);
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
             if (changed)
             {
@@ -282,29 +277,6 @@ namespace CutTheRopeDX.Commons
             {
                 IS_WVGA = false;
             }
-            VIEW_SCREEN_WIDTH = REAL_SCREEN_WIDTH;
-            VIEW_SCREEN_HEIGHT = SCREEN_HEIGHT * REAL_SCREEN_WIDTH / SCREEN_WIDTH;
-            if (VIEW_SCREEN_HEIGHT > REAL_SCREEN_HEIGHT)
-            {
-                VIEW_SCREEN_HEIGHT = REAL_SCREEN_HEIGHT;
-                VIEW_SCREEN_WIDTH = SCREEN_WIDTH * REAL_SCREEN_HEIGHT / SCREEN_HEIGHT;
-            }
-            VIEW_OFFSET_X = (width - VIEW_SCREEN_WIDTH) / 2f;
-            VIEW_OFFSET_Y = (height - VIEW_SCREEN_HEIGHT) / 2f;
-            SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT * REAL_SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
-            SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH * REAL_SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
-            SCREEN_OFFSET_Y = (SCREEN_HEIGHT_EXPANDED - SCREEN_HEIGHT) / 2f;
-            SCREEN_OFFSET_X = (SCREEN_WIDTH_EXPANDED - SCREEN_WIDTH) / 2f;
-            SCREEN_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED / SCREEN_HEIGHT;
-            SCREEN_BG_SCALE_X = SCREEN_WIDTH_EXPANDED / SCREEN_WIDTH;
-            if (IS_WVGA)
-            {
-                SCREEN_WIDE_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED * 1.5f / 800;
-                SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
-                return;
-            }
-            SCREEN_WIDE_BG_SCALE_Y = SCREEN_BG_SCALE_Y;
-            SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
         }
 
         /// <summary>
