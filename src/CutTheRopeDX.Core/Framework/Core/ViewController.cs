@@ -13,14 +13,22 @@ namespace CutTheRopeDX.Framework.Core
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {
         /// <summary>
-        /// The coordinate box this controller's fixed content is authored in. Defaults to the
-        /// full design size, which reproduces the fixed layout the game shipped with.
+        /// The coordinate box this controller's content is authored in, computed from the
+        /// published viewport. Its width is fixed at the design width and its height follows the
+        /// viewport's aspect ratio, so the box always matches the shape of the space available and
+        /// content never sits in bars. At 16:9 it is exactly the design size, which is what keeps
+        /// the shipped layout unchanged.
         /// </summary>
-        protected CTRRectangle DesignBox { get; set; } = new(
+        /// <remarks>
+        /// Computed on read rather than assigned during a layout pass: an assigned box would be a
+        /// cached derivation of the snapshot and could disagree with it. A controller whose content
+        /// needs a fixed shape overrides this getter; it never writes one.
+        /// </remarks>
+        protected virtual CTRRectangle DesignBox => new(
             0f,
             0f,
             ViewportLayout.DesignWidth,
-            ViewportLayout.DesignHeight);
+            ViewportLayout.DesignWidth / ScreenPresentation.Instance.Snapshot.Aspect);
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
