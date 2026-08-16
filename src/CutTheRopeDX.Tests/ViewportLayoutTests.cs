@@ -187,5 +187,32 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(1440f, snapshot.VisibleBounds.w, 0.01);
             Assert.Equal(1440f, snapshot.VisibleBounds.h, 0.01);
         }
+
+        [Fact]
+        public void SixteenNineSurfaceReportsSixteenNineAspect()
+        {
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
+
+            Assert.Equal(16f / 9f, snapshot.Aspect, 0.001);
+        }
+
+        [Fact]
+        public void AspectIsTheClampedOneNotTheRawSurfaceRatio()
+        {
+            // 3840x1080 is 3.556 raw, outside the supported range, so the render viewport is
+            // cropped to 2.5. Layout must see the ratio it actually draws into.
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080, true);
+
+            Assert.Equal(2.5f, snapshot.Aspect, 0.001);
+        }
+
+        [Fact]
+        public void TallPortraitSurfaceClampsToTheNarrowLimit()
+        {
+            // 400x1280 is 0.3125 raw, below the 0.4 limit.
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280, true);
+
+            Assert.Equal(0.4f, snapshot.Aspect, 0.001);
+        }
     }
 }

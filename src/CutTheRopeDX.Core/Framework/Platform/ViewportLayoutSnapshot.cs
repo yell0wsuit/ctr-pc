@@ -33,5 +33,13 @@ namespace CutTheRopeDX.Framework.Platform
         CTRRectangle RenderViewport,
         CTRRectangle VisibleBounds,
         float Scale,
-        LayoutOrientation Orientation);
+        LayoutOrientation Orientation)
+    {
+        /// <summary>
+        /// Width-to-height ratio of the region the game draws into. Derived from
+        /// <see cref="VisibleBounds"/> rather than the surface, so it is already inside the
+        /// supported range and never describes a region that is cropped away.
+        /// </summary>
+        public float Aspect => VisibleBounds.w / VisibleBounds.h;
+    }
 }
