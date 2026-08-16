@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -23,16 +24,20 @@ namespace CutTheRopeDX.Tests
             ScreenPresentation presentation = new(2560, 1440);
             _ = presentation.SetSurfaceSize(width, height, false);
 
-            int surfaceX = presentation.ScaledViewX + (presentation.ScaledViewWidth / 2);
-            int surfaceY = presentation.ScaledViewY + (presentation.ScaledViewHeight / 2);
+            ViewportLayoutSnapshot snapshot = presentation.Snapshot;
+            CTRRectangle render = snapshot.RenderViewport;
+            CTRRectangle visible = snapshot.VisibleBounds;
+
+            int surfaceX = (int)(render.x + (render.w / 2f));
+            int surfaceY = (int)(render.y + (render.h / 2f));
 
             float logicalX = presentation.TransformViewToGameX(
                 presentation.TransformWindowToViewX(surfaceX));
             float logicalY = presentation.TransformViewToGameY(
                 presentation.TransformWindowToViewY(surfaceY));
 
-            Assert.Equal(1280f, logicalX, 3.5);
-            Assert.Equal(720f, logicalY, 3.5);
+            Assert.Equal(visible.w / 2f, logicalX, 3.5);
+            Assert.Equal(visible.h / 2f, logicalY, 3.5);
             Assert.False(string.IsNullOrEmpty(name));
         }
 
@@ -43,22 +48,49 @@ namespace CutTheRopeDX.Tests
             ScreenPresentation presentation = new(2560, 1440);
             _ = presentation.SetSurfaceSize(width, height, false);
 
+            ViewportLayoutSnapshot snapshot = presentation.Snapshot;
+            CTRRectangle render = snapshot.RenderViewport;
+            CTRRectangle visible = snapshot.VisibleBounds;
+
             float topLeftX = presentation.TransformViewToGameX(
-                presentation.TransformWindowToViewX(presentation.ScaledViewX));
+                presentation.TransformWindowToViewX((int)render.x));
             float topLeftY = presentation.TransformViewToGameY(
-                presentation.TransformWindowToViewY(presentation.ScaledViewY));
+                presentation.TransformWindowToViewY((int)render.y));
             float bottomRightX = presentation.TransformViewToGameX(
-                presentation.TransformWindowToViewX(
-                    presentation.ScaledViewX + presentation.ScaledViewWidth));
+                presentation.TransformWindowToViewX((int)(render.x + render.w)));
             float bottomRightY = presentation.TransformViewToGameY(
-                presentation.TransformWindowToViewY(
-                    presentation.ScaledViewY + presentation.ScaledViewHeight));
+                presentation.TransformWindowToViewY((int)(render.y + render.h)));
 
             Assert.Equal(0f, topLeftX, 0.01);
             Assert.Equal(0f, topLeftY, 0.01);
-            Assert.Equal(2560f, bottomRightX, 0.01);
-            Assert.Equal(1440f, bottomRightY, 0.01);
+            Assert.Equal(visible.w, bottomRightX, 0.01);
+            Assert.Equal(visible.h, bottomRightY, 0.01);
             Assert.False(string.IsNullOrEmpty(name));
+        }
+
+        [Theory]
+        [MemberData(nameof(PointerSurfaces))]
+        public void PointerAtTheSurfaceCentreLandsAtTheVisibleCentre(string name, int width, int height)
+        {
+            // Whatever the aspect, the middle of the window is the middle of the world the player
+            // sees. If this drifts, every hit test drifts with it.
+            _ = HeadlessGame.Boot();
+
+            LayoutSurfaces.WithSurface(width, height, () =>
+            {
+                ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
+                CTRRectangle render = snapshot.RenderViewport;
+                CTRRectangle visible = snapshot.VisibleBounds;
+
+                float surfaceX = render.x + (render.w / 2f);
+                float surfaceY = render.y + (render.h / 2f);
+
+                float logicalX = (surfaceX - render.x) / snapshot.Scale;
+                float logicalY = (surfaceY - render.y) / snapshot.Scale;
+
+                Assert.Equal(visible.w / 2f, logicalX, 0.5);
+                Assert.Equal(visible.h / 2f, logicalY, 0.5);
+            });
         }
 
         [Fact]
@@ -172,6 +204,11 @@ namespace CutTheRopeDX.Tests
         }
 
         public static TheoryData<string, int, int> Surfaces()
+        {
+            return LayoutSurfaces.Theory();
+        }
+
+        public static TheoryData<string, int, int> PointerSurfaces()
         {
             return LayoutSurfaces.Theory();
         }

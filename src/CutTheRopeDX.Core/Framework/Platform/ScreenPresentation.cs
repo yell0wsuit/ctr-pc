@@ -68,43 +68,43 @@ namespace CutTheRopeDX.Framework.Platform
         public double WidthAspectRatio => Snapshot.LegacyScale;
 
         /// <summary>
-        /// Converts a window-space X coordinate into scaled-view space.
+        /// Converts a window-space X coordinate into the drawn region's space.
         /// </summary>
         /// <param name="x">Window-space X coordinate.</param>
-        /// <returns>Scaled-view X coordinate.</returns>
+        /// <returns>X coordinate relative to the drawn region.</returns>
         public int TransformWindowToViewX(int x)
         {
-            return x - ScaledViewX;
+            return x - (int)Snapshot.RenderViewport.x;
         }
 
         /// <summary>
-        /// Converts a window-space Y coordinate into scaled-view space.
+        /// Converts a window-space Y coordinate into the drawn region's space.
         /// </summary>
         /// <param name="y">Window-space Y coordinate.</param>
-        /// <returns>Scaled-view Y coordinate.</returns>
+        /// <returns>Y coordinate relative to the drawn region.</returns>
         public int TransformWindowToViewY(int y)
         {
-            return y - ScaledViewY;
+            return y - (int)Snapshot.RenderViewport.y;
         }
 
         /// <summary>
-        /// Converts a scaled-view X coordinate into logical game space.
+        /// Converts a coordinate in the drawn region into logical space.
         /// </summary>
-        /// <param name="x">Scaled-view X coordinate.</param>
-        /// <returns>Logical game-space X coordinate.</returns>
+        /// <param name="x">X coordinate relative to the drawn region.</param>
+        /// <returns>Logical X coordinate.</returns>
         public float TransformViewToGameX(float x)
         {
-            return x * GameWidth / ScaledViewWidth;
+            return x / Snapshot.Scale;
         }
 
         /// <summary>
-        /// Converts a scaled-view Y coordinate into logical game space.
+        /// Converts a coordinate in the drawn region into logical space.
         /// </summary>
-        /// <param name="y">Scaled-view Y coordinate.</param>
-        /// <returns>Logical game-space Y coordinate.</returns>
+        /// <param name="y">Y coordinate relative to the drawn region.</param>
+        /// <returns>Logical Y coordinate.</returns>
         public float TransformViewToGameY(float y)
         {
-            return y * GameHeight / ScaledViewHeight;
+            return y / Snapshot.Scale;
         }
 
         /// <summary>

@@ -59,16 +59,19 @@ namespace CutTheRopeDX.Tests
             ScreenPresentation presentation = new(2560, 1440);
             _ = presentation.SetSurfaceSize(width, height, false);
 
-            int viewX = presentation.ScaledViewWidth / 2;
-            int viewY = presentation.ScaledViewHeight / 2;
+            ViewportLayoutSnapshot snapshot = presentation.Snapshot;
+            CTRRectangle visible = snapshot.VisibleBounds;
+
+            float viewX = snapshot.RenderViewport.w / 2f;
+            float viewY = snapshot.RenderViewport.h / 2f;
 
             float gameX = presentation.TransformViewToGameX(viewX);
             float gameY = presentation.TransformViewToGameY(viewY);
 
             // 3.5 rather than a tighter bound because odd scaled-view heights round the
             // half-way pixel: 400x1280 gives a 225-high view whose center maps to 716.8.
-            Assert.Equal(1280f, gameX, 3.5);
-            Assert.Equal(720f, gameY, 3.5);
+            Assert.Equal(visible.w / 2f, gameX, 3.5);
+            Assert.Equal(visible.h / 2f, gameY, 3.5);
             Assert.False(string.IsNullOrEmpty(name));
         }
 

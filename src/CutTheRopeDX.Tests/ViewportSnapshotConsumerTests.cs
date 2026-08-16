@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
 
 using Xunit;
@@ -23,21 +24,21 @@ namespace CutTheRopeDX.Tests
             _ = presentation.SetSurfaceSize(width, height, true);
 
             // Take the center of the drawn rectangle in surface pixels.
-            float surfaceX = presentation.Snapshot.LegacyContentBounds.x
-                + (presentation.Snapshot.LegacyContentBounds.w / 2f);
-            float surfaceY = presentation.Snapshot.LegacyContentBounds.y
-                + (presentation.Snapshot.LegacyContentBounds.h / 2f);
+            CTRRectangle render = presentation.Snapshot.RenderViewport;
+            CTRRectangle visible = presentation.Snapshot.VisibleBounds;
+            float surfaceX = render.x + (render.w / 2f);
+            float surfaceY = render.y + (render.h / 2f);
 
             float logicalX = presentation.TransformViewToGameX(
                 presentation.TransformWindowToViewX((int)surfaceX));
             float logicalY = presentation.TransformViewToGameY(
                 presentation.TransformWindowToViewY((int)surfaceY));
 
-            // The center of the drawn rectangle is the center of the design space. Tolerance 1.0
+            // The center of the drawn rectangle is the center of the visible bounds. Tolerance 1.0
             // because the center is taken in whole surface pixels: at 1024x768 the rectangle is
             // 1365 wide, so the integer center is half a pixel off and maps to 1279.06.
-            Assert.Equal(ViewportLayout.DesignWidth / 2f, logicalX, 1.0);
-            Assert.Equal(ViewportLayout.DesignHeight / 2f, logicalY, 1.0);
+            Assert.Equal(visible.w / 2f, logicalX, 1.0);
+            Assert.Equal(visible.h / 2f, logicalY, 1.0);
         }
     }
 }
