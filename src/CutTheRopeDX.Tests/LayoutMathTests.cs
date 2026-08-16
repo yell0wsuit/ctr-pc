@@ -47,20 +47,31 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CoverPicksTheLargerAxisRatio()
+        public void CoverScalesToTheWidthWhenWidthIsTheShortfall()
         {
-            // A 2560x1440 image in a 3413x1440 viewport must scale up to cover the width.
-            float scale = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 3413f, 1440f));
+            // A 2560x1440 image in a 3413x1440 viewport has to grow to 3413 wide; the height
+            // overflows as a result, which is what covering means.
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 3413f, 1440f));
 
-            Assert.Equal(3413f / 2560f, scale, 0.001);
+            Assert.Equal(3413f / 2560f, fit.Scale, 0.001);
+            Assert.Equal(LayoutAxis.Horizontal, fit.DrivingAxis);
         }
 
         [Fact]
-        public void CoverPicksTheHeightWhenTheViewportIsTall()
+        public void CoverScalesToTheHeightWhenHeightIsTheShortfall()
         {
-            float scale = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 2560f));
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 2560f));
 
-            Assert.Equal(2560f / 1440f, scale, 0.001);
+            Assert.Equal(2560f / 1440f, fit.Scale, 0.001);
+            Assert.Equal(LayoutAxis.Vertical, fit.DrivingAxis);
+        }
+
+        [Fact]
+        public void CoverOfAnExactlyMatchingViewportIsUnitScale()
+        {
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 2560f, 1440f));
+
+            Assert.Equal(1f, fit.Scale, 0.001);
         }
 
         [Fact]

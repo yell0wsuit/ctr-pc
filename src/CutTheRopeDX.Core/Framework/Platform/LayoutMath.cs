@@ -32,15 +32,19 @@ namespace CutTheRopeDX.Framework.Platform
 
         /// <summary>
         /// Returns the uniform scale at which an image of the given size covers
-        /// <paramref name="viewport"/> completely.
+        /// <paramref name="viewport"/> completely, and which axis determined it.
         /// </summary>
         /// <param name="imageWidth">Natural image width.</param>
         /// <param name="imageHeight">Natural image height.</param>
         /// <param name="viewport">Rectangle to cover.</param>
-        /// <returns>The covering scale.</returns>
-        public static float Cover(float imageWidth, float imageHeight, CTRRectangle viewport)
+        /// <returns>The covering scale and its driving axis.</returns>
+        public static CoverFit Cover(float imageWidth, float imageHeight, CTRRectangle viewport)
         {
-            return MathF.Max(viewport.w / imageWidth, viewport.h / imageHeight);
+            float horizontal = viewport.w / imageWidth;
+            float vertical = viewport.h / imageHeight;
+            return horizontal >= vertical
+                ? new CoverFit(horizontal, LayoutAxis.Horizontal)
+                : new CoverFit(vertical, LayoutAxis.Vertical);
         }
 
         /// <summary>
