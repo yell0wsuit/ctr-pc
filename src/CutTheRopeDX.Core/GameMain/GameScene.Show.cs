@@ -83,7 +83,7 @@ namespace CutTheRopeDX.GameMain
                 Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Primary);
                 text.anchor = 33;
                 text.SetName("levelLabel");
-                text.x = 15f + Canvas.xOffsetScaled;
+                text.x = 15f;
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
                 // Reduces to the shipped position at 16:9, where VisibleBounds is the design size.
                 text.y = isChinese ? VisibleBounds.h : VisibleBounds.h - LevelLabelInsetY; // the box and level number or level name in game

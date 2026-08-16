@@ -35,13 +35,8 @@ namespace CutTheRopeDX.GameMain
             // Keep parallax math consistent with the background scale.
             Vector pos = VectDiv(camera.pos, backScale);
             back.UpdateWithCameraPos(pos);
-            float offsetX = Canvas.xOffsetScaled;
-            float offsetY = 0f;
             Renderer.PushMatrix();
-            Renderer.Translate(offsetX, offsetY, 0f);
             Renderer.Scale(back.scaleX, back.scaleY, 1f);
-            Renderer.Translate(-offsetX, -offsetY, 0f);
-            Renderer.Translate(Canvas.xOffsetScaled, 0f, 0f);
             back.Draw();
             if (mapHeight > SCREEN_HEIGHT)
             {
@@ -70,7 +65,6 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             gravityState.DrawEarthAnimations();
-            Renderer.Translate(-Canvas.xOffsetScaled, 0f, 0f);
             Renderer.PopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);

@@ -144,13 +144,13 @@ namespace CutTheRopeDX.GameMain
             int hudQuadOffset = CTRResourceMgr.GetHudButtonQuadOffset();
             Button button = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, hudQuadOffset, GameControllerButtonId.Pause, this);
             button.anchor = button.parentAnchor = 12;
-            button.x = -Canvas.xOffsetScaled - 8f;
+            button.x = -8f;
             button.y = 8f;
             _ = gameView.AddChildwithID(button, 1);
             const int HudUiRestartQuad = 0;
             Button button2 = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, HudUiRestartQuad, GameControllerButtonId.Restart, this);
             button2.anchor = button2.parentAnchor = 12;
-            button2.x = -Canvas.xOffsetScaled - button.width - 16f;
+            button2.x = -button.width - 16f;
             button2.y = 8f;
             _ = gameView.AddChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
@@ -164,7 +164,7 @@ namespace CutTheRopeDX.GameMain
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
             float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
+            mapNameLabel.x = RTD(-10) + labelXOffset;
             mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
@@ -947,10 +947,10 @@ namespace CutTheRopeDX.GameMain
             // otherwise the restart button collapses onto the pause button and they overlap.
             Button pauseButton = (Button)view.GetChild(1);
             Button restartButton = (Button)view.GetChild(2);
-            pauseButton.x = -Canvas.xOffsetScaled - 8f;
-            restartButton.x = -Canvas.xOffsetScaled - pauseButton.width - 16f;
+            pauseButton.x = -8f;
+            restartButton.x = -pauseButton.width - 16f;
             float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
+            mapNameLabel.x = RTD(-10) + labelXOffset;
             GameScene gameScene = (GameScene)view.GetChild(0);
             gameScene?.FullscreenToggled(isFullscreen);
         }

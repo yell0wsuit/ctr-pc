@@ -78,7 +78,7 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
                 int starSize = hudStar[i].width;
                 hudStar[i].anchor = 18;
-                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
+                hudStar[i].x = (starSize * i) + (starSize / 2);
                 hudStar[i].y = hudStar[i].height / 2;
                 _ = AddChild(hudStar[i]);
             }

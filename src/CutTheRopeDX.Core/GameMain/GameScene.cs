@@ -268,11 +268,11 @@ namespace CutTheRopeDX.GameMain
         {
             _ = isFullscreen;
             BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
-            _ = (childWithName?.x = 15f + Canvas.xOffsetScaled);
+            _ = (childWithName?.x = 15f);
             for (int i = 0; i < 3; i++)
             {
                 int starSize = hudStar[i].width;
-                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
+                hudStar[i].x = (starSize * i) + (starSize / 2);
             }
             UpdateBackgroundScale();
         }
