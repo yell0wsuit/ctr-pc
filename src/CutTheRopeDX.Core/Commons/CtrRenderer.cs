@@ -38,9 +38,15 @@ namespace CutTheRopeDX.Commons
         /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
         /// aspect.
         /// </param>
-        public static void OnSurfaceChanged(int width, int height, bool cropWidth = true)
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
+        public static void OnSurfaceChanged(
+            int width,
+            int height,
+            bool cropWidth = true,
+            float devicePixelRatio = 1f)
         {
-            bool changed = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(
+                width, height, cropWidth, devicePixelRatio);
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
             if (changed)
             {

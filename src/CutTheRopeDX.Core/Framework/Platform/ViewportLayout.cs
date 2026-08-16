@@ -43,11 +43,13 @@ namespace CutTheRopeDX.Framework.Platform
         /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
         /// aspect. Preserves the behavior the desktop host selects.
         /// </param>
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         /// <returns>The snapshot describing that surface.</returns>
         public static ViewportLayoutSnapshot Compute(
             int surfaceWidth,
             int surfaceHeight,
-            bool fullScreenCropWidth)
+            bool fullScreenCropWidth,
+            float devicePixelRatio = 1f)
         {
             CTRRectangle legacy = ComputeLegacyContentBounds(
                 surfaceWidth,
@@ -64,6 +66,7 @@ namespace CutTheRopeDX.Framework.Platform
                 render,
                 new CTRRectangle(0f, 0f, render.w / scale, render.h / scale),
                 scale,
+                devicePixelRatio,
                 surfaceWidth >= surfaceHeight
                     ? LayoutOrientation.Landscape
                     : LayoutOrientation.Portrait);

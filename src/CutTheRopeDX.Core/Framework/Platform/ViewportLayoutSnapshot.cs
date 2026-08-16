@@ -24,6 +24,10 @@ namespace CutTheRopeDX.Framework.Platform
     /// How much logical space the current viewport exposes.
     /// </param>
     /// <param name="Scale">Uniform scale from logical units to surface pixels.</param>
+    /// <param name="DevicePixelRatio">
+    /// Physical pixels per logical pixel on the host surface. Reported so chrome with a
+    /// physical minimum size can honor it; no geometry in this record depends on it.
+    /// </param>
     /// <param name="Orientation">Which way round the viewport is.</param>
     internal readonly record struct ViewportLayoutSnapshot(
         int SurfaceWidth,
@@ -33,6 +37,7 @@ namespace CutTheRopeDX.Framework.Platform
         CTRRectangle RenderViewport,
         CTRRectangle VisibleBounds,
         float Scale,
+        float DevicePixelRatio,
         LayoutOrientation Orientation)
     {
         /// <summary>

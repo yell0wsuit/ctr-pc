@@ -137,14 +137,15 @@ namespace CutTheRopeDX.Framework.Platform
         /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
         /// aspect. An input to this transition rather than stored state.
         /// </param>
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         /// <returns>
         /// <see langword="true"/> when the published snapshot differs from the previous one.
         /// Callers react to it immediately; storing it would recreate the shadow state this
         /// design exists to remove.
         /// </returns>
-        public bool SetSurfaceSize(int w, int h, bool cropWidth)
+        public bool SetSurfaceSize(int w, int h, bool cropWidth, float devicePixelRatio = 1f)
         {
-            ViewportLayoutSnapshot next = ViewportLayout.Compute(w, h, cropWidth);
+            ViewportLayoutSnapshot next = ViewportLayout.Compute(w, h, cropWidth, devicePixelRatio);
             if (next == Snapshot)
             {
                 return false;

@@ -214,5 +214,34 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0.4f, snapshot.Aspect, 0.001);
         }
+
+        [Fact]
+        public void DevicePixelRatioDefaultsToOne()
+        {
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true);
+
+            Assert.Equal(1f, snapshot.DevicePixelRatio);
+        }
+
+        [Fact]
+        public void DevicePixelRatioIsCarriedOntoTheSnapshot()
+        {
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, true, 2f);
+
+            Assert.Equal(2f, snapshot.DevicePixelRatio);
+        }
+
+        [Fact]
+        public void DevicePixelRatioDoesNotAffectAnyGeometry()
+        {
+            // It is a reporting channel for physical sizing, not an input to the layout maths.
+            ViewportLayoutSnapshot one = ViewportLayout.Compute(1280, 720, true, 1f);
+            ViewportLayoutSnapshot two = ViewportLayout.Compute(1280, 720, true, 3f);
+
+            Assert.Equal(one.VisibleBounds, two.VisibleBounds);
+            Assert.Equal(one.RenderViewport, two.RenderViewport);
+            Assert.Equal(one.Scale, two.Scale);
+            Assert.Equal(one.LegacyContentBounds, two.LegacyContentBounds);
+        }
     }
 }
