@@ -180,7 +180,10 @@ namespace CutTheRopeDX.Desktop
         {
             if (cap == GL_SCISSOR_TEST)
             {
-                SetScissor(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                // Turning clipping off means letting the whole drawn region through, which is the
+                // region the viewport exposes rather than the fixed design size.
+                Framework.CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                SetScissor(0f, 0f, visible.w, visible.h);
             }
             if (cap == GL_BLEND)
             {
@@ -496,9 +499,18 @@ namespace CutTheRopeDX.Desktop
             try
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
-                float scaleX = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
-                float scaleY = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
-                Rectangle scissorRect = new((int)(x / scaleX), (int)(y / scaleY), (int)(width / scaleX), (int)(height / scaleY));
+
+                // The rectangle arrives in logical units and the scissor is set in surface pixels
+                // measured from the render target's corner, so it takes both the published scale
+                // and the origin the drawn region starts at.
+                ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
+                float scale = snapshot.Scale;
+                Framework.CTRRectangle render = snapshot.RenderViewport;
+                Rectangle scissorRect = new(
+                    (int)(render.x + (x * scale)),
+                    (int)(render.y + (y * scale)),
+                    (int)(width * scale),
+                    (int)(height * scale));
                 Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRect, bounds);
             }
             catch (Exception)
