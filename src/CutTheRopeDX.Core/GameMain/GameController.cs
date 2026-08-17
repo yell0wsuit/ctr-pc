@@ -167,7 +167,9 @@ namespace CutTheRopeDX.GameMain
             mapNameLabel.x = RTD(-10) + labelXOffset;
             mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, VisibleBounds.w);
+            pauseButtons = vBox;
+            pauseMenuPlate = image;
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
             _ = vBox.AddChild(c);
             if (!CustomLevelSession.IsActive)
@@ -187,7 +189,7 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(toggleButton2);
             _ = hBox.AddChild(toggleButton);
             _ = vBox.AddChild(hBox);
-            vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
+            vBox.y = (VisibleBounds.h - vBox.height) / 2f;
             bool flag3 = Preferences.GetBooleanForKey("SOUND_ON");
             bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             if (!flag3)
@@ -942,18 +944,78 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
+            _ = isFullscreen;
+            Relayout(ScreenPresentation.Instance.Snapshot);
+        }
+
+        /// <inheritdoc />
+        protected override void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+            base.Relayout(snapshot);
+
             View view = GetView(0);
+            if (view == null)
+            {
+                return;
+            }
+
+            CTRRectangle visible = snapshot.VisibleBounds;
+
+            // The HUD hangs off this view's edges, so it is the view's size that decides where the
+            // chrome sits. Left at the size it was built for, the buttons stay where that viewport
+            // put them however the window changes afterwards.
+            view.width = (int)visible.w;
+            view.height = (int)visible.h;
+
             // Reposition the HUD buttons using the same edge offsets applied at construction,
             // otherwise the restart button collapses onto the pause button and they overlap.
             Button pauseButton = (Button)view.GetChild(1);
             Button restartButton = (Button)view.GetChild(2);
             pauseButton.x = -8f;
             restartButton.x = -pauseButton.width - 16f;
-            float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
-            mapNameLabel.x = RTD(-10) + labelXOffset;
-            GameScene gameScene = (GameScene)view.GetChild(0);
-            gameScene?.FullscreenToggled(isFullscreen);
+
+            PlaceBestScoreLabel(visible);
+
+            if (pauseButtons != null)
+            {
+                pauseButtons.width = (int)visible.w;
+                pauseButtons.y = (visible.h - pauseButtons.height) / 2f;
+            }
+
+            ((GameScene)view.GetChild(0))?.RelayoutHud(visible);
         }
+
+        /// <summary>
+        /// Places the pause menu's best-score label, keeping it on screen.
+        /// </summary>
+        /// <remarks>
+        /// The label is authored hanging well past the right edge of the pause plate, which the
+        /// design width has room for. A viewport that exposes fewer logical units across does not,
+        /// so the offset gives way rather than letting the label run off the screen. It reduces to
+        /// the authored offset wherever there is room, which includes the shipped shape.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void PlaceBestScoreLabel(CTRRectangle visible)
+        {
+            if (mapNameLabel == null)
+            {
+                return;
+            }
+
+            float authored = RTD(-10) + (LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f);
+            if (pauseMenuPlate == null)
+            {
+                mapNameLabel.x = authored;
+                return;
+            }
+
+            float plateRightEdge = ((visible.w + pauseMenuPlate.width) / 2f);
+            float roomToSpare = visible.w - plateRightEdge - BestScoreLabelInset;
+            mapNameLabel.x = MathF.Min(authored, roomToSpare);
+        }
+
+        /// <summary>Smallest gap between the best-score label and the right edge of the screen.</summary>
+        private const float BestScoreLabelInset = 10f;
 
         /// <summary>
         /// Plays the appropriate gameplay music for the active pack and seasonal event.
@@ -1032,6 +1094,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Pause-menu label that displays the active map or best score.</summary>
         private Text mapNameLabel;
+
+        /// <summary>The plate the pause menu is drawn on; the best-score label hangs off its edge.</summary>
+        private Image pauseMenuPlate;
+
+        /// <summary>The pause menu's button column.</summary>
+        private VBox pauseButtons;
 
         /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];

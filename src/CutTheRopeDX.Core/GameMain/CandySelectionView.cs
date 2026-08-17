@@ -22,8 +22,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Number of Flash XML frames skipped for static XML Om Nom previews.</summary>
         private const int XmlPreviewSkipFrames = 14;
 
-        /// <summary>Number of skin slots shown per grid row.</summary>
-        private const int GridItemsPerRow = 4;
+        /// <summary>
+        /// Number of skin slots shown per grid row. The slots divide the container width between
+        /// them, so this is what sets how large a skin is drawn: fewer across keeps each one
+        /// legible on a viewport that exposes fewer logical units than the design width.
+        /// </summary>
+        private const int GridItemsPerRow = 3;
 
         /// <summary>Number of Om Nom preview slots built per warmup tick.</summary>
         private const int OmNomWarmupSlotsPerTick = 1;

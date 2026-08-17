@@ -267,8 +267,25 @@ namespace CutTheRopeDX.GameMain
         public void FullscreenToggled(bool isFullscreen)
         {
             _ = isFullscreen;
-            BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
-            _ = (childWithName?.x = 15f);
+            RelayoutHud(ScreenPresentation.Instance.Snapshot.VisibleBounds);
+        }
+
+        /// <summary>
+        /// Places the in-game chrome for the current viewport.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public void RelayoutHud(CTRRectangle visible)
+        {
+            BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
+            if (levelLabel != null)
+            {
+                levelLabel.x = 15f;
+
+                // Reduces to the shipped position where the viewport exposes the design height.
+                bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
+                levelLabel.y = isChinese ? visible.h : visible.h - LevelLabelInsetY;
+            }
+
             for (int i = 0; i < 3; i++)
             {
                 int starSize = hudStar[i].width;
