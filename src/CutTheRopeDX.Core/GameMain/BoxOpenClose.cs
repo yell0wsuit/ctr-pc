@@ -4,6 +4,7 @@ using System.Globalization;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -174,6 +175,34 @@ namespace CutTheRopeDX.GameMain
         {
             width = (int)visible.w;
             height = (int)visible.h;
+            CoverFitAnimations(visible);
+        }
+
+        /// <summary>
+        /// Scales the transition animation so the box covers every edge of the viewport, and
+        /// centres what overhangs.
+        /// </summary>
+        /// <remarks>
+        /// The covers are one fixed-size piece of art each, sized to meet in the middle of the
+        /// design box, and their open and close positions are all derived from that. Cover-fitting
+        /// the group that holds them is what lets the pair still reach both edges of a viewport
+        /// the design box does not fill, without every placement inside needing to know about it.
+        /// The group scales about its own origin, so the fit is a scale and a centring offset.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void CoverFitAnimations(CTRRectangle visible)
+        {
+            if (openCloseAnims == null)
+            {
+                return;
+            }
+
+            float scale = MathF.Max(
+                visible.w / ViewportLayout.DesignWidth,
+                visible.h / ViewportLayout.DesignHeight);
+            openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
+            openCloseAnims.x = (visible.w - (ViewportLayout.DesignWidth * scale)) / 2f;
+            openCloseAnims.y = (visible.h - (ViewportLayout.DesignHeight * scale)) / 2f;
         }
 
         /// <summary>
@@ -304,7 +333,7 @@ namespace CutTheRopeDX.GameMain
                 firstFrame = 9;
                 lastFrame = 17;
             }
-            float spawnX = RND_RANGE((int)RTPD(-100), (int)VisibleBounds.w);
+            float spawnX = RND_RANGE((int)RTPD(-100), (int)ViewportLayout.DesignWidth);
             float spawnY = RND_RANGE((int)RTPD(-40), (int)RTPD(100));
             float fadeDuration = FLOAT_RND_RANGE(2, 5);
             int i = confetti.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
@@ -452,11 +481,16 @@ namespace CutTheRopeDX.GameMain
             _ = openCloseAnims.AddChild(image);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
 
+            // The whole animation is authored against the design size and cover-fitted to the
+            // viewport by the group that holds it, the way a menu backdrop is. Measuring the
+            // pieces against the viewport instead would move them relative to art that had not
+            // moved with them.
+            float boxWidth = ViewportLayout.DesignWidth;
+
             // Where the two halves of the cover meet. The flaps and the loading piece are placed
-            // against this rather than against the cover's own width: the two are the same thing
-            // only while one cover is exactly half the screen, which is true at the design width
-            // and nowhere else, and the right-hand pieces landed near the opposite edge without it.
-            float seamX = VisibleBounds.w / 2f;
+            // against this rather than against a cover's own width: the two are only the same
+            // thing while one cover is exactly half the box.
+            float seamX = boxWidth / 2f;
             float leftCoverX = seamX - quadSize.X;
             Image coverBackgroundLeft = Image.Image_createWithResIDQuad(boxCover, 0);
             Image coverBackgroundRight = Image.Image_createWithResIDQuad(boxCover, 0);
@@ -464,7 +498,7 @@ namespace CutTheRopeDX.GameMain
             coverBackgroundLeft.rotationCenterX = -coverBackgroundLeft.width / 2f;
             coverBackgroundRight.rotationCenterX = coverBackgroundLeft.rotationCenterX;
             coverBackgroundRight.rotation = 180f;
-            coverBackgroundRight.x = VisibleBounds.w - ((VisibleBounds.w / 2f) - coverBackgroundLeft.width);
+            coverBackgroundRight.x = seamX + coverBackgroundLeft.width;
             coverBackgroundRight.y = -0.5f;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -528,13 +562,13 @@ namespace CutTheRopeDX.GameMain
             if (open)
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w + rightClosedX), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth + rightClosedX), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - RTD(9)), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth - RTD(9)), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
@@ -567,13 +601,13 @@ namespace CutTheRopeDX.GameMain
             if (open)
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + RTD(7)), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)VisibleBounds.w, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)boxWidth, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - 40f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth - 40f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + 20f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
@@ -664,6 +698,7 @@ namespace CutTheRopeDX.GameMain
         {
             openCloseAnims = new BaseElement();
             _ = AddChildwithID(openCloseAnims, 0);
+            CoverFitAnimations(VisibleBounds);
         }
 
         /// <summary>
