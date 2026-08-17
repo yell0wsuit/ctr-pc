@@ -40,9 +40,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private Text resetText;
 
-        /// <summary>The main menu's button column.</summary>
-        private VBox mainMenuButtons;
-
         /// <summary>
         /// The main menu's design-space content. Fitting this one element positions and scales the
         /// logo and the button column together, the way the scene was composed.
@@ -56,17 +53,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The plate the movie view draws behind playback.</summary>
         private RectangleElement moviePlate;
 
-        /// <summary>The options view's button column.</summary>
-        private VBox optionsButtons;
-
         /// <summary>The options view's design-space content.</summary>
         private BaseElement optionsGroup;
 
         /// <summary>The options view's rotating light shaft, which it owns rather than the backdrop.</summary>
         private Image optionsShadow;
-
-        /// <summary>The language picker's button grid.</summary>
-        private VBox languageButtons;
 
         /// <summary>The language picker's design-space content.</summary>
         private BaseElement languageGroup;
@@ -161,23 +152,6 @@ namespace CutTheRopeDX.GameMain
 
             element.width = (int)visible.w;
             element.height = (int)visible.h;
-        }
-
-        /// <summary>
-        /// Widens an element to the visible bounds without touching its height, ignoring one a
-        /// scene has not built. Rows and columns center their children within their own width, so
-        /// this is what centers them on screen.
-        /// </summary>
-        /// <param name="element">Element to widen, or <see langword="null"/>.</param>
-        /// <param name="visible">The logical region the viewport exposes.</param>
-        private static void SpanWidth(BaseElement element, CTRRectangle visible)
-        {
-            if (element == null)
-            {
-                return;
-            }
-
-            element.width = (int)visible.w;
         }
 
         /// <summary>

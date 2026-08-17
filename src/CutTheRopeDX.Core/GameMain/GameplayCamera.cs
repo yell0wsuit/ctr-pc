@@ -1,7 +1,3 @@
-using System;
-
-using CutTheRopeDX.Framework;
-
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>

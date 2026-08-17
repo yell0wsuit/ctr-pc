@@ -85,7 +85,7 @@ namespace CutTheRopeDX.Framework.Core
         /// authored spacing is preserved and simply drawn larger.
         /// </para>
         /// </remarks>
-        protected float FittedScale
+        protected static float FittedScale
         {
             get
             {

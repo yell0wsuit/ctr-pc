@@ -1,3 +1,5 @@
+using System;
+
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
@@ -70,7 +72,7 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(PointerSurfaces))]
-        public void PointerAtTheSurfaceCentreLandsAtTheVisibleCentre(string name, int width, int height)
+        public void PointerAtTheSurfaceCenterLandsAtTheVisibleCenter(string name, int width, int height)
         {
             // Whatever the aspect, the middle of the window is the middle of the world the player
             // sees. If this drifts, every hit test drifts with it.
@@ -88,8 +90,10 @@ namespace CutTheRopeDX.Tests
                 float logicalX = (surfaceX - render.x) / snapshot.Scale;
                 float logicalY = (surfaceY - render.y) / snapshot.Scale;
 
-                Assert.Equal(visible.w / 2f, logicalX, 0.5);
-                Assert.Equal(visible.h / 2f, logicalY, 0.5);
+                Assert.True(
+                    MathF.Abs((visible.w / 2f) - logicalX) < 0.5f
+                        && MathF.Abs((visible.h / 2f) - logicalY) < 0.5f,
+                    $"{name}: expected {visible.w / 2f},{visible.h / 2f}, got {logicalX},{logicalY}");
             });
         }
 

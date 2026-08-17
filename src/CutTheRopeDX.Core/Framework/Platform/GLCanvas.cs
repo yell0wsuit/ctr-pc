@@ -33,8 +33,6 @@ namespace CutTheRopeDX.Framework.Platform
         /// <returns>The initialized canvas instance.</returns>
         public GLCanvas InitWithFrame()
         {
-            origWidth = 2560f;
-            origHeight = 1440f;
             aspect = 1440f / 2560f;
             touchesCount = 0;
             return this;
@@ -96,18 +94,13 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public void SetDefaultProjection()
         {
-            ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
-            CTRRectangle render = snapshot.RenderViewport;
-            CTRRectangle visible = snapshot.VisibleBounds;
-
-            origWidth = visible.w;
-            origHeight = visible.h;
+            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
             isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
-            Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
+            Renderer.SetViewport(XOffset, YOffset, BackingWidth, BackingHeight);
             Renderer.SetMatrixMode(15);
             Renderer.LoadIdentity();
-            Renderer.SetOrthographic(0f, origWidth, origHeight, 0f, -1f, 1f);
+            Renderer.SetOrthographic(0f, visible.w, visible.h, 0f, -1f, 1f);
             Renderer.SetMatrixMode(14);
             Renderer.LoadIdentity();
         }
@@ -264,22 +257,14 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Logical width of the region the projection describes.
         /// </summary>
-        private float origWidth;
+        internal static float ProjectionWidth =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds.w;
 
         /// <summary>
         /// Logical height of the region the projection describes.
         /// </summary>
-        private float origHeight;
-
-        /// <summary>
-        /// Logical width of the region the projection describes.
-        /// </summary>
-        internal float ProjectionWidth => ScreenPresentation.Instance.Snapshot.VisibleBounds.w;
-
-        /// <summary>
-        /// Logical height of the region the projection describes.
-        /// </summary>
-        internal float ProjectionHeight => ScreenPresentation.Instance.Snapshot.VisibleBounds.h;
+        internal static float ProjectionHeight =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds.h;
 
         /// <summary>
         /// Active input delegate that receives touch and button events.
@@ -319,21 +304,21 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Horizontal surface-pixel origin of the render viewport.
         /// </summary>
-        public int xOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.x;
+        public static int XOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.x;
 
         /// <summary>
         /// Vertical surface-pixel origin of the render viewport.
         /// </summary>
-        public int yOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.y;
+        public static int YOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.y;
 
         /// <summary>
         /// Width of the render viewport in surface pixels.
         /// </summary>
-        public int backingWidth => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.w;
+        public static int BackingWidth => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.w;
 
         /// <summary>
         /// Height of the render viewport in surface pixels.
         /// </summary>
-        public int backingHeight => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.h;
+        public static int BackingHeight => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.h;
     }
 }

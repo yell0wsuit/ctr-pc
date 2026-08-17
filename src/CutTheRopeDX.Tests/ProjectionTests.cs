@@ -21,8 +21,8 @@ namespace CutTheRopeDX.Tests
             {
                 GLCanvas canvas = FrameworkTypes.Canvas;
 
-                Assert.Equal(2560f, canvas.ProjectionWidth, 0.01);
-                Assert.Equal(1440f, canvas.ProjectionHeight, 0.01);
+                Assert.Equal(2560f, GLCanvas.ProjectionWidth, 0.01);
+                Assert.Equal(1440f, GLCanvas.ProjectionHeight, 0.01);
             });
         }
 
@@ -38,9 +38,9 @@ namespace CutTheRopeDX.Tests
                 GLCanvas canvas = FrameworkTypes.Canvas;
                 CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
-                Assert.Equal(visible.w, canvas.ProjectionWidth, 0.01);
-                Assert.Equal(visible.h, canvas.ProjectionHeight, 0.01);
-                Assert.True(canvas.ProjectionWidth > 2560f);
+                Assert.Equal(visible.w, GLCanvas.ProjectionWidth, 0.01);
+                Assert.Equal(visible.h, GLCanvas.ProjectionHeight, 0.01);
+                Assert.True(GLCanvas.ProjectionWidth > 2560f);
             });
         }
 
@@ -54,9 +54,9 @@ namespace CutTheRopeDX.Tests
                 GLCanvas canvas = FrameworkTypes.Canvas;
                 CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
-                Assert.Equal(visible.w, canvas.ProjectionWidth, 0.01);
-                Assert.Equal(visible.h, canvas.ProjectionHeight, 0.01);
-                Assert.True(canvas.ProjectionHeight > canvas.ProjectionWidth);
+                Assert.Equal(visible.w, GLCanvas.ProjectionWidth, 0.01);
+                Assert.Equal(visible.h, GLCanvas.ProjectionHeight, 0.01);
+                Assert.True(GLCanvas.ProjectionHeight > GLCanvas.ProjectionWidth);
             });
         }
 
@@ -72,10 +72,10 @@ namespace CutTheRopeDX.Tests
                 GLCanvas canvas = FrameworkTypes.Canvas;
                 CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
 
-                Assert.Equal((int)render.x, canvas.xOffset);
-                Assert.Equal((int)render.y, canvas.yOffset);
-                Assert.Equal((int)render.w, canvas.backingWidth);
-                Assert.Equal((int)render.h, canvas.backingHeight);
+                Assert.Equal((int)render.x, GLCanvas.XOffset);
+                Assert.Equal((int)render.y, GLCanvas.YOffset);
+                Assert.Equal((int)render.w, GLCanvas.BackingWidth);
+                Assert.Equal((int)render.h, GLCanvas.BackingHeight);
             });
         }
     }

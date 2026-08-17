@@ -656,7 +656,6 @@ namespace CutTheRopeDX.GameMain
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
-            mainMenuButtons = vBox;
             Button c = CreateButtonWithTextIDDelegate(Application.GetString("PLAY"), MenuButtonId.Play, this);
             _ = vBox.AddChild(c);
             Button c2 = CreateButtonWithTextIDDelegate(Application.GetString("OPTIONS"), MenuButtonId.Options, this);
@@ -745,7 +744,6 @@ namespace CutTheRopeDX.GameMain
             optionsShadow = image;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
-            optionsButtons = vBox;
             ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
             ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound);
             HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
@@ -835,7 +833,6 @@ namespace CutTheRopeDX.GameMain
             // Build rows using VBox of HBoxes (same pattern as options menu)
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
-            languageButtons = vBox;
 
             for (int i = 0; i < langCodes.Count; i += columns)
             {

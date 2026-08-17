@@ -148,9 +148,10 @@ namespace CutTheRopeDX.Tests
 
         private static float ReadFittedScale()
         {
+            _ = HeadlessGame.Boot();
             return (float)typeof(ViewController)
-                .GetProperty("FittedScale", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(Probe());
+                .GetProperty("FittedScale", BindingFlags.Static | BindingFlags.NonPublic)
+                .GetValue(null);
         }
 
         private static void InvokePlaceFittedGroup(BaseElement group)

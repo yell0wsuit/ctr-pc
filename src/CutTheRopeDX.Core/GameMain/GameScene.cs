@@ -312,7 +312,7 @@ namespace CutTheRopeDX.GameMain
             // still meet every edge. A wider one is already covered, so it grows by nothing, and
             // at the design shape the factor is one and this is the authored scale exactly.
             float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
-            float growth = MathF.Max(1f, (SCREEN_WIDTH / SCREEN_HEIGHT) / aspect);
+            float growth = MathF.Max(1f, SCREEN_WIDTH / SCREEN_HEIGHT / aspect);
 
             float scale = SCREEN_WIDTH / texture._realWidth * growth;
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
@@ -366,7 +366,7 @@ namespace CutTheRopeDX.GameMain
                 ? 0.5f
                 : FIT_TO_BOUNDARIES((camera.pos.Y - cameraBounds.y) / scrollableY, 0f, 1f);
 
-            CTRRectangle window = new CTRRectangle(
+            CTRRectangle window = new(
                 cameraBounds.x + (scrollableX * anchorX),
                 cameraBounds.y + (scrollableY * anchorY),
                 cameraWindow.w,

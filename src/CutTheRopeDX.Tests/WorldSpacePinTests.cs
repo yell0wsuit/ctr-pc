@@ -25,8 +25,10 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                Assert.Equal(2560f, FrameworkTypes.SCREEN_WIDTH);
-                Assert.Equal(1440f, FrameworkTypes.SCREEN_HEIGHT);
+                Assert.True(
+                    FrameworkTypes.SCREEN_WIDTH == 2560f && FrameworkTypes.SCREEN_HEIGHT == 1440f,
+                    $"{name}: the world constants followed the surface, "
+                        + $"got {FrameworkTypes.SCREEN_WIDTH}x{FrameworkTypes.SCREEN_HEIGHT}");
             });
         }
 
@@ -54,6 +56,9 @@ namespace CutTheRopeDX.Tests
                 + "the pin theory cannot prove anything unless the viewport actually varies");
         }
 
-        public static TheoryData<string, int, int> Surfaces() => LayoutSurfaces.Theory();
+        public static TheoryData<string, int, int> Surfaces()
+        {
+            return LayoutSurfaces.Theory();
+        }
     }
 }

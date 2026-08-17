@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
 
             public CTRRectangle Fitted => FittedBox;
 
-            public float Scale => FittedScale;
+            public static float Scale => FittedScale;
 
             public Vector ToDesign(float x, float y)
             {
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
 
             public CTRRectangle Fitted => FittedBox;
 
-            public float Scale => FittedScale;
+            public static float Scale => FittedScale;
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests
             // No layout pass needed: FittedBox derives from the published snapshot on read.
             Assert.Equal(0f, controller.Fitted.x, 0.01);
             Assert.Equal(2560f, controller.Fitted.w, 0.01);
-            Assert.Equal(1f, controller.Scale, 0.001);
+            Assert.Equal(1f, ProbeController.Scale, 0.001);
         }
 
         [Fact]
@@ -63,10 +63,10 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
             Assert.Equal(1440f, controller.Box.h, 0.01);
-            Assert.Equal(1.15f, controller.Scale, 0.001);
+            Assert.Equal(1.15f, ProbeController.Scale, 0.001);
             Assert.True(
-                controller.Scale > 1f,
-                $"a wide viewport should zoom in, got {controller.Scale}");
+                ProbeController.Scale > 1f,
+                $"a wide viewport should zoom in, got {ProbeController.Scale}");
         }
 
         [Fact]
@@ -83,8 +83,8 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(2560f, controller.Box.w, 0.01);
             Assert.Equal(1440f, controller.Box.h, 0.01);
             Assert.True(
-                controller.Scale > 1f,
-                $"a portrait viewport should draw larger, got {controller.Scale}");
+                ProbeController.Scale > 1f,
+                $"a portrait viewport should draw larger, got {ProbeController.Scale}");
         }
 
         [Fact]
@@ -97,8 +97,8 @@ namespace CutTheRopeDX.Tests
             _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             FixedBoxController controller = new();
 
-            Assert.Equal(2560f * controller.Scale, controller.Fitted.w, 0.01);
-            Assert.Equal(1440f * controller.Scale, controller.Fitted.h, 0.01);
+            Assert.Equal(2560f * FixedBoxController.Scale, controller.Fitted.w, 0.01);
+            Assert.Equal(1440f * FixedBoxController.Scale, controller.Fitted.h, 0.01);
             Assert.Equal((3600f - controller.Fitted.w) / 2f, controller.Fitted.x, 0.01);
         }
 
@@ -132,8 +132,8 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(ViewportLayout.DesignWidth / 2f, design.X, 0.01);
             Assert.Equal(controller.Box.h / 2f, design.Y, 0.01);
             Assert.True(
-                controller.Scale > 1f,
-                $"the fit must actually be scaled for this to prove anything, got {controller.Scale}");
+                ProbeController.Scale > 1f,
+                $"the fit must actually be scaled for this to prove anything, got {ProbeController.Scale}");
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
             Assert.Equal(1440f, controller.Box.h, 0.01);
-            Assert.Equal(1f, controller.Scale, 0.001);
+            Assert.Equal(1f, ProbeController.Scale, 0.001);
         }
     }
 }

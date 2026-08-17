@@ -24,11 +24,15 @@ namespace CutTheRopeDX.Tests
                 CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 View view = new();
 
-                Assert.Equal((int)visible.w, view.width);
-                Assert.Equal((int)visible.h, view.height);
+                Assert.True(
+                    (int)visible.w == view.width && (int)visible.h == view.height,
+                    $"{name}: expected {(int)visible.w}x{(int)visible.h}, got {view.width}x{view.height}");
             });
         }
 
-        public static TheoryData<string, int, int> Surfaces() => LayoutSurfaces.Theory();
+        public static TheoryData<string, int, int> Surfaces()
+        {
+            return LayoutSurfaces.Theory();
+        }
     }
 }
