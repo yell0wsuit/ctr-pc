@@ -203,21 +203,25 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            float widthScale = SCREEN_WIDTH / animStageWidth;
-            float heightScale = SCREEN_HEIGHT / animStageHeight;
+            // The splash is a single stage centred on screen, so it measures against what the
+            // viewport exposes rather than the fixed design size. The two are the same thing at
+            // the design shape, and the stage sat off toward one corner at every other.
+            CTRRectangle visible = VisibleBounds;
+            float widthScale = visible.w / animStageWidth;
+            float heightScale = visible.h / animStageHeight;
             float scale = widthScale < heightScale ? widthScale : heightScale;
 
             animRoot.anchor = 18;
             animRoot.parentAnchor = -1;
-            animRoot.x = SCREEN_WIDTH / 2f;
-            animRoot.y = SCREEN_HEIGHT / 2f;
+            animRoot.x = visible.w / 2f;
+            animRoot.y = visible.h / 2f;
             animRoot.scaleX = scale;
             animRoot.scaleY = scale;
 
             if (legalDisclaimerText != null)
             {
-                float stageBottom = (SCREEN_HEIGHT + (animStageHeight * scale)) / 2f;
-                legalDisclaimerText.x = SCREEN_WIDTH / 2f;
+                float stageBottom = (visible.h + (animStageHeight * scale)) / 2f;
+                legalDisclaimerText.x = visible.w / 2f;
                 legalDisclaimerText.y = stageBottom - 35f;
             }
         }
@@ -234,7 +238,7 @@ namespace CutTheRopeDX.GameMain
                 legalDisclaimerText.anchor = legalDisclaimerText.parentAnchor = 34;
             }
 
-            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), SCREEN_WIDTH * 0.9f);
+            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), VisibleBounds.w * 0.9f);
             UpdateDisclaimerAlpha();
             legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = 0.65f;
         }
@@ -374,7 +378,7 @@ namespace CutTheRopeDX.GameMain
 
                 // White background
                 Renderer.Disable(Renderer.GL_TEXTURE_2D);
-                DrawHelper.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.solidOpaqueRGBA);
+                DrawHelper.DrawSolidRectWOBorder(0f, 0f, VisibleBounds.w, VisibleBounds.h, RGBAColor.solidOpaqueRGBA);
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
                 Renderer.SetColor(Color.White);
 
@@ -384,8 +388,8 @@ namespace CutTheRopeDX.GameMain
                         CTRTexture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
                         float barW = barTex.quadRects[0].w;
                         float barH = barTex.quadRects[0].h;
-                        float barX = (SCREEN_WIDTH - barW) / 2f;
-                        float barY = (SCREEN_HEIGHT - barH) / 2f;
+                        float barX = (VisibleBounds.w - barW) / 2f;
+                        float barY = (VisibleBounds.h - barH) / 2f;
 
                         // Empty bar centered
                         DrawHelper.DrawImageQuad(barTex, 0, barX, barY);
