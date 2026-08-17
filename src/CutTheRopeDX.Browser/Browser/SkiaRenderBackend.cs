@@ -150,20 +150,43 @@ namespace CutTheRopeDX.Browser
             }
 
             FlushQuads();
-            if (width == _renderTargetWidth && height == _renderTargetHeight)
+            if (width != _renderTargetWidth || height != _renderTargetHeight)
+            {
+                DropScissor();
+                _renderTarget?.Dispose();
+                _renderTarget = SKSurface.Create(
+                    surface.Context,
+                    budgeted: true,
+                    new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                    ?? throw new InvalidOperationException("Could not create the Skia render target.");
+                _renderTargetWidth = width;
+                _renderTargetHeight = height;
+            }
+
+            ApplyViewTransform();
+        }
+
+        /// <summary>
+        /// Puts the logical-to-surface step on the canvas itself, so every draw carries it without
+        /// knowing about it: geometry, text and clip rectangles all arrive in logical units and
+        /// Skia maps them the same way.
+        /// </summary>
+        /// <remarks>
+        /// The target is sized in surface pixels while drawing is authored in logical ones. Without
+        /// this the two are treated as the same unit, which fills the target only as far as the
+        /// logical extent reaches and leaves the rest of it blank - correct-looking only while the
+        /// viewport happens to expose exactly as many logical units as it has pixels.
+        /// </remarks>
+        private void ApplyViewTransform()
+        {
+            SKCanvas target = Target;
+            if (target == null)
             {
                 return;
             }
 
-            DropScissor();
-            _renderTarget?.Dispose();
-            _renderTarget = SKSurface.Create(
-                surface.Context,
-                budgeted: true,
-                new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
-                ?? throw new InvalidOperationException("Could not create the Skia render target.");
-            _renderTargetWidth = width;
-            _renderTargetHeight = height;
+            float scale = ScreenPresentation.Instance.Snapshot.Scale;
+            target.SetMatrix(SKMatrix.CreateScale(scale, scale));
         }
 
         /// <inheritdoc />
