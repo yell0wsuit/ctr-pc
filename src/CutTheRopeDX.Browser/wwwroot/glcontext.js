@@ -10,49 +10,11 @@ function getGL() {
     return gl;
 }
 
-export function fitCanvasToViewport(viewportWidth, viewportHeight) {
-    const nativeWidth = 2560;
-    const nativeHeight = 1440;
-    const scale = Math.min(viewportWidth / nativeWidth, viewportHeight / nativeHeight);
-    const width = Math.max(1, Math.round(nativeWidth * scale));
-    const height = Math.max(1, Math.round(nativeHeight * scale));
-    return {
-        width,
-        height,
-        left: Math.round((viewportWidth - width) / 2),
-        top: Math.round((viewportHeight - height) / 2),
-    };
-}
-
-function resizeViewportSurfaces(canvas) {
-    const layout = fitCanvasToViewport(window.innerWidth, window.innerHeight);
-    const width = `${layout.width}px`;
-    const height = `${layout.height}px`;
-    const left = `${layout.left}px`;
-    const top = `${layout.top}px`;
-    const surfaces = [canvas, document.getElementById("movie")];
-    for (const surface of surfaces) {
-        if (
-            surface !== null &&
-            (surface.style.width !== width ||
-                surface.style.height !== height ||
-                surface.style.left !== left ||
-                surface.style.top !== top)
-        ) {
-            surface.style.width = width;
-            surface.style.height = height;
-            surface.style.left = left;
-            surface.style.top = top;
-        }
-    }
-}
-
 export function createContext(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
         return 0;
     }
-    resizeViewportSurfaces(canvas);
     const attributes = {
         alpha: 1,
         depth: 1,
@@ -78,12 +40,14 @@ export function createContext(canvasId) {
 // so the ratio and the size a caller acts on always describe the same measurement.
 let appliedDevicePixelRatio = 1;
 
+// The canvas fills the viewport through the stylesheet, so its CSS box needs no help from
+// here. Measuring it rather than sizing it is what lets the game adopt whatever shape the
+// window or the device is, instead of the page choosing a shape and the game obeying it.
 export function canvasSize(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
         return [0, 0];
     }
-    resizeViewportSurfaces(canvas);
     const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
     appliedDevicePixelRatio = ratio;
     const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
