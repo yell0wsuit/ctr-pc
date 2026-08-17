@@ -167,6 +167,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Sizes the transition box to the viewport, which is what the result panel centres on.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public void RelayoutBox(CTRRectangle visible)
+        {
+            width = (int)visible.w;
+            height = (int)visible.h;
+        }
+
+        /// <summary>
         /// Initializes the transition box UI, result panel, buttons, and score labels.
         /// </summary>
         /// <param name="b">Button delegate that receives result-panel button events.</param>
@@ -175,7 +185,16 @@ namespace CutTheRopeDX.GameMain
         {
             result = new BaseElement();
             _ = AddChildwithID(result, 1);
-            anchor = parentAnchor = 18;
+
+            // Spans the viewport itself rather than centring inside whatever its parent happens to
+            // be. The result panel centres on this element's width, so inheriting a parent that
+            // was sized for a different viewport put the panel off toward one side. At the design
+            // shape this resolves to the same place the centred anchor did.
+            anchor = 9;
+            parentAnchor = -1;
+            x = 0f;
+            y = 0f;
+            RelayoutBox(VisibleBounds);
             result.anchor = result.parentAnchor = 18;
             result.SetEnabled(false);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);

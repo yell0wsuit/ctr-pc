@@ -983,6 +983,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             ((GameScene)view.GetChild(0))?.RelayoutHud(visible);
+            ((BoxOpenClose)view.GetChild(4))?.RelayoutBox(visible);
         }
 
         /// <summary>
@@ -1009,7 +1010,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            float plateRightEdge = ((visible.w + pauseMenuPlate.width) / 2f);
+            float plateRightEdge = (visible.w + pauseMenuPlate.width) / 2f;
             float roomToSpare = visible.w - plateRightEdge - BestScoreLabelInset;
             mapNameLabel.x = MathF.Min(authored, roomToSpare);
         }
