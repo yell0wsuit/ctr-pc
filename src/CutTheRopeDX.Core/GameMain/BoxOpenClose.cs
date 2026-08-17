@@ -168,8 +168,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Sizes the transition box to the viewport, which is what the result panel centers on.
+        /// Spans the transition box across the viewport and refits the box cover to it.
         /// </summary>
+        /// <remarks>
+        /// The result panel is not placed here. It is a design-space composition like a menu's,
+        /// so the controller fits it the same way it fits those, and all this has to guarantee is
+        /// that the panel's group hangs from the viewport's own origin.
+        /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
         public void RelayoutBox(CTRRectangle visible)
         {
@@ -214,25 +219,39 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Hangs one authored piece of the result panel from the panel's group.
+        /// </summary>
+        /// <remarks>
+        /// Anchored to the group's own corner, which is what makes the design-space position each
+        /// piece was authored with be read from where the fit put the group rather than from the
+        /// corner of the screen. A piece left resolving against the screen stays where the design
+        /// size put it while the rest of the panel moves.
+        /// </remarks>
+        /// <param name="piece">Panel piece to add.</param>
+        private void AddPanelPiece(BaseElement piece)
+        {
+            piece.parentAnchor = 9;
+            _ = result.AddChild(piece);
+        }
+
+        /// <summary>
         /// Initializes the transition box UI, result panel, buttons, and score labels.
         /// </summary>
         /// <param name="b">Button delegate that receives result-panel button events.</param>
         /// <returns>The initialized transition box instance.</returns>
         public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
-            result = new BaseElement();
+            // Every piece of the result panel is authored in design coordinates, so they hang from
+            // a group the layout pass fits to the viewport and the whole panel follows it. Sitting
+            // at the viewport's own origin, rather than centered inside a parent, is what lets the
+            // group's fitted position mean what it says.
+            result = new FittedGroup { anchor = 9, parentAnchor = 9 };
             _ = AddChildwithID(result, 1);
-
-            // Spans the viewport itself rather than centering inside whatever its parent happens to
-            // be. The result panel centers on this element's width, so inheriting a parent that
-            // was sized for a different viewport put the panel off toward one side. At the design
-            // shape this resolves to the same place the centered anchor did.
             anchor = 9;
             parentAnchor = -1;
             x = 0f;
             y = 0f;
             RelayoutBox(VisibleBounds);
-            result.anchor = result.parentAnchor = 18;
             result.SetEnabled(false);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -246,27 +265,27 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             image.SetName("star1");
             Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuResults, 0);
-            _ = result.AddChild(image);
+            AddPanelPiece(image);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
             image2.anchor = 18;
             image2.SetName("star2");
             Image.SetElementPositionWithQuadOffset(image2, Resources.Img.MenuResults, 1);
-            _ = result.AddChild(image2);
+            AddPanelPiece(image2);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
             image3.anchor = 18;
             image3.SetName("star3");
             Image.SetElementPositionWithQuadOffset(image3, Resources.Img.MenuResults, 2);
-            _ = result.AddChild(image3);
+            AddPanelPiece(image3);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(Application.GetString("LEVEL_CLEARED1"));
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuResults, 3);
             text.anchor = 18;
             text.SetName("passText");
-            _ = result.AddChild(text);
+            AddPanelPiece(text);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 15);
             image4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(image4, Resources.Img.MenuResults, 4);
-            _ = result.AddChild(image4);
+            AddPanelPiece(image4);
             stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, CTRResourceMgr.GetResultStampQuad());
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -277,40 +296,40 @@ namespace CutTheRopeDX.GameMain
             stamp.anchor = 18;
             stamp.SetEnabled(false);
             Image.SetElementPositionWithQuadOffset(stamp, Resources.Img.MenuResults, 12);
-            _ = result.AddChild(stamp);
+            AddPanelPiece(stamp);
             Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("REPLAY"), 8, b);
             button.anchor = 18;
             // Custom levels hide the NEXT/MENU buttons, so replay takes the centered menu slot instead.
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, CustomLevelSession.IsActive ? 9 : 11);
-            _ = result.AddChild(button);
+            AddPanelPiece(button);
             if (!CustomLevelSession.IsActive)
             {
                 Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
                 button2.anchor = 18;
                 Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuResults, 10);
-                _ = result.AddChild(button2);
+                AddPanelPiece(button2);
                 Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
                 button3.anchor = 18;
                 Image.SetElementPositionWithQuadOffset(button3, Resources.Img.MenuResults, 9);
-                _ = result.AddChild(button3);
+                AddPanelPiece(button3);
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetName("dataTitle");
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuResults, 5);
-            _ = result.AddChild(text2);
+            AddPanelPiece(text2);
             Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetName("dataValue");
             text3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuResults, 6);
-            _ = result.AddChild(text3);
+            AddPanelPiece(text3);
             Text text4 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.FontNumbersBig));
             text4.SetName("scoreValue");
             text4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text4, Resources.Img.MenuResults, 8);
-            _ = result.AddChild(text4);
+            AddPanelPiece(text4);
             confettiAnims = new BaseElement();
-            _ = result.AddChild(confettiAnims);
+            AddPanelPiece(confettiAnims);
             openCloseAnims = null;
             boxAnim = -1;
             delegateboxClosed = null;
@@ -324,6 +343,10 @@ namespace CutTheRopeDX.GameMain
         public static BaseElement CreateConfettiParticleNear()
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
+
+            // Spawned across the design box and animated in design coordinates, so it travels with
+            // the panel it bursts over instead of falling where the design size alone would put it.
+            confetti.parentAnchor = 9;
             confetti.DoRestoreCutTransparency();
             int confettiVariant = RND_RANGE(0, 2);
             int firstFrame = 18;

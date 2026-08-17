@@ -977,7 +977,14 @@ namespace CutTheRopeDX.GameMain
             }
 
             ((GameScene)view.GetChild(0))?.RelayoutHud(visible);
-            ((BoxOpenClose)view.GetChild(4))?.RelayoutBox(visible);
+
+            BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
+            results?.RelayoutBox(visible);
+
+            // The result panel is a design-space composition like a menu's, so it is fitted the
+            // same way one is: fit the group it hangs from and the whole panel lands with it,
+            // centered on the viewport it is shown over at every shape of window.
+            PlaceFittedGroup(results?.result);
         }
 
         /// <summary>
