@@ -90,6 +90,33 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
+        /// Corrects a corner-relative offset so growing an element by <paramref name="scale"/>
+        /// keeps its distance from the anchored corner scaling right along with it, instead of
+        /// the element just enlarging in place.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="CutTheRopeDX.Framework.Visual.BaseElement"/> always scales about its own
+        /// center regardless of anchor, so an edge-anchored offset needs a correction term to
+        /// compensate. The direction depends on which edge: a left/top anchor's offset already
+        /// measures distance from the origin directly, while a right/bottom anchor's offset is
+        /// measured backwards from that far edge, which is what <paramref name="farEdge"/>
+        /// selects between.
+        /// </remarks>
+        /// <param name="baseOffset">Authored offset from the anchored edge, at scale one.</param>
+        /// <param name="dimension">The element's own width or height along this axis.</param>
+        /// <param name="scale">Uniform scale the element is drawn at.</param>
+        /// <param name="farEdge">
+        /// Whether the anchored edge is the far one on this axis (right for X, bottom for Y)
+        /// rather than the near one (left for X, top for Y).
+        /// </param>
+        /// <returns>The offset to assign so the element grows from its anchored corner.</returns>
+        public static float CornerAnchoredOffset(float baseOffset, float dimension, float scale, bool farEdge)
+        {
+            float correction = dimension / 2f * (1f - scale);
+            return (baseOffset * scale) + (farEdge ? correction : -correction);
+        }
+
+        /// <summary>
         /// Linearly remaps <paramref name="value"/> from one range to another. Used for the
         /// aspect-ratio breakpoints scene layouts interpolate across.
         /// </summary>

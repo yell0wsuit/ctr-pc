@@ -101,6 +101,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private float levelsGridWidth;
 
+        /// <summary>The level picker's total-stars-in-pack label, corner-anchored outside the grid's fitted group.</summary>
+        private HBox levelsStarText;
+
         /// <summary>
         /// The visible bounds the pack picker was built for. How many boxes fit across, and
         /// therefore the scroll points, follow from it, so a viewport of a different shape needs
@@ -259,6 +262,14 @@ namespace CutTheRopeDX.GameMain
                     ? MathF.Min(FittedScale, visible.w / levelsGridWidth)
                     : FittedScale;
                 PlaceFittedGroup(levelsGroup, gridScale);
+            }
+
+            if (levelsStarText != null)
+            {
+                float starScale = FittedScale;
+                levelsStarText.scaleX = levelsStarText.scaleY = starScale;
+                levelsStarText.x = LayoutMath.CornerAnchoredOffset(-30f, levelsStarText.width, starScale, farEdge: true);
+                levelsStarText.y = LayoutMath.CornerAnchoredOffset(40f, levelsStarText.height, starScale, farEdge: false);
             }
         }
 

@@ -1002,13 +1002,6 @@ namespace CutTheRopeDX.GameMain
         /// authored edge offsets scale along with it rather than the button just getting bigger
         /// in place.
         /// </summary>
-        /// <remarks>
-        /// <see cref="BaseElement"/> always scales about its own center, whatever its anchor, so
-        /// a button anchored to the top-right corner needs the opposite correction on each axis:
-        /// the right anchor already subtracts its own width when resolving <c>drawX</c>, which
-        /// the top anchor never does for <c>drawY</c>. Working back from where the corner should
-        /// land through that asymmetry is what the two correction terms below are.
-        /// </remarks>
         /// <param name="button">Button to place, anchored top-right (12) to the view.</param>
         /// <param name="baseX">Authored X offset from the right edge, at scale one.</param>
         /// <param name="baseY">Authored Y offset from the top edge, at scale one.</param>
@@ -1016,8 +1009,8 @@ namespace CutTheRopeDX.GameMain
         private static void PlaceCornerAnchoredHudButton(Button button, float baseX, float baseY, float scale)
         {
             button.scaleX = button.scaleY = scale;
-            button.x = (baseX * scale) + (button.width / 2f * (1f - scale));
-            button.y = (baseY * scale) - (button.height / 2f * (1f - scale));
+            button.x = LayoutMath.CornerAnchoredOffset(baseX, button.width, scale, farEdge: true);
+            button.y = LayoutMath.CornerAnchoredOffset(baseY, button.height, scale, farEdge: false);
         }
 
         /// <summary>

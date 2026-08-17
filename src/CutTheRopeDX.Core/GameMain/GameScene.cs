@@ -287,11 +287,14 @@ namespace CutTheRopeDX.GameMain
             BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
             if (levelLabel != null)
             {
-                levelLabel.x = 15f;
+                levelLabel.scaleX = levelLabel.scaleY = hudScale;
+                levelLabel.x = LayoutMath.CornerAnchoredOffset(15f, levelLabel.width, hudScale, farEdge: false);
 
                 // Reduces to the shipped position where the viewport exposes the design height.
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-                levelLabel.y = isChinese ? visible.h : visible.h - LevelLabelInsetY;
+                float bottomInset = isChinese ? 0f : LevelLabelInsetY;
+                levelLabel.y = visible.h
+                    - LayoutMath.CornerAnchoredOffset(bottomInset, levelLabel.height, hudScale, farEdge: true);
             }
 
             for (int i = 0; i < 3; i++)

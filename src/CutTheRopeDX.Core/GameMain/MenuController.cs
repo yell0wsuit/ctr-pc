@@ -1123,8 +1123,9 @@ namespace CutTheRopeDX.GameMain
             string text = Application.GetString("TOTAL_STARS").ToString();
             text = text.Replace("%d", "");
             HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
-            hBox.x = -30f;
-            hBox.y = 40f;
+            hBox.scaleX = hBox.scaleY = FittedScale;
+            hBox.x = LayoutMath.CornerAnchoredOffset(-30f, hBox.width, FittedScale, farEdge: true);
+            hBox.y = LayoutMath.CornerAnchoredOffset(40f, hBox.height, FittedScale, farEdge: false);
             hBox.SetName("text");
             HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-20f, 16, VisibleBounds.h);
             float availableScreenWidth = VisibleBounds.w;
@@ -1503,6 +1504,7 @@ namespace CutTheRopeDX.GameMain
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
             hBox.x = -30f;
+            levelsStarText = hBox;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
