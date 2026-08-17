@@ -309,7 +309,6 @@ namespace CutTheRopeDX.GameMain
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
-                _ = logoParent.AddChild(image3);
 
                 // Candy on rope (positioned under the logo)
                 // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
