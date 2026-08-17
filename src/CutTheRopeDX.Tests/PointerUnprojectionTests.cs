@@ -51,20 +51,41 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheDefaultBoxFillsTheViewportAtEveryAspect()
+        public void TheDefaultBoxZoomsInRatherThanFillingAWideViewport()
         {
-            // 3840x1080 clamps to 2700x1080, giving 3600x1440 logical at aspect 2.5. The default
-            // box is 2560x1024, which has that same aspect, so the fit leaves no slack at all.
+            // 3840x1080 clamps to 2700x1080, giving 3600x1440 logical at aspect 2.5. Past the
+            // design aspect the box shrinks with the viewport instead of tracking it, so the fit
+            // scale rises - the composition is drawn larger - and what it does not reach is left
+            // as slack rather than stretched into.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             ProbeController controller = new();
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
-            Assert.Equal(1024f, controller.Box.h, 0.01);
-            Assert.Equal(0f, controller.Fitted.x, 0.01);
-            Assert.Equal(3600f, controller.Fitted.w, 0.01);
+            Assert.Equal(1150f, controller.Box.h, 0.01);
+            Assert.Equal(1440f / 1150f, controller.Scale, 0.001);
+            Assert.True(
+                controller.Scale > 1f,
+                $"a wide viewport should zoom in, got {controller.Scale}");
             Assert.Equal(1440f, controller.Fitted.h, 0.01);
-            Assert.Equal(3600f / 2560f, controller.Scale, 0.001);
+            Assert.Equal(197.22f, controller.Fitted.x, 0.01);
+        }
+
+        [Fact]
+        public void TheDefaultBoxFillsAViewportNarrowerThanTheDesignAspect()
+        {
+            // Below the design aspect the box is width-normalized, so its aspect equals the
+            // viewport's and the fit leaves no slack on either axis.
+            ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(720, 1280);
+            ProbeController controller = new();
+
+            Assert.Equal(2560f, controller.Box.w, 0.01);
+            Assert.Equal(4551.11f, controller.Box.h, 0.01);
+            Assert.Equal(0f, controller.Fitted.x, 0.01);
+            Assert.Equal(0f, controller.Fitted.y, 0.01);
+            Assert.Equal(1440f, controller.Fitted.w, 0.01);
+            Assert.Equal(2560f, controller.Fitted.h, 0.01);
         }
 
         [Fact]

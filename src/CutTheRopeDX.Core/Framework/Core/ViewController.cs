@@ -13,22 +13,59 @@ namespace CutTheRopeDX.Framework.Core
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {
         /// <summary>
-        /// The coordinate box this controller's content is authored in, computed from the
-        /// published viewport. Its width is fixed at the design width and its height follows the
-        /// viewport's aspect ratio, so the box always matches the shape of the space available and
-        /// content never sits in bars. At 16:9 it is exactly the design size, which is what keeps
-        /// the shipped layout unchanged.
+        /// The coordinate box this controller's content is authored in, recomputed from the
+        /// published viewport on every read. Its width is always the design width; its height is a
+        /// function of the viewport's aspect ratio.
         /// </summary>
         /// <remarks>
+        /// <para>
+        /// Two rules meet at the design aspect ratio. Below it the box is width-normalized, so a
+        /// taller viewport gets a taller box and content reaches every edge rather than sitting in
+        /// bars. Above it the box shrinks with the viewport instead of tracking it exactly, which
+        /// raises the fit scale and zooms the composition in; a wide screen then shows the menu
+        /// larger rather than merely further apart. That upper rule is the shape of Famobi's
+        /// height curve, at its rate, anchored so the two branches meet at the design size.
+        /// </para>
+        /// <para>
+        /// Both branches return exactly the design size at the design aspect ratio, which is what
+        /// leaves the shipped layout untouched at the ratio the game ships at.
+        /// </para>
+        /// <para>
         /// Computed on read rather than assigned during a layout pass: an assigned box would be a
         /// cached derivation of the snapshot and could disagree with it. A controller whose content
         /// needs a fixed shape overrides this getter; it never writes one.
+        /// </para>
         /// </remarks>
-        protected virtual CTRRectangle DesignBox => new(
-            0f,
-            0f,
-            ViewportLayout.DesignWidth,
-            ViewportLayout.DesignWidth / ScreenPresentation.Instance.Snapshot.Aspect);
+        protected virtual CTRRectangle DesignBox
+        {
+            get
+            {
+                float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
+                float height = aspect <= DesignAspect
+                    ? ViewportLayout.DesignWidth / aspect
+                    : LayoutMath.Remap(
+                        MathF.Min(aspect, ViewportLayout.MaxAspect),
+                        DesignAspect,
+                        ViewportLayout.MaxAspect,
+                        ViewportLayout.DesignHeight,
+                        WidestDesignHeight);
+                return new CTRRectangle(0f, 0f, ViewportLayout.DesignWidth, height);
+            }
+        }
+
+        /// <summary>
+        /// Aspect ratio of the fixed design size, where the two branches of <see cref="DesignBox"/>
+        /// meet and the box is exactly the size the game's content is authored at.
+        /// </summary>
+        private const float DesignAspect =
+            ViewportLayout.DesignWidth / ViewportLayout.DesignHeight;
+
+        /// <summary>
+        /// Design-box height at the widest supported aspect ratio. Famobi shortens its box by
+        /// roughly 28% per unit of aspect ratio; applied from the design size across the span this
+        /// game clamps at, that lands here.
+        /// </summary>
+        private const float WidestDesignHeight = 1150f;
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
@@ -44,6 +81,40 @@ namespace CutTheRopeDX.Framework.Core
         /// Uniform scale from design-box coordinates to logical space.
         /// </summary>
         protected float FittedScale => FittedBox.w / DesignBox.w;
+
+        /// <summary>
+        /// Sizes, scales and positions the element that carries this controller's design-space
+        /// content, so everything under it is drawn as though the design box were the screen.
+        /// </summary>
+        /// <remarks>
+        /// The position is not simply the fitted box's corner. <see cref="BaseElement"/> scales
+        /// about its own centre, so a group placed at that corner would drift by half the box
+        /// times the shortfall in scale. Taking that back out here is what makes a child authored
+        /// at <c>x</c> land at <c>FittedBox.x + x * FittedScale</c>, which is the placement rule
+        /// every scene's constants assume.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        protected void PlaceFittedGroup(BaseElement group)
+        {
+            if (group == null)
+            {
+                return;
+            }
+
+            CTRRectangle design = DesignBox;
+            CTRRectangle fitted = FittedBox;
+            float scale = fitted.w / design.w;
+
+            group.width = (int)design.w;
+            group.height = (int)design.h;
+            group.scaleX = group.scaleY = scale;
+
+            // The centre taken back out here is the one the renderer will scale about, integer
+            // shift and all. Using the exact box height instead would leave the content off by
+            // half a unit times the shortfall in scale, on any box whose height is odd.
+            group.x = fitted.x - ((group.width >> 1) * (1f - scale));
+            group.y = fitted.y - ((group.height >> 1) * (1f - scale));
+        }
 
         /// <summary>
         /// Converts a pointer position in logical space into this controller's design space, so a

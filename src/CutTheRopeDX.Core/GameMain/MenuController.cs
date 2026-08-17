@@ -219,8 +219,17 @@ namespace CutTheRopeDX.GameMain
         /// <param name="l">Whether to include the menu logo and logo candy button.</param>
         /// <param name="s">Whether to include the rotating shadow layer.</param>
         /// <param name="viewId">View the backdrop belongs to, so a layout pass can find it again.</param>
+        /// <param name="designGroup">
+        /// Group carrying the scene's design-space content, or <see langword="null"/> for a scene
+        /// that has not been converted to one. When supplied, the logo is placed in it rather than
+        /// on the backdrop, and it is hung from the backdrop above the decorative layers.
+        /// </param>
         /// <returns>The configured background element.</returns>
-        public BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s, int viewId)
+        public BaseElement CreateBackgroundWithLogowithShadow(
+            bool l,
+            bool s,
+            int viewId,
+            BaseElement designGroup = null)
         {
             BaseElement baseElement = new()
             {
@@ -293,11 +302,14 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 // Main logo
+                // The logo is design-space content: it belongs to the fitted group where the scene
+                // has one, and to the backdrop where it does not.
+                BaseElement logoParent = designGroup ?? baseElement;
                 Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 52);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
-                _ = baseElement.AddChild(image3);
+                _ = logoParent.AddChild(image3);
 
                 // Candy on rope (positioned under the logo)
                 // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
@@ -368,7 +380,8 @@ namespace CutTheRopeDX.GameMain
                         break;
                 }
 
-                _ = baseElement.AddChild(image3);
+                _ = logoParent.AddChild(image3);
+                mainMenuLogo = image3;
             }
             if (s)
             {
@@ -384,6 +397,13 @@ namespace CutTheRopeDX.GameMain
                 _ = baseElement.AddChild(image4);
                 shadowLayer = image4;
             }
+
+            // Added last, so the scene's content draws over the decorative layers rather than
+            // being split across them the way it was when the two shared one parent.
+            if (designGroup != null)
+            {
+                _ = baseElement.AddChild(designGroup);
+            }
             backdrops[viewId] = new MenuBackdrop(baseElement, image, frontLayer, shadowLayer);
             return baseElement;
         }
@@ -393,10 +413,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="l">Whether to include the menu logo and logo candy button.</param>
         /// <param name="viewId">View the backdrop belongs to, so a layout pass can find it again.</param>
+        /// <param name="designGroup">Group carrying the scene's design-space content, if it has one.</param>
         /// <returns>The configured background element.</returns>
-        public BaseElement CreateBackgroundWithLogo(bool l, int viewId)
+        public BaseElement CreateBackgroundWithLogo(bool l, int viewId, BaseElement designGroup = null)
         {
-            return CreateBackgroundWithLogowithShadow(l, true, viewId);
+            return CreateBackgroundWithLogowithShadow(l, true, viewId, designGroup);
         }
 
         /// <summary>
@@ -627,8 +648,13 @@ namespace CutTheRopeDX.GameMain
         public void CreateMainMenu()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(true, VIEW_MAIN_MENU);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, VisibleBounds.w);
+
+            // Everything the scene authors in design coordinates hangs from here; the layout pass
+            // fits this one element and the whole composition follows it.
+            BaseElement designGroup = new() { anchor = 9, parentAnchor = 9 };
+            mainMenuGroup = designGroup;
+            BaseElement baseElement = CreateBackgroundWithLogo(true, VIEW_MAIN_MENU, designGroup);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
             mainMenuButtons = vBox;
@@ -648,7 +674,7 @@ namespace CutTheRopeDX.GameMain
                 Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor, this);
                 _ = vBox.AddChild(c3);
             }
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
             bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
             if (flag)
             {
