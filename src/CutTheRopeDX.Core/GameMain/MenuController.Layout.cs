@@ -59,11 +59,20 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The options view's button column.</summary>
         private VBox optionsButtons;
 
+        /// <summary>The options view's design-space content.</summary>
+        private BaseElement optionsGroup;
+
         /// <summary>The options view's rotating light shaft, which it owns rather than the backdrop.</summary>
         private Image optionsShadow;
 
         /// <summary>The language picker's button grid.</summary>
         private VBox languageButtons;
+
+        /// <summary>The language picker's design-space content.</summary>
+        private BaseElement languageGroup;
+
+        /// <summary>The reset confirmation's design-space content.</summary>
+        private BaseElement resetGroup;
 
         /// <summary>The left half of the level picker's box-cover backdrop.</summary>
         private Image levelsCoverLeft;
@@ -200,9 +209,10 @@ namespace CutTheRopeDX.GameMain
             PlaceFittedGroup(mainMenuGroup);
             Span(mainMenuSocial, visible);
             Span(moviePlate, visible);
-            SpanWidth(optionsButtons, visible);
+            PlaceFittedGroup(optionsGroup);
             SetScale(optionsShadow, FullScreenScale(visible, 2f));
-            SpanWidth(languageButtons, visible);
+            PlaceFittedGroup(languageGroup);
+            PlaceFittedGroup(resetGroup);
         }
 
         /// <summary>

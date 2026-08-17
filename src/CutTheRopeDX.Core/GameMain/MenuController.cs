@@ -721,6 +721,8 @@ namespace CutTheRopeDX.GameMain
         public void CreateOptions()
         {
             MenuView menuView = new();
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            optionsGroup = designGroup;
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false, VIEW_OPTIONS);
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), -1, null);
@@ -729,7 +731,7 @@ namespace CutTheRopeDX.GameMain
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
             _ = hBox.AddChild(baseElement3);
-            _ = menuView.AddChild(hBox);
+            _ = designGroup.AddChild(hBox);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
@@ -741,7 +743,7 @@ namespace CutTheRopeDX.GameMain
             image.PlayTimeline(0);
             _ = menuView.AddChild(image);
             optionsShadow = image;
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, VisibleBounds.w);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
             optionsButtons = vBox;
             ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
@@ -756,7 +758,8 @@ namespace CutTheRopeDX.GameMain
             _ = vBox.AddChild(c2);
             Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("CREDITS"), MenuButtonId.ShowCredits, this);
             _ = vBox.AddChild(c3);
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
+            _ = menuView.AddChild(designGroup);
             hBox.y = (vBox.height / 2) + 10;
             vBox.y = -hBox.height / 2;
             bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
@@ -789,10 +792,12 @@ namespace CutTheRopeDX.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_RESET);
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            resetGroup = designGroup;
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.anchor = text.parentAnchor = 18;
-            _ = baseElement.AddChild(text);
+            _ = designGroup.AddChild(text);
             text.y = -200f;
             resetText = text;
             WrapResetText();
@@ -802,9 +807,10 @@ namespace CutTheRopeDX.GameMain
             Button button2 = CreateButtonWithTextIDDelegate(Application.GetString("NO"), MenuButtonId.ConfirmResetNo, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
-            _ = baseElement.AddChild(button);
-            _ = baseElement.AddChild(button2);
+            _ = designGroup.AddChild(button);
+            _ = designGroup.AddChild(button2);
             _ = menuView.AddChild(baseElement);
+            _ = menuView.AddChild(designGroup);
             Button button3 = CreateBackButtonWithDelegateID(this, MenuButtonId.BackToOptions);
             button3.SetName("backb");
             _ = menuView.AddChild(button3);
@@ -819,13 +825,15 @@ namespace CutTheRopeDX.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_LANGUAGE_SELECT);
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            languageGroup = designGroup;
 
             IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
             string currentLocale = LanguageHelper.CurrentCode;
             int columns = 3;
 
             // Build rows using VBox of HBoxes (same pattern as options menu)
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, VisibleBounds.w);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
             languageButtons = vBox;
 
@@ -848,8 +856,9 @@ namespace CutTheRopeDX.GameMain
                 _ = vBox.AddChild(hBox);
             }
 
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
             _ = menuView.AddChild(baseElement);
+            _ = menuView.AddChild(designGroup);
             Button backButton = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromLanguage);
             backButton.SetName("backb");
             _ = menuView.AddChild(backButton);
