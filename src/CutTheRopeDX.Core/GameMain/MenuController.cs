@@ -651,7 +651,7 @@ namespace CutTheRopeDX.GameMain
 
             // Everything the scene authors in design coordinates hangs from here; the layout pass
             // fits this one element and the whole composition follows it.
-            BaseElement designGroup = new() { anchor = 9, parentAnchor = 9 };
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
             mainMenuGroup = designGroup;
             BaseElement baseElement = CreateBackgroundWithLogo(true, VIEW_MAIN_MENU, designGroup);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
