@@ -49,8 +49,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private BaseElement mainMenuGroup;
 
-        /// <summary>The main menu's logo, which hangs from the top of the design box.</summary>
-        private BaseElement mainMenuLogo;
 
         /// <summary>The main menu's social-link tray, anchored to the bottom right.</summary>
         private BaseElement mainMenuSocial;
@@ -211,45 +209,11 @@ namespace CutTheRopeDX.GameMain
             // The main menu composes inside its design box, so the whole composition scales and
             // moves as one rather than each end being pinned to an edge on its own.
             PlaceFittedGroup(mainMenuGroup);
-            LayOutMainMenuColumn();
             Span(mainMenuSocial, visible);
             Span(moviePlate, visible);
             SpanWidth(optionsButtons, visible);
             SetScale(optionsShadow, FullScreenScale(visible, 2f));
             SpanWidth(languageButtons, visible);
-        }
-
-        /// <summary>
-        /// Keeps the main menu's composition together as its design box grows taller than the
-        /// shape it was authored for. The logo hangs from the top of the box and the button column
-        /// from the bottom, so extra height would otherwise open as a gap between them rather than
-        /// as room around them.
-        /// </summary>
-        /// <remarks>
-        /// Both nudges are half the surplus, which centres the authored composition in the taller
-        /// box and leaves the background to fill what is left. Each expression is the constant the
-        /// element was authored with plus a term that is zero at the design shape, so the shipped
-        /// layout is what this produces there.
-        /// </remarks>
-        private void LayOutMainMenuColumn()
-        {
-            if (mainMenuGroup == null)
-            {
-                return;
-            }
-
-            // Only a box taller than the authored one spreads the composition. A shorter one
-            // already pulls it together, and nudging further would push content out of the box.
-            float surplus = MathF.Max(0f, DesignBox.h - ViewportLayout.DesignHeight);
-
-            if (mainMenuLogo != null)
-            {
-                mainMenuLogo.y = MainMenuLogoTop + (surplus * MainMenuSurplusShare);
-            }
-            if (mainMenuButtons != null)
-            {
-                mainMenuButtons.y = MainMenuButtonsBottom - (surplus * MainMenuSurplusShare);
-            }
         }
 
         /// <summary>
@@ -445,16 +409,5 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Smallest gap between a pack picker arrow and the edge of the screen.</summary>
         private const float PackArrowInset = 10f;
 
-        /// <summary>Distance from the top of the main menu's design box to its logo.</summary>
-        private const float MainMenuLogoTop = 55f;
-
-        /// <summary>Distance from the bottom of the main menu's design box to its button column.</summary>
-        private const float MainMenuButtonsBottom = -85f;
-
-        /// <summary>
-        /// Share of a taller-than-authored design box's surplus height that each end of the main
-        /// menu's composition absorbs. A half each centres the composition in the box.
-        /// </summary>
-        private const float MainMenuSurplusShare = 0.5f;
     }
 }

@@ -381,7 +381,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 _ = logoParent.AddChild(image3);
-                mainMenuLogo = image3;
+
             }
             if (s)
             {

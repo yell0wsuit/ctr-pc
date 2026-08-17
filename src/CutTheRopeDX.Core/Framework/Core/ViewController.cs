@@ -19,12 +19,12 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Two rules meet at the design aspect ratio. Below it the box is width-normalized, so a
-        /// taller viewport gets a taller box and content reaches every edge rather than sitting in
-        /// bars. Above it the box shrinks with the viewport instead of tracking it exactly, which
-        /// raises the fit scale and zooms the composition in; a wide screen then shows the menu
-        /// larger rather than merely further apart. That upper rule is the shape of Famobi's
-        /// height curve, at its rate, anchored so the two branches meet at the design size.
+        /// At or below the design aspect ratio the box keeps the authored height, so the
+        /// composition stays the size the viewport's shorter side already gives it and a squarer
+        /// or taller window simply reveals more background around it. Above it the box shortens,
+        /// which raises the fit scale and zooms the composition in, so a wide screen shows the
+        /// menu larger rather than merely spreading it further apart. That upper rule is the shape
+        /// of Famobi's height curve, at its rate, anchored to the authored size.
         /// </para>
         /// <para>
         /// Both branches return exactly the design size at the design aspect ratio, which is what
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Framework.Core
             {
                 float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
                 float height = aspect <= DesignAspect
-                    ? ViewportLayout.DesignWidth / aspect
+                    ? ViewportLayout.DesignHeight
                     : LayoutMath.Remap(
                         MathF.Min(aspect, ViewportLayout.MaxAspect),
                         DesignAspect,
@@ -61,26 +61,58 @@ namespace CutTheRopeDX.Framework.Core
             ViewportLayout.DesignWidth / ViewportLayout.DesignHeight;
 
         /// <summary>
-        /// Design-box height at the widest supported aspect ratio. Famobi shortens its box by
-        /// roughly 28% per unit of aspect ratio; applied from the design size across the span this
-        /// game clamps at, that lands here.
+        /// Design-box height at the widest supported aspect ratio.
         /// </summary>
-        private const float WidestDesignHeight = 1150f;
+        /// <remarks>
+        /// Famobi shortens its box by roughly 28% per unit of aspect ratio, which from the design
+        /// size would reach about 1150 here. This stops short of that: the menus are composed
+        /// across nearly the whole authored height, and a box shorter than about 1210 brings the
+        /// bottom-anchored content up far enough to meet what hangs from the top. Famobi has the
+        /// headroom for its full rate because it shrinks its logo on the same curve.
+        /// </remarks>
+        private const float WidestDesignHeight = 1250f;
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
         /// on read from the published viewport rather than cached, so it is correct the instant
         /// the viewport changes and there is no second copy to keep in step.
         /// </summary>
-        protected CTRRectangle FittedBox => LayoutMath.FitInside(
-            DesignBox.w,
-            DesignBox.h,
-            ScreenPresentation.Instance.Snapshot.VisibleBounds);
+        /// <remarks>
+        /// Centred, and free to be wider than the viewport. Containing the box instead would size
+        /// the composition from the design width, and since logical space already normalizes the
+        /// viewport's shorter side, that shrinks content on any viewport narrower than the design
+        /// shape - a menu whose content column occupies the middle third of its box would be
+        /// scaled down for the sake of two empty margins. What overflows is margin; the background
+        /// covers it separately.
+        /// </remarks>
+        protected CTRRectangle FittedBox
+        {
+            get
+            {
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                CTRRectangle design = DesignBox;
+                float scale = FittedScale;
+                float width = design.w * scale;
+                float height = design.h * scale;
+                return new CTRRectangle(
+                    (visible.w - width) / 2f,
+                    (visible.h - height) / 2f,
+                    width,
+                    height);
+            }
+        }
 
         /// <summary>
         /// Uniform scale from design-box coordinates to logical space.
         /// </summary>
-        protected float FittedScale => FittedBox.w / DesignBox.w;
+        /// <remarks>
+        /// Logical space always exposes <see cref="ViewportLayout.LogicalShortSide"/> units across
+        /// its shorter side, so a box of the authored height sits at exactly one and the scale is
+        /// entirely the box's own shrinkage. That is what makes a wide viewport zoom in - the box
+        /// gets shorter, so the same content is drawn larger - while every other shape leaves the
+        /// composition at the size the short side already gives it.
+        /// </remarks>
+        protected float FittedScale => ViewportLayout.LogicalShortSide / DesignBox.h;
 
         /// <summary>
         /// Sizes, scales and positions the element that carries this controller's design-space

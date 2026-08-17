@@ -62,30 +62,31 @@ namespace CutTheRopeDX.Tests
             ProbeController controller = new();
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
-            Assert.Equal(1150f, controller.Box.h, 0.01);
-            Assert.Equal(1440f / 1150f, controller.Scale, 0.001);
+            Assert.Equal(1250f, controller.Box.h, 0.01);
+            Assert.Equal(1440f / 1250f, controller.Scale, 0.001);
             Assert.True(
                 controller.Scale > 1f,
                 $"a wide viewport should zoom in, got {controller.Scale}");
             Assert.Equal(1440f, controller.Fitted.h, 0.01);
-            Assert.Equal(197.22f, controller.Fitted.x, 0.01);
+            Assert.Equal(325.44f, controller.Fitted.x, 0.01);
         }
 
         [Fact]
-        public void TheDefaultBoxFillsAViewportNarrowerThanTheDesignAspect()
+        public void ANarrowerViewportKeepsTheCompositionAtItsAuthoredSize()
         {
-            // Below the design aspect the box is width-normalized, so its aspect equals the
-            // viewport's and the fit leaves no slack on either axis.
+            // 720x1280 is 9:16, giving 1440x2560 logical. The box keeps the authored height, so
+            // the scale stays at one and the composition is drawn the size the viewport's shorter
+            // side already gives it. The box is wider than the viewport; what hangs over the sides
+            // is the margin the background covers anyway.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(720, 1280);
             ProbeController controller = new();
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
-            Assert.Equal(4551.11f, controller.Box.h, 0.01);
-            Assert.Equal(0f, controller.Fitted.x, 0.01);
-            Assert.Equal(0f, controller.Fitted.y, 0.01);
-            Assert.Equal(1440f, controller.Fitted.w, 0.01);
-            Assert.Equal(2560f, controller.Fitted.h, 0.01);
+            Assert.Equal(1440f, controller.Box.h, 0.01);
+            Assert.Equal(1f, controller.Scale, 0.001);
+            Assert.Equal(-560f, controller.Fitted.x, 0.01);
+            Assert.Equal(560f, controller.Fitted.y, 0.01);
         }
 
         [Fact]
@@ -119,10 +120,10 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void PointerRoundTripsThroughAScaledFit()
         {
-            // 720x1280 is 9:16, giving 1440x2560 logical. The default box is 2560x4551, so the
-            // scale is well under 1 and the inverse transform has to divide by it.
+            // A viewport past the design aspect scales the box, so the inverse transform has a
+            // scale other than one to undo.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-            _ = ScreenPresentation.Instance.SetSurfaceSize(720, 1280);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             ProbeController controller = new();
 
             float logicalX = controller.Fitted.x + (controller.Fitted.w / 2f);
@@ -132,7 +133,9 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(ViewportLayout.DesignWidth / 2f, design.X, 0.01);
             Assert.Equal(controller.Box.h / 2f, design.Y, 0.01);
-            Assert.True(controller.Scale < 1f);
+            Assert.True(
+                controller.Scale > 1f,
+                $"the fit must actually be scaled for this to prove anything, got {controller.Scale}");
         }
 
         [Fact]

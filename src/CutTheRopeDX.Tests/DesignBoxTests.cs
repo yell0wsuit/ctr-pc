@@ -37,19 +37,20 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ANarrowerViewportGetsATallerBoxThatFillsIt()
+        public void ANarrowerViewportKeepsTheAuthoredBoxAndScale()
         {
             LayoutSurfaces.WithSurface(720, 1280, () =>
             {
                 CTRRectangle box = ReadDesignBox();
 
-                // Width-normalized below the design aspect: 2560 / (1440/2560).
+                // The authored box, unchanged: logical space has already normalized the shorter
+                // side, so there is nothing left for the box to compensate for.
                 Assert.Equal(2560f, box.w, 0.01);
-                Assert.Equal(4551.11f, box.h, 0.01);
+                Assert.Equal(1440f, box.h, 0.01);
+                Assert.Equal(1f, ReadFittedScale(), 0.001);
 
-                // Which means no slack at all: the fitted box is the whole viewport.
-                Assert.Equal(1440f, ReadFittedBox().w, 0.01);
-                Assert.Equal(2560f, ReadFittedBox().h, 0.01);
+                // It is wider than the viewport, and centred, so the overhang is even.
+                Assert.Equal(-560f, ReadFittedBox().x, 0.01);
             });
         }
 
