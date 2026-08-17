@@ -263,9 +263,29 @@ namespace CutTheRopeDX.Framework.Core
         /// Positions this controller's content for the given viewport. Called when the viewport
         /// changes and when this controller becomes active, never on an ordinary frame.
         /// </summary>
+        /// <remarks>
+        /// The base implementation sizes every registered view to the viewport. Views are the
+        /// frame edge-anchored and centred content resolves against, so one left at the size it
+        /// was built for holds all of its content where the previous viewport put it. An override
+        /// places what a scene positions itself, and calls this first.
+        /// </remarks>
         /// <param name="snapshot">The viewport to lay out against.</param>
         protected virtual void Relayout(ViewportLayoutSnapshot snapshot)
         {
+            if (views == null)
+            {
+                return;
+            }
+
+            CTRRectangle visible = snapshot.VisibleBounds;
+            foreach (View view in views.Values)
+            {
+                if (view != null)
+                {
+                    view.width = (int)visible.w;
+                    view.height = (int)visible.h;
+                }
+            }
         }
 
         /// <summary>

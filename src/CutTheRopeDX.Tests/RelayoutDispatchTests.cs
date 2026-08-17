@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
@@ -28,6 +29,46 @@ namespace CutTheRopeDX.Tests
                 RelayoutCount++;
                 LastSnapshot = snapshot;
             }
+        }
+
+        /// <summary>A controller that keeps the base layout pass, so its views are sized by it.</summary>
+        private sealed class PlainController : ViewController
+        {
+            public View View { get; } = new();
+
+            public PlainController()
+            {
+                AddViewwithID(View, 0);
+            }
+
+            public void LayOut(ViewportLayoutSnapshot snapshot)
+            {
+                Relayout(snapshot);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(Surfaces))]
+        public void TheBaseLayoutPassSizesEveryViewToTheViewport(string name, int width, int height)
+        {
+            LayoutSurfaces.WithSurface(width, height, () =>
+            {
+                // Built at the default surface, then laid out at this one: a view that kept its
+                // construction size would hold everything anchored to its edges or centred in it
+                // wherever the previous viewport put them.
+                PlainController controller = new();
+                controller.LayOut(ScreenPresentation.Instance.Snapshot);
+
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Assert.Equal((int)visible.w, controller.View.width);
+                Assert.Equal((int)visible.h, controller.View.height);
+                Assert.False(string.IsNullOrEmpty(name));
+            });
+        }
+
+        public static TheoryData<string, int, int> Surfaces()
+        {
+            return LayoutSurfaces.Theory();
         }
 
         [Fact]

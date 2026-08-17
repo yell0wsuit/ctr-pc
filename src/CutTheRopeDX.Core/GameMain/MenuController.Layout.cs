@@ -97,17 +97,6 @@ namespace CutTheRopeDX.GameMain
 
             CTRRectangle visible = snapshot.VisibleBounds;
 
-            // Every menu view spans the viewport, and the chrome anchored to its edges is anchored
-            // to the screen precisely because of that, so this is where the two stay in step.
-            foreach (View view in views.Values)
-            {
-                if (view != null)
-                {
-                    view.width = (int)visible.w;
-                    view.height = (int)visible.h;
-                }
-            }
-
             foreach (MenuBackdrop backdrop in backdrops.Values)
             {
                 LayOutBackdrop(backdrop, visible);

@@ -961,12 +961,6 @@ namespace CutTheRopeDX.GameMain
 
             CTRRectangle visible = snapshot.VisibleBounds;
 
-            // The HUD hangs off this view's edges, so it is the view's size that decides where the
-            // chrome sits. Left at the size it was built for, the buttons stay where that viewport
-            // put them however the window changes afterwards.
-            view.width = (int)visible.w;
-            view.height = (int)visible.h;
-
             // Reposition the HUD buttons using the same edge offsets applied at construction,
             // otherwise the restart button collapses onto the pause button and they overlap.
             Button pauseButton = (Button)view.GetChild(1);
