@@ -82,10 +82,7 @@ namespace CutTheRopeDX.GameMain
                 Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Primary);
                 text.anchor = 33;
                 text.SetName("levelLabel");
-                text.x = 15f;
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-                // Reduces to the shipped position at 16:9, where VisibleBounds is the design size.
-                text.y = isChinese ? VisibleBounds.h : VisibleBounds.h - LevelLabelInsetY; // the box and level number or level name in game
                 if (levelLabel.Secondary != null)
                 {
                     Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
@@ -106,6 +103,11 @@ namespace CutTheRopeDX.GameMain
                 text.PlayTimeline(0);
                 timeline6.delegateTimelineDelegate = staticAniPool;
                 _ = staticAniPool.AddChild(text);
+
+                // The label is rebuilt from scratch here on every level start and restart, so it
+                // needs the current HUD scale applied immediately rather than waiting on the next
+                // viewport-driven relayout, which may not come before the player sees it.
+                PlaceLevelLabel();
             }
             foreach (PointerGestureState gesture in pointerGestures)
             {

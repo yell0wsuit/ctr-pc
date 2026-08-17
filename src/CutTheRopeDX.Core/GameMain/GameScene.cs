@@ -267,13 +267,12 @@ namespace CutTheRopeDX.GameMain
         public void FullscreenToggled(bool isFullscreen)
         {
             _ = isFullscreen;
-            RelayoutHud(ScreenPresentation.Instance.Snapshot.VisibleBounds);
+            RelayoutHud();
         }
 
         /// <summary>
         /// Places the in-game chrome for the current viewport.
         /// </summary>
-        /// <param name="visible">The logical region the viewport exposes.</param>
         /// <param name="hudScale">
         /// Uniform scale for the collected-stars row, matching the boost menu content gets on a
         /// narrow viewport. The row is grown from the screen's top-left corner rather than about
@@ -282,20 +281,10 @@ namespace CutTheRopeDX.GameMain
         /// as it scales, so multiplying that position by <paramref name="hudScale"/> is enough to
         /// scale the whole row from the corner with no extra correction term.
         /// </param>
-        public void RelayoutHud(CTRRectangle visible, float hudScale = 1f)
+        public void RelayoutHud(float hudScale = 1f)
         {
-            BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
-            if (levelLabel != null)
-            {
-                levelLabel.scaleX = levelLabel.scaleY = hudScale;
-                levelLabel.x = LayoutMath.CornerAnchoredOffset(15f, levelLabel.width, hudScale, farEdge: false);
-
-                // Reduces to the shipped position where the viewport exposes the design height.
-                bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-                float bottomInset = isChinese ? 0f : LevelLabelInsetY;
-                levelLabel.y = visible.h
-                    - LayoutMath.CornerAnchoredOffset(bottomInset, levelLabel.height, hudScale, farEdge: true);
-            }
+            this.hudScale = hudScale;
+            PlaceLevelLabel();
 
             for (int i = 0; i < 3; i++)
             {
@@ -305,6 +294,41 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].scaleX = hudStar[i].scaleY = hudScale;
             }
             UpdateBackgroundScale();
+        }
+
+        /// <summary>
+        /// The scale <see cref="RelayoutHud"/> last applied, cached so a scene element rebuilt
+        /// later - the level label on a restart, say - can size itself correctly the moment it is
+        /// created rather than sitting unscaled until the next viewport-driven relayout.
+        /// </summary>
+        private float hudScale = 1f;
+
+        /// <summary>
+        /// Sizes and positions the level-name label against the cached <see cref="hudScale"/>.
+        /// </summary>
+        /// <remarks>
+        /// The label's Y offset is a small negative fine-tune of its own font metrics (see
+        /// <see cref="LevelLabelInsetY"/>'s remarks), not a margin meant to read bigger along with
+        /// the rest of the HUD, so growing it the way an authored margin grows would push the
+        /// label further off the bottom edge as the scale climbs - the opposite of legible. It is
+        /// held at its unscaled screen position instead, and only the label's own size grows
+        /// around that fixed point.
+        /// </remarks>
+        private void PlaceLevelLabel()
+        {
+            BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
+            if (levelLabel == null)
+            {
+                return;
+            }
+
+            levelLabel.scaleX = levelLabel.scaleY = hudScale;
+            levelLabel.x = LayoutMath.CornerAnchoredOffset(15f, levelLabel.width, hudScale, farEdge: false);
+
+            bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
+            float bottomInset = isChinese ? 0f : LevelLabelInsetY;
+            float targetBottom = ScreenPresentation.Instance.Snapshot.VisibleBounds.h - bottomInset;
+            levelLabel.y = targetBottom + (levelLabel.height / 2f * (1f - hudScale));
         }
 
         /// <summary>

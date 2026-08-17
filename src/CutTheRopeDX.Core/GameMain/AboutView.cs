@@ -3,6 +3,7 @@ using System.Reflection;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -17,13 +18,19 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="background">Background element that will host the about content.</param>
         /// <param name="buttonDelegate">Delegate used for handling the back button.</param>
+        /// <param name="scale">
+        /// Uniform scale to grow the credits text by, matching the boost menu content gets on a
+        /// narrow viewport. Baked in once at construction: this view is only ever rebuilt on a
+        /// language change, never on a resize, same as every other position and size in it.
+        /// </param>
         /// <returns>A fully constructed <see cref="MenuView"/> for the About/Credits screen.</returns>
         public MenuView CreateAbout(
             BaseElement background,
-            IButtonDelegation buttonDelegate)
+            IButtonDelegation buttonDelegate,
+            float scale)
         {
             MenuView menuView = new();
-            currentContainer = BuildAboutContainer(buttonDelegate);
+            currentContainer = BuildAboutContainer(buttonDelegate, scale);
             autoScrollEnabled = false;
             _ = background.AddChild(currentContainer);
             _ = menuView.AddChild(background);
@@ -101,8 +108,9 @@ namespace CutTheRopeDX.GameMain
         /// Builds the scrollable About/Credits content container.
         /// </summary>
         /// <param name="buttonDelegate">Button delegate used by controls embedded in the about content.</param>
+        /// <param name="scale">Uniform scale to grow the credits content by.</param>
         /// <returns>The configured scrollable content container.</returns>
-        private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate)
+        private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate, float scale)
         {
             float containerWidth = 1300f;
             float containerHeight = 1100f;
@@ -127,33 +135,35 @@ namespace CutTheRopeDX.GameMain
             Image topLogo = Image.Image_createWithResID(Resources.Img.CutTheRopeDXLogo);
             _ = vBox.AddChild(topLogo);
 
-            Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth);
+            Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth, scale);
             _ = vBox.AddChild(fanworkMain);
 
             Button fanworkProjectWebsite = CreateCenteredLinkButton(
                 Application.GetString("ABOUT_FANWORK_PROJECT_WEBSITE"),
                 MenuButtonId.FanworkProjectWebsite,
                 buttonDelegate,
-                containerWidth);
+                containerWidth,
+                scale);
             _ = vBox.AddChild(fanworkProjectWebsite);
 
-            Text fanworkProjectNote = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_PROJECT_NOTE"), containerWidth);
+            Text fanworkProjectNote = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_PROJECT_NOTE"), containerWidth, scale);
             _ = vBox.AddChild(fanworkProjectNote);
 
             Button fanworkCtrhWebsite = CreateCenteredLinkButton(
                 Application.GetString("ABOUT_FANWORK_CTRH_WEBSITE"),
                 MenuButtonId.FanworkCtrhWebsite,
                 buttonDelegate,
-                containerWidth);
+                containerWidth,
+                scale);
             _ = vBox.AddChild(fanworkCtrhWebsite);
 
-            Text fanworkLead = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_LEAD"), containerWidth);
+            Text fanworkLead = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_LEAD"), containerWidth, scale);
             _ = vBox.AddChild(fanworkLead);
 
-            Text fanworkTeam = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_TEAM"), containerWidth);
+            Text fanworkTeam = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_TEAM"), containerWidth, scale);
             _ = vBox.AddChild(fanworkTeam);
 
-            Text fanworkMembers = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_MEMBERS"), containerWidth);
+            Text fanworkMembers = CreateCenteredTextBlock(Application.GetString("ABOUT_FANWORK_MEMBERS"), containerWidth, scale);
             _ = vBox.AddChild(fanworkMembers);
 
             // Original Zeptolab credit section
@@ -163,30 +173,68 @@ namespace CutTheRopeDX.GameMain
 
             string aboutText = ResolveVersionPlaceholder(
                 Application.GetString("ABOUT_TEXT").ToString());
-            Text aboutBody = CreateCenteredTextBlock(aboutText, containerWidth);
+            Text aboutBody = CreateCenteredTextBlock(aboutText, containerWidth, scale);
             _ = vBox.AddChild(aboutBody);
 
             Image bottomLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
             _ = vBox.AddChild(bottomLogo);
 
             string specialThanksText = Application.GetString("ABOUT_SPECIAL_THANKS");
-            Text specialThanks = CreateCenteredTextBlock(specialThanksText, containerWidth);
+            Text specialThanks = CreateCenteredTextBlock(specialThanksText, containerWidth, scale);
             _ = vBox.AddChild(specialThanks);
 
+            GrowFromTop(vBox, scale);
             return container;
+        }
+
+        /// <summary>
+        /// Grows every direct child of an already-laid-out VBox by <paramref name="scale"/>,
+        /// keeping the stack contiguous from its own top edge.
+        /// </summary>
+        /// <remarks>
+        /// The scale is applied here, once, to each top-level child - not also to a child's own
+        /// nested children (a button's up/down text), which would double it - and each child's Y
+        /// is corrected the same way <see cref="ViewController.PlaceFittedGroup(BaseElement)"/>
+        /// corrects a top-left anchor: <see cref="BaseElement"/> always scales about its own
+        /// center, so growing a stack of elements in place needs each one's distance from the
+        /// stack's top corrected for that, not just multiplied through. The container this VBox
+        /// scrolls inside is left untouched - its own clip rect is computed from the render
+        /// backend's single global scale (see the level-select grid's cap, which hit the same
+        /// wall with <c>ScrollableContainer</c>'s scissor), so this VBox stays sized to what it
+        /// was already built for and only its own content reads bigger inside it.
+        /// </remarks>
+        /// <param name="vBox">The already-populated box to grow.</param>
+        /// <param name="scale">Uniform scale to grow every child by.</param>
+        private static void GrowFromTop(VBox vBox, float scale)
+        {
+            foreach (BaseElement child in vBox.GetChilds().Values)
+            {
+                if (child == null)
+                {
+                    continue;
+                }
+
+                child.y = LayoutMath.CornerAnchoredOffset(child.y, child.height, scale, farEdge: false);
+                child.scaleX = child.scaleY = scale;
+            }
         }
 
         /// <summary>
         /// Creates a centered text block with the standard about font.
         /// </summary>
         /// <param name="text">Text to render in the block.</param>
-        /// <param name="width">Maximum width for wrapping.</param>
+        /// <param name="width">Maximum width for wrapping, at scale one.</param>
+        /// <param name="scale">
+        /// Uniform scale the block (or its containing button) will be grown by. The wrap width is
+        /// shrunk by the same factor so the rendered line, once scaled, still fits within
+        /// <paramref name="width"/> instead of running past it.
+        /// </param>
         /// <returns>Configured <see cref="Text"/> element.</returns>
-        private static Text CreateCenteredTextBlock(string text, float width)
+        private static Text CreateCenteredTextBlock(string text, float width, float scale)
         {
             Text block = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             block.SetAlignment(2);
-            block.SetStringandWidth(text, (int)width);
+            block.SetStringandWidth(text, (int)(width / scale));
             return block;
         }
 
@@ -196,16 +244,18 @@ namespace CutTheRopeDX.GameMain
         /// <param name="text">Button label text.</param>
         /// <param name="buttonId">Identifier assigned to the button.</param>
         /// <param name="buttonDelegate">Delegate that handles button events.</param>
-        /// <param name="width">Maximum width used for text layout.</param>
+        /// <param name="width">Maximum width used for text layout, at scale one.</param>
+        /// <param name="scale">Uniform scale the button will be grown by.</param>
         /// <returns>A configured centered link button.</returns>
         private static Button CreateCenteredLinkButton(
             string text,
             MenuButtonId buttonId,
             IButtonDelegation buttonDelegate,
-            float width)
+            float width,
+            float scale)
         {
-            Text upText = CreateCenteredTextBlock(text, width);
-            Text downText = CreateCenteredTextBlock(text, width);
+            Text upText = CreateCenteredTextBlock(text, width, scale);
+            Text downText = CreateCenteredTextBlock(text, width, scale);
             downText.color = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f);
 
             Button button = new Button().InitWithUpElementDownElementandID(upText, downText, buttonId);

@@ -1,4 +1,6 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
@@ -225,6 +227,38 @@ namespace CutTheRopeDX.Tests
             Assert.True(scene.updateable);
             Assert.Equal(RestartPhase.FadingIn, scene.gameplayFlow.Phase);
             Assert.False(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
+
+        [Theory]
+        [InlineData("Portrait", 720, 1280)]
+        [InlineData("TallPortrait", 400, 1280)]
+        public void BestScoreLabelStaysOnScreenWhenBoostedOnANarrowViewport(string name, int width, int height)
+        {
+            LayoutSurfaces.WithSurface(width, height, () =>
+            {
+                (GameController controller, _) = Load();
+
+                controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+                View view = controller.GetView(0);
+                BaseElement plate = view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU);
+                Text label = PauseMapNameLabel(controller);
+
+                // Headless never runs the draw loop that would otherwise resolve drawX for the
+                // whole ancestor chain, so it has to be walked explicitly, parent before child,
+                // the same order PreDraw would.
+                BaseElement.CalculateTopLeft(view);
+                BaseElement.CalculateTopLeft(plate);
+                BaseElement.CalculateTopLeft(label);
+
+                float rightEdge = label.drawX + (label.width * label.scaleX);
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+
+                Assert.True(
+                    rightEdge <= visible.w + 0.1f,
+                    $"{name}: label right edge {rightEdge} ran past the viewport width {visible.w}");
+                Assert.True(label.scaleX > 1f, $"{name}: label did not pick up the narrow-viewport boost");
+            });
         }
     }
 }

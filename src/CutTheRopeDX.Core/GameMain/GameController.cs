@@ -742,15 +742,22 @@ namespace CutTheRopeDX.GameMain
             if (cTRRootController.IsPicker())
             {
                 mapNameLabel.SetString("");
-                return;
             }
-            if (CustomLevelSession.IsActive)
+            else if (CustomLevelSession.IsActive)
             {
                 mapNameLabel.SetString(gameScene.ResolveLevelDisplayName() ?? string.Empty);
-                return;
             }
-            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
-            mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
+            else
+            {
+                int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
+                mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
+            }
+
+            // The label's width used to keep it on screen (PlaceBestScoreLabel) is only known
+            // once its string is actually set, which happens here rather than at the Relayout
+            // that otherwise places it - so it needs placing again now, using the width the text
+            // just settled into instead of whatever it carried in before (typically unset).
+            PlaceBestScoreLabel(ScreenPresentation.Instance.Snapshot.VisibleBounds);
         }
 
         /// <inheritdoc />
@@ -986,7 +993,7 @@ namespace CutTheRopeDX.GameMain
             // same way one is rather than merely stretched to the viewport width.
             PlaceFittedGroup(pauseButtonsGroup);
 
-            ((GameScene)view.GetChild(0))?.RelayoutHud(visible, FittedScale);
+            ((GameScene)view.GetChild(0))?.RelayoutHud(FittedScale);
 
             BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
             results?.RelayoutBox(visible);
@@ -1030,6 +1037,9 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            float scale = FittedScale;
+            mapNameLabel.scaleX = mapNameLabel.scaleY = scale;
+
             float authored = RTD(-10) + (LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f);
             if (pauseMenuPlate == null)
             {
@@ -1037,8 +1047,16 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // Right-anchored, so growing the label pushes its right edge further right by its
+            // full extra width, not half of it: unlike a corner-anchored offset (which keeps a
+            // fixed point pinned and grows symmetrically about it), x here is a plain clamp
+            // against how much the *right edge* is allowed to move, and CalculateTopLeft's
+            // right-anchor formula (drawX = parentDrawX + parentWidth + x - width) already puts
+            // all of x's effect on that one edge - so the room a boosted label needs taken out of
+            // the same budget is the whole width*(scale-1), not half.
             float plateRightEdge = (visible.w + pauseMenuPlate.width) / 2f;
-            float roomToSpare = visible.w - plateRightEdge - BestScoreLabelInset;
+            float extraWidthFromScale = mapNameLabel.width * (scale - 1f);
+            float roomToSpare = visible.w - plateRightEdge - BestScoreLabelInset - extraWidthFromScale;
             mapNameLabel.x = MathF.Min(authored, roomToSpare);
         }
 

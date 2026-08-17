@@ -888,7 +888,7 @@ namespace CutTheRopeDX.GameMain
         {
             BaseElement background = CreateBackgroundWithLogo(false, VIEW_ABOUT);
             aboutView = new AboutView();
-            MenuView menuView = aboutView.CreateAbout(background, this);
+            MenuView menuView = aboutView.CreateAbout(background, this, FittedScale);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }

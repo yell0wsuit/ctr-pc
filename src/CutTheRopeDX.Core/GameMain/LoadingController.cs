@@ -1,4 +1,5 @@
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -8,6 +9,9 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class LoadingController : ViewController, IResourceMgrDelegate
     {
+        /// <summary>The loading label, centered in the view.</summary>
+        private readonly Text loadingText;
+
         /// <summary>
         /// Initializes a loading controller and its loading label.
         /// </summary>
@@ -22,6 +26,17 @@ namespace CutTheRopeDX.GameMain
             text.SetStringandWidth(Application.GetString("LOADING"), 300f);
             text.anchor = text.parentAnchor = 18;
             _ = loadingView.AddChild(text);
+            loadingText = text;
+        }
+
+        /// <inheritdoc />
+        protected override void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+            base.Relayout(snapshot);
+
+            // Center-anchored, so it already stays centered as it scales - no position
+            // correction needed the way an edge-anchored element requires.
+            loadingText.scaleX = loadingText.scaleY = FittedScale;
         }
 
         /// <inheritdoc />
