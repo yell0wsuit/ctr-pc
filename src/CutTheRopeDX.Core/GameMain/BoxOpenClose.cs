@@ -432,7 +432,13 @@ namespace CutTheRopeDX.GameMain
             timeline.delegateTimelineDelegate = this;
             _ = openCloseAnims.AddChild(image);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float leftCoverX = (VisibleBounds.w / 2f) - quadSize.X;
+
+            // Where the two halves of the cover meet. The flaps and the loading piece are placed
+            // against this rather than against the cover's own width: the two are the same thing
+            // only while one cover is exactly half the screen, which is true at the design width
+            // and nowhere else, and the right-hand pieces landed near the opposite edge without it.
+            float seamX = VisibleBounds.w / 2f;
+            float leftCoverX = seamX - quadSize.X;
             Image coverBackgroundLeft = Image.Image_createWithResIDQuad(boxCover, 0);
             Image coverBackgroundRight = Image.Image_createWithResIDQuad(boxCover, 0);
             coverBackgroundLeft.x = leftCoverX;
@@ -502,7 +508,7 @@ namespace CutTheRopeDX.GameMain
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - coverBackgroundLeft.width + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w + rightClosedX), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
@@ -510,7 +516,7 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - RTD(9)), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - coverBackgroundLeft.width + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
@@ -541,7 +547,7 @@ namespace CutTheRopeDX.GameMain
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - coverBackgroundLeft.width + RTD(7)), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + RTD(7)), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)VisibleBounds.w, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
@@ -549,7 +555,7 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - 40f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(VisibleBounds.w - coverBackgroundLeft.width + 20f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + 20f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
