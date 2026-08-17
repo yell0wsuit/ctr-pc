@@ -313,13 +313,19 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Re-wraps the reset confirmation text to the width the surface allows.
+        /// Re-wraps the reset confirmation text to the width the viewport allows.
         /// </summary>
+        /// <remarks>
+        /// The wrap width is a length in the same space the text is laid out in, so it comes from
+        /// the visible bounds rather than the surface. Measuring it in pixels made the column
+        /// track the window's pixel count instead of its logical width: too narrow on a dense
+        /// display, and wider than the screen on a large one.
+        /// </remarks>
         private void WrapResetText()
         {
             resetText?.SetStringandWidth(
                 Application.GetString("RESET_TEXT"),
-                ScreenPresentation.Instance.SurfaceWidth * 0.95f);
+                VisibleBounds.w * ResetTextWidthShare);
         }
 
         /// <summary>
@@ -397,6 +403,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Smallest gap between a pack picker arrow and the edge of the screen.</summary>
         private const float PackArrowInset = 10f;
+
+        /// <summary>Share of the visible width the reset confirmation text wraps within.</summary>
+        private const float ResetTextWidthShare = 0.95f;
 
     }
 }
