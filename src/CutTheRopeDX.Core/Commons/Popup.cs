@@ -61,9 +61,9 @@ namespace CutTheRopeDX.Commons
         {
             Application.SharedRootController().DeactivateAllButtons();
 
-            // A popup centres itself by half its own width, so it has to be the size of the
+            // A popup centers itself by half its own width, so it has to be the size of the
             // viewport it is about to appear over. Built once and shown later, it would otherwise
-            // centre against whatever the viewport was when the scene was created.
+            // center against whatever the viewport was when the scene was created.
             Resize();
             isShow = true;
             PlayTimeline(0); // Play show animation

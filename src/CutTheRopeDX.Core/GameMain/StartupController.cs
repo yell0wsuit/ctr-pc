@@ -203,7 +203,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            // The splash is a single stage centred on screen, so it measures against what the
+            // The splash is a single stage centered on screen, so it measures against what the
             // viewport exposes rather than the fixed design size. The two are the same thing at
             // the design shape, and the stage sat off toward one corner at every other.
             CTRRectangle visible = VisibleBounds;

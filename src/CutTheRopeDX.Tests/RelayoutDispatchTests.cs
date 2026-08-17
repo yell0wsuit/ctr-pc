@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 // Built at the default surface, then laid out at this one: a view that kept its
-                // construction size would hold everything anchored to its edges or centred in it
+                // construction size would hold everything anchored to its edges or centered in it
                 // wherever the previous viewport put them.
                 PlainController controller = new();
                 controller.LayOut(ScreenPresentation.Instance.Snapshot);

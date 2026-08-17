@@ -53,55 +53,53 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void TheDefaultBoxZoomsInRatherThanFillingAWideViewport()
         {
-            // 3840x1080 clamps to 2700x1080, giving 3600x1440 logical at aspect 2.5. Past the
-            // design aspect the box shrinks with the viewport instead of tracking it, so the fit
-            // scale rises - the composition is drawn larger - and what it does not reach is left
-            // as slack rather than stretched into.
+            // 3840x1080 clamps to 2700x1080, giving 3600x1440 logical at aspect 2.5. The box is
+            // the authored one whatever the shape; the further the viewport departs from the
+            // design aspect the larger the composition is drawn, and what it does not reach is
+            // left as margin rather than stretched into.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             ProbeController controller = new();
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
-            Assert.Equal(1250f, controller.Box.h, 0.01);
-            Assert.Equal(1440f / 1250f, controller.Scale, 0.001);
+            Assert.Equal(1440f, controller.Box.h, 0.01);
+            Assert.Equal(1.15f, controller.Scale, 0.001);
             Assert.True(
                 controller.Scale > 1f,
                 $"a wide viewport should zoom in, got {controller.Scale}");
-            Assert.Equal(1440f, controller.Fitted.h, 0.01);
-            Assert.Equal(325.44f, controller.Fitted.x, 0.01);
         }
 
         [Fact]
-        public void ANarrowerViewportKeepsTheCompositionAtItsAuthoredSize()
+        public void ANarrowerViewportDrawsTheCompositionLarger()
         {
-            // 720x1280 is 9:16, giving 1440x2560 logical. The box keeps the authored height, so
-            // the scale stays at one and the composition is drawn the size the viewport's shorter
-            // side already gives it. The box is wider than the viewport; what hangs over the sides
-            // is the margin the background covers anyway.
+            // 720x1280 is 9:16, giving 1440x2560 logical. Held at one scale the composition would
+            // be sized for the shorter side alone and leave most of the long side unused, so it
+            // grows instead. The box is wider than the viewport; what hangs over the sides is the
+            // margin the background covers anyway.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(720, 1280);
             ProbeController controller = new();
 
             Assert.Equal(2560f, controller.Box.w, 0.01);
             Assert.Equal(1440f, controller.Box.h, 0.01);
-            Assert.Equal(1f, controller.Scale, 0.001);
-            Assert.Equal(-560f, controller.Fitted.x, 0.01);
-            Assert.Equal(560f, controller.Fitted.y, 0.01);
+            Assert.True(
+                controller.Scale > 1f,
+                $"a portrait viewport should draw larger, got {controller.Scale}");
         }
 
         [Fact]
-        public void AControllerDeclaringItsOwnBoxIsStillPillarboxed()
+        public void AControllerDeclaringItsOwnBoxKeepsThatShape()
         {
-            // The fixed-box path is retained for content that genuinely wants slack, so a declared
-            // 16:9 box still contain-fits and centers the way it always did.
+            // The declared-box path is retained for content that wants a shape of its own. It is
+            // still drawn at the viewport's content scale - a modal has the same reason to be
+            // legible on a phone as anything else - and centered in whatever room is left.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             FixedBoxController controller = new();
 
-            Assert.Equal(2560f, controller.Fitted.w, 0.01);
-            Assert.Equal(1440f, controller.Fitted.h, 0.01);
-            Assert.Equal(520f, controller.Fitted.x, 0.01);
-            Assert.Equal(1f, controller.Scale, 0.001);
+            Assert.Equal(2560f * controller.Scale, controller.Fitted.w, 0.01);
+            Assert.Equal(1440f * controller.Scale, controller.Fitted.h, 0.01);
+            Assert.Equal((3600f - controller.Fitted.w) / 2f, controller.Fitted.x, 0.01);
         }
 
         [Fact]

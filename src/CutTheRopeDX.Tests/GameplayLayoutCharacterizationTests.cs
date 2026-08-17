@@ -117,7 +117,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CameraFitReproducesTodaysCentringAtSixteenNine()
+        public void CameraFitReproducesTodaysCenteringAtSixteenNine()
         {
             // FitCamera over a 960x1440 level in a 2560x1440 viewport must land the level exactly
             // where offsetX = (2560 - 960) / 2 put it.

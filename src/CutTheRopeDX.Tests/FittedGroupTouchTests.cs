@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests
                 BaseElement.CalculateTopLeft(group);
                 BaseElement.CalculateTopLeft(child);
 
-                // Where the renderer puts the child's centre, in logical space.
+                // Where the renderer puts the child's center, in logical space.
                 float scale = group.scaleX;
                 float groupCentreX = group.drawX + (group.width >> 1);
                 float groupCentreY = group.drawY + (group.height >> 1);

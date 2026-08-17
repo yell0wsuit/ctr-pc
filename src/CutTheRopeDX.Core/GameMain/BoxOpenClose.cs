@@ -168,7 +168,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Sizes the transition box to the viewport, which is what the result panel centres on.
+        /// Sizes the transition box to the viewport, which is what the result panel centers on.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
         public void RelayoutBox(CTRRectangle visible)
@@ -180,14 +180,14 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Scales the transition animation so the box covers every edge of the viewport, and
-        /// centres what overhangs.
+        /// centers what overhangs.
         /// </summary>
         /// <remarks>
         /// The covers are one fixed-size piece of art each, sized to meet in the middle of the
         /// design box, and their open and close positions are all derived from that. Cover-fitting
         /// the group that holds them is what lets the pair still reach both edges of a viewport
         /// the design box does not fill, without every placement inside needing to know about it.
-        /// The group scales about its own origin, so the fit is a scale and a centring offset.
+        /// The group scales about its own origin, so the fit is a scale and a centering offset.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
         private void CoverFitAnimations(CTRRectangle visible)
@@ -202,7 +202,7 @@ namespace CutTheRopeDX.GameMain
                 visible.h / ViewportLayout.DesignHeight);
             openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
 
-            // Centred through the renderer's translation rather than this element's position. The
+            // Centered through the renderer's translation rather than this element's position. The
             // pieces inside are placed absolutely, which means they resolve their own position
             // without consulting this one - moving the group would scale them about a new point
             // and leave them exactly where they were. The translation is divided by the scale
@@ -223,10 +223,10 @@ namespace CutTheRopeDX.GameMain
             result = new BaseElement();
             _ = AddChildwithID(result, 1);
 
-            // Spans the viewport itself rather than centring inside whatever its parent happens to
-            // be. The result panel centres on this element's width, so inheriting a parent that
+            // Spans the viewport itself rather than centering inside whatever its parent happens to
+            // be. The result panel centers on this element's width, so inheriting a parent that
             // was sized for a different viewport put the panel off toward one side. At the design
-            // shape this resolves to the same place the centred anchor did.
+            // shape this resolves to the same place the centered anchor did.
             anchor = 9;
             parentAnchor = -1;
             x = 0f;

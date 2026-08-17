@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Framework.Visual
     /// </summary>
     /// <remarks>
     /// The inverse is taken about the same point the renderer scales about - this element's own
-    /// centre, integer shift included - because anything else would agree with the drawn position
+    /// center, integer shift included - because anything else would agree with the drawn position
     /// only where the scale happens to be one.
     /// </remarks>
     internal sealed class FittedGroup : BaseElement
@@ -43,8 +43,8 @@ namespace CutTheRopeDX.Framework.Visual
                 return tx;
             }
 
-            float centre = drawX + (width >> 1);
-            return centre + ((tx - centre) / scaleX);
+            float center = drawX + (width >> 1);
+            return center + ((tx - center) / scaleX);
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace CutTheRopeDX.Framework.Visual
                 return ty;
             }
 
-            float centre = drawY + (height >> 1);
-            return centre + ((ty - centre) / scaleY);
+            float center = drawY + (height >> 1);
+            return center + ((ty - center) / scaleY);
         }
     }
 }

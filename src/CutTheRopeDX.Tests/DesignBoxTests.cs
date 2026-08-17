@@ -37,20 +37,25 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ANarrowerViewportKeepsTheAuthoredBoxAndScale()
+        public void ANarrowerViewportDrawsTheCompositionLarger()
         {
+            float designScale = 0f;
+            LayoutSurfaces.WithSurface(2560, 1440, () => designScale = ReadFittedScale());
+
             LayoutSurfaces.WithSurface(720, 1280, () =>
             {
+                // The box is the authored one whatever the shape; only the scale moves.
                 CTRRectangle box = ReadDesignBox();
-
-                // The authored box, unchanged: logical space has already normalized the shorter
-                // side, so there is nothing left for the box to compensate for.
                 Assert.Equal(2560f, box.w, 0.01);
                 Assert.Equal(1440f, box.h, 0.01);
-                Assert.Equal(1f, ReadFittedScale(), 0.001);
 
-                // It is wider than the viewport, and centred, so the overhang is even.
-                Assert.Equal(-560f, ReadFittedBox().x, 0.01);
+                Assert.True(
+                    ReadFittedScale() > designScale,
+                    $"a portrait viewport should draw larger than {designScale}, got {ReadFittedScale()}");
+
+                // Wider than the viewport, and centered, so the overhang is even.
+                CTRRectangle fitted = ReadFittedBox();
+                Assert.Equal((1440f - fitted.w) / 2f, fitted.x, 0.01);
             });
         }
 
@@ -65,10 +70,9 @@ namespace CutTheRopeDX.Tests
                 CTRRectangle box = ReadDesignBox();
 
                 Assert.Equal(2560f, box.w, 0.01);
-                Assert.True(box.h < 1440f, $"expected a shorter box, got {box.h}");
+                Assert.Equal(1440f, box.h, 0.01);
 
-                // A shorter box raises the fit scale, which is what zooms the composition in
-                // rather than only spreading it out.
+                // A wide viewport zooms the composition in rather than only spreading it out.
                 Assert.True(
                     ReadFittedScale() > designScale,
                     $"expected to zoom in past {designScale}, got {ReadFittedScale()}");
@@ -90,12 +94,12 @@ namespace CutTheRopeDX.Tests
                 BaseElement.CalculateTopLeft(group);
                 BaseElement.CalculateTopLeft(child);
 
-                // What the renderer does: scale about the group's own centre, which PreDraw
+                // What the renderer does: scale about the group's own center, which PreDraw
                 // computes with an integer shift.
-                float centreX = group.drawX + (group.width >> 1);
-                float centreY = group.drawY + (group.height >> 1);
-                float drawnX = centreX + ((child.drawX - centreX) * group.scaleX);
-                float drawnY = centreY + ((child.drawY - centreY) * group.scaleY);
+                float centerX = group.drawX + (group.width >> 1);
+                float centerY = group.drawY + (group.height >> 1);
+                float drawnX = centerX + ((child.drawX - centerX) * group.scaleX);
+                float drawnY = centerY + ((child.drawY - centerY) * group.scaleY);
 
                 CTRRectangle fitted = ReadFittedBox();
                 float scale = ReadFittedScale();

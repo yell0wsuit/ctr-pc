@@ -83,7 +83,7 @@ namespace CutTheRopeDX.GameMain
                             mapWidth *= scale;
                             mapHeight *= scale;
 
-                            // The level sits centred in the space the camera can show. Deriving
+                            // The level sits centered in the space the camera can show. Deriving
                             // the offset from the camera window rather than the design width is
                             // what lets a wider window reveal more of the level instead of adding
                             // bars beside it.

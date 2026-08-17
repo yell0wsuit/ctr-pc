@@ -15,62 +15,29 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// The coordinate box this controller's content is authored in, recomputed from the
         /// published viewport on every read. Its width is always the design width; its height is a
-        /// function of the viewport's aspect ratio.
+        /// the authored design size unless a scene declares otherwise.
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// At or below the design aspect ratio the box keeps the authored height, so the
-        /// composition stays the size the viewport's shorter side already gives it and a squarer
-        /// or taller window simply reveals more background around it. Above it the box shortens,
-        /// which raises the fit scale and zooms the composition in, so a wide screen shows the
-        /// menu larger rather than merely spreading it further apart. That upper rule is the shape
-        /// of Famobi's height curve, at its rate, anchored to the authored size.
-        /// </para>
-        /// <para>
-        /// Both branches return exactly the design size at the design aspect ratio, which is what
-        /// leaves the shipped layout untouched at the ratio the game ships at.
-        /// </para>
-        /// <para>
-        /// Computed on read rather than assigned during a layout pass: an assigned box would be a
-        /// cached derivation of the snapshot and could disagree with it. A controller whose content
-        /// needs a fixed shape overrides this getter; it never writes one.
-        /// </para>
+        /// Constant by default. How large the content is drawn is <see cref="FittedScale"/>'s job,
+        /// not this one's: shortening the box would raise the scale, but it would also bring what
+        /// hangs from the bottom edge up toward what hangs from the top, compressing the
+        /// composition instead of enlarging it. A scene whose content wants a different shape
+        /// overrides this getter; it never writes one.
         /// </remarks>
-        protected virtual CTRRectangle DesignBox
-        {
-            get
-            {
-                float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
-                float height = aspect <= DesignAspect
-                    ? ViewportLayout.DesignHeight
-                    : LayoutMath.Remap(
-                        MathF.Min(aspect, ViewportLayout.MaxAspect),
-                        DesignAspect,
-                        ViewportLayout.MaxAspect,
-                        ViewportLayout.DesignHeight,
-                        WidestDesignHeight);
-                return new CTRRectangle(0f, 0f, ViewportLayout.DesignWidth, height);
-            }
-        }
+        protected virtual CTRRectangle DesignBox => new(
+            0f, 0f, ViewportLayout.DesignWidth, ViewportLayout.DesignHeight);
 
         /// <summary>
-        /// Aspect ratio of the fixed design size, where the two branches of <see cref="DesignBox"/>
-        /// meet and the box is exactly the size the game's content is authored at.
+        /// Aspect ratio of the fixed design size, where the content scale is exactly one.
         /// </summary>
         private const float DesignAspect =
             ViewportLayout.DesignWidth / ViewportLayout.DesignHeight;
 
-        /// <summary>
-        /// Design-box height at the widest supported aspect ratio.
-        /// </summary>
-        /// <remarks>
-        /// Famobi shortens its box by roughly 28% per unit of aspect ratio, which from the design
-        /// size would reach about 1150 here. This stops short of that: the menus are composed
-        /// across nearly the whole authored height, and a box shorter than about 1210 brings the
-        /// bottom-anchored content up far enough to meet what hangs from the top. Famobi has the
-        /// headroom for its full rate because it shrinks its logo on the same curve.
-        /// </remarks>
-        private const float WidestDesignHeight = 1250f;
+        /// <summary>Content scale at the widest supported aspect ratio.</summary>
+        private const float WidestContentScale = 1.15f;
+
+        /// <summary>Content scale at the narrowest supported aspect ratio.</summary>
+        private const float NarrowestContentScale = 1.35f;
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
@@ -78,12 +45,12 @@ namespace CutTheRopeDX.Framework.Core
         /// the viewport changes and there is no second copy to keep in step.
         /// </summary>
         /// <remarks>
-        /// Centred, and free to be wider than the viewport. Containing the box instead would size
-        /// the composition from the design width, and since logical space already normalizes the
-        /// viewport's shorter side, that shrinks content on any viewport narrower than the design
-        /// shape - a menu whose content column occupies the middle third of its box would be
-        /// scaled down for the sake of two empty margins. What overflows is margin; the background
-        /// covers it separately.
+        /// Centered, and free to be larger than the viewport. Containing the box instead would
+        /// size the composition from the design width, and since logical space already normalizes
+        /// the viewport's shorter side, that shrinks content on any viewport narrower than the
+        /// design shape - a menu whose content column occupies the middle third of its box would
+        /// be scaled down for the sake of two empty margins. What overflows is margin; the
+        /// background covers it separately.
         /// </remarks>
         protected CTRRectangle FittedBox
         {
@@ -106,13 +73,38 @@ namespace CutTheRopeDX.Framework.Core
         /// Uniform scale from design-box coordinates to logical space.
         /// </summary>
         /// <remarks>
-        /// Logical space always exposes <see cref="ViewportLayout.LogicalShortSide"/> units across
-        /// its shorter side, so a box of the authored height sits at exactly one and the scale is
-        /// entirely the box's own shrinkage. That is what makes a wide viewport zoom in - the box
-        /// gets shorter, so the same content is drawn larger - while every other shape leaves the
-        /// composition at the size the short side already gives it.
+        /// <para>
+        /// Exactly one at the design aspect ratio, and larger the further the viewport departs
+        /// from it in either direction. Logical space normalizes the viewport's shorter side, so
+        /// content held at one scale is sized for that side alone: on a shape the design was not
+        /// drawn for, the long side gains room the composition never uses and everything reads as
+        /// small for the screen it is on. Growing with the departure spends that room.
+        /// </para>
+        /// <para>
+        /// The composition scales whole, so nothing crowds anything else at any of these; the
+        /// authored spacing is preserved and simply drawn larger.
+        /// </para>
         /// </remarks>
-        protected float FittedScale => ViewportLayout.LogicalShortSide / DesignBox.h;
+        protected float FittedScale
+        {
+            get
+            {
+                float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
+                return aspect >= DesignAspect
+                    ? LayoutMath.Remap(
+                        MathF.Min(aspect, ViewportLayout.MaxAspect),
+                        DesignAspect,
+                        ViewportLayout.MaxAspect,
+                        1f,
+                        WidestContentScale)
+                    : LayoutMath.Remap(
+                        MathF.Max(aspect, ViewportLayout.MinAspect),
+                        ViewportLayout.MinAspect,
+                        DesignAspect,
+                        NarrowestContentScale,
+                        1f);
+            }
+        }
 
         /// <summary>
         /// Sizes, scales and positions the element that carries this controller's design-space
@@ -120,7 +112,7 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <remarks>
         /// The position is not simply the fitted box's corner. <see cref="BaseElement"/> scales
-        /// about its own centre, so a group placed at that corner would drift by half the box
+        /// about its own center, so a group placed at that corner would drift by half the box
         /// times the shortfall in scale. Taking that back out here is what makes a child authored
         /// at <c>x</c> land at <c>FittedBox.x + x * FittedScale</c>, which is the placement rule
         /// every scene's constants assume.
@@ -141,7 +133,7 @@ namespace CutTheRopeDX.Framework.Core
             group.height = (int)design.h;
             group.scaleX = group.scaleY = scale;
 
-            // The centre taken back out here is the one the renderer will scale about, integer
+            // The center taken back out here is the one the renderer will scale about, integer
             // shift and all. Using the exact box height instead would leave the content off by
             // half a unit times the shortfall in scale, on any box whose height is odd.
             group.x = fitted.x - ((group.width >> 1) * (1f - scale));
@@ -265,7 +257,7 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <remarks>
         /// The base implementation sizes every registered view to the viewport. Views are the
-        /// frame edge-anchored and centred content resolves against, so one left at the size it
+        /// frame edge-anchored and centered content resolves against, so one left at the size it
         /// was built for holds all of its content where the previous viewport put it. An override
         /// places what a scene positions itself, and calls this first.
         /// </remarks>

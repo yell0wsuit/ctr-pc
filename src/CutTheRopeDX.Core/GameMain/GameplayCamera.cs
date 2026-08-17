@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="viewportWidth">Viewport width in logical units.</param>
         /// <param name="viewportHeight">Viewport height in logical units.</param>
         /// <returns>
-        /// <see langword="true"/> when the camera should centre and hold still.
+        /// <see langword="true"/> when the camera should center and hold still.
         /// </returns>
         public static bool ScrollIsLocked(
             float levelWidth,

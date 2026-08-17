@@ -102,7 +102,7 @@ namespace CutTheRopeDX.GameMain
                 LayOutBackdrop(backdrop, visible);
             }
 
-            LayOutCentredScenes(visible);
+            LayOutCenteredScenes(visible);
             LayOutLevelSelect(visible);
             LayOutPackSelect(visible);
             CandySelectionView.Relayout(visible);
@@ -127,7 +127,7 @@ namespace CutTheRopeDX.GameMain
             backdrop.Root.width = (int)visible.w;
             backdrop.Root.height = (int)visible.h;
 
-            // Both halves of the painting scale about the same point - the bottom centre of the
+            // Both halves of the painting scale about the same point - the bottom center of the
             // viewport - so one covering scale keeps them registered with each other.
             CoverFit fit = LayoutMath.Cover(
                 backdrop.Backdrop.width,
@@ -156,8 +156,8 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Widens an element to the visible bounds without touching its height, ignoring one a
-        /// scene has not built. Rows and columns centre their children within their own width, so
-        /// this is what centres them on screen.
+        /// scene has not built. Rows and columns center their children within their own width, so
+        /// this is what centers them on screen.
         /// </summary>
         /// <param name="element">Element to widen, or <see langword="null"/>.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
@@ -187,13 +187,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Lays out the scenes whose composition is nothing but a column or a plate centred in the
+        /// Lays out the scenes whose composition is nothing but a column or a plate centered in the
         /// viewport: the main menu, the movie plate, the options view and the language picker.
         /// Each keeps the anchors it was authored with, and spanning what those anchors resolve
         /// against is the whole of the conversion.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void LayOutCentredScenes(CTRRectangle visible)
+        private void LayOutCenteredScenes(CTRRectangle visible)
         {
             // The main menu composes inside its design box, so the whole composition scales and
             // moves as one rather than each end being pinned to an edge on its own.
@@ -223,7 +223,7 @@ namespace CutTheRopeDX.GameMain
             float coverWidth = levelsCoverLeft.width;
             float coverTop = levelsCoverLeft.height * (scale - 1f) / 2f;
 
-            // Each half is scaled about its own centre, so its position is chosen to put the
+            // Each half is scaled about its own center, so its position is chosen to put the
             // scaled inner edge on the seam and the scaled top edge on the top of the screen.
             levelsCoverLeft.scaleX = levelsCoverLeft.scaleY = scale;
             levelsCoverLeft.x = seam - (coverWidth * (1f + scale) / 2f);
@@ -237,7 +237,7 @@ namespace CutTheRopeDX.GameMain
             levelsBox.width = (int)visible.w;
 
             // A pack with more levels than fit scrolls inside a container sized to the screen; one
-            // that fits is centred in it instead.
+            // that fits is centered in it instead.
             if (levelContainer != null)
             {
                 levelContainer.width = (int)visible.w;
@@ -364,21 +364,21 @@ namespace CutTheRopeDX.GameMain
             float scale = MathF.Max(1f, HudMetrics.ChromeSize(snapshot, IsTouchHost) / longest);
             button.scaleX = button.scaleY = scale;
 
-            // Growing about its own centre would push a button anchored into the bottom-left corner
+            // Growing about its own center would push a button anchored into the bottom-left corner
             // out through it, so the growth is taken back out of its offset from that corner.
             button.x = button.width * (scale - 1f) / 2f;
             button.y = -button.height * (scale - 1f) / 2f;
 
-            // The button is scaled about its own centre, so the forced touch rectangle - which the
+            // The button is scaled about its own center, so the forced touch rectangle - which the
             // back button carries to match its art rather than its bounding box - moves with it.
             CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
             Vector offset = texture.quadOffsets[0];
             CTRRectangle quad = texture.quadRects[0];
-            float centreX = button.width / 2f;
-            float centreY = button.height / 2f;
+            float centerX = button.width / 2f;
+            float centerY = button.height / 2f;
             button.ForceTouchRect(new CTRRectangle(
-                centreX + ((offset.X - centreX) * scale),
-                centreY + ((offset.Y - centreY) * scale),
+                centerX + ((offset.X - centerX) * scale),
+                centerY + ((offset.Y - centerY) * scale),
                 quad.w * scale,
                 quad.h * scale));
         }

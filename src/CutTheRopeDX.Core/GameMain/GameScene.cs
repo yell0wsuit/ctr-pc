@@ -325,7 +325,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Fits the camera to the level for the current viewport, holding it centred when the
+        /// Fits the camera to the level for the current viewport, holding it centered when the
         /// whole level is already visible.
         /// </summary>
         /// <param name="snapshot">The viewport to fit against.</param>
