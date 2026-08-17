@@ -276,6 +276,7 @@ namespace CutTheRopeDX.Framework.Core
                 {
                     view.width = (int)visible.w;
                     view.height = (int)visible.h;
+                    view.Relayout(visible);
                 }
             }
         }

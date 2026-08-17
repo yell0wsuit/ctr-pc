@@ -69,6 +69,13 @@ namespace CutTheRopeDX.Commons
             PlayTimeline(0); // Play show animation
         }
 
+        /// <inheritdoc />
+        public override void Relayout(CTRRectangle visible)
+        {
+            Resize();
+            base.Relayout(visible);
+        }
+
         /// <summary>
         /// Sizes the popup and its content root to the viewport.
         /// </summary>
