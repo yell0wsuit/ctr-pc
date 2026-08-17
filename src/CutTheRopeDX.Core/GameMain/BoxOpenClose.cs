@@ -201,8 +201,16 @@ namespace CutTheRopeDX.GameMain
                 visible.w / ViewportLayout.DesignWidth,
                 visible.h / ViewportLayout.DesignHeight);
             openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
-            openCloseAnims.x = (visible.w - (ViewportLayout.DesignWidth * scale)) / 2f;
-            openCloseAnims.y = (visible.h - (ViewportLayout.DesignHeight * scale)) / 2f;
+
+            // Centred through the renderer's translation rather than this element's position. The
+            // pieces inside are placed absolutely, which means they resolve their own position
+            // without consulting this one - moving the group would scale them about a new point
+            // and leave them exactly where they were. The translation is divided by the scale
+            // because it is applied in the space the scale has already been taken into.
+            openCloseAnims.translateX =
+                (visible.w - (ViewportLayout.DesignWidth * scale)) / 2f / scale;
+            openCloseAnims.translateY =
+                (visible.h - (ViewportLayout.DesignHeight * scale)) / 2f / scale;
         }
 
         /// <summary>

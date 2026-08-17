@@ -977,7 +977,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Horizontal translation offset applied during drawing.
         /// </summary>
-        private readonly float translateX;
+        public float translateX;
 
         /// <summary>
         /// Vertical translation offset applied during drawing.
