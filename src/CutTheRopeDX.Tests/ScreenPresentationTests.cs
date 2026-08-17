@@ -11,18 +11,6 @@ namespace CutTheRopeDX.Tests
     public sealed class ScreenPresentationTests
     {
         [Fact]
-        public void SetSurfaceSizeScaledGameHeightMatchesSurfaceForMatchingAspectRatio()
-        {
-            ScreenPresentation presentation = new(2560, 1440);
-            _ = presentation.SetSurfaceSize(1280, 720);
-
-            // 1280x720 is exactly the 2560x1440 game's 16:9 aspect ratio, so the aspect-preserving
-            // height for a 1280-wide surface is 720 (ScaledGameHeight(w) = (int)(w * gameHeight /
-            // gameWidth + 0.5) = (int)(1280 * 0.5625 + 0.5) = 720).
-            Assert.Equal(720, presentation.ScaledGameHeight(1280));
-        }
-
-        [Fact]
         public void TransformViewToGameXYRoundTripsAPoint()
         {
             ScreenPresentation presentation = new(2560, 1440);

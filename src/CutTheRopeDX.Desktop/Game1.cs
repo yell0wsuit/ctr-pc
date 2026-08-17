@@ -74,11 +74,14 @@ namespace CutTheRopeDX
             {
                 return;
             }
-            int savedWidth = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
-            int displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            int width = ScreenSizeManager.ClampWindowWidth(savedWidth, displayWidth);
-            Global.GraphicsDeviceManager.PreferredBackBufferWidth = width;
-            Global.GraphicsDeviceManager.PreferredBackBufferHeight = ScreenPresentation.Instance.ScaledGameHeight(width);
+            DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+            Microsoft.Xna.Framework.Point size = ScreenSizeManager.ClampWindowSize(
+                Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"),
+                Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"),
+                displayMode.Width,
+                displayMode.Height);
+            Global.GraphicsDeviceManager.PreferredBackBufferWidth = size.X;
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = size.Y;
         }
 
         /// <summary>
@@ -193,8 +196,13 @@ namespace CutTheRopeDX
             // the window-size read has to happen before ScreenSizeManager.Init.
             Preferences.LoadPreferences();
             int windowWidthPref = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
+            int windowHeightPref = Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT");
             bool isFullScreen = Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
-            Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, windowWidthPref, isFullScreen);
+            Global.ScreenSizeManager.Init(
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode,
+                windowWidthPref,
+                windowHeightPref,
+                isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
 
             CtrBootstrap.Initialize(

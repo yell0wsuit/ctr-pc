@@ -13,6 +13,31 @@ namespace CutTheRopeDX.Desktop.Tests
     /// </summary>
     public sealed class ScreenSizeManagerCharacterizationTests
     {
+        [Theory]
+        // The shipped shape is unchanged, which is what keeps an existing saved window opening
+        // exactly as it closed.
+        [InlineData(1600, 900, 1600, 900)]
+        // Every other shape survives the clamp: the window is the user's to size, and the layout
+        // follows it rather than the other way round.
+        [InlineData(1600, 1200, 1600, 1200)]
+        [InlineData(900, 1600, 900, 1600)]
+        // Each axis has its own floor, so hitting one does not drag the other with it.
+        [InlineData(400, 1200, 800, 1200)]
+        [InlineData(1600, 200, 1600, 450)]
+        // Neither axis may exceed the display.
+        [InlineData(5000, 5000, 3840, 2160)]
+        public void ClampWindowSizeKeepsTheRequestedAspect(
+            int width,
+            int height,
+            int expectedWidth,
+            int expectedHeight)
+        {
+            Point clamped = ScreenSizeManager.ClampWindowSize(width, height, 3840, 2160, 4096);
+
+            Assert.Equal(expectedWidth, clamped.X);
+            Assert.Equal(expectedHeight, clamped.Y);
+        }
+
         [Fact]
         public void WindowResizeRefreshesCoreRealScreenGlobals()
         {

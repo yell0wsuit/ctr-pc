@@ -5,6 +5,6 @@ namespace CutTheRopeDX.Framework.Platform
     {
         bool IsFullScreen { get; }
         void ToggleFullScreen();
-        void ApplyWindowSize(int width);
+        void ApplyWindowSize(int width, int height);
     }
 }

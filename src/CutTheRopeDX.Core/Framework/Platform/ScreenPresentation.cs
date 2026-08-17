@@ -83,26 +83,6 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Returns the logical game width that preserves aspect ratio for the supplied scaled height.
-        /// </summary>
-        /// <param name="scaledHeight">Scaled view height.</param>
-        /// <returns>Aspect-ratio-correct game width.</returns>
-        public int ScaledGameWidth(int scaledHeight)
-        {
-            return (int)((scaledHeight / _gameAspectRatio) + 0.5);
-        }
-
-        /// <summary>
-        /// Returns the logical game height that preserves aspect ratio for the supplied scaled width.
-        /// </summary>
-        /// <param name="scaledWidth">Scaled view width.</param>
-        /// <returns>Aspect-ratio-correct game height.</returns>
-        public int ScaledGameHeight(int scaledWidth)
-        {
-            return (int)((scaledWidth * _gameAspectRatio) + 0.5);
-        }
-
-        /// <summary>
         /// Publishes the viewport state for a surface of the given size. Every input arrives in
         /// this one call, so a caller cannot set part of the state and publish the rest later.
         /// </summary>
@@ -124,10 +104,5 @@ namespace CutTheRopeDX.Framework.Platform
             Snapshot = next;
             return true;
         }
-
-        /// <summary>
-        /// Cached logical game aspect ratio.
-        /// </summary>
-        private readonly double _gameAspectRatio = gameHeight / (double)gameWidth;
     }
 }
