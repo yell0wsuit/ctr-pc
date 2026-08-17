@@ -14,6 +14,21 @@ namespace CutTheRopeDX.Framework.Helpers
         public float Scale { get; set; } = 1f;
 
         /// <summary>
+        /// World-space top-left of the region the camera shows, which is what drawing and hit
+        /// testing use. Derived by <see cref="ApplyFit"/> from <see cref="pos"/>; equal to it
+        /// until a fit says otherwise.
+        /// </summary>
+        /// <remarks>
+        /// Kept apart from <see cref="pos"/> because the two answer different questions.
+        /// <see cref="pos"/> is where the camera has been driven to, in the fixed frame levels are
+        /// authored in, and the tracking code owns it. This is where that lands once the viewport
+        /// has had its say. Deriving one from the other in both directions would make the fit read
+        /// its own output back, and any viewport with slack would then walk the camera a little
+        /// further every frame.
+        /// </remarks>
+        public Vector RenderPos => renderPos;
+
+        /// <summary>
         /// Initializes the camera with the specified movement speed and camera mode.
         /// </summary>
         /// <param name="s">Camera movement speed or proportional factor.</param>
@@ -39,6 +54,7 @@ namespace CutTheRopeDX.Framework.Helpers
             if (immediate)
             {
                 pos = target;
+                renderPos = pos;
                 return;
             }
             if (type == CAMERATYPE.CAMERASPEEDDELAY)
@@ -70,13 +86,16 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
-        /// Adopts a computed fit: takes its scale and snaps to the origin of its visible region.
+        /// Adopts a computed fit: takes its scale and the origin of its visible region. Writes
+        /// only <see cref="RenderPos"/>, never <see cref="pos"/>, so applying a fit twice lands in
+        /// the same place as applying it once.
         /// </summary>
         /// <param name="fit">The fit to adopt.</param>
         public void ApplyFit(CameraFit fit)
         {
             Scale = fit.Scale;
-            MoveToXYImmediate(fit.VisibleWorld.x, fit.VisibleWorld.y, true);
+            renderPos.X = fit.VisibleWorld.x;
+            renderPos.Y = fit.VisibleWorld.y;
         }
 
         /// <summary>
@@ -85,7 +104,7 @@ namespace CutTheRopeDX.Framework.Helpers
         public void ApplyCameraTransformation()
         {
             Renderer.Scale(Scale, Scale, 1f);
-            Renderer.Translate(-pos.X, -pos.Y, 0f);
+            Renderer.Translate(-renderPos.X, -renderPos.Y, 0f);
         }
 
         /// <summary>
@@ -93,7 +112,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// </summary>
         public void CancelCameraTransformation()
         {
-            Renderer.Translate(pos.X, pos.Y, 0f);
+            Renderer.Translate(renderPos.X, renderPos.Y, 0f);
             Renderer.Scale(1f / Scale, 1f / Scale, 1f);
         }
 
@@ -115,7 +134,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns>The corresponding world-space X coordinate.</returns>
         public float ScreenToWorldX(float sx)
         {
-            return (sx / Scale) + pos.X;
+            return (sx / Scale) + renderPos.X;
         }
 
         /// <summary>
@@ -125,7 +144,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns>The corresponding world-space Y coordinate.</returns>
         public float ScreenToWorldY(float sy)
         {
-            return (sy / Scale) + pos.Y;
+            return (sy / Scale) + renderPos.Y;
         }
 
         /// <summary>
@@ -139,9 +158,15 @@ namespace CutTheRopeDX.Framework.Helpers
         public float speed;
 
         /// <summary>
-        /// Current camera position.
+        /// Current camera position in the fixed frame levels are authored in. The tracking code
+        /// drives this; the viewport never does.
         /// </summary>
         public Vector pos;
+
+        /// <summary>
+        /// Backing field for <see cref="RenderPos"/>.
+        /// </summary>
+        private Vector renderPos;
 
         /// <summary>
         /// Target position the camera is moving toward.

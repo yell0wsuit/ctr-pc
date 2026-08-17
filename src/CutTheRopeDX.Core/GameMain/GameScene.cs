@@ -322,8 +322,6 @@ namespace CutTheRopeDX.GameMain
             CTRRectangle viewport = snapshot.VisibleBounds;
             bool locked = GameplayCamera.ScrollIsLocked(
                 cameraBounds.w, cameraBounds.h, viewport.w, viewport.h);
-            float anchorX = locked ? 0.5f : cameraAnchorX;
-            float anchorY = locked ? 0.5f : cameraAnchorY;
 
             // On an axis the level exceeds, cameraWindow is capped to the design size rather than
             // the full map, so it is the window - not the whole map - that fits the viewport; the
@@ -332,6 +330,17 @@ namespace CutTheRopeDX.GameMain
             // whatever slack remains on an axis the level does not exceed.
             float scrollableX = MathF.Max(0f, cameraBounds.w - cameraWindow.w);
             float scrollableY = MathF.Max(0f, cameraBounds.h - cameraWindow.h);
+
+            // The anchor is read from where the tracking has driven the camera, which nothing here
+            // writes back to. A fit that took its anchor from its own previous result would
+            // subtract the viewport's slack afresh on every pass and walk the camera off the level.
+            float anchorX = locked || scrollableX <= 0f
+                ? 0.5f
+                : FIT_TO_BOUNDARIES((camera.pos.X - cameraBounds.x) / scrollableX, 0f, 1f);
+            float anchorY = locked || scrollableY <= 0f
+                ? 0.5f
+                : FIT_TO_BOUNDARIES((camera.pos.Y - cameraBounds.y) / scrollableY, 0f, 1f);
+
             CTRRectangle window = new CTRRectangle(
                 cameraBounds.x + (scrollableX * anchorX),
                 cameraBounds.y + (scrollableY * anchorY),
@@ -1048,20 +1057,6 @@ namespace CutTheRopeDX.GameMain
         /// the axis the camera scrolls along.
         /// </summary>
         private CTRRectangle cameraWindow;
-
-        /// <summary>
-        /// The camera's horizontal position within its scrollable range and, on an axis the level
-        /// does not exceed, within the slack a wider viewport reveals. 0 is the level's left/top
-        /// edge and 1 its right/bottom edge; 0.5 centres it.
-        /// </summary>
-        private float cameraAnchorX = 0.5f;
-
-        /// <summary>
-        /// The camera's vertical position within its scrollable range and, on an axis the level
-        /// does not exceed, within the slack a wider viewport reveals. 0 is the level's left/top
-        /// edge and 1 its right/bottom edge; 0.5 centres it.
-        /// </summary>
-        private float cameraAnchorY = 0.5f;
 
         // private bool spiderTookCandy;
 

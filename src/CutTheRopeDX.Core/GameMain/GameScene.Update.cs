@@ -87,13 +87,6 @@ namespace CutTheRopeDX.GameMain
             }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
 
-            // Re-apply the fit computed from where the camera settled last frame before touching
-            // it this frame. Doing this first, rather than after the bounded-target move below,
-            // keeps the fit's own target write from being the last word on camera.target: a
-            // viewport that changed shape since last frame gets picked up here, and the tracking
-            // move that follows is what actually owns target for this frame.
-            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
-
             ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
             float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
             float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
@@ -144,18 +137,10 @@ namespace CutTheRopeDX.GameMain
                 time += delta;
             }
 
-            // Record the camera's position within its slack, not as a pixel target: this is what
-            // next frame's ApplyCameraFit call, above, re-projects under whatever viewport is
-            // current then. Deriving it from camera.pos rather than the raw tracked point means it
-            // reflects where the smoothing above actually settled, not where it is headed.
-            float scrollableX = MathF.Max(0f, mapWidth - cameraWindow.w);
-            float scrollableY = MathF.Max(0f, mapHeight - cameraWindow.h);
-            cameraAnchorX = scrollableX > 0f
-                ? FIT_TO_BOUNDARIES((camera.pos.X - cameraBounds.x) / scrollableX, 0f, 1f)
-                : 0.5f;
-            cameraAnchorY = scrollableY > 0f
-                ? FIT_TO_BOUNDARIES((camera.pos.Y - cameraBounds.y) / scrollableY, 0f, 1f)
-                : 0.5f;
+            // Project where the tracking just left the camera onto the current viewport. Last,
+            // because this reads the tracked position and writes only what gets drawn.
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+
             if (bungees.Count > 0)
             {
                 // Bodies whose rotation a rope already drove this frame; one rope per body.

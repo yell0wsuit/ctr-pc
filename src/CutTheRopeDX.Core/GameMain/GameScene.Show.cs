@@ -183,23 +183,15 @@ namespace CutTheRopeDX.GameMain
                 float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
                 float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
 
-                // cameraStartX/Y above is a pixel position in the legacy design frame; express it
-                // as an anchor so the fit places it correctly under whatever viewport is current.
-                float scrollableX = MathF.Max(0f, mapWidth - cameraWindow.w);
-                float scrollableY = MathF.Max(0f, mapHeight - cameraWindow.h);
-                cameraAnchorX = scrollableX > 0f
-                    ? FIT_TO_BOUNDARIES((cameraStartX - cameraBounds.x) / scrollableX, 0f, 1f)
-                    : 0.5f;
-                cameraAnchorY = scrollableY > 0f
-                    ? FIT_TO_BOUNDARIES((cameraStartY - cameraBounds.y) / scrollableY, 0f, 1f)
-                    : 0.5f;
+                // Seat the tracked position at the authored start point and let the fit derive the
+                // rest from it, the way every later frame does.
+                camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
                 ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
                 initialCameraToStarDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
                 return;
             }
             ignoreTouches = false;
-            cameraAnchorX = 0.5f;
-            cameraAnchorY = 0.5f;
+            camera.MoveToXYImmediate(0f, 0f, true);
             ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
         }
 

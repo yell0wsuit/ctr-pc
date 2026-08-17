@@ -33,7 +33,7 @@ namespace CutTheRopeDX.GameMain
                 backScale = 1f;
             }
             // Keep parallax math consistent with the background scale.
-            Vector pos = VectDiv(camera.pos, backScale);
+            Vector pos = VectDiv(camera.RenderPos, backScale);
             back.UpdateWithCameraPos(pos);
             Renderer.PushMatrix();
             Renderer.Scale(back.scaleX, back.scaleY, 1f);
@@ -291,7 +291,7 @@ namespace CutTheRopeDX.GameMain
                     body.Visual.Draw();
                 }
             }
-            waterLayer?.DrawFront(camera.pos.Y);
+            waterLayer?.DrawFront(camera.RenderPos.Y);
             foreach (LightBulb bulb in LightEmitterVisuals())
             {
                 bulb?.DrawBottleAndFirefly();
