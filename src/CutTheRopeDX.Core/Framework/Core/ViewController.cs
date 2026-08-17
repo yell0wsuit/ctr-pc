@@ -333,6 +333,14 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Shows the view with the specified identifier, hiding any currently active view first.
         /// </summary>
+        /// <remarks>
+        /// The view is built and laid out before the root controller is told about it, because
+        /// being told is when the root controller draws this view and keeps the picture as the
+        /// incoming half of its crossfade. A picture taken any earlier is of a composition that
+        /// has not been positioned for this viewport yet, and the fade then plays that stale
+        /// picture over the screen before the live view replaces it - which reads as the scene
+        /// rescaling or shuffling itself into place a moment after it appears.
+        /// </remarks>
         /// <param name="n">View identifier to show.</param>
         public virtual void ShowView(int n)
         {
@@ -342,9 +350,9 @@ namespace CutTheRopeDX.Framework.Core
             }
             activeViewID = n;
             View view = views[n];
-            Application.SharedRootController().OnControllerViewShow(view);
             view.Show();
             Relayout(ScreenPresentation.Instance.Snapshot);
+            Application.SharedRootController().OnControllerViewShow(view);
         }
 
         /// <summary>
