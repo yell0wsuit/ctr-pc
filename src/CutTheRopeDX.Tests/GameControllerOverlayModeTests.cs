@@ -54,6 +54,7 @@ namespace CutTheRopeDX.Tests
             Assert.True(scene.touchable);
             Assert.True(scene.updateable);
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+            Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).IsEnabled());
             Assert.True(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
             Assert.True(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
             Assert.Equal(0, AudioPauseDepth());
@@ -70,6 +71,7 @@ namespace CutTheRopeDX.Tests
             Assert.False(scene.touchable);
             Assert.False(scene.updateable);
             Assert.True(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+            Assert.True(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
             Assert.Equal(1, AudioPauseDepth());
@@ -90,6 +92,7 @@ namespace CutTheRopeDX.Tests
             controller.Update(0.1f);
             Assert.Equal(1, results.raState);
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+            Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).IsEnabled());
             Assert.False(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).IsEnabled());
             Assert.Equal(0, AudioPauseDepth());
@@ -197,9 +200,9 @@ namespace CutTheRopeDX.Tests
         public void EnteringGameplayDeactivatesPressedMenuButtons()
         {
             (GameController controller, GameScene scene) = Load();
-            BaseElement pauseMenu = controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU);
+            BaseElement pauseButtons = controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
             controller.OnButtonPressed(GameControllerButtonId.Pause);
-            Button continueButton = Assert.IsType<Button>(FindButton(pauseMenu, GameControllerButtonId.Continue));
+            Button continueButton = Assert.IsType<Button>(FindButton(pauseButtons, GameControllerButtonId.Continue));
             continueButton.SetState(Button.BUTTON_STATE.BUTTON_DOWN);
 
             controller.OnButtonPressed(GameControllerButtonId.Continue);

@@ -167,8 +167,7 @@ namespace CutTheRopeDX.GameMain
             mapNameLabel.x = RTD(-10) + labelXOffset;
             mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, VisibleBounds.w);
-            pauseButtons = vBox;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
             pauseMenuPlate = image;
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
             _ = vBox.AddChild(c);
@@ -189,7 +188,7 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(toggleButton2);
             _ = hBox.AddChild(toggleButton);
             _ = vBox.AddChild(hBox);
-            vBox.y = (VisibleBounds.h - vBox.height) / 2f;
+            vBox.y = (DesignBox.h - vBox.height) / 2f;
             bool flag3 = Preferences.GetBooleanForKey("SOUND_ON");
             bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             if (!flag3)
@@ -200,8 +199,16 @@ namespace CutTheRopeDX.GameMain
             {
                 toggleButton.Toggle();
             }
-            _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
+
+            // The button column is composed in design space and fitted on its own, rather than
+            // hanging off the plate: the plate stays sized to its own art and the best-score
+            // label pinned against it (PlaceBestScoreLabel) reasons in logical units, so folding
+            // FittedScale into the plate too would throw that math off.
+            FittedGroup buttonsGroup = new() { anchor = 9, parentAnchor = 9 };
+            pauseButtonsGroup = buttonsGroup;
+            _ = buttonsGroup.AddChild(vBox);
+            _ = gameView.AddChildwithID(buttonsGroup, GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
             BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
@@ -210,7 +217,7 @@ namespace CutTheRopeDX.GameMain
             {
                 overlay.anchor = overlay.parentAnchor = 9;
                 overlay.Start();
-                _ = gameView.AddChildwithID(overlay, 5);
+                _ = gameView.AddChildwithID(overlay, 6);
             }
             AddViewwithID(gameView, 0);
         }
@@ -702,6 +709,7 @@ namespace CutTheRopeDX.GameMain
                 && previousMode == GameControllerOverlayMode.Gameplay
                 && !navigationExitActive;
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
+            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).SetEnabled(paused);
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).SetEnabled(gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
@@ -963,20 +971,22 @@ namespace CutTheRopeDX.GameMain
 
             // Reposition the HUD buttons using the same edge offsets applied at construction,
             // otherwise the restart button collapses onto the pause button and they overlap.
+            // Both are grown from the screen's top-right corner by the same boost menu content
+            // gets on a narrow viewport, same idea as RelayoutHud's star row: the corner-relative
+            // offset scales along with the button itself, so the pair grows as one composition
+            // anchored to that corner instead of just getting bigger in place.
             Button pauseButton = (Button)view.GetChild(1);
             Button restartButton = (Button)view.GetChild(2);
-            pauseButton.x = -8f;
-            restartButton.x = -pauseButton.width - 16f;
+            PlaceCornerAnchoredHudButton(pauseButton, -8f, 8f, FittedScale);
+            PlaceCornerAnchoredHudButton(restartButton, -pauseButton.width - 16f, 8f, FittedScale);
 
             PlaceBestScoreLabel(visible);
 
-            if (pauseButtons != null)
-            {
-                pauseButtons.width = (int)visible.w;
-                pauseButtons.y = (visible.h - pauseButtons.height) / 2f;
-            }
+            // The button column is a design-space composition like a menu's, so it is fitted the
+            // same way one is rather than merely stretched to the viewport width.
+            PlaceFittedGroup(pauseButtonsGroup);
 
-            ((GameScene)view.GetChild(0))?.RelayoutHud(visible);
+            ((GameScene)view.GetChild(0))?.RelayoutHud(visible, FittedScale);
 
             BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
             results?.RelayoutBox(visible);
@@ -985,6 +995,29 @@ namespace CutTheRopeDX.GameMain
             // same way one is: fit the group it hangs from and the whole panel lands with it,
             // centered on the viewport it is shown over at every shape of window.
             PlaceFittedGroup(results?.result);
+        }
+
+        /// <summary>
+        /// Grows a top-right-anchored HUD button from the screen's top-right corner, so its
+        /// authored edge offsets scale along with it rather than the button just getting bigger
+        /// in place.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="BaseElement"/> always scales about its own center, whatever its anchor, so
+        /// a button anchored to the top-right corner needs the opposite correction on each axis:
+        /// the right anchor already subtracts its own width when resolving <c>drawX</c>, which
+        /// the top anchor never does for <c>drawY</c>. Working back from where the corner should
+        /// land through that asymmetry is what the two correction terms below are.
+        /// </remarks>
+        /// <param name="button">Button to place, anchored top-right (12) to the view.</param>
+        /// <param name="baseX">Authored X offset from the right edge, at scale one.</param>
+        /// <param name="baseY">Authored Y offset from the top edge, at scale one.</param>
+        /// <param name="scale">Uniform scale to grow the button and its corner offset by.</param>
+        private static void PlaceCornerAnchoredHudButton(Button button, float baseX, float baseY, float scale)
+        {
+            button.scaleX = button.scaleY = scale;
+            button.x = (baseX * scale) + (button.width / 2f * (1f - scale));
+            button.y = (baseY * scale) - (button.height / 2f * (1f - scale));
         }
 
         /// <summary>
@@ -1100,8 +1133,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The plate the pause menu is drawn on; the best-score label hangs off its edge.</summary>
         private Image pauseMenuPlate;
 
-        /// <summary>The pause menu's button column.</summary>
-        private VBox pauseButtons;
+        /// <summary>
+        /// Design-space group the pause menu's button column is composed in, so it fits and
+        /// scales the same way a menu view's content does rather than staying pinned at 1x.
+        /// </summary>
+        private FittedGroup pauseButtonsGroup;
 
         /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];

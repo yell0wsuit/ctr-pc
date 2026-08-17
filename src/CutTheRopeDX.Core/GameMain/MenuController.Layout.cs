@@ -84,6 +84,24 @@ namespace CutTheRopeDX.GameMain
         private VBox levelsBox;
 
         /// <summary>
+        /// The level picker's design-space content: the grid, fitted independently of the box
+        /// cover, spine, and shadow behind it, which stay on <see cref="FullScreenScale"/> so they
+        /// keep covering the screen edge to edge. <see langword="null"/> for a pack large enough
+        /// to scroll (<see cref="levelContainer"/> non-null instead) - see the comment in
+        /// <see cref="LayOutLevelSelect"/> for why that case is not fitted too.
+        /// </summary>
+        private FittedGroup levelsGroup;
+
+        /// <summary>
+        /// Width of the grid's widest row, at design scale. The fitted scale assumes
+        /// content narrow enough to never approach <see cref="ViewController.DesignBox"/>'s own
+        /// width even boosted, which a multi-column grid can violate long before the design box's
+        /// edges do; <see cref="LayOutLevelSelect"/> caps the scale actually applied against this
+        /// so the grid never grows wider than the viewport has room for.
+        /// </summary>
+        private float levelsGridWidth;
+
+        /// <summary>
         /// The visible bounds the pack picker was built for. How many boxes fit across, and
         /// therefore the scroll points, follow from it, so a viewport of a different shape needs
         /// the view built again rather than nudged.
@@ -218,18 +236,29 @@ namespace CutTheRopeDX.GameMain
 
             PlaceLevelSpines(visible);
             SetScale(levelsShadow, FullScreenScale(visible, 2f));
-            levelsBox.width = (int)visible.w;
 
             // A pack with more levels than fit scrolls inside a container sized to the screen; one
-            // that fits is centered in it instead.
+            // that fits is fitted like a menu's design-space content instead.
             if (levelContainer != null)
             {
+                // Not fitted: ScrollableContainer clips with a scissor rect computed from
+                // drawX/width and the render backend's single global scale
+                // (MonoGameRenderBackend.SetScissor), with no way to fold in an ancestor's
+                // FittedScale on top of that. Nesting it under a scaled FittedGroup would clip at
+                // the pre-scale size while the content draws at the larger, scaled one.
+                levelsBox.width = (int)visible.w;
                 levelContainer.width = (int)visible.w;
                 levelContainer.height = (int)(visible.h - LevelsTopInset);
             }
             else
             {
-                levelsBox.y = (visible.h - levelsBox.height) / 2f;
+                // Capped so the widest row never grows past what the viewport actually shows -
+                // FittedScale alone assumes content narrow enough never to approach the design
+                // box's own edges, which a multi-column grid can violate well before that.
+                float gridScale = levelsGridWidth > 0f
+                    ? MathF.Min(FittedScale, visible.w / levelsGridWidth)
+                    : FittedScale;
+                PlaceFittedGroup(levelsGroup, gridScale);
             }
         }
 

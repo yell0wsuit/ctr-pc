@@ -157,7 +157,12 @@ namespace CutTheRopeDX.Tests
         private static void InvokePlaceFittedGroup(BaseElement group)
         {
             _ = typeof(ViewController)
-                .GetMethod("PlaceFittedGroup", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetMethod(
+                    "PlaceFittedGroup",
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    [typeof(BaseElement)],
+                    null)
                 .Invoke(Probe(), [group]);
         }
 

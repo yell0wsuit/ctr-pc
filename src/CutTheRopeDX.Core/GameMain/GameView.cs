@@ -75,5 +75,18 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Child index for the results view.</summary>
         public const int VIEW_ELEMENT_RESULTS = 4;
+
+        /// <summary>
+        /// Child index for the pause menu's button column. Separate from
+        /// <see cref="VIEW_ELEMENT_PAUSE_MENU"/> (the plate backdrop) because the column is a
+        /// design-space composition fitted independently, while the plate stays sized to its own
+        /// art and the best-score label pinned against it stays in logical units.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="Draw"/> walks child ids <c>0..ChildsCount()-1</c> assuming no gaps, so this
+        /// is placed right after the always-present children rather than after the optional snow
+        /// overlay, which is bumped to the next id instead.
+        /// </remarks>
+        public const int VIEW_ELEMENT_PAUSE_BUTTONS = 5;
     }
 }

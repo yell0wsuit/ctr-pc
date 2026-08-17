@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Framework.Core
         private const float WidestContentScale = 1.15f;
 
         /// <summary>Content scale at the narrowest supported aspect ratio.</summary>
-        private const float NarrowestContentScale = 1.35f;
+        private const float NarrowestContentScale = 1.55f;
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
@@ -90,19 +90,24 @@ namespace CutTheRopeDX.Framework.Core
             get
             {
                 float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
-                return aspect >= DesignAspect
-                    ? LayoutMath.Remap(
+                if (aspect >= DesignAspect)
+                {
+                    return LayoutMath.Remap(
                         MathF.Min(aspect, ViewportLayout.MaxAspect),
                         DesignAspect,
                         ViewportLayout.MaxAspect,
                         1f,
-                        WidestContentScale)
-                    : LayoutMath.Remap(
-                        MathF.Max(aspect, ViewportLayout.MinAspect),
-                        ViewportLayout.MinAspect,
-                        DesignAspect,
-                        NarrowestContentScale,
-                        1f);
+                        WidestContentScale);
+                }
+
+                // Eased rather than linear: a square or 4:3 window is only mildly off the design
+                // shape and should barely grow, while true phone-portrait aspects near MinAspect
+                // are what the extra room is actually for. Cubing the linear departure keeps the
+                // curve flat near the design aspect and steep only near the floor.
+                float clampedAspect = MathF.Max(aspect, ViewportLayout.MinAspect);
+                float departure = (DesignAspect - clampedAspect) / (DesignAspect - ViewportLayout.MinAspect);
+                float eased = departure * departure * departure;
+                return 1f + (eased * (NarrowestContentScale - 1f));
             }
         }
 
@@ -120,14 +125,39 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="group">Element holding the design-space content.</param>
         protected void PlaceFittedGroup(BaseElement group)
         {
+            PlaceFittedGroup(group, FittedScale);
+        }
+
+        /// <summary>
+        /// <see cref="PlaceFittedGroup(BaseElement)"/> at an explicit scale rather than
+        /// <see cref="FittedScale"/>.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="FittedScale"/> assumes the content is narrow enough, relative to
+        /// <see cref="DesignBox"/>'s width, that it never approaches the design box's own edges
+        /// even boosted - true for a single button column, not for content authored close to the
+        /// full design width (a multi-column grid, say). A caller whose content can hit that
+        /// ceiling should pass <c>Math.Min(FittedScale, ownOverflowLimit)</c> here instead of
+        /// calling the parameterless overload.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        /// <param name="scale">Uniform scale from design-box coordinates to logical space.</param>
+        protected void PlaceFittedGroup(BaseElement group, float scale)
+        {
             if (group == null)
             {
                 return;
             }
 
             CTRRectangle design = DesignBox;
-            CTRRectangle fitted = FittedBox;
-            float scale = fitted.w / design.w;
+            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            float width = design.w * scale;
+            float height = design.h * scale;
+            CTRRectangle fitted = new(
+                (visible.w - width) / 2f,
+                (visible.h - height) / 2f,
+                width,
+                height);
 
             group.width = (int)design.w;
             group.height = (int)design.h;

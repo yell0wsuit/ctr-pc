@@ -1439,9 +1439,16 @@ namespace CutTheRopeDX.GameMain
 
             float verticalSpacing = 55f;
             float rowHeight = 203f * buttonScale;
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, VisibleBounds.w);
+
+            // The scrollable case can't be fitted (see LayOutLevelSelect), so it keeps composing
+            // against the live viewport width the way it always has; the non-scrollable case
+            // composes against the fixed design width instead, like a menu's content.
+            bool scrollable = levelsInPack > 25;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(
+                verticalSpacing, 2, scrollable ? VisibleBounds.w : DesignBox.w);
             vBox.SetName("levelsBox");
             vBox.x = 0f;
+            float widestRow = 0f;
             int levelIndex = 0;
             for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
@@ -1458,25 +1465,35 @@ namespace CutTheRopeDX.GameMain
                     }
                     _ = hBox2.AddChild(levelButton);
                 }
+                widestRow = MathF.Max(widestRow, hBox2.width);
                 _ = vBox.AddChild(hBox2);
             }
-            float levelsTopY = 110f;
-            float availableHeight = VisibleBounds.h - levelsTopY;
             BaseElement levelsElement;
-            if (levelsInPack > 25)
+            BaseElement levelsRoot;
+            if (scrollable)
             {
+                float availableHeight = VisibleBounds.h - LevelsTopInset;
                 vBox.y = 0f;
-                vBox.height += (int)levelsTopY - 15;
+                vBox.height += (int)LevelsTopInset - 15;
                 levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(VisibleBounds.w, availableHeight, vBox);
                 levelContainer.shouldBounceVertically = true;
-                levelContainer.y = levelsTopY;
+                levelContainer.y = LevelsTopInset;
                 levelsElement = levelContainer;
+                levelsGroup = null;
+                levelsRoot = levelsElement;
             }
             else
             {
                 levelContainer = null;
-                vBox.y = (VisibleBounds.h - vBox.height) / 2f;
+                vBox.anchor = vBox.parentAnchor = 9;
+                vBox.y = (DesignBox.h - vBox.height) / 2f;
                 levelsElement = vBox;
+                levelsGridWidth = widestRow;
+
+                FittedGroup group = new() { anchor = 9, parentAnchor = 9 };
+                levelsGroup = group;
+                _ = group.AddChild(levelsElement);
+                levelsRoot = group;
             }
             levelsBox = vBox;
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -1491,7 +1508,7 @@ namespace CutTheRopeDX.GameMain
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
-            _ = menuView.AddChild(levelsElement);
+            _ = menuView.AddChild(levelsRoot);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.PackSelect);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);

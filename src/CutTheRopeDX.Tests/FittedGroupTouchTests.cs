@@ -62,7 +62,12 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
             _ = typeof(ViewController)
-                .GetMethod("PlaceFittedGroup", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetMethod(
+                    "PlaceFittedGroup",
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    [typeof(BaseElement)],
+                    null)
                 .Invoke(new ProbeController(), [group]);
         }
 

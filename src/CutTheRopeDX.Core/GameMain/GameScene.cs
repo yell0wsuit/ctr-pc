@@ -274,7 +274,15 @@ namespace CutTheRopeDX.GameMain
         /// Places the in-game chrome for the current viewport.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        public void RelayoutHud(CTRRectangle visible)
+        /// <param name="hudScale">
+        /// Uniform scale for the collected-stars row, matching the boost menu content gets on a
+        /// narrow viewport. The row is grown from the screen's top-left corner rather than about
+        /// each icon's own center, so it stays flush against the corner instead of bleeding past
+        /// it: each icon is center-anchored, which already keeps it centered on its own position
+        /// as it scales, so multiplying that position by <paramref name="hudScale"/> is enough to
+        /// scale the whole row from the corner with no extra correction term.
+        /// </param>
+        public void RelayoutHud(CTRRectangle visible, float hudScale = 1f)
         {
             BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
             if (levelLabel != null)
@@ -289,7 +297,9 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < 3; i++)
             {
                 int starSize = hudStar[i].width;
-                hudStar[i].x = (starSize * i) + (starSize / 2);
+                hudStar[i].x = ((starSize * i) + (starSize / 2)) * hudScale;
+                hudStar[i].y = hudStar[i].height / 2f * hudScale;
+                hudStar[i].scaleX = hudStar[i].scaleY = hudScale;
             }
             UpdateBackgroundScale();
         }
