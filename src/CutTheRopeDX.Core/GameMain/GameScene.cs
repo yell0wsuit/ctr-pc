@@ -306,7 +306,15 @@ namespace CutTheRopeDX.GameMain
                 return 1f;
             }
 
-            float scale = SCREEN_WIDTH / texture._realWidth;
+            // The camera scales uniformly, so the region it shows has the viewport's aspect ratio.
+            // A viewport taller in proportion than the design shape therefore sees world above and
+            // below what a width fit alone reaches, and the background has to grow by that much to
+            // still meet every edge. A wider one is already covered, so it grows by nothing, and
+            // at the design shape the factor is one and this is the authored scale exactly.
+            float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
+            float growth = MathF.Max(1f, (SCREEN_WIDTH / SCREEN_HEIGHT) / aspect);
+
+            float scale = SCREEN_WIDTH / texture._realWidth * growth;
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
 
