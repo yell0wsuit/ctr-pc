@@ -34,10 +34,15 @@ namespace CutTheRopeDX.Browser
             ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
             CTRRectangle render = snapshot.RenderViewport;
 
-            // Surface pixels to logical units: subtract where the drawn region starts, then
-            // divide by the one scale the renderer used to get there.
-            float logicalX = ((float)x - render.x) / snapshot.Scale;
-            float logicalY = ((float)y - render.y) / snapshot.Scale;
+            // Surface pixels relative to the drawn region. Touches are reported in this space
+            // rather than in logical units: Core divides what it is handed by the viewport scale
+            // on the way in, so a logical position would be scaled a second time and land further
+            // from the corner the further out it was - the pointer would drift away from itself.
+            float viewX = (float)x - render.x;
+            float viewY = (float)y - render.y;
+
+            float logicalX = viewX / snapshot.Scale;
+            float logicalY = viewY / snapshot.Scale;
 
             _ = Application.SharedRootController().MouseMoved(logicalX, logicalY);
 
@@ -75,7 +80,7 @@ namespace CutTheRopeDX.Browser
             }
 
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(
-                [new TouchLocation(0, state.Value, new Vector2(logicalX, logicalY))]);
+                [new TouchLocation(0, state.Value, new Vector2(viewX, viewY))]);
         }
 
         /// <summary>Scrolls the active view, as the desktop host does from its update loop.</summary>
