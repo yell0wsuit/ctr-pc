@@ -20,8 +20,9 @@ namespace CutTheRopeDX.GameMain
             Renderer.Disable(Renderer.GL_BLEND);
             if (backTexture != null)
             {
-                // Recompute in case internal resolution or texture dimensions changed.
-                float desiredScale = GetBackgroundWidthScale(backTexture);
+                // Recompute in case the camera's fit, the internal resolution or the texture
+                // dimensions changed.
+                float desiredScale = GetBackgroundCoverScale(backTexture);
                 if (ABS(desiredScale - backgroundScale) > 0.0001f)
                 {
                     UpdateBackgroundScale();
@@ -56,8 +57,11 @@ namespace CutTheRopeDX.GameMain
                         // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                        // Draw p2 at configured Y position (p1 is handled by TileMap)
-                        DrawHelper.DrawImagePart(p2Texture, p2Rect, 0f, p2Y);
+
+                        // Hung from the same corner the first piece is, at the authored offset
+                        // below it. The two are one picture, so a piece placed from the origin
+                        // instead would come away from the other wherever the fit has moved it.
+                        DrawHelper.DrawImagePart(p2Texture, p2Rect, back.x, back.y + p2Y);
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
                 }

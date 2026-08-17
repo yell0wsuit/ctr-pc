@@ -295,41 +295,61 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Computes a width-based scale so a background texture matches the internal screen width.
+        /// Computes the scale that makes a background texture cover the region of world the
+        /// screen exposes, letting the axis with room to spare crop.
         /// </summary>
+        /// <remarks>
+        /// The art is one screen of the shape the game was drawn for, and the camera decides how
+        /// much world a screen of the current shape sees. Covering that region is a cover fit
+        /// against it: on a window taller in proportion, the height drives the scale and the
+        /// width crops; on a wider one, the width drives it. A fit by width alone leaves the art
+        /// short of the top and bottom edges of a tall window, and grows so much on a level whose
+        /// map is narrower than the screen that the repeat's seam is dragged into view. At the
+        /// shape the art was drawn for the two axes agree, so this is the authored scale exactly.
+        /// </remarks>
         /// <param name="texture">Background texture to measure.</param>
-        /// <returns>A safe width scale for the background texture.</returns>
-        private static float GetBackgroundWidthScale(CTRTexture2D texture)
+        /// <returns>A safe cover scale for the background texture.</returns>
+        private float GetBackgroundCoverScale(CTRTexture2D texture)
         {
-            if (texture == null || texture._realWidth <= 0)
+            if (texture == null || texture._realWidth <= 0 || texture._realHeight <= 0)
             {
                 return 1f;
             }
 
-            // The camera scales uniformly, so the region it shows has the viewport's aspect ratio.
-            // A viewport taller in proportion than the design shape therefore sees world above and
-            // below what a width fit alone reaches, and the background has to grow by that much to
-            // still meet every edge. A wider one is already covered, so it grows by nothing, and
-            // at the design shape the factor is one and this is the authored scale exactly.
-            float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
-            float growth = MathF.Max(1f, SCREEN_WIDTH / SCREEN_HEIGHT / aspect);
+            float cameraScale = camera?.Scale ?? 1f;
+            if (cameraScale <= 0f || float.IsNaN(cameraScale) || float.IsInfinity(cameraScale))
+            {
+                return 1f;
+            }
 
-            float scale = SCREEN_WIDTH / texture._realWidth * growth;
+            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            float scale = MathF.Max(
+                visible.w / cameraScale / texture._realWidth,
+                visible.h / cameraScale / texture._realHeight);
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
 
         /// <summary>
-        /// Updates background scaling using the internal resolution.
+        /// Sizes and places the background for the region of world the screen currently exposes.
         /// </summary>
         private void UpdateBackgroundScale()
         {
-            // Keep backgrounds aligned to internal width
-            backgroundScale = GetBackgroundWidthScale(backTexture);
-            if (back != null)
+            backgroundScale = GetBackgroundCoverScale(backTexture);
+            if (back == null || backTexture == null)
             {
-                back.scaleX = backgroundScale;
-                back.scaleY = backgroundScale;
+                return;
             }
+
+            back.scaleX = backgroundScale;
+            back.scaleY = backgroundScale;
+
+            // Centered on the design screen: the frame the art and every level's placement inside
+            // it were drawn against. Growing about that center carries the art out past whichever
+            // edges the window reveals, where growing about its top-left corner would only push it
+            // down and to the right and leave the far edges to the repeat. It stays put in the
+            // world as the camera moves, so a level taller than the screen still scrolls past it.
+            back.x = (SCREEN_WIDTH / 2f / backgroundScale) - (backTexture._realWidth / 2f);
+            back.y = (SCREEN_HEIGHT / 2f / backgroundScale) - (backTexture._realHeight / 2f);
         }
 
         /// <summary>
