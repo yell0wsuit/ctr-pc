@@ -53,16 +53,19 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SurfaceWiderThanTheClampIsCroppedToTheLimit()
+        public void SurfaceWiderThanTheScaleCurveIsStillDrawnWhole()
         {
-            // 3840x1080 is 3.555. The render viewport narrows to 2.5 and centers.
+            // 3840x1080 is 3.555, past the widest ratio the content scale distinguishes. It used
+            // to be cropped to 2.5 and centered, which is what put black bars down the sides of an
+            // ultrawide window; the window is the player's to shape, so the game fills it.
             ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080);
 
-            Assert.Equal(2700f, snapshot.RenderViewport.w, 0.01);
+            Assert.Equal(3840f, snapshot.RenderViewport.w, 0.01);
             Assert.Equal(1080f, snapshot.RenderViewport.h, 0.01);
-            Assert.Equal(570f, snapshot.RenderViewport.x, 0.01);
+            Assert.Equal(0f, snapshot.RenderViewport.x, 0.01);
             Assert.Equal(0f, snapshot.RenderViewport.y, 0.01);
-            Assert.Equal(3600f, snapshot.VisibleBounds.w, 0.01);
+            Assert.Equal(5120f, snapshot.VisibleBounds.w, 0.01);
+            Assert.Equal(1440f, snapshot.VisibleBounds.h, 0.01);
         }
 
         [Fact]
@@ -78,16 +81,18 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void SurfaceTallerThanTheClampIsCroppedToTheLimit()
+        public void SurfaceTallerThanTheScaleCurveIsStillDrawnWhole()
         {
-            // 400x1280 is 0.3125. The render viewport shortens to 0.4 and centers.
+            // 400x1280 is 0.3125, past the narrowest ratio the content scale distinguishes, and
+            // drawn whole for the same reason a wider one is.
             ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280);
 
             Assert.Equal(400f, snapshot.RenderViewport.w, 0.01);
-            Assert.Equal(1000f, snapshot.RenderViewport.h, 0.01);
+            Assert.Equal(1280f, snapshot.RenderViewport.h, 0.01);
             Assert.Equal(0f, snapshot.RenderViewport.x, 0.01);
-            Assert.Equal(140f, snapshot.RenderViewport.y, 0.01);
-            Assert.Equal(3600f, snapshot.VisibleBounds.h, 0.01);
+            Assert.Equal(0f, snapshot.RenderViewport.y, 0.01);
+            Assert.Equal(1440f, snapshot.VisibleBounds.w, 0.01);
+            Assert.Equal(4608f, snapshot.VisibleBounds.h, 0.01);
         }
 
         [Fact]
@@ -109,22 +114,12 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void AspectIsTheClampedOneNotTheRawSurfaceRatio()
+        public void AspectIsTheSurfaceRatioAtAnyShape()
         {
-            // 3840x1080 is 3.556 raw, outside the supported range, so the render viewport is
-            // cropped to 2.5. Layout must see the ratio it actually draws into.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(3840, 1080);
-
-            Assert.Equal(2.5f, snapshot.Aspect, 0.001);
-        }
-
-        [Fact]
-        public void TallPortraitSurfaceClampsToTheNarrowLimit()
-        {
-            // 400x1280 is 0.3125 raw, below the 0.4 limit.
-            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(400, 1280);
-
-            Assert.Equal(0.4f, snapshot.Aspect, 0.001);
+            // Nothing is cropped away, so what the layout measures against is the shape of the
+            // window itself, however far that is from anything the content scale distinguishes.
+            Assert.Equal(3840f / 1080f, ViewportLayout.Compute(3840, 1080).Aspect, 0.001);
+            Assert.Equal(400f / 1280f, ViewportLayout.Compute(400, 1280).Aspect, 0.001);
         }
 
         [Fact]
@@ -144,21 +139,24 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RenderTargetPixelsDoNotCarryTheLetterboxOrigin()
+        public void RenderTargetPixelsDoNotCarryTheRenderOrigin()
         {
             // The frame is drawn into a target the size of the drawn region, and where that region
             // sits on the surface is applied when it is copied to the screen. A scissor rectangle
-            // that added the origin as well was pushed sideways by the width of the letterbox,
-            // which cut the edge off every element it clipped - a credits column, a grid of skins.
-            ViewportLayoutSnapshot wide = ViewportLayout.Compute(2572, 916);
-            Assert.True(wide.RenderViewport.x > 0f, "the fixture surface should be letterboxed");
+            // that added the origin as well was pushed sideways by it, which cut the edge off
+            // every element it clipped - a credits column, a grid of skins. Computed surfaces put
+            // that origin at zero now, so the offset is put in by hand here.
+            ViewportLayoutSnapshot offset = ViewportLayout.Compute(1280, 720) with
+            {
+                RenderViewport = new CTRRectangle(90f, 40f, 1280f, 720f)
+            };
 
-            CTRRectangle target = wide.ToRenderTarget(new CTRRectangle(0f, 0f, 100f, 50f));
+            CTRRectangle target = offset.ToRenderTarget(new CTRRectangle(0f, 0f, 100f, 50f));
 
             Assert.Equal(0f, target.x);
             Assert.Equal(0f, target.y);
-            Assert.Equal(100f * wide.Scale, target.w, 0.0001);
-            Assert.Equal(50f * wide.Scale, target.h, 0.0001);
+            Assert.Equal(100f * offset.Scale, target.w, 0.0001);
+            Assert.Equal(50f * offset.Scale, target.h, 0.0001);
         }
 
         [Fact]

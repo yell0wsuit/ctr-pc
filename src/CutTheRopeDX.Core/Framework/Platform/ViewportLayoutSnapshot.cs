@@ -8,9 +8,9 @@ namespace CutTheRopeDX.Framework.Platform
     /// <param name="SurfaceWidth">Drawable surface width in pixels.</param>
     /// <param name="SurfaceHeight">Drawable surface height in pixels.</param>
     /// <param name="RenderViewport">
-    /// Sub-rectangle of the surface the game draws into, in surface pixels. Equals the whole
-    /// surface unless the aspect ratio falls outside the supported range, in which case it is
-    /// the centered crop at the nearest supported limit.
+    /// Region of the surface the game draws into, in surface pixels. The whole surface, whatever
+    /// shape the host gives it: the layout follows the window rather than cropping it to a shape
+    /// the game prefers.
     /// </param>
     /// <param name="VisibleBounds">
     /// <paramref name="RenderViewport"/> expressed in logical units, positioned at the origin.
@@ -33,8 +33,8 @@ namespace CutTheRopeDX.Framework.Platform
     {
         /// <summary>
         /// Width-to-height ratio of the region the game draws into. Derived from
-        /// <see cref="VisibleBounds"/> rather than the surface, so it is already inside the
-        /// supported range and never describes a region that is cropped away.
+        /// <see cref="VisibleBounds"/> rather than the surface, so it is measured in the same
+        /// space every layout is.
         /// </summary>
         public float Aspect => VisibleBounds.w / VisibleBounds.h;
 

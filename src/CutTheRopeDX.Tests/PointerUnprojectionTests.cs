@@ -67,10 +67,11 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void TheDefaultBoxZoomsInRatherThanFillingAWideViewport()
         {
-            // 3840x1080 clamps to 2700x1080, giving 3600x1440 logical at aspect 2.5. The box is
-            // the authored one whatever the shape; the further the viewport departs from the
-            // design aspect the larger the composition is drawn, and what it does not reach is
-            // left as margin rather than stretched into.
+            // 3840x1080 is drawn whole, giving 5120x1440 logical at aspect 3.556. The box is the
+            // authored one whatever the shape; the further the viewport departs from the design
+            // aspect the larger the composition is drawn - up to the widest ratio the scale curve
+            // distinguishes - and what it does not reach is left as margin rather than stretched
+            // into.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
             _ = ScreenPresentation.Instance.SetSurfaceSize(3840, 1080);
             ProbeController controller = new();
@@ -113,7 +114,8 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(2560f * FixedBoxController.Scale, controller.Fitted.w, 0.01);
             Assert.Equal(1440f * FixedBoxController.Scale, controller.Fitted.h, 0.01);
-            Assert.Equal((3600f - controller.Fitted.w) / 2f, controller.Fitted.x, 0.01);
+            float visibleWidth = ScreenPresentation.Instance.Snapshot.VisibleBounds.w;
+            Assert.Equal((visibleWidth - controller.Fitted.w) / 2f, controller.Fitted.x, 0.01);
         }
 
         [Fact]

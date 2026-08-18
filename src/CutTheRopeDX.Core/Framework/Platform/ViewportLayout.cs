@@ -19,13 +19,23 @@ namespace CutTheRopeDX.Framework.Platform
         public const float DesignHeight = 1440f;
 
         /// <summary>
-        /// Narrowest supported width-to-height ratio. Taller surfaces are cropped to it.
+        /// Narrowest width-to-height ratio the content scale distinguishes. A surface narrower
+        /// than this is drawn whole, at the scale this shape is drawn at.
         /// </summary>
+        /// <remarks>
+        /// An endpoint of <see cref="ContentFit"/>'s curve rather than a bound on what may be
+        /// shown: the window is the player's to shape and the layout follows whatever they choose.
+        /// Cropping to the nearest endpoint instead is what put black bars down the sides of an
+        /// ultrawide window, and every background in the game covers the region it is handed, so
+        /// there was nothing for the crop to protect.
+        /// </remarks>
         public const float MinAspect = 0.4f;
 
         /// <summary>
-        /// Widest supported width-to-height ratio. Wider surfaces are cropped to it.
+        /// Widest width-to-height ratio the content scale distinguishes. A surface wider than this
+        /// is drawn whole, at the scale this shape is drawn at.
         /// </summary>
+        /// <remarks>See <see cref="MinAspect"/>.</remarks>
         public const float MaxAspect = 2.5f;
 
         /// <summary>
@@ -46,7 +56,9 @@ namespace CutTheRopeDX.Framework.Platform
             int surfaceHeight,
             float devicePixelRatio = 1f)
         {
-            CTRRectangle render = ClampToSupportedAspect(surfaceWidth, surfaceHeight);
+            // The whole surface, whatever shape it is: what the game draws into is what the host
+            // gives it.
+            CTRRectangle render = new(0f, 0f, surfaceWidth, surfaceHeight);
             float scale = MathF.Min(render.w, render.h) / LogicalShortSide;
 
             return new ViewportLayoutSnapshot(
@@ -59,29 +71,6 @@ namespace CutTheRopeDX.Framework.Platform
                 surfaceWidth >= surfaceHeight
                     ? LayoutOrientation.Landscape
                     : LayoutOrientation.Portrait);
-        }
-
-        /// <summary>
-        /// Returns the centered sub-rectangle of the surface whose aspect ratio lies within the
-        /// supported range. Surfaces already inside the range are returned whole.
-        /// </summary>
-        /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
-        /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <returns>The rectangle the game draws into.</returns>
-        private static CTRRectangle ClampToSupportedAspect(int surfaceWidth, int surfaceHeight)
-        {
-            float aspect = surfaceWidth / (float)surfaceHeight;
-            if (aspect > MaxAspect)
-            {
-                float width = surfaceHeight * MaxAspect;
-                return new CTRRectangle((surfaceWidth - width) / 2f, 0f, width, surfaceHeight);
-            }
-            if (aspect < MinAspect)
-            {
-                float height = surfaceWidth / MinAspect;
-                return new CTRRectangle(0f, (surfaceHeight - height) / 2f, surfaceWidth, height);
-            }
-            return new CTRRectangle(0f, 0f, surfaceWidth, surfaceHeight);
         }
     }
 }

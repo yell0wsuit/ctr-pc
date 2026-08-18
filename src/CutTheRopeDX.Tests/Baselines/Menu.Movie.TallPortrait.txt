@@ -1,2 +1,2 @@
-MovieView 0 0 1439 3599 1 1 0
-  RectangleElement 0 0 1439 3599 1 1 0
+MovieView 0 0 1439 4608 1 1 0
+  RectangleElement 0 0 1439 4608 1 1 0
