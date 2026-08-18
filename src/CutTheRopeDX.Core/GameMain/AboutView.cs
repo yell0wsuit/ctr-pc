@@ -37,7 +37,7 @@ namespace CutTheRopeDX.GameMain
             _ = background.AddChild(currentContainer);
             _ = menuView.AddChild(background);
 
-            Button backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackToOptions);
+            backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackToOptions);
             backButton.SetName("backb");
             _ = menuView.AddChild(backButton);
 
@@ -112,7 +112,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="buttonDelegate">Button delegate used by controls embedded in the about content.</param>
         /// <param name="scale">Uniform scale to grow the credits content by.</param>
         /// <returns>The configured scrollable content container.</returns>
-        private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate, float scale)
+        private ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate, float scale)
         {
             float containerWidth = ContainerWidth;
             float containerHeight = WindowHeight(ScreenPresentation.Instance.Snapshot.VisibleBounds);
@@ -186,6 +186,8 @@ namespace CutTheRopeDX.GameMain
             _ = vBox.AddChild(specialThanks);
 
             GrowFromTop(vBox, scale);
+            credits = vBox;
+            creditsExtent = vBox.height;
             return container;
         }
 
@@ -238,16 +240,24 @@ namespace CutTheRopeDX.GameMain
         /// The scroll offset is pulled back inside what the resized window can reach, because a
         /// window that just grew leaves the reader past the end of the credits otherwise.
         /// </remarks>
-        /// <param name="visible">The logical region the viewport exposes.</param>
-        public void ResizeWindow(CTRRectangle visible)
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        public void ResizeWindow(ViewportLayoutSnapshot snapshot)
         {
             if (currentContainer == null)
             {
                 return;
             }
 
+            CTRRectangle visible = snapshot.VisibleBounds;
+
             currentContainer.width = (int)ContainerWidth;
             currentContainer.height = (int)WindowHeight(visible);
+
+            // The button in the corner is drawn over the bottom of the window, and on a viewport
+            // narrow enough for the credits column to reach that corner it covers the last line
+            // read. The stack is told it is that much taller than it draws, which is scroll the
+            // reader can spend to bring the end out from under the button.
+            _ = (credits?.height = creditsExtent + (int)MathF.Round(ChromeReservation(snapshot)));
 
             Vector scroll = currentContainer.GetScroll();
             scroll.Y = Framework.Helpers.CTRMathHelper.FIT_TO_BOUNDARIES(
@@ -256,6 +266,32 @@ namespace CutTheRopeDX.GameMain
                 currentContainer.GetMaxScroll().Y);
             currentContainer.SetScroll(scroll);
         }
+
+        /// <summary>
+        /// How much room at the end of the credits the button in the corner needs, so the last
+        /// line can be scrolled out from under it.
+        /// </summary>
+        /// <remarks>
+        /// Asked of <see cref="HudMetrics"/> rather than measured off the button, because the pass
+        /// that sizes the button runs after this one - a scene rebuilt in between would be read
+        /// while its replacement button was still at its authored size.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        /// <returns>The room to reserve, in the stack's own units.</returns>
+        private float ChromeReservation(ViewportLayoutSnapshot snapshot)
+        {
+            if (backButton == null)
+            {
+                return 0f;
+            }
+
+            float longest = MathF.Max(backButton.width, backButton.height);
+            float scale = HudMetrics.ChromeScale(snapshot, longest, HudMetrics.IsTouchHost);
+            return (backButton.height * scale) + ChromeGap;
+        }
+
+        /// <summary>Gap left between the last line of the credits and the button below it.</summary>
+        private const float ChromeGap = 20f;
 
         /// <summary>
         /// The height of the window the credits scroll inside, on a given viewport.
@@ -399,5 +435,17 @@ namespace CutTheRopeDX.GameMain
         /// Scroll container holding the About/Credits content.
         /// </summary>
         private ScrollableContainer currentContainer;
+
+        /// <summary>The stack of credits blocks the container scrolls.</summary>
+        private VBox credits;
+
+        /// <summary>
+        /// How far the credits reach on their own, before any room is reserved at the end for the
+        /// button drawn over the bottom of the window.
+        /// </summary>
+        private int creditsExtent;
+
+        /// <summary>The button back to the options menu, drawn in the corner over the credits.</summary>
+        private Button backButton;
     }
 }

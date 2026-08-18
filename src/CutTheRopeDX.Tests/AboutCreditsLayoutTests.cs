@@ -85,23 +85,57 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheCreditsScrollAsFarAsTheyDraw()
+        public void TheCreditsScrollAsFarAsTheyDrawPlusTheRoomTheButtonNeeds()
         {
             // How far the credits scroll is read off the stack's own height, and every block in it
             // draws at the content scale. Leaving the stack at the height its unscaled blocks
-            // measured stopped the reader a third of the way from the end on a phone.
+            // measured stopped the reader a third of the way from the end on a phone. The stack is
+            // told it is taller still by the room the corner button needs, which is scroll spent
+            // bringing the last line out from under it.
             _ = HeadlessGame.Boot();
 
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
-                    WithAboutView(container =>
+                    WithAboutView((container, back) =>
                     {
-                        // The stack itself is the container's own content element, which it only
-                        // exposes through the reach it reports: how far it scrolls plus the window
-                        // it scrolls inside is the height it believes its content is.
                         float believed = container.GetMaxScroll().Y + container.height;
-                        Assert.Equal(DrawnExtent(container), believed, 1f);
+                        float reserved = believed - DrawnExtent(container);
+
+                        Assert.True(
+                            reserved >= back.height * back.scaleY,
+                            $"{surface.Name}: {reserved} reserved for a {back.height * back.scaleY} button");
+                    }));
+            }
+        }
+
+        [Fact]
+        public void TheLastLineOfTheCreditsClearsTheButtonInTheCorner()
+        {
+            // Scrolled to the end, the last line has to come to rest above the button rather than
+            // behind it - which is what it did on a phone, where the credits column is wide enough
+            // to reach the corner the button sits in.
+            _ = HeadlessGame.Boot();
+
+            foreach (LayoutSurface surface in LayoutSurfaces.All)
+            {
+                LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
+                    WithAboutView((container, back) =>
+                    {
+                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        float reserved = container.GetMaxScroll().Y + container.height - DrawnExtent(container);
+
+                        // The window is centered, so its bottom edge is half the slack below the
+                        // screen's. At the end of the scroll the last line sits the reservation
+                        // above that edge, and the button rises its drawn height from the corner.
+                        float windowBottom = (visible.h + container.height) / 2f;
+                        float lastLineBottom = windowBottom - reserved;
+                        float buttonTop = visible.h - (back.height * back.scaleY);
+
+                        Assert.True(
+                            lastLineBottom <= buttonTop,
+                            $"{surface.Name}: the credits end at {lastLineBottom}, under a button "
+                            + $"whose top is at {buttonTop}");
                     }));
             }
         }
@@ -117,7 +151,7 @@ namespace CutTheRopeDX.Tests
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
-                    WithAboutView(container =>
+                    WithAboutView((container, _) =>
                     {
                         CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         Assert.True(
@@ -167,15 +201,18 @@ namespace CutTheRopeDX.Tests
         /// Builds a menu controller, shows the About view and hands its credits container to
         /// <paramref name="body"/>, disposing the controller afterwards either way.
         /// </summary>
-        /// <param name="body">What to assert about the container.</param>
-        private static void WithAboutView(Action<ScrollableContainer> body)
+        /// <param name="body">What to assert about the container and the button over it.</param>
+        private static void WithAboutView(Action<ScrollableContainer, Button> body)
         {
             MenuController controller = new(
                 (CTRRootController)Application.SharedRootController());
             try
             {
                 controller.ShowView(MenuController.VIEW_ABOUT);
-                body(Credits(controller));
+                Button back = controller.GetView(MenuController.VIEW_ABOUT)
+                    .GetChildWithName("backb") as Button;
+                Assert.NotNull(back);
+                body(Credits(controller), back);
             }
             finally
             {

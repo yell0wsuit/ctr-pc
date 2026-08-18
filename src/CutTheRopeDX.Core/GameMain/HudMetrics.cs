@@ -45,6 +45,36 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Returns the scale to draw a chrome element at: the larger of the scale the content
+        /// around it is drawn at and the size this surface needs it to be to stay reachable.
+        /// </summary>
+        /// <remarks>
+        /// The two answer different questions - how far this viewport is from the shape the game
+        /// was drawn for, and how small the element may get in the player's hand - so an element
+        /// that has to satisfy both takes whichever asks for more. Derived rather than read off a
+        /// placed button, so anything that has to reason about the room a piece of chrome takes -
+        /// a scrolling view keeping its content clear of it, say - gets the same answer without
+        /// having to be laid out after it.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to size against.</param>
+        /// <param name="longestSide">The element's longest authored side.</param>
+        /// <param name="isMobile">Whether the host is a touch device.</param>
+        /// <returns>The uniform scale to draw the element at.</returns>
+        public static float ChromeScale(ViewportLayoutSnapshot snapshot, float longestSide, bool isMobile)
+        {
+            float content = ContentFit.ScaleForAspect(snapshot.Aspect);
+            return longestSide <= 0f
+                ? content
+                : MathF.Max(content, ChromeSize(snapshot, isMobile) / longestSide);
+        }
+
+        /// <summary>
+        /// Whether the host drives the game by touch. No host reports this yet, so the pointer
+        /// branch applies everywhere; it is the conservative one, because it carries the floor.
+        /// </summary>
+        public const bool IsTouchHost = false;
+
+        /// <summary>
         /// Smallest chrome size in physical pixels on a pointer-driven host.
         /// </summary>
         private const float PhysicalFloor = 70f;
