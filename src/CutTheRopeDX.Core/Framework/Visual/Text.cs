@@ -379,8 +379,13 @@ namespace CutTheRopeDX.Framework.Visual
                 }
                 if ((lineWidth + wordWidth > wrapWidth && lineEnd != lineStart) || c == '\n')
                 {
+                    // The line can end before it starts: trimming the spaces a line break leaves
+                    // behind runs the start of the next line past the character being read, and a
+                    // second break arriving before the reading catches up would then describe a
+                    // line of negative length. What the text means there is an empty line, which
+                    // is what an end held at the start describes.
                     array[rangesLength++] = (short)lineStart;
-                    array[rangesLength++] = (short)lineEnd;
+                    array[rangesLength++] = (short)MAX(lineEnd, lineStart);
                     while (wordStart < textLength && characters[wordStart] == ' ')
                     {
                         wordStart++;
