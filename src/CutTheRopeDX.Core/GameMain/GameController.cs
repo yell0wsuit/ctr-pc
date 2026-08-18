@@ -1012,7 +1012,12 @@ namespace CutTheRopeDX.GameMain
             // same way one is rather than merely stretched to the viewport width.
             PlaceFittedGroup(pauseButtonsGroup);
 
-            ((GameScene)view.GetChild(0))?.RelayoutHud();
+            // Camera first: the HUD pass re-covers the background, and how much world a screen of
+            // this shape sees - which is what the background covers - is measured through the
+            // camera's own scale.
+            GameScene scene = (GameScene)view.GetChild(0);
+            scene?.RelayoutCamera();
+            scene?.RelayoutHud();
 
             BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
             results?.RelayoutBox(visible);

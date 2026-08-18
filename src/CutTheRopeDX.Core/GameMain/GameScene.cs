@@ -300,6 +300,21 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Projects the camera onto the viewport again, without a frame of gameplay having run.
+        /// </summary>
+        /// <remarks>
+        /// The fit is otherwise applied by <see cref="Update"/>, which a paused scene never gets:
+        /// a window resized while the pause menu was up left the world drawn for the shape it had
+        /// when it was paused, and the background - whose cover scale is measured through the
+        /// camera's - short of the edges it no longer reached. Safe to call outside the update
+        /// loop, because the fit reads the tracked position and writes only what gets drawn.
+        /// </remarks>
+        public void RelayoutCamera()
+        {
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+        }
+
+        /// <summary>
         /// Sizes and positions the level-name label for the current viewport.
         /// </summary>
         /// <remarks>
