@@ -15,6 +15,9 @@ await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
 
 int fbo = GLContextInterop.CreateContext("game");
+// Installed before the first measurement so the loop never has to measure again: from here on
+// the canvas reports its own changes.
+GLContextInterop.WatchCanvas("game");
 int[] size = GLContextInterop.CanvasSize("game");
 Console.WriteLine($"gl: fbo={fbo} size={size[0]}x{size[1]}");
 
