@@ -182,7 +182,7 @@ namespace CutTheRopeDX.Desktop
             {
                 // Turning clipping off means letting the whole drawn region through, which is the
                 // region the viewport exposes rather than the fixed design size.
-                Framework.CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 SetScissor(0f, 0f, visible.w, visible.h);
             }
             if (cap == GL_BLEND)
@@ -503,8 +503,8 @@ namespace CutTheRopeDX.Desktop
                 // The rectangle arrives in logical units and the scissor is set in the render
                 // target's own pixels, which is what the frame is drawn into; the letterbox origin
                 // is applied when that target is copied to the screen.
-                Framework.CTRRectangle target = ScreenPresentation.Instance.Snapshot.ToRenderTarget(
-                    new Framework.CTRRectangle(x, y, width, height));
+                CTRRectangle target = ScreenPresentation.Instance.Snapshot.ToRenderTarget(
+                    new CTRRectangle(x, y, width, height));
                 Rectangle scissorRect = new(
                     (int)target.x,
                     (int)target.y,
