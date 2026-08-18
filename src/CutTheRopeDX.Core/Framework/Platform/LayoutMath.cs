@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// the element just enlarging in place.
         /// </summary>
         /// <remarks>
-        /// <see cref="CutTheRopeDX.Framework.Visual.BaseElement"/> always scales about its own
+        /// <see cref="Visual.BaseElement"/> always scales about its own
         /// center regardless of anchor, so an edge-anchored offset needs a correction term to
         /// compensate. The direction depends on which edge: a left/top anchor's offset already
         /// measures distance from the origin directly, while a right/bottom anchor's offset is
