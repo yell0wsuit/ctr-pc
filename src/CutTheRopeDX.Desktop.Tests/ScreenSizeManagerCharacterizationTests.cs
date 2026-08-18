@@ -21,9 +21,11 @@ namespace CutTheRopeDX.Desktop.Tests
         // follows it rather than the other way round.
         [InlineData(1600, 1200, 1600, 1200)]
         [InlineData(900, 1600, 900, 1600)]
-        // Each axis has its own floor, so hitting one does not drag the other with it.
-        [InlineData(400, 1200, 800, 1200)]
-        [InlineData(1600, 200, 1600, 450)]
+        // Each axis has its own floor, so hitting one does not drag the other with it. The floor
+        // is the smallest surface the layout is tested against, not a shape the desktop implies.
+        [InlineData(400, 1200, 400, 1200)]
+        [InlineData(200, 1200, 320, 1200)]
+        [InlineData(1600, 200, 1600, 480)]
         // Neither axis may exceed the display.
         [InlineData(5000, 5000, 3840, 2160)]
         public void ClampWindowSizeKeepsTheRequestedAspect(

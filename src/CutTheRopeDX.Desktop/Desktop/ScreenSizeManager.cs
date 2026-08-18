@@ -391,15 +391,18 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Minimum allowed window width.
+        /// Minimum allowed window width. The narrowest surface the layout is built and tested
+        /// against, rather than a floor the shipped desktop shape implies: every menu now sizes
+        /// itself from the viewport, so what the window may not go below is what has been shown
+        /// to lay out.
         /// </summary>
-        public const int MIN_WINDOW_WIDTH = 800;
+        public const int MIN_WINDOW_WIDTH = 320;
 
         /// <summary>
-        /// Minimum allowed window height. The height the previous minimum width implied at the
-        /// shipped aspect ratio, kept as the floor now that the two axes move independently.
+        /// Minimum allowed window height, the other half of that surface. Each axis has its own
+        /// floor, so a window pulled flat keeps whatever width it had.
         /// </summary>
-        public const int MIN_WINDOW_HEIGHT = 450;
+        public const int MIN_WINDOW_HEIGHT = 480;
 
         /// <summary>
         /// Current window rectangle.
