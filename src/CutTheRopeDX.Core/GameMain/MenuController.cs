@@ -403,7 +403,14 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = baseElement.AddChild(designGroup);
             }
-            backdrops[viewId] = new MenuBackdrop(baseElement, image, frontLayer, shadowLayer);
+            MenuBackdrop backdrop = new(baseElement, image, frontLayer, shadowLayer);
+            backdrops[viewId] = backdrop;
+
+            // Covered here as well as in the layout pass, because a scene can be built at a shape
+            // no later pass will announce a change from: the pack picker rebuilds itself from
+            // inside one, and the authored scale it would otherwise keep covers the design shape
+            // alone - on a phone it left the top half of the screen black.
+            LayOutBackdrop(backdrop, VisibleBounds);
             return baseElement;
         }
 
