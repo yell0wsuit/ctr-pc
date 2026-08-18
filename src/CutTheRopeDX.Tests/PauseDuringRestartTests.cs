@@ -251,7 +251,10 @@ namespace CutTheRopeDX.Tests
                 BaseElement.CalculateTopLeft(plate);
                 BaseElement.CalculateTopLeft(label);
 
-                float rightEdge = label.drawX + (label.width * label.scaleX);
+                // Scaled about its own center, the way PreDraw does it and the way
+                // LayoutMath.CornerAnchoredOffset corrects for: half of what the boost adds falls
+                // outside each edge, not all of it outside the right one.
+                float rightEdge = label.drawX + (label.width * (1f + label.scaleX) / 2f);
                 CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
                 Assert.True(

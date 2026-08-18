@@ -155,7 +155,7 @@ namespace CutTheRopeDX.GameMain
             _ = gameView.AddChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
-            image.scaleX = image.scaleY = 1.25f;
+            image.scaleX = image.scaleY = PausePlateScale;
             image.rotationCenterY = -image.height / 2;
             image.passTransformationsToChilds = false;
             mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
@@ -1005,6 +1005,7 @@ namespace CutTheRopeDX.GameMain
             PlaceCornerAnchoredHudButton(pauseButton, -8f, 8f, FittedScale);
             PlaceCornerAnchoredHudButton(restartButton, -pauseButton.width - 16f, 8f, FittedScale);
 
+            PlacePausePlate(visible);
             PlaceBestScoreLabel(visible);
 
             // The button column is a design-space composition like a menu's, so it is fitted the
@@ -1021,6 +1022,36 @@ namespace CutTheRopeDX.GameMain
             // centered on the viewport it is shown over at every shape of window.
             PlaceFittedGroup(results?.result);
         }
+
+        /// <summary>
+        /// Pulls the pause plate out to the sides of the viewport.
+        /// </summary>
+        /// <remarks>
+        /// Widened rather than covered. Covering scales the sheet whole, and a viewport half again
+        /// as wide as the design shape would then hang its torn edge half again as far down the
+        /// screen, with the first button of the pause column underneath it. Widening leaves the
+        /// sheet the depth it was drawn at and only pulls its edges out; what stretches with it is
+        /// the tear along the bottom, which is irregular to begin with. The authored scale is the
+        /// floor, so the design shape is drawn exactly as it was composed, and a viewport narrower
+        /// than the sheet keeps overhanging the sides as it always has.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void PlacePausePlate(CTRRectangle visible)
+        {
+            if (pauseMenuPlate == null || pauseMenuPlate.width <= 0)
+            {
+                return;
+            }
+
+            pauseMenuPlate.scaleX = MathF.Max(PausePlateScale, visible.w / pauseMenuPlate.width);
+            pauseMenuPlate.scaleY = PausePlateScale;
+        }
+
+        /// <summary>
+        /// Scale the pause plate is drawn at on the design shape, where the sheet's own width
+        /// reaches the sides exactly.
+        /// </summary>
+        private const float PausePlateScale = 1.25f;
 
         /// <summary>
         /// Shows or hides a HUD button independently of whether it accepts input, which
@@ -1083,21 +1114,22 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            // Right-anchored, so growing the label pushes its right edge further right by its
-            // full extra width, not half of it: unlike a corner-anchored offset (which keeps a
-            // fixed point pinned and grows symmetrically about it), x here is a plain clamp
-            // against how much the *right edge* is allowed to move, and CalculateTopLeft's
-            // right-anchor formula (drawX = parentDrawX + parentWidth + x - width) already puts
-            // all of x's effect on that one edge - so the room a boosted label needs taken out of
-            // the same budget is the whole width*(scale-1), not half.
-            float plateRightEdge = (visible.w + pauseMenuPlate.width) / 2f;
-            float extraWidthFromScale = mapNameLabel.width * (scale - 1f);
-            float roomToSpare = visible.w - plateRightEdge - BestScoreLabelInset - extraWidthFromScale;
-            mapNameLabel.x = MathF.Min(authored, roomToSpare);
-        }
+            // The authored offset hangs the label off the right edge of the plate, which lands it
+            // a fixed distance from the right edge of the screen - but only on the design shape,
+            // where the plate is exactly one screen wide. What was composed is that distance from
+            // the corner, so that is what follows the viewport, and the offset which produces it
+            // is worked back out for whatever shape the window is. On a wide one the label used to
+            // be left stranded in the middle of the top edge, a plate's width in from the corner.
+            float plateEdgeAtDesignWidth = (ViewportLayout.DesignWidth + pauseMenuPlate.width) / 2f;
+            float insetFromRight = ViewportLayout.DesignWidth - plateEdgeAtDesignWidth - authored;
 
-        /// <summary>Smallest gap between the best-score label and the right edge of the screen.</summary>
-        private const float BestScoreLabelInset = 10f;
+            // Right-anchored by CalculateTopLeft (drawX = parentDrawX + parentWidth + x - width)
+            // and scaled about its own center, so half of what the boost adds falls outside that
+            // edge; only that half has to come back out of the offset.
+            float plateEdge = (visible.w + pauseMenuPlate.width) / 2f;
+            float halfTheBoost = mapNameLabel.width * (1f - scale) / 2f;
+            mapNameLabel.x = visible.w - insetFromRight - plateEdge + halfTheBoost;
+        }
 
         /// <summary>
         /// Plays the appropriate gameplay music for the active pack and seasonal event.
