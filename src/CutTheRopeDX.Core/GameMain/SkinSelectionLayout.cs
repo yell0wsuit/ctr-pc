@@ -51,13 +51,17 @@ namespace CutTheRopeDX.GameMain
         /// <param name="tabWidth">Authored width of the widest tab.</param>
         /// <param name="tabHeight">Authored height of a tab.</param>
         /// <param name="tabCount">How many tabs the screen has.</param>
+        /// <param name="chromeWidth">Room the chrome in the bottom corner takes across.</param>
+        /// <param name="chromeHeight">Room the chrome in the bottom corner takes up the screen.</param>
         /// <returns>The layout for that viewport.</returns>
         public static SkinSelectionLayout For(
             CTRRectangle visible,
             float scale,
             float tabWidth,
             float tabHeight,
-            int tabCount)
+            int tabCount,
+            float chromeWidth = 0f,
+            float chromeHeight = 0f)
         {
             float room = visible.w - (EdgeMargin * 2f);
             float tabStride = (tabWidth + TabGap) * scale;
@@ -77,7 +81,17 @@ namespace CutTheRopeDX.GameMain
             float cellWidth = SlotWidth * scale;
             float columnSpacing = SlotSpacing * scale;
             int columns = Fit(room, cellWidth + columnSpacing, MaxColumns);
+            float gridWidth = (columns * cellWidth) + ((columns - 1) * columnSpacing);
             float windowTop = tabsBottom + (GridTopGap * scale);
+
+            // The button in the bottom corner is drawn over the window, so where the grid is wide
+            // enough to reach that corner the window stops above it instead. On a viewport where
+            // the grid does not come near it - a wide one, where the grid is a column in the
+            // middle - the authored margin stands and no height is given up for nothing.
+            bool gridReachesTheCorner = (visible.w - gridWidth) / 2f < chromeWidth;
+            float bottomMargin = MathF.Max(
+                GridBottomMargin * scale,
+                gridReachesTheCorner ? chromeHeight : 0f);
 
             return new SkinSelectionLayout(
                 scale,
@@ -91,9 +105,9 @@ namespace CutTheRopeDX.GameMain
                 columnSpacing,
                 SlotHeight * RowHeightFactor * scale,
                 AuthoredRowSpacing * scale,
-                (columns * cellWidth) + ((columns - 1) * columnSpacing),
+                gridWidth,
                 windowTop,
-                MathF.Max(SlotHeight * scale, visible.h - windowTop - (GridBottomMargin * scale)));
+                MathF.Max(SlotHeight * scale, visible.h - windowTop - bottomMargin));
         }
 
         /// <summary>
@@ -168,6 +182,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Authored distance the grid keeps from the bottom of the screen.</summary>
         private const float GridBottomMargin = 120f;
+
 
         /// <summary>Authored distance the tabs and the grid keep from the sides of the screen.</summary>
         private const float EdgeMargin = 10f;

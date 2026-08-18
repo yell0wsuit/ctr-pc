@@ -513,15 +513,15 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The current layout.</returns>
         private static SkinSelectionLayout CurrentLayout()
         {
-            return LayoutFor(ScreenPresentation.Instance.Snapshot.VisibleBounds);
+            return LayoutFor(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>
         /// How the screen divides a viewport, measuring the tabs it has already built.
         /// </summary>
-        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <param name="snapshot">The viewport to lay out against.</param>
         /// <returns>The layout for that viewport.</returns>
-        private static SkinSelectionLayout LayoutFor(CTRRectangle visible)
+        private static SkinSelectionLayout LayoutFor(ViewportLayoutSnapshot snapshot)
         {
             float tabWidth = 0f;
             float tabHeight = 0f;
@@ -531,12 +531,22 @@ namespace CutTheRopeDX.GameMain
                 tabHeight = MathF.Max(tabHeight, tab?.height ?? 0f);
             }
 
+            ChromeRoom room = backButton == null
+                ? default
+                : HudMetrics.RoomFor(
+                    snapshot,
+                    backButton.width,
+                    backButton.height,
+                    HudMetrics.IsTouchHost);
+
             return SkinSelectionLayout.For(
-                visible,
-                ContentFit.Scale,
+                snapshot.VisibleBounds,
+                ContentFit.ScaleForAspect(snapshot.Aspect),
                 tabWidth,
                 tabHeight,
-                TabCount);
+                TabCount,
+                room.Width,
+                room.Height);
         }
 
         /// <summary>How many tabs the screen has.</summary>
@@ -1164,19 +1174,20 @@ namespace CutTheRopeDX.GameMain
         /// rows of whatever width the new viewport takes. Every mode's grid is flowed, not only
         /// the one on screen, so switching tabs after a resize does not show a stale one.
         /// </remarks>
-        /// <param name="visible">The logical region the viewport exposes.</param>
-        public static void Relayout(CTRRectangle visible)
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        public static void Relayout(ViewportLayoutSnapshot snapshot)
         {
             if (backgroundRoot == null)
             {
                 return;
             }
 
+            CTRRectangle visible = snapshot.VisibleBounds;
             backgroundRoot.width = (int)visible.w;
             backgroundRoot.height = (int)visible.h;
             CoverBackground(visible);
 
-            SkinSelectionLayout layout = LayoutFor(visible);
+            SkinSelectionLayout layout = LayoutFor(snapshot);
             PlaceTabs(layout);
             ReflowGrids(layout);
             PlaceWindow(layout);
@@ -1275,6 +1286,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The painted background behind the selection grid.</summary>
         private static Image backgroundImage;
 
+        /// <summary>The button back to the main menu, drawn in the corner over the grid.</summary>
+        private static Button backButton;
+
         /// <summary>
         /// Creates the full candy and skin selection menu view.
         /// </summary>
@@ -1321,7 +1335,7 @@ namespace CutTheRopeDX.GameMain
             traceTabButton = CreateTabButton("TRACES_BTN", MenuButtonId.TraceSelect, font, buttonDelegate);
             _ = background.AddChild(traceTabButton);
 
-            SkinSelectionLayout layout = LayoutFor(visibleBounds);
+            SkinSelectionLayout layout = LayoutFor(ScreenPresentation.Instance.Snapshot);
             PlaceTabs(layout);
 
             // Create empty container initially; the grids that go in it are built per mode.
@@ -1348,7 +1362,7 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(background);
 
             // Back button to return to main menu
-            Button backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackFromCandySelect);
+            backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackFromCandySelect);
             backButton.SetName("backb");
             _ = menuView.AddChild(backButton);
 

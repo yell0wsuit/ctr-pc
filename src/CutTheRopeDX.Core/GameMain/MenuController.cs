@@ -835,7 +835,8 @@ namespace CutTheRopeDX.GameMain
 
             IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
             string currentLocale = LanguageHelper.CurrentCode;
-            int columns = 3;
+            int columns = LanguageColumns();
+            languageColumnsBuiltFor = columns;
 
             // Build rows using VBox of HBoxes (same pattern as options menu)
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
@@ -846,7 +847,7 @@ namespace CutTheRopeDX.GameMain
                 string firstName = LanguageHelper.GetLanguageDisplayName(langCodes[i]);
                 bool firstSelected = langCodes[i] == currentLocale;
                 Button firstButton = CreateShortButtonWithTextIDDelegate(firstName, MenuButtonId.ForLanguage(i), this, firstSelected);
-                HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, firstButton.height);
+                HBox hBox = new HBox().InitWithOffsetAlignHeight(LanguageGridLayout.ButtonSpacing, 16, firstButton.height);
                 _ = hBox.AddChild(firstButton);
 
                 for (int j = 1; j < columns && i + j < langCodes.Count; j++)
@@ -869,6 +870,21 @@ namespace CutTheRopeDX.GameMain
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, VIEW_LANGUAGE_SELECT);
         }
+
+        /// <summary>
+        /// Gets how many language buttons fit in a row on the viewport being drawn to.
+        /// </summary>
+        /// <returns>The number of buttons per row.</returns>
+        public static int LanguageColumns()
+        {
+            return LanguageGridLayout.ColumnsFor(
+                VisibleBounds,
+                FittedScale,
+                Image.GetQuadSize(Resources.Img.MenuButtons, LanguageButtonQuad).X);
+        }
+
+        /// <summary>Quad the language buttons are drawn from, which is what sets their width.</summary>
+        private const int LanguageButtonQuad = 3;
 
         /// <summary>
         /// Builds the movie playback view.

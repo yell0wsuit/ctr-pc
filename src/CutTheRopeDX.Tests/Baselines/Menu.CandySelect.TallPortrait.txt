@@ -21,7 +21,7 @@ MenuView 0 0 1439 4608 1 1 0
         Text 977.1 409.5 36 10 1 1 0
       Image 831.1 348.5 329 133 1 1 0
         Text 977.1 409.5 36 10 1 1 0
-    ScrollableContainer 58 573.5 1322 3848 1 1 0
+    ScrollableContainer 58 573.5 1322 3684 1 1 0
       BaseElement 58 573.5 1322 11495 1 1 0
         VBox 58 573.5 1322 11495 1 1 0
           HBox 58 573.5 1322 624 1 1 0

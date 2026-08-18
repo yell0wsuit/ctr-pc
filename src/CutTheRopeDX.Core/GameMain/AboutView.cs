@@ -280,18 +280,14 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The room to reserve, in the stack's own units.</returns>
         private float ChromeReservation(ViewportLayoutSnapshot snapshot)
         {
-            if (backButton == null)
-            {
-                return 0f;
-            }
-
-            float longest = MathF.Max(backButton.width, backButton.height);
-            float scale = HudMetrics.ChromeScale(snapshot, longest, HudMetrics.IsTouchHost);
-            return (backButton.height * scale) + ChromeGap;
+            return backButton == null
+                ? 0f
+                : HudMetrics.RoomFor(
+                    snapshot,
+                    backButton.width,
+                    backButton.height,
+                    HudMetrics.IsTouchHost).Height;
         }
-
-        /// <summary>Gap left between the last line of the credits and the button below it.</summary>
-        private const float ChromeGap = 20f;
 
         /// <summary>
         /// The height of the window the credits scroll inside, on a given viewport.

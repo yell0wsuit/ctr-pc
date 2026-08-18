@@ -118,11 +118,65 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        [Fact]
+        public void TheGridStopsAboveTheButtonInTheCornerWhereItReachesIt()
+        {
+            // The button is drawn over the bottom of the window. Where the grid is wide enough to
+            // reach that corner - a phone, where it spans most of the screen - the window has to
+            // stop above it, or the bottom row is drawn behind it.
+            foreach (LayoutSurface surface in LayoutSurfaces.All)
+            {
+                CTRRectangle visible = VisibleFor(surface);
+                SkinSelectionLayout layout = LayoutFor(surface.Width, surface.Height, ChromeSide, ChromeSide);
+
+                if ((visible.w - layout.GridWidth) / 2f >= ChromeSide)
+                {
+                    continue;
+                }
+
+                Assert.True(
+                    layout.WindowTop + layout.WindowHeight <= visible.h - ChromeSide,
+                    $"{surface.Name}: the grid ends at {layout.WindowTop + layout.WindowHeight} on a "
+                    + $"{visible.h} screen whose button rises to {visible.h - ChromeSide}");
+            }
+        }
+
+        [Fact]
+        public void AGridThatNeverReachesTheCornerKeepsItsAuthoredMargin()
+        {
+            // A wide screen draws the grid as a column in the middle, nowhere near the button, so
+            // no height is given up for it.
+            CTRRectangle visible = VisibleFor(new LayoutSurface("Native", 2560, 1440));
+            SkinSelectionLayout withChrome = LayoutFor(2560, 1440, ChromeSide, ChromeSide);
+            SkinSelectionLayout without = LayoutFor(2560, 1440, 0f, 0f);
+
+            Assert.True((visible.w - withChrome.GridWidth) / 2f >= ChromeSide, "the fixture grid should clear the corner");
+            Assert.Equal(without.WindowHeight, withChrome.WindowHeight, 0.0001);
+        }
+
+        /// <summary>Drawn size of the button in the corner, on the surfaces these cases use.</summary>
+        private const float ChromeSide = 284f;
+
         /// <summary>Builds the layout for a surface size.</summary>
         /// <param name="width">Surface width in pixels.</param>
         /// <param name="height">Surface height in pixels.</param>
         /// <returns>The layout.</returns>
         private static SkinSelectionLayout LayoutFor(int width, int height)
+        {
+            return LayoutFor(width, height, 0f, 0f);
+        }
+
+        /// <summary>Builds the layout for a surface size, with chrome in the bottom corner.</summary>
+        /// <param name="width">Surface width in pixels.</param>
+        /// <param name="height">Surface height in pixels.</param>
+        /// <param name="chromeWidth">Drawn width of the chrome.</param>
+        /// <param name="chromeHeight">Drawn height of the chrome.</param>
+        /// <returns>The layout.</returns>
+        private static SkinSelectionLayout LayoutFor(
+            int width,
+            int height,
+            float chromeWidth,
+            float chromeHeight)
         {
             ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(width, height);
             return SkinSelectionLayout.For(
@@ -130,7 +184,9 @@ namespace CutTheRopeDX.Tests
                 ContentFit.ScaleForAspect(snapshot.Aspect),
                 TabWidth,
                 TabHeight,
-                TabCount);
+                TabCount,
+                chromeWidth,
+                chromeHeight);
         }
 
         /// <summary>The region a surface exposes.</summary>
