@@ -126,7 +126,7 @@ namespace CutTheRopeDX.GameMain
             LayOutCenteredScenes(visible);
             LayOutLevelSelect(visible);
             LayOutPackSelect(visible);
-            LayOutAbout(visible);
+            LayOutAbout(snapshot);
             CandySelectionView.Relayout(visible);
             LayOutReset(snapshot);
 
@@ -134,8 +134,8 @@ namespace CutTheRopeDX.GameMain
             // the same role in each, and a scene that is not built yet simply has none to place.
             foreach (KeyValuePair<int, View> entry in views)
             {
-                FloorChrome(entry.Value?.GetChildWithName("backb") as Button, snapshot);
-                FloorChrome(entry.Value?.GetChildWithName("backButton") as Button, snapshot);
+                PlaceCornerChrome(entry.Value?.GetChildWithName("backb") as Button, snapshot);
+                PlaceCornerChrome(entry.Value?.GetChildWithName("backButton") as Button, snapshot);
             }
         }
 
@@ -357,8 +357,8 @@ namespace CutTheRopeDX.GameMain
         /// move that building it again does not place correctly. Where the reader had scrolled to
         /// survives, because a resize is not a reason to throw them back to the top.
         /// </remarks>
-        /// <param name="visible">The logical region the viewport exposes.</param>
-        private void LayOutAbout(CTRRectangle visible)
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        private void LayOutAbout(ViewportLayoutSnapshot snapshot)
         {
             if (aboutView == null || GetView(VIEW_ABOUT) == null)
             {
@@ -382,7 +382,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            aboutView.ResizeWindow(visible);
+            aboutView.ResizeWindow(snapshot);
         }
 
         /// <summary>
@@ -428,14 +428,21 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Grows a navigation button when the surface is dense or narrow enough that its drawn size
-        /// would fall below a comfortable physical target, and leaves it alone otherwise. The touch
-        /// zone is recomputed from the same scale, so where the button reacts follows where it is
-        /// drawn.
+        /// Sizes a navigation button at the larger of the scale the menus around it are drawn at
+        /// and the size the surface needs it to be to stay physically reachable. The touch zone is
+        /// recomputed from the same scale, so where the button reacts follows where it is drawn.
         /// </summary>
+        /// <remarks>
+        /// The two answer different questions - one is how far this viewport is from the shape the
+        /// game was drawn for, the other how small this button is allowed to get in the player's
+        /// hand - and the button has to satisfy both, so it takes whichever asks for more. Held at
+        /// the floor alone it was drawn at its authored size on every ordinary window, which is
+        /// where a phone-shaped one left it: a button the size 16:9 draws it, in a corner of a menu
+        /// whose every other element had grown by half.
+        /// </remarks>
         /// <param name="button">Button to size, or <see langword="null"/> when the scene has none.</param>
         /// <param name="snapshot">The viewport to size against.</param>
-        private static void FloorChrome(Button button, ViewportLayoutSnapshot snapshot)
+        private static void PlaceCornerChrome(Button button, ViewportLayoutSnapshot snapshot)
         {
             if (button == null)
             {
@@ -448,7 +455,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            float scale = MathF.Max(1f, HudMetrics.ChromeSize(snapshot, IsTouchHost) / longest);
+            float scale = HudMetrics.ChromeScale(snapshot, longest, HudMetrics.IsTouchHost);
             button.scaleX = button.scaleY = scale;
 
             // Growing about its own center would push a button anchored into the bottom-left corner
@@ -499,12 +506,6 @@ namespace CutTheRopeDX.GameMain
             element.scaleX = mirroredX ? -scale : scale;
             element.scaleY = mirroredY ? -scale : scale;
         }
-
-        /// <summary>
-        /// Whether the host drives the menus by touch. No host reports this yet, so the pointer
-        /// branch applies everywhere; it is the conservative one, because it carries the floor.
-        /// </summary>
-        private const bool IsTouchHost = false;
 
         /// <summary>Distance from the top of the screen to the scrolling level grid.</summary>
         private const float LevelsTopInset = 110f;
