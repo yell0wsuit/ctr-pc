@@ -515,18 +515,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Smallest gap between a pack picker arrow and the edge of the screen.</summary>
         private const float PackArrowInset = 10f;
 
-        /// <summary>
-        /// Width the pack strip leaves to the screen around it, so the boxes it shows are never
-        /// pressed against the edges the navigation arrows sit in.
-        /// </summary>
-        private const float PackStripMargin = 200f;
-
-        /// <summary>How many boxes the pack strip shows at once at its widest.</summary>
-        private const int MaxVisibleBoxes = 3;
-
-        /// <summary>Authored gap between two boxes in the pack strip; they overlap slightly.</summary>
-        private const float BoxSpacing = -20f;
-
         /// <summary>Authored offset of a total-stars label from the right edge of the screen.</summary>
         private const float StarTotalInsetX = -30f;
 

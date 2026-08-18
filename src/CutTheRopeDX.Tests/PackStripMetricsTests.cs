@@ -8,17 +8,16 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Covers how wide the pack picker's strip of boxes is. The strip cannot hang from a fitted
-    /// group, so it derives its own scale and its own box count; these pin that the two agree -
-    /// a box is drawn at the scale the rest of the menu is, and the strip is only ever as many
-    /// boxes wide as the viewport has room for at that scale.
+    /// Covers how the pack picker's strip of boxes divides a viewport. The strip cannot hang from
+    /// a fitted group, so it derives its own scale and its own box count; these pin that the two
+    /// agree - a box is drawn at the scale the rest of the menu is, and the strip is only ever as
+    /// many boxes wide as the viewport has room for at that scale.
     /// </summary>
-    /// <remarks>
-    /// Every case runs inside <see cref="LayoutSurfaces.WithSurface"/>, because the surface size
-    /// is process-wide and the suite runs serially.
-    /// </remarks>
     public sealed class PackStripMetricsTests
     {
+        /// <summary>Authored width of one box, including its quad offset padding.</summary>
+        private const float BoxWidth = 660f;
+
         [Theory]
         [InlineData(2560, 1440, 3)]
         [InlineData(1280, 720, 3)]
@@ -29,52 +28,40 @@ namespace CutTheRopeDX.Tests
         [InlineData(400, 1280, 1)]
         public void TheStripIsAsManyBoxesWideAsTheViewportHasRoomFor(int width, int height, int expected)
         {
-            _ = HeadlessGame.Boot();
-
-            LayoutSurfaces.WithSurface(width, height, () =>
-                Assert.Equal(expected, MenuController.GetVisibleBoxCount()));
+            Assert.Equal(expected, LayoutFor(width, height).VisibleBoxes);
         }
 
         [Fact]
         public void ABoxIsDrawnAtTheScaleTheRestOfTheMenuIs()
         {
-            _ = HeadlessGame.Boot();
-
-            LayoutSurfaces.WithSurface(720, 1280, () =>
+            foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                Assert.True(ContentFit.Scale > 1f, "the fixture viewport should boost content above one");
-                Assert.Equal(
-                    MenuController.GetBoxWidth() * ContentFit.Scale,
-                    MenuController.GetScaledBoxWidth(),
-                    0.0001);
-            });
+                PackStripLayout strip = LayoutFor(surface.Width, surface.Height);
+                Assert.Equal(BoxWidth * ScaleFor(surface), strip.BoxWidth, 0.0001);
+            }
         }
 
         [Fact]
         public void TheBoxesTheStripShowsFitInsideIt()
         {
-            _ = HeadlessGame.Boot();
-
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
-                {
-                    float strip = MenuController.GetScaledBoxWidth() * MenuController.GetVisibleBoxCount();
-                    Assert.True(
-                        strip <= ScreenPresentation.Instance.Snapshot.VisibleBounds.w,
-                        $"{surface.Name}: the strip is {strip} wide on a viewport that only shows "
-                        + $"{ScreenPresentation.Instance.Snapshot.VisibleBounds.w}");
-                });
+                CTRRectangle visible = VisibleFor(surface);
+                PackStripLayout strip = LayoutFor(surface.Width, surface.Height);
+
+                Assert.True(
+                    strip.StripWidth <= visible.w,
+                    $"{surface.Name}: a {strip.StripWidth} strip on a {visible.w} viewport");
             }
         }
 
         [Fact]
-        public void TheSelectedBoxIsDrawnWholeAtEveryWidth()
+        public void TheArtworkOfTheSelectedBoxIsDrawnWholeAtEveryWidth()
         {
             // The scroll points are laid out for a three-box strip, and a narrower one gives back
             // half a box of scroll per slot it dropped. Get that wrong on the strip that is one
-            // box wide - the one with no slack at all - and the selected box is drawn with an
-            // edge outside the strip, where it is clipped away.
+            // box wide - the one with no slack at all - and the selected box is drawn with an edge
+            // outside the strip, where it is clipped away.
             _ = HeadlessGame.Boot();
 
             PackDefinition pack = PackConfig.Packs[0];
@@ -85,19 +72,17 @@ namespace CutTheRopeDX.Tests
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
-                    float box = MenuController.GetScaledBoxWidth();
-                    float scale = box / MenuController.GetBoxWidth();
-                    float strip = box * MenuController.GetVisibleBoxCount();
+                    PackStripLayout strip = MenuController.PackStrip();
 
                     // Where the selected box lands inside the strip: the leading spacer and the
                     // gap after it, less the scroll the pack offset holds the strip at.
-                    float boxLeft = box + (BoxSpacing * scale) - MenuController.GetPackOffset();
+                    float boxLeft = strip.BoxWidth + strip.Spacing - strip.PackOffset;
 
                     Assert.True(
-                        boxLeft + (artLeftInBox * scale) >= 0f,
+                        boxLeft + (artLeftInBox * strip.Scale) >= 0f,
                         $"{surface.Name}: the selected box is drawn off the left of the strip");
                     Assert.True(
-                        boxLeft + ((artLeftInBox + artWidth) * scale) <= strip,
+                        boxLeft + ((artLeftInBox + artWidth) * strip.Scale) <= strip.StripWidth,
                         $"{surface.Name}: the selected box is drawn off the right of the strip");
                 });
             }
@@ -115,29 +100,66 @@ namespace CutTheRopeDX.Tests
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
-                    float box = MenuController.GetScaledBoxWidth();
-                    float scale = box / MenuController.GetBoxWidth();
-                    CTRRectangle strip = FrameworkTypes.MakeRectangle(
+                    PackStripLayout strip = MenuController.PackStrip();
+                    CTRRectangle window = FrameworkTypes.MakeRectangle(
                         0f,
                         0f,
-                        box * MenuController.GetVisibleBoxCount(),
+                        strip.StripWidth,
                         ScreenPresentation.Instance.Snapshot.VisibleBounds.h);
-                    float boxLeftAtRest = box + (BoxSpacing * scale) - MenuController.GetPackOffset();
+                    float boxLeftAtRest = strip.BoxWidth + strip.Spacing - strip.PackOffset;
 
-                    CTRRectangle window = MenuController.MonsterSlot.RevealWindow(boxLeftAtRest, scale, strip);
+                    CTRRectangle hole = MenuController.MonsterSlot.RevealWindow(
+                        boxLeftAtRest,
+                        strip.Scale,
+                        window);
                     CTRRectangle unclipped = MenuController.MonsterSlot.RevealWindow(
                         boxLeftAtRest,
-                        scale,
-                        FrameworkTypes.MakeRectangle(-strip.w, 0f, strip.w * 3f, strip.h));
+                        strip.Scale,
+                        FrameworkTypes.MakeRectangle(-window.w, 0f, window.w * 3f, window.h));
 
-                    Assert.Equal(unclipped.w, window.w, 0.0001);
+                    Assert.Equal(unclipped.w, hole.w, 0.0001);
                     Assert.True(unclipped.w > 0f, $"{surface.Name}: the hole has no width");
                 });
             }
         }
 
-        /// <summary>Authored gap between two boxes in the strip; they overlap slightly.</summary>
-        private const float BoxSpacing = -20f;
+        [Fact]
+        public void TheArtworkIsTheWidthTheseCasesAssume()
+        {
+            // The cases above measure a box from a constant rather than the texture, so that they
+            // need no content loaded. This is the one that ties the constant to the artwork.
+            _ = HeadlessGame.Boot();
 
+            Assert.Equal(BoxWidth, MenuController.GetBoxWidth(), 0.0001);
+        }
+
+        /// <summary>Builds the layout for a surface size.</summary>
+        /// <param name="width">Surface width in pixels.</param>
+        /// <param name="height">Surface height in pixels.</param>
+        /// <returns>The layout.</returns>
+        private static PackStripLayout LayoutFor(int width, int height)
+        {
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(width, height);
+            return PackStripLayout.For(
+                snapshot.VisibleBounds,
+                ContentFit.ScaleForAspect(snapshot.Aspect),
+                BoxWidth);
+        }
+
+        /// <summary>The region a surface exposes.</summary>
+        /// <param name="surface">Surface to measure.</param>
+        /// <returns>The visible bounds.</returns>
+        private static CTRRectangle VisibleFor(LayoutSurface surface)
+        {
+            return ViewportLayout.Compute(surface.Width, surface.Height).VisibleBounds;
+        }
+
+        /// <summary>The content scale a surface is drawn at.</summary>
+        /// <param name="surface">Surface to measure.</param>
+        /// <returns>The scale.</returns>
+        private static float ScaleFor(LayoutSurface surface)
+        {
+            return ContentFit.ScaleForAspect(ViewportLayout.Compute(surface.Width, surface.Height).Aspect);
+        }
     }
 }

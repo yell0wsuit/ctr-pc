@@ -940,53 +940,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Scale the pack picker's strip - the boxes, the gaps between them and the frames down
-        /// its edges - is drawn at.
+        /// How the pack strip divides the viewport it is being drawn on, measured against the
+        /// artwork's own width.
         /// </summary>
         /// <remarks>
-        /// The scale every other menu's design-space content is fitted at. The strip cannot hang
-        /// from a <see cref="ViewController.PlaceFittedGroup(BaseElement)"/> group, because it
-        /// clips with a scissor rectangle no ancestor transform reaches, so it reads the scale and
-        /// applies it to its own metrics instead. Held at one, it was the one composition that did
-        /// not spend the room a viewport away from the design shape hands it: on a phone
-        /// everything around a box grew and the box stayed the size the landscape design drew it.
+        /// Derived on read rather than kept, so it is right the instant the viewport changes and
+        /// there is no second copy to keep in step. The strip is drawn at the scale every other
+        /// menu's design-space content is fitted at; it cannot hang from a
+        /// <see cref="ViewController.PlaceFittedGroup(BaseElement)"/> group, because it clips with
+        /// a scissor rectangle no ancestor transform reaches, so it reads the scale and applies it
+        /// to its own metrics instead. Held at one, it was the one composition that did not spend
+        /// the room a viewport away from the design shape hands it: on a phone everything around a
+        /// box grew and the box stayed the size the landscape design drew it.
         /// </remarks>
-        private static float PackBoxScale => FittedScale;
-
-        /// <summary>
-        /// Gets the width one pack box is drawn at, at the strip's scale.
-        /// </summary>
-        /// <returns>The scaled box width including its quad offset padding.</returns>
-        public static float GetScaledBoxWidth()
+        /// <returns>The current layout.</returns>
+        public static PackStripLayout PackStrip()
         {
-            return GetBoxWidth() * PackBoxScale;
-        }
-
-        /// <summary>
-        /// Gets how many boxes the strip shows at once: as many as the viewport has room for at
-        /// the strip's scale, never more than the three the design shows and never fewer than the
-        /// one the selected box always is.
-        /// </summary>
-        /// <returns>The number of boxes the strip is wide.</returns>
-        public static int GetVisibleBoxCount()
-        {
-            int fit = (int)((VisibleBounds.w - PackStripMargin) / GetScaledBoxWidth());
-            return Math.Clamp(fit, 1, MaxVisibleBoxes);
-        }
-
-        /// <summary>
-        /// Gets the horizontal pack offset that centers the selected box in the strip.
-        /// </summary>
-        /// <remarks>
-        /// The scroll points are laid out for a strip <see cref="MaxVisibleBoxes"/> boxes wide,
-        /// where the selected box sits in the middle slot on its own. A narrower strip drops slots
-        /// from both sides at once, so half a box of scroll per slot dropped puts the selected box
-        /// back in the middle of what is left.
-        /// </remarks>
-        /// <returns>The pack offset in screen units.</returns>
-        public static float GetPackOffset()
-        {
-            return (MaxVisibleBoxes - GetVisibleBoxCount()) * GetScaledBoxWidth() / 2f;
+            return PackStripLayout.For(VisibleBounds, FittedScale, GetBoxWidth());
         }
 
         /// <summary>
@@ -1038,8 +1008,7 @@ namespace CutTheRopeDX.GameMain
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
-            float stripScale = PackBoxScale;
-            float boxSpacing = BoxSpacing * stripScale;
+            PackStripLayout strip = PackStrip();
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
 
@@ -1048,7 +1017,7 @@ namespace CutTheRopeDX.GameMain
             // the box - its label, its lock, its badge - is authored against the unscaled artwork
             // and rides that one transform, so only the tile has to know the scale.
             image.anchor = image.parentAnchor = 18;
-            image.scaleX = image.scaleY = stripScale;
+            image.scaleX = image.scaleY = strip.Scale;
             if (flag)
             {
                 _ = baseElement.AddChild(image);
@@ -1067,8 +1036,8 @@ namespace CutTheRopeDX.GameMain
                 text.anchor = 10;
                 text.parentAnchor = 34;
                 text.SetStringandWidth(newString, 600f);
-                text.y = -60f * stripScale;
-                text.scaleX = text.scaleY = 0.7f * stripScale;
+                text.y = -60f * strip.Scale;
+                text.scaleX = text.scaleY = 0.7f * strip.Scale;
                 text.rotationCenterY = -text.height / 2;
                 _ = touchBaseElement.AddChild(text);
             }
@@ -1078,7 +1047,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     // drawing om nom and the background behind him in the box
                     int q3 = 1;
-                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n), stripScale);
+                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n), strip);
                     monsterSlot.c = c;
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
@@ -1092,9 +1061,9 @@ namespace CutTheRopeDX.GameMain
                     // window slides over him as the strip scrolls past. He is scaled about his own
                     // center like everything else the strip draws, so the drift that puts on his
                     // left edge - the edge his position names - comes back out here.
-                    image3.scaleX = image3.scaleY = stripScale;
-                    image3.x = packContainer.x + monsterSlot.width + boxSpacing - GetPackOffset()
-                        - (image3.width * (1f - stripScale) / 2f);
+                    image3.scaleX = image3.scaleY = strip.Scale;
+                    image3.x = packContainer.x + monsterSlot.width + strip.Spacing - strip.PackOffset
+                        - (image3.width * (1f - strip.Scale) / 2f);
                     image3.y = packContainer.y + (VisibleBounds.h / 2f);
                     image3.parentAnchor = -1;
                     _ = monsterSlot.AddChild(image3);
@@ -1167,8 +1136,8 @@ namespace CutTheRopeDX.GameMain
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1.05f, 0.95f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2f));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25f));
             _ = baseElement.AddTimeline(timeline2);
-            baseElement.height = touchBaseElement.height = (int)MathF.Round(image.height * stripScale);
-            baseElement.width = touchBaseElement.width = (int)MathF.Round(image.width * stripScale);
+            baseElement.height = touchBaseElement.height = (int)MathF.Round(image.height * strip.Scale);
+            baseElement.width = touchBaseElement.width = (int)MathF.Round(image.width * strip.Scale);
             return touchBaseElement;
         }
 
@@ -1184,11 +1153,12 @@ namespace CutTheRopeDX.GameMain
             HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
             PlaceStarTotal(hBox);
             hBox.SetName("text");
-            float stripScale = PackBoxScale;
-            float boxSpacing = BoxSpacing * stripScale;
-            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(boxSpacing, 16, VisibleBounds.h);
-            float containerWidth = GetScaledBoxWidth() * GetVisibleBoxCount();
-            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, VisibleBounds.h, hBox2);
+            PackStripLayout strip = PackStrip();
+            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(strip.Spacing, 16, VisibleBounds.h);
+            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(
+                strip.StripWidth,
+                VisibleBounds.h,
+                hBox2);
             packContainer.minAutoScrollToSpointLength = RTD(5);
             packContainer.shouldBounceHorizontally = true;
             packContainer.resetScrollOnShow = false;
@@ -1203,11 +1173,11 @@ namespace CutTheRopeDX.GameMain
             CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
             BaseElement baseElement2 = new()
             {
-                width = (int)MathF.Round(texture.preCutSize.X * stripScale),
-                height = (int)MathF.Round(texture.preCutSize.Y * stripScale)
+                width = (int)MathF.Round(texture.preCutSize.X * strip.Scale),
+                height = (int)MathF.Round(texture.preCutSize.Y * strip.Scale)
             };
             _ = hBox2.AddChild(baseElement2);
-            float scrollPointX = 0f + GetPackOffset();
+            float scrollPointX = 0f + strip.PackOffset;
             int displayCount = CTRPreferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
             for (int i = 0; i < displayCount; i++)
             {
@@ -1217,8 +1187,8 @@ namespace CutTheRopeDX.GameMain
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
                 _ = packContainer.AddScrollPointAtXY(scrollPointX, 0f);
-                touchBaseElement.bbc = MakeRectangle(0f, 0f, boxSpacing, 0f);
-                scrollPointX += touchBaseElement.width + boxSpacing;
+                touchBaseElement.bbc = MakeRectangle(0f, 0f, strip.Spacing, 0f);
+                scrollPointX += touchBaseElement.width + strip.Spacing;
             }
             hBox2.width += 1000;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
@@ -1226,8 +1196,8 @@ namespace CutTheRopeDX.GameMain
             image.y += VisibleBounds.h / 2f;
             PlacePackEdge(
                 image,
-                packContainer.x - (2f * stripScale),
-                stripScale,
+                packContainer.x - strip.FrameGap,
+                strip.Scale,
                 mirroredX: false,
                 mirroredY: false);
             _ = baseElement.AddChild(image);
@@ -1236,8 +1206,8 @@ namespace CutTheRopeDX.GameMain
             image2.y += VisibleBounds.h / 2f;
             PlacePackEdge(
                 image2,
-                packContainer.x + packContainer.width + (2f * stripScale),
-                stripScale,
+                packContainer.x + packContainer.width + strip.FrameGap,
+                strip.Scale,
                 mirroredX: true,
                 mirroredY: true);
             _ = baseElement.AddChild(image2);
@@ -1247,8 +1217,8 @@ namespace CutTheRopeDX.GameMain
             image3.y += VisibleBounds.h / 2f;
             PlacePackEdge(
                 image3,
-                packContainer.x + (3f * stripScale),
-                stripScale,
+                packContainer.x + strip.SeamGap,
+                strip.Scale,
                 mirroredX: false,
                 mirroredY: false);
             _ = baseElement.AddChild(image3);
@@ -1257,8 +1227,8 @@ namespace CutTheRopeDX.GameMain
             image4.y += VisibleBounds.h / 2f;
             PlacePackEdge(
                 image4,
-                packContainer.x + packContainer.width - (3f * stripScale),
-                stripScale,
+                packContainer.x + packContainer.width - strip.SeamGap,
+                strip.Scale,
                 mirroredX: true,
                 mirroredY: true);
             _ = baseElement.AddChild(image4);
@@ -1270,9 +1240,9 @@ namespace CutTheRopeDX.GameMain
             PlacePackEdge(
                 prevb,
                 MAX(
-                    packContainer.x - (40f * stripScale),
-                    (prevb.width * stripScale) + PackArrowInset),
-                stripScale,
+                    packContainer.x - strip.ArrowGap,
+                    (prevb.width * strip.Scale) + PackArrowInset),
+                strip.Scale,
                 mirroredX: false,
                 mirroredY: false);
             _ = baseElement.AddChild(prevb);
@@ -1281,9 +1251,9 @@ namespace CutTheRopeDX.GameMain
             PlacePackEdge(
                 nextb,
                 MIN(
-                    packContainer.x + packContainer.width + (40f * stripScale),
-                    VisibleBounds.w - (nextb.width * stripScale) - PackArrowInset),
-                stripScale,
+                    packContainer.x + packContainer.width + strip.ArrowGap,
+                    VisibleBounds.w - (nextb.width * strip.Scale) - PackArrowInset),
+                strip.Scale,
                 mirroredX: true,
                 mirroredY: false);
             _ = baseElement.AddChild(nextb);
@@ -2593,17 +2563,16 @@ namespace CutTheRopeDX.GameMain
             /// Dimensions and positioning are derived from the MenuPackUI texture.
             /// </summary>
             /// <param name="color">Background fill color for the slot.</param>
-            /// <param name="scale">Scale the pack strip is drawn at.</param>
+            /// <param name="strip">Layout the pack strip is built at.</param>
             /// <returns>A new <see cref="MonsterSlot"/> instance.</returns>
-            public static MonsterSlot Create(RGBAColor color, float scale)
+            public static MonsterSlot Create(RGBAColor color, PackStripLayout strip)
             {
                 CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
                 MonsterSlot slot = new()
                 {
-                    width = (int)MathF.Round(texture.preCutSize.X * scale),
-                    height = (int)MathF.Round(texture.preCutSize.Y * scale),
+                    width = (int)MathF.Round(texture.preCutSize.X * strip.Scale),
+                    height = (int)MathF.Round(texture.preCutSize.Y * strip.Scale),
                     FillColor = color,
-                    StripScale = scale,
                     quadOffset = texture.quadOffsets[QuadIndex],
                     quadSize = Vect(texture.quadRects[QuadIndex].w, texture.quadRects[QuadIndex].h)
                 };
@@ -2632,23 +2601,27 @@ namespace CutTheRopeDX.GameMain
 
             /// <inheritdoc/>
             /// <remarks>
-            /// The slot carries no transform of its own, which is what keeps the window it clips
-            /// to in the same space the container's own scissor rectangle is in.
+            /// The scale is read here rather than kept from when the slot was built, so there is
+            /// no second copy of it to fall behind the viewport. The slot carries no transform of
+            /// its own, which is what keeps the window it clips to in the same space the
+            /// container's own scissor rectangle is in.
             /// </remarks>
             public override void Draw()
             {
                 PreDraw();
+                float scale = PackStrip().Scale;
+
                 // Draw the colored rectangle at the quad offset position
                 DrawHelper.DrawSolidRectWOBorder(
-                    drawX + (quadOffset.X * StripScale),
-                    drawY + (quadOffset.Y * StripScale),
-                    quadSize.X * StripScale,
-                    quadSize.Y * StripScale,
+                    drawX + (quadOffset.X * scale),
+                    drawY + (quadOffset.Y * scale),
+                    quadSize.X * scale,
+                    quadSize.Y * scale,
                     FillColor);
 
                 // Apply scissor clipping to reveal Om Nom during scroll animation
                 CTRRectangle strip = MakeRectangle(c.drawX, c.drawY, c.width, c.height);
-                CTRRectangle window = RevealWindow(drawX, StripScale, strip);
+                CTRRectangle window = RevealWindow(drawX, scale, strip);
                 if (window.w <= 0f)
                 {
                     return;
@@ -2661,9 +2634,6 @@ namespace CutTheRopeDX.GameMain
 
             /// <summary>Reference to the scrollable container the slot scrolls inside.</summary>
             public ScrollableContainer c;
-
-            /// <summary>Scale the pack strip this slot belongs to is drawn at.</summary>
-            public float StripScale { get; private set; } = 1f;
 
             /// <summary>Authored distance from the left edge of a box to the hole in it.</summary>
             private const float RevealInset = 240f;
