@@ -218,12 +218,10 @@ namespace CutTheRopeDX.GameMain
 
             // The splash is a single stage centered on screen, so it measures against what the
             // viewport exposes rather than the fixed design size. The two are the same thing at
-            // the design shape, and the stage sat off toward one corner at every other. Contained
-            // rather than covered, because a splash that overflows is a splash with its logo
-            // cropped.
+            // the design shape, and the stage sat off toward one corner at every other.
             CTRRectangle visible = VisibleBounds;
-            CTRRectangle stage = LayoutMath.FitInside(animStageWidth, animStageHeight, visible);
-            float scale = stage.w / animStageWidth;
+            SplashLayout layout = SplashLayout.For(visible, animStageWidth, animStageHeight);
+            float scale = layout.Stage.w / animStageWidth;
 
             animRoot.anchor = 18;
             animRoot.parentAnchor = -1;
@@ -234,11 +232,14 @@ namespace CutTheRopeDX.GameMain
 
             if (legalDisclaimerText != null)
             {
+                // Scaled here rather than where the text is made, because how large it is drawn is
+                // a property of the viewport like its wrap width and its place are.
+                legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = layout.DisclaimerScale;
                 legalDisclaimerText.SetStringandWidth(
                     Application.GetString("STARTUP_LEGAL_DISCLAIMER"),
-                    visible.w * DisclaimerWidthShare);
+                    layout.DisclaimerWrapWidth);
                 legalDisclaimerText.x = visible.w / 2f;
-                legalDisclaimerText.y = stage.y + stage.h - DisclaimerBottomInset;
+                legalDisclaimerText.y = layout.DisclaimerBottom;
             }
         }
 
@@ -255,10 +256,10 @@ namespace CutTheRopeDX.GameMain
             }
 
             UpdateDisclaimerAlpha();
-            legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = DisclaimerScale;
 
-            // Wrapped and positioned by the layout pass, which is the only place that reads the
-            // viewport, so a resize re-wraps it and creating it here cannot disagree with one.
+            // Sized, wrapped and positioned by the layout pass, which is the only place that reads
+            // the viewport, so a resize re-does all three and creating it here cannot disagree
+            // with one.
             UpdateSplashLayout();
         }
 
@@ -311,15 +312,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Original Flash XML stage height for splash layout scaling.</summary>
         private float animStageHeight;
-
-        /// <summary>Share of the visible width the legal disclaimer wraps within.</summary>
-        private const float DisclaimerWidthShare = 0.9f;
-
-        /// <summary>Distance from the bottom of the fitted splash stage to the disclaimer.</summary>
-        private const float DisclaimerBottomInset = 35f;
-
-        /// <summary>Uniform scale the legal disclaimer is drawn at, relative to its font size.</summary>
-        private const float DisclaimerScale = 0.65f;
 
         /// <summary>Legal disclaimer text drawn over the splash animation.</summary>
         private Text legalDisclaimerText;
