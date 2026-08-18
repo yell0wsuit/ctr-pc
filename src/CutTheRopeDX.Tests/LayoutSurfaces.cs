@@ -33,6 +33,7 @@ namespace CutTheRopeDX.Tests
             new("Square", 1000, 1000),
             new("Portrait", 720, 1280),
             new("TallPortrait", 400, 1280),
+            new("SmallPortrait", 320, 480),
         ];
 
         /// <summary>The matrix as xunit theory data.</summary>
