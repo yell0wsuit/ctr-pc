@@ -64,7 +64,7 @@ namespace CutTheRopeDX.Commons
             // A popup centers itself by half its own width, so it has to be the size of the
             // viewport it is about to appear over. Built once and shown later, it would otherwise
             // center against whatever the viewport was when the scene was created.
-            Resize();
+            Resize(VisibleBounds);
             isShow = true;
             PlayTimeline(0); // Play show animation
         }
@@ -72,16 +72,22 @@ namespace CutTheRopeDX.Commons
         /// <inheritdoc />
         public override void Relayout(CTRRectangle visible)
         {
-            Resize();
+            Resize(visible);
             base.Relayout(visible);
         }
 
         /// <summary>
-        /// Sizes the popup and its content root to the viewport.
+        /// Sizes the popup and its content root to a viewport.
         /// </summary>
-        public void Resize()
+        /// <remarks>
+        /// The region is passed in rather than read from the published viewport, so a layout pass
+        /// sizes the popup against the same rectangle it is sizing everything else against. A
+        /// popup that consulted the global instead would be correct only while the two agreed,
+        /// which is exactly the case where the parameter would not have been needed.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public void Resize(CTRRectangle visible)
         {
-            CTRRectangle visible = VisibleBounds;
             width = (int)visible.w;
             height = (int)visible.h;
             ContentRoot.width = width;

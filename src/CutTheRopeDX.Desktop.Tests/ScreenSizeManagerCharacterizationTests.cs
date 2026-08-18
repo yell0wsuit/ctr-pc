@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Desktop.Tests
 {
     /// <summary>
     /// Covers the desktop resize wiring from the window bounds through the shared presentation
-    /// snapshot and legacy Core screen globals.
+    /// snapshot and the Core screen metrics read from it.
     /// </summary>
     public sealed class ScreenSizeManagerCharacterizationTests
     {
@@ -39,15 +39,15 @@ namespace CutTheRopeDX.Desktop.Tests
         }
 
         [Fact]
-        public void WindowResizeRefreshesCoreRealScreenGlobals()
+        public void WindowResizeRefreshesTheCoreScreenMetrics()
         {
             Assembly coreAssembly = Assembly.Load("CutTheRopeDX.Core");
             Type frameworkTypes = coreAssembly.GetType("CutTheRopeDX.Framework.FrameworkTypes");
             Assert.NotNull(frameworkTypes);
-            FieldInfo realWidth = frameworkTypes.GetField(
+            PropertyInfo realWidth = frameworkTypes.GetProperty(
                 "REAL_SCREEN_WIDTH",
                 BindingFlags.Public | BindingFlags.Static);
-            FieldInfo realHeight = frameworkTypes.GetField(
+            PropertyInfo realHeight = frameworkTypes.GetProperty(
                 "REAL_SCREEN_HEIGHT",
                 BindingFlags.Public | BindingFlags.Static);
             Assert.NotNull(realWidth);

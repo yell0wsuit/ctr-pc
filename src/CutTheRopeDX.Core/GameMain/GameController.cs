@@ -993,7 +993,7 @@ namespace CutTheRopeDX.GameMain
             // same way one is rather than merely stretched to the viewport width.
             PlaceFittedGroup(pauseButtonsGroup);
 
-            ((GameScene)view.GetChild(0))?.RelayoutHud(FittedScale);
+            ((GameScene)view.GetChild(0))?.RelayoutHud();
 
             BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
             results?.RelayoutBox(visible);

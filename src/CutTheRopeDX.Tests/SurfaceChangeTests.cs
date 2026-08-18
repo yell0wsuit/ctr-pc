@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -8,11 +10,23 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Covers the single resize entry point: one call publishes the snapshot and brings the
-    /// legacy screen globals with it, so no host can update one without the other.
+    /// Covers the single resize entry point: one call publishes the snapshot, and every screen
+    /// metric is read back out of it, so no host can update one without the other.
     /// </summary>
-    public sealed class SurfaceChangeTests
+    public sealed class SurfaceChangeTests : IDisposable
     {
+        /// <summary>
+        /// Restores the default surface after each case, for the reason given on
+        /// <see cref="PointerUnprojectionTests.Dispose"/>: every case here publishes a viewport
+        /// and none of them owns the one the next test needs.
+        /// </summary>
+        public void Dispose()
+        {
+            ScreenPresentation.Instance = new ScreenPresentation(
+                HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+            CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+        }
+
         private sealed class ProbeApplication : Application
         {
             public static RootController Root
@@ -49,7 +63,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void OnSurfaceChangedUpdatesTheLegacyScreenGlobals()
+        public void OnSurfaceChangedUpdatesTheScreenMetrics()
         {
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
@@ -60,10 +74,10 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheGlobalsAgreeWithTheSnapshotAfterEveryPublish()
+        public void TheScreenMetricsAgreeWithTheSnapshotAfterEveryPublish()
         {
-            // The globals are derived from the snapshot inside the same call that publishes it.
-            // If they can ever disagree, something updated one without the other.
+            // The metrics read straight off the snapshot rather than being copied out of it when
+            // it is published, so there is no second value a host could leave behind.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
             CtrRenderer.OnSurfaceChanged(1600, 900);
@@ -71,6 +85,19 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(ScreenPresentation.Instance.Snapshot.SurfaceWidth, (int)FrameworkTypes.REAL_SCREEN_WIDTH);
             Assert.Equal(ScreenPresentation.Instance.Snapshot.SurfaceHeight, (int)FrameworkTypes.REAL_SCREEN_HEIGHT);
+        }
+
+        [Fact]
+        public void TheLogicalScreenSizeIsTheDesignSize()
+        {
+            // World coordinates mean the design box and nothing else. Publishing a surface of a
+            // different shape must not move them, or every level's authored geometry moves with it.
+            ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+
+            CtrRenderer.OnSurfaceChanged(720, 1280);
+
+            Assert.Equal(ViewportLayout.DesignWidth, FrameworkTypes.SCREEN_WIDTH);
+            Assert.Equal(ViewportLayout.DesignHeight, FrameworkTypes.SCREEN_HEIGHT);
         }
 
         [Fact]
@@ -86,11 +113,12 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void MatchingInitialSurfaceStillInitializesTheLegacyGlobals()
+        public void MatchingInitialSurfaceStillReportsTheScreenMetrics()
         {
+            // A host whose first surface happens to equal the design size publishes no change.
+            // The metrics still have to describe it, which they do by being read from the
+            // snapshot rather than written during the transition.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-            FrameworkTypes.REAL_SCREEN_WIDTH = 480f;
-            FrameworkTypes.REAL_SCREEN_HEIGHT = 800f;
 
             CtrRenderer.OnSurfaceChanged(2560, 1440);
 
@@ -118,7 +146,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void GenuineChangePushesOnceWhileEqualCallbackOnlyRefreshesLegacyGlobals()
+        public void GenuineChangePushesOnceWhileAnEqualCallbackPushesNotAtAll()
         {
             RootController previousRoot = ProbeApplication.Root;
             try
@@ -131,8 +159,6 @@ namespace CutTheRopeDX.Tests
 
                 Assert.Equal(1, root.RelayoutCount);
 
-                FrameworkTypes.REAL_SCREEN_WIDTH = 480f;
-                FrameworkTypes.REAL_SCREEN_HEIGHT = 800f;
                 CtrRenderer.OnSurfaceChanged(1600, 900);
 
                 Assert.Equal(1, root.RelayoutCount);

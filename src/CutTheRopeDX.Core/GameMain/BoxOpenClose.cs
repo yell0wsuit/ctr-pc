@@ -202,9 +202,9 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            float scale = MathF.Max(
-                visible.w / ViewportLayout.DesignWidth,
-                visible.h / ViewportLayout.DesignHeight);
+            CTRRectangle covered = LayoutMath.CoverInside(
+                ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
+            float scale = covered.w / ViewportLayout.DesignWidth;
             openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
 
             // Centered through the renderer's translation rather than this element's position. The
@@ -212,10 +212,8 @@ namespace CutTheRopeDX.GameMain
             // without consulting this one - moving the group would scale them about a new point
             // and leave them exactly where they were. The translation is divided by the scale
             // because it is applied in the space the scale has already been taken into.
-            openCloseAnims.translateX =
-                (visible.w - (ViewportLayout.DesignWidth * scale)) / 2f / scale;
-            openCloseAnims.translateY =
-                (visible.h - (ViewportLayout.DesignHeight * scale)) / 2f / scale;
+            openCloseAnims.translateX = covered.x / scale;
+            openCloseAnims.translateY = covered.y / scale;
         }
 
         /// <summary>

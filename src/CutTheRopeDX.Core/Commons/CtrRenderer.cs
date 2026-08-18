@@ -28,9 +28,8 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <summary>
-        /// The sole entry point for a surface size change. Publishes the viewport snapshot and
-        /// derives the screen metrics from it in one transition, so no consumer can observe a
-        /// half-updated state.
+        /// The sole entry point for a surface size change. Publishes the viewport snapshot, which
+        /// every screen metric is then read from, so no consumer can observe a half-updated state.
         /// </summary>
         /// <param name="width">The new surface width in pixels.</param>
         /// <param name="height">The new surface height in pixels.</param>
@@ -42,7 +41,6 @@ namespace CutTheRopeDX.Commons
         {
             bool changed = ScreenPresentation.Instance.SetSurfaceSize(
                 width, height, devicePixelRatio);
-            Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
             if (changed)
             {
                 Application.ExistingRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
@@ -257,25 +255,6 @@ namespace CutTheRopeDX.Commons
                 CTRTexture2D.ResumeAll();
                 gPaused = false;
                 CTRApp.ApplicationDidBecomeActive();
-            }
-        }
-
-        /// <summary>
-        /// Recalculates the shared screen metrics for the current surface size.
-        /// </summary>
-        /// <param name="width">The surface width in pixels.</param>
-        /// <param name="height">The surface height in pixels.</param>
-        /// <param name="isLowMem">Whether the resize should use the low-memory layout path.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResize(int width, int height, bool isLowMem)
-        {
-            REAL_SCREEN_WIDTH = width;
-            REAL_SCREEN_HEIGHT = height;
-            SCREEN_RATIO = REAL_SCREEN_HEIGHT / REAL_SCREEN_WIDTH;
-            IS_WVGA = width > 500 || height > 500;
-            IS_QVGA = width < 280 || height < 280;
-            if (isLowMem)
-            {
-                IS_WVGA = false;
             }
         }
 

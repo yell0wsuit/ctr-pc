@@ -221,14 +221,21 @@ namespace CutTheRopeDX.Framework
         public const int GL_COLOR_BUFFER_BIT = 0;
 
         /// <summary>
-        /// Logical screen width in game coordinates.
+        /// Logical screen width in game coordinates: the fixed space levels are authored in.
         /// </summary>
-        public static float SCREEN_WIDTH = 320f;
+        /// <remarks>
+        /// The design size itself, not a value the host can change. It was a writable field while
+        /// the game sized itself to the window; now the window is described by
+        /// <see cref="VisibleBounds"/> and this stays the constant that world coordinates mean, so
+        /// making it settable could only reintroduce a second, disagreeing design size.
+        /// </remarks>
+        public static readonly float SCREEN_WIDTH = ViewportLayout.DesignWidth;
 
         /// <summary>
-        /// Logical screen height in game coordinates.
+        /// Logical screen height in game coordinates: the fixed space levels are authored in.
         /// </summary>
-        public static float SCREEN_HEIGHT = 480f;
+        /// <remarks>See <see cref="SCREEN_WIDTH"/>.</remarks>
+        public static readonly float SCREEN_HEIGHT = ViewportLayout.DesignHeight;
 
         /// <summary>
         /// The logical region the viewport currently exposes. Elements that span the whole screen
@@ -239,29 +246,25 @@ namespace CutTheRopeDX.Framework
             ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
         /// <summary>
-        /// Actual device screen width in pixels.
+        /// Uniform scale design-space content is drawn at for the current viewport. Exposed here
+        /// so an element can size itself the moment it is created, without the scene that owns it
+        /// having to hold a copy and push it down.
         /// </summary>
-        public static float REAL_SCREEN_WIDTH = 480f;
+        protected static float ContentScale => ContentFit.Scale;
 
         /// <summary>
-        /// Actual device screen height in pixels.
+        /// Actual device surface width in pixels, read from the published viewport rather than
+        /// tracked alongside it.
         /// </summary>
-        public static float REAL_SCREEN_HEIGHT = 800f;
+        public static float REAL_SCREEN_WIDTH =>
+            ScreenPresentation.Instance.Snapshot.SurfaceWidth;
 
         /// <summary>
-        /// Current screen aspect ratio.
+        /// Actual device surface height in pixels, read from the published viewport rather than
+        /// tracked alongside it.
         /// </summary>
-        public static float SCREEN_RATIO;
-
-        /// <summary>
-        /// Portrait-mode screen width.
-        /// </summary>
-        public static float PORTRAIT_SCREEN_WIDTH = 480f;
-
-        /// <summary>
-        /// Portrait-mode screen height.
-        /// </summary>
-        public static float PORTRAIT_SCREEN_HEIGHT = 320f;
+        public static float REAL_SCREEN_HEIGHT =>
+            ScreenPresentation.Instance.Snapshot.SurfaceHeight;
 
         /// <summary>
         /// <see langword="true"/> when running at iPad resolution.
@@ -274,14 +277,16 @@ namespace CutTheRopeDX.Framework
         public static bool IS_RETINA;
 
         /// <summary>
-        /// <see langword="true"/> when running at WVGA (800x480) resolution.
+        /// <see langword="true"/> when the surface is larger than WVGA (800x480) on either axis.
         /// </summary>
-        public static bool IS_WVGA;
-
-        /// <summary>
-        /// <see langword="true"/> when running at QVGA (320x240) resolution.
-        /// </summary>
-        public static bool IS_QVGA;
+        /// <remarks>
+        /// Derived from the published surface size. The low-memory variant the original had, which
+        /// forced this false regardless of resolution, had no caller left once the desktop and
+        /// browser hosts were the only ones.
+        /// </remarks>
+        public static bool IS_WVGA =>
+            ScreenPresentation.Instance.Snapshot.SurfaceWidth > 500
+            || ScreenPresentation.Instance.Snapshot.SurfaceHeight > 500;
 
         /// <summary>
         /// Stub API surface retained from the original analytics integration.

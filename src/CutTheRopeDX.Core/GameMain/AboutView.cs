@@ -20,8 +20,9 @@ namespace CutTheRopeDX.GameMain
         /// <param name="buttonDelegate">Delegate used for handling the back button.</param>
         /// <param name="scale">
         /// Uniform scale to grow the credits text by, matching the boost menu content gets on a
-        /// narrow viewport. Baked in once at construction: this view is only ever rebuilt on a
-        /// language change, never on a resize, same as every other position and size in it.
+        /// narrow viewport. Baked in at construction, because it sets the wrap width every text
+        /// block was measured at and therefore the height of the stack they form; the viewport it
+        /// was baked for is recorded in <see cref="BuiltForScale"/> so a later one can be noticed.
         /// </param>
         /// <returns>A fully constructed <see cref="MenuView"/> for the About/Credits screen.</returns>
         public MenuView CreateAbout(
@@ -31,7 +32,8 @@ namespace CutTheRopeDX.GameMain
         {
             MenuView menuView = new();
             currentContainer = BuildAboutContainer(buttonDelegate, scale);
-            autoScrollEnabled = false;
+            BuiltForScale = scale;
+            AutoScrollEnabled = false;
             _ = background.AddChild(currentContainer);
             _ = menuView.AddChild(background);
 
@@ -53,7 +55,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             currentContainer.SetScroll(new Vector(0f, 0f));
-            autoScrollEnabled = true;
+            AutoScrollEnabled = true;
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DisableAutoScroll()
         {
-            autoScrollEnabled = false;
+            AutoScrollEnabled = false;
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace CutTheRopeDX.GameMain
         /// </returns>
         public bool UpdateAutoScroll()
         {
-            if (!autoScrollEnabled || currentContainer == null)
+            if (!AutoScrollEnabled || currentContainer == null)
             {
                 return false;
             }
@@ -99,7 +101,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            autoScrollEnabled = false;
+            AutoScrollEnabled = false;
             currentContainer.HandleMouseWheel(scrollDelta);
             return true;
         }
@@ -312,13 +314,30 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// The content scale this view was built at, so a layout pass can tell whether the
+        /// viewport has since changed shape enough to need it built again.
+        /// </summary>
+        public float BuiltForScale { get; private set; }
+
+        /// <summary>
+        /// Gets or sets how far the credits are scrolled, so a rebuild can put the reader back
+        /// where they were rather than snapping them to the top.
+        /// </summary>
+        public Vector ScrollOffset
+        {
+            get => currentContainer?.GetScroll() ?? new Vector(0f, 0f);
+            set => currentContainer?.SetScroll(value);
+        }
+
+        /// <summary>
+        /// Gets or sets whether the credits are scrolling themselves, carried across a rebuild for
+        /// the same reason as <see cref="ScrollOffset"/>.
+        /// </summary>
+        public bool AutoScrollEnabled { get; set; }
+
+        /// <summary>
         /// Scroll container holding the About/Credits content.
         /// </summary>
         private ScrollableContainer currentContainer;
-
-        /// <summary>
-        /// Whether auto-scroll is currently enabled.
-        /// </summary>
-        private bool autoScrollEnabled;
     }
 }

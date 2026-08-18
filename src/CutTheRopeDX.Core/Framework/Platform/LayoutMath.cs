@@ -11,6 +11,50 @@ namespace CutTheRopeDX.Framework.Platform
     internal static class LayoutMath
     {
         /// <summary>
+        /// Returns where a design box of the given size lands in <paramref name="viewport"/> when
+        /// drawn at <paramref name="scale"/> and centered on it.
+        /// </summary>
+        /// <remarks>
+        /// The one placement rule every design-space composition resolves through, whether the
+        /// scale came from containing the box, covering the viewport with it, or a scene's own
+        /// choice. The returned rectangle is free to be larger than the viewport; what overflows
+        /// is the caller's to crop or to let bleed.
+        /// </remarks>
+        /// <param name="designWidth">Width of the design box.</param>
+        /// <param name="designHeight">Height of the design box.</param>
+        /// <param name="viewport">Rectangle to center within.</param>
+        /// <param name="scale">Uniform scale the box is drawn at.</param>
+        /// <returns>The placed, centered rectangle.</returns>
+        public static CTRRectangle PlaceBox(
+            float designWidth,
+            float designHeight,
+            CTRRectangle viewport,
+            float scale)
+        {
+            float width = designWidth * scale;
+            float height = designHeight * scale;
+            return new CTRRectangle(
+                viewport.x + ((viewport.w - width) / 2f),
+                viewport.y + ((viewport.h - height) / 2f),
+                width,
+                height);
+        }
+
+        /// <summary>
+        /// Returns the uniform scale at which a design box of the given size fits entirely inside
+        /// <paramref name="viewport"/>. The complement of <see cref="Cover"/>: the axis with less
+        /// room drives it, and the other is left with slack.
+        /// </summary>
+        /// <param name="designWidth">Width of the design box.</param>
+        /// <param name="designHeight">Height of the design box.</param>
+        /// <param name="viewport">Rectangle to fit inside.</param>
+        /// <returns>The containing scale.</returns>
+        public static float Contain(float designWidth, float designHeight, CTRRectangle viewport)
+        {
+            return MathF.Min(viewport.w / designWidth, viewport.h / designHeight);
+        }
+
+        /// <summary>
         /// Returns the largest rectangle of the given aspect ratio that fits inside
         /// <paramref name="viewport"/>, centered.
         /// </summary>
@@ -20,14 +64,25 @@ namespace CutTheRopeDX.Framework.Platform
         /// <returns>The fitted, centered rectangle.</returns>
         public static CTRRectangle FitInside(float designWidth, float designHeight, CTRRectangle viewport)
         {
-            float scale = MathF.Min(viewport.w / designWidth, viewport.h / designHeight);
-            float width = designWidth * scale;
-            float height = designHeight * scale;
-            return new CTRRectangle(
-                viewport.x + ((viewport.w - width) / 2f),
-                viewport.y + ((viewport.h - height) / 2f),
-                width,
-                height);
+            return PlaceBox(designWidth, designHeight, viewport, Contain(designWidth, designHeight, viewport));
+        }
+
+        /// <summary>
+        /// Returns where a design box of the given size lands when scaled to cover
+        /// <paramref name="viewport"/> completely and centered on it, so what overflows hangs off
+        /// both ends of the driving axis equally.
+        /// </summary>
+        /// <param name="designWidth">Width of the design box.</param>
+        /// <param name="designHeight">Height of the design box.</param>
+        /// <param name="viewport">Rectangle to cover.</param>
+        /// <returns>The covering, centered rectangle.</returns>
+        public static CTRRectangle CoverInside(float designWidth, float designHeight, CTRRectangle viewport)
+        {
+            return PlaceBox(
+                designWidth,
+                designHeight,
+                viewport,
+                Cover(designWidth, designHeight, viewport).Scale);
         }
 
         /// <summary>

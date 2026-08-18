@@ -193,9 +193,22 @@ namespace CutTheRopeDX.GameMain
             animFinished = true;
         }
 
+        /// <inheritdoc />
+        protected override void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+            base.Relayout(snapshot);
+            UpdateSplashLayout();
+        }
+
         /// <summary>
         /// Updates the splash animation root and legal disclaimer position for the current screen size.
         /// </summary>
+        /// <remarks>
+        /// Called from <see cref="Relayout"/> and once at build time, not from the draw path. The
+        /// splash used to lay itself out inside its own <c>Draw</c>, which hid the fact that
+        /// nothing was re-wrapping the disclaimer on a resize: the stage tracked the window every
+        /// frame while the text it sat under kept the wrap width of the viewport that built it.
+        /// </remarks>
         private void UpdateSplashLayout()
         {
             if (animRoot == null || animStageWidth <= 0f || animStageHeight <= 0f)
@@ -205,11 +218,12 @@ namespace CutTheRopeDX.GameMain
 
             // The splash is a single stage centered on screen, so it measures against what the
             // viewport exposes rather than the fixed design size. The two are the same thing at
-            // the design shape, and the stage sat off toward one corner at every other.
+            // the design shape, and the stage sat off toward one corner at every other. Contained
+            // rather than covered, because a splash that overflows is a splash with its logo
+            // cropped.
             CTRRectangle visible = VisibleBounds;
-            float widthScale = visible.w / animStageWidth;
-            float heightScale = visible.h / animStageHeight;
-            float scale = widthScale < heightScale ? widthScale : heightScale;
+            CTRRectangle stage = LayoutMath.FitInside(animStageWidth, animStageHeight, visible);
+            float scale = stage.w / animStageWidth;
 
             animRoot.anchor = 18;
             animRoot.parentAnchor = -1;
@@ -220,9 +234,11 @@ namespace CutTheRopeDX.GameMain
 
             if (legalDisclaimerText != null)
             {
-                float stageBottom = (visible.h + (animStageHeight * scale)) / 2f;
+                legalDisclaimerText.SetStringandWidth(
+                    Application.GetString("STARTUP_LEGAL_DISCLAIMER"),
+                    visible.w * DisclaimerWidthShare);
                 legalDisclaimerText.x = visible.w / 2f;
-                legalDisclaimerText.y = stageBottom - 35f;
+                legalDisclaimerText.y = stage.y + stage.h - DisclaimerBottomInset;
             }
         }
 
@@ -238,9 +254,12 @@ namespace CutTheRopeDX.GameMain
                 legalDisclaimerText.anchor = legalDisclaimerText.parentAnchor = 34;
             }
 
-            legalDisclaimerText.SetStringandWidth(Application.GetString("STARTUP_LEGAL_DISCLAIMER"), VisibleBounds.w * 0.9f);
             UpdateDisclaimerAlpha();
-            legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = 0.65f;
+            legalDisclaimerText.scaleX = legalDisclaimerText.scaleY = DisclaimerScale;
+
+            // Wrapped and positioned by the layout pass, which is the only place that reads the
+            // viewport, so a resize re-wraps it and creating it here cannot disagree with one.
+            UpdateSplashLayout();
         }
 
         /// <summary>
@@ -292,6 +311,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Original Flash XML stage height for splash layout scaling.</summary>
         private float animStageHeight;
+
+        /// <summary>Share of the visible width the legal disclaimer wraps within.</summary>
+        private const float DisclaimerWidthShare = 0.9f;
+
+        /// <summary>Distance from the bottom of the fitted splash stage to the disclaimer.</summary>
+        private const float DisclaimerBottomInset = 35f;
+
+        /// <summary>Uniform scale the legal disclaimer is drawn at, relative to its font size.</summary>
+        private const float DisclaimerScale = 0.65f;
 
         /// <summary>Legal disclaimer text drawn over the splash animation.</summary>
         private Text legalDisclaimerText;
@@ -406,11 +434,7 @@ namespace CutTheRopeDX.GameMain
 
                         break;
                     case Phase.Animating:
-                        if (controller.animRoot != null)
-                        {
-                            controller.UpdateSplashLayout();
-                            controller.animRoot.Draw();
-                        }
+                        controller.animRoot?.Draw();
                         controller.legalDisclaimerText?.Draw();
                         break;
                     default:

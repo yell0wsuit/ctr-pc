@@ -1,3 +1,6 @@
+using System;
+
+using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -11,8 +14,19 @@ namespace CutTheRopeDX.Tests
     /// resolve to the design-space coordinate that was drawn under it, or touch and rendering
     /// disagree the moment a scene scales its content.
     /// </summary>
-    public sealed class PointerUnprojectionTests
+    public sealed class PointerUnprojectionTests : IDisposable
     {
+        /// <summary>
+        /// Restores the default surface after each case. The surface size is process-wide and the
+        /// suite runs serially, so a case that publishes a portrait viewport and walks away leaves
+        /// every later test framing itself against it - which surfaces as a gameplay test whose
+        /// tap lands somewhere the element is not.
+        /// </summary>
+        public void Dispose()
+        {
+            CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+        }
+
         private sealed class ProbeController : ViewController
         {
             public CTRRectangle Box => DesignBox;

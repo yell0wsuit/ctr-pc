@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -89,13 +87,11 @@ namespace CutTheRopeDX.GameMain
             // viewport rather than in the middle of it, and a taller viewport is left uncovered
             // below the design height.
             CTRRectangle visible = VisibleBounds;
-            float coverScale = MathF.Max(
-                visible.w / ViewportLayout.DesignWidth,
-                visible.h / ViewportLayout.DesignHeight);
-            float coverOffsetX = (visible.w - (ViewportLayout.DesignWidth * coverScale)) / 2f;
-            float coverOffsetY = (visible.h - (ViewportLayout.DesignHeight * coverScale)) / 2f;
+            CTRRectangle cover = LayoutMath.CoverInside(
+                ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
+            float coverScale = cover.w / ViewportLayout.DesignWidth;
             Renderer.PushMatrix();
-            Renderer.Translate(coverOffsetX, coverOffsetY, 0f);
+            Renderer.Translate(cover.x, cover.y, 0f);
             Renderer.Scale(coverScale, coverScale, 1f);
 
             CTRTexture2D texture = Application.GetTexture(boxCover);
@@ -120,7 +116,7 @@ namespace CutTheRopeDX.GameMain
                     0f,
                     0f,
                     visible.w,
-                    coverOffsetY + (1200f * coverScale * progressPercent / 100f));
+                    cover.y + (1200f * coverScale * progressPercent / 100f));
             }
             Renderer.SetColor(Color.White);
             leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;

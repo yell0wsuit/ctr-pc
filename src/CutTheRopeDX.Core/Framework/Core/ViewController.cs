@@ -28,18 +28,6 @@ namespace CutTheRopeDX.Framework.Core
             0f, 0f, ViewportLayout.DesignWidth, ViewportLayout.DesignHeight);
 
         /// <summary>
-        /// Aspect ratio of the fixed design size, where the content scale is exactly one.
-        /// </summary>
-        private const float DesignAspect =
-            ViewportLayout.DesignWidth / ViewportLayout.DesignHeight;
-
-        /// <summary>Content scale at the widest supported aspect ratio.</summary>
-        private const float WidestContentScale = 1.15f;
-
-        /// <summary>Content scale at the narrowest supported aspect ratio.</summary>
-        private const float NarrowestContentScale = 1.55f;
-
-        /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
         /// on read from the published viewport rather than cached, so it is correct the instant
         /// the viewport changes and there is no second copy to keep in step.
@@ -52,63 +40,30 @@ namespace CutTheRopeDX.Framework.Core
         /// be scaled down for the sake of two empty margins. What overflows is margin; the
         /// background covers it separately.
         /// </remarks>
-        protected CTRRectangle FittedBox
-        {
-            get
-            {
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-                CTRRectangle design = DesignBox;
-                float scale = FittedScale;
-                float width = design.w * scale;
-                float height = design.h * scale;
-                return new CTRRectangle(
-                    (visible.w - width) / 2f,
-                    (visible.h - height) / 2f,
-                    width,
-                    height);
-            }
-        }
+        protected CTRRectangle FittedBox => FittedBoxAt(FittedScale);
 
         /// <summary>
-        /// Uniform scale from design-box coordinates to logical space.
+        /// Uniform scale from design-box coordinates to logical space. A function of the viewport
+        /// alone, so it is <see cref="ContentFit.Scale"/>; controllers reach it through this name
+        /// because that is what their layout code reads, not because they own a second copy.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Exactly one at the design aspect ratio, and larger the further the viewport departs
-        /// from it in either direction. Logical space normalizes the viewport's shorter side, so
-        /// content held at one scale is sized for that side alone: on a shape the design was not
-        /// drawn for, the long side gains room the composition never uses and everything reads as
-        /// small for the screen it is on. Growing with the departure spends that room.
-        /// </para>
-        /// <para>
-        /// The composition scales whole, so nothing crowds anything else at any of these; the
-        /// authored spacing is preserved and simply drawn larger.
-        /// </para>
-        /// </remarks>
-        protected static float FittedScale
-        {
-            get
-            {
-                float aspect = ScreenPresentation.Instance.Snapshot.Aspect;
-                if (aspect >= DesignAspect)
-                {
-                    return LayoutMath.Remap(
-                        MathF.Min(aspect, ViewportLayout.MaxAspect),
-                        DesignAspect,
-                        ViewportLayout.MaxAspect,
-                        1f,
-                        WidestContentScale);
-                }
+        protected static float FittedScale => ContentFit.Scale;
 
-                // Eased rather than linear: a square or 4:3 window is only mildly off the design
-                // shape and should barely grow, while true phone-portrait aspects near MinAspect
-                // are what the extra room is actually for. Cubing the linear departure keeps the
-                // curve flat near the design aspect and steep only near the floor.
-                float clampedAspect = MathF.Max(aspect, ViewportLayout.MinAspect);
-                float departure = (DesignAspect - clampedAspect) / (DesignAspect - ViewportLayout.MinAspect);
-                float eased = departure * departure * departure;
-                return 1f + (eased * (NarrowestContentScale - 1f));
-            }
+        /// <summary>
+        /// <see cref="FittedBox"/> at an explicit scale rather than <see cref="FittedScale"/>.
+        /// The one place the design box's placement is computed, so <see cref="FittedBox"/> and
+        /// <see cref="PlaceFittedGroup(BaseElement, float)"/> cannot drift apart.
+        /// </summary>
+        /// <param name="scale">Uniform scale from design-box coordinates to logical space.</param>
+        /// <returns>The placed, centered design box in logical space.</returns>
+        private CTRRectangle FittedBoxAt(float scale)
+        {
+            CTRRectangle design = DesignBox;
+            return LayoutMath.PlaceBox(
+                design.w,
+                design.h,
+                ScreenPresentation.Instance.Snapshot.VisibleBounds,
+                scale);
         }
 
         /// <summary>
@@ -150,14 +105,7 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             CTRRectangle design = DesignBox;
-            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-            float width = design.w * scale;
-            float height = design.h * scale;
-            CTRRectangle fitted = new(
-                (visible.w - width) / 2f,
-                (visible.h - height) / 2f,
-                width,
-                height);
+            CTRRectangle fitted = FittedBoxAt(scale);
 
             group.width = (int)design.w;
             group.height = (int)design.h;

@@ -126,6 +126,7 @@ namespace CutTheRopeDX.GameMain
             LayOutCenteredScenes(visible);
             LayOutLevelSelect(visible);
             LayOutPackSelect(visible);
+            LayOutAbout();
             CandySelectionView.Relayout(visible);
             LayOutReset(snapshot);
 
@@ -226,7 +227,8 @@ namespace CutTheRopeDX.GameMain
             float scale = FullScreenScale(visible, 1f);
             float seam = visible.w / 2f;
             float coverWidth = levelsCoverLeft.width;
-            float coverTop = levelsCoverLeft.height * (scale - 1f) / 2f;
+            float coverTop = LayoutMath.CornerAnchoredOffset(
+                0f, levelsCoverLeft.height, scale, farEdge: false);
 
             // Each half is scaled about its own center, so its position is chosen to put the
             // scaled inner edge on the seam and the scaled top edge on the top of the screen.
@@ -264,13 +266,30 @@ namespace CutTheRopeDX.GameMain
                 PlaceFittedGroup(levelsGroup, gridScale);
             }
 
-            if (levelsStarText != null)
+            PlaceStarTotal(levelsStarText);
+        }
+
+        /// <summary>
+        /// Places a total-stars label in the top-right corner, growing it from that corner so its
+        /// authored insets scale along with it rather than the label enlarging in place.
+        /// </summary>
+        /// <remarks>
+        /// The level picker places its label on every layout pass and the pack picker places its
+        /// own as it builds one, but they are the same label in the same corner, so the insets
+        /// live here rather than once per caller.
+        /// </remarks>
+        /// <param name="starText">Label to place, or <see langword="null"/> when the scene has none.</param>
+        internal static void PlaceStarTotal(BaseElement starText)
+        {
+            if (starText == null)
             {
-                float starScale = FittedScale;
-                levelsStarText.scaleX = levelsStarText.scaleY = starScale;
-                levelsStarText.x = LayoutMath.CornerAnchoredOffset(-30f, levelsStarText.width, starScale, farEdge: true);
-                levelsStarText.y = LayoutMath.CornerAnchoredOffset(40f, levelsStarText.height, starScale, farEdge: false);
+                return;
             }
+
+            float scale = FittedScale;
+            starText.scaleX = starText.scaleY = scale;
+            starText.x = LayoutMath.CornerAnchoredOffset(StarTotalInsetX, starText.width, scale, farEdge: true);
+            starText.y = LayoutMath.CornerAnchoredOffset(StarTotalInsetY, starText.height, scale, farEdge: false);
         }
 
         /// <summary>
@@ -299,7 +318,7 @@ namespace CutTheRopeDX.GameMain
             float fromSeam = authoredX + (spine.width / 2f) - (ViewportLayout.DesignWidth / 2f);
             spine.scaleX = spine.scaleY = scale;
             spine.x = (visible.w / 2f) + (fromSeam * scale) - (spine.width / 2f);
-            spine.y = (LevelsSpineTop * scale) + (spine.height * (scale - 1f) / 2f);
+            spine.y = LayoutMath.CornerAnchoredOffset(LevelsSpineTop, spine.height, scale, farEdge: false);
         }
 
         /// <summary>
@@ -323,6 +342,41 @@ namespace CutTheRopeDX.GameMain
             if (wasActive)
             {
                 GetView(VIEW_PACK_SELECT).Show();
+            }
+        }
+
+        /// <summary>
+        /// Lays out the About view by rebuilding it when the content scale it was built at no
+        /// longer matches the viewport.
+        /// </summary>
+        /// <remarks>
+        /// Rebuilt rather than rescaled in place, for the same reason the pack picker is: the
+        /// scale sets the wrap width every credits block was measured at, so it decides how many
+        /// lines each becomes and therefore where every block below it sits. There is nothing to
+        /// move that building it again does not place correctly. Where the reader had scrolled to
+        /// survives, because a resize is not a reason to throw them back to the top.
+        /// </remarks>
+        private void LayOutAbout()
+        {
+            if (aboutView == null
+                || GetView(VIEW_ABOUT) == null
+                || aboutView.BuiltForScale == FittedScale)
+            {
+                return;
+            }
+
+            Vector scroll = aboutView.ScrollOffset;
+            bool autoScroll = aboutView.AutoScrollEnabled;
+            bool wasActive = activeViewID == VIEW_ABOUT;
+
+            DeleteView(VIEW_ABOUT);
+            CreateAbout();
+
+            aboutView.ScrollOffset = scroll;
+            aboutView.AutoScrollEnabled = autoScroll;
+            if (wasActive)
+            {
+                GetView(VIEW_ABOUT).Show();
             }
         }
 
@@ -364,9 +418,7 @@ namespace CutTheRopeDX.GameMain
         {
             float growth = MathF.Max(
                 1f,
-                MathF.Max(
-                    visible.w / ViewportLayout.DesignWidth,
-                    visible.h / ViewportLayout.DesignHeight));
+                LayoutMath.Cover(ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible).Scale);
             return authoredScale * growth;
         }
 
@@ -395,9 +447,10 @@ namespace CutTheRopeDX.GameMain
             button.scaleX = button.scaleY = scale;
 
             // Growing about its own center would push a button anchored into the bottom-left corner
-            // out through it, so the growth is taken back out of its offset from that corner.
-            button.x = button.width * (scale - 1f) / 2f;
-            button.y = -button.height * (scale - 1f) / 2f;
+            // out through it, so the growth is taken back out of its offset from that corner. The
+            // authored offset is zero on both axes: the button sits in the corner itself.
+            button.x = LayoutMath.CornerAnchoredOffset(0f, button.width, scale, farEdge: false);
+            button.y = LayoutMath.CornerAnchoredOffset(0f, button.height, scale, farEdge: true);
 
             // The button is scaled about its own center, so the forced touch rectangle - which the
             // back button carries to match its art rather than its bounding box - moves with it.
@@ -427,6 +480,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Smallest gap between a pack picker arrow and the edge of the screen.</summary>
         private const float PackArrowInset = 10f;
+
+        /// <summary>Authored offset of a total-stars label from the right edge of the screen.</summary>
+        private const float StarTotalInsetX = -30f;
+
+        /// <summary>Authored offset of a total-stars label from the top edge of the screen.</summary>
+        private const float StarTotalInsetY = 40f;
 
         /// <summary>Share of the visible width the reset confirmation text wraps within.</summary>
         private const float ResetTextWidthShare = 0.95f;

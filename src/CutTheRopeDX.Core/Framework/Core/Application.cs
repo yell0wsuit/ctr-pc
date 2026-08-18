@@ -159,7 +159,6 @@ namespace CutTheRopeDX.Framework.Core
                 }
                 appSettings.SetString(8, text);
             }
-            UpdateOrientation();
             IS_IPAD = false;
             IS_RETINA = false;
             root = CreateRootController();
@@ -236,18 +235,6 @@ namespace CutTheRopeDX.Framework.Core
 
             string languageCode = forceEnglish ? "en" : LanguageHelper.CurrentCode;
             return LocalizationManager.GetString(stringKey, languageCode);
-        }
-
-        /// <summary>
-        /// Updates the framework's logical screen dimensions for the current orientation.
-        /// The base implementation keeps the game in its default landscape layout.
-        /// </summary>
-        public virtual void UpdateOrientation()
-        {
-            PORTRAIT_SCREEN_WIDTH = ViewportLayout.DesignWidth;
-            PORTRAIT_SCREEN_HEIGHT = ViewportLayout.DesignHeight;
-            SCREEN_WIDTH = PORTRAIT_SCREEN_WIDTH;
-            SCREEN_HEIGHT = PORTRAIT_SCREEN_HEIGHT;
         }
 
         /// <summary>

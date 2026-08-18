@@ -273,17 +273,20 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Places the in-game chrome for the current viewport.
         /// </summary>
-        /// <param name="hudScale">
-        /// Uniform scale for the collected-stars row, matching the boost menu content gets on a
-        /// narrow viewport. The row is grown from the screen's top-left corner rather than about
-        /// each icon's own center, so it stays flush against the corner instead of bleeding past
-        /// it: each icon is center-anchored, which already keeps it centered on its own position
-        /// as it scales, so multiplying that position by <paramref name="hudScale"/> is enough to
-        /// scale the whole row from the corner with no extra correction term.
-        /// </param>
-        public void RelayoutHud(float hudScale = 1f)
+        /// <remarks>
+        /// The collected-stars row is scaled by <see cref="FrameworkTypes.ContentScale"/>, the
+        /// same boost menu content gets on a narrow viewport, read here rather than passed in: a
+        /// parameter meant one caller could hand the HUD a scale that disagreed with the rest of
+        /// the frame, and the one that took the default handed it 1 on every fullscreen toggle.
+        /// The row is grown from the screen's top-left corner rather than about each icon's own
+        /// center, so it stays flush against the corner instead of bleeding past it: each icon is
+        /// center-anchored, which already keeps it centered on its own position as it scales, so
+        /// multiplying that position by the scale is enough to grow the whole row from the corner
+        /// with no extra correction term.
+        /// </remarks>
+        public void RelayoutHud()
         {
-            this.hudScale = hudScale;
+            float hudScale = ContentScale;
             PlaceLevelLabel();
 
             for (int i = 0; i < 3; i++)
@@ -297,14 +300,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// The scale <see cref="RelayoutHud"/> last applied, cached so a scene element rebuilt
-        /// later - the level label on a restart, say - can size itself correctly the moment it is
-        /// created rather than sitting unscaled until the next viewport-driven relayout.
-        /// </summary>
-        private float hudScale = 1f;
-
-        /// <summary>
-        /// Sizes and positions the level-name label against the cached <see cref="hudScale"/>.
+        /// Sizes and positions the level-name label for the current viewport.
         /// </summary>
         /// <remarks>
         /// The label's Y offset is a small negative fine-tune of its own font metrics (see
@@ -322,12 +318,13 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            float hudScale = ContentScale;
             levelLabel.scaleX = levelLabel.scaleY = hudScale;
-            levelLabel.x = LayoutMath.CornerAnchoredOffset(15f, levelLabel.width, hudScale, farEdge: false);
+            levelLabel.x = LayoutMath.CornerAnchoredOffset(LevelLabelInsetX, levelLabel.width, hudScale, farEdge: false);
 
             bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
             float bottomInset = isChinese ? 0f : LevelLabelInsetY;
-            float targetBottom = ScreenPresentation.Instance.Snapshot.VisibleBounds.h - bottomInset;
+            float targetBottom = VisibleBounds.h - bottomInset;
             levelLabel.y = targetBottom + (levelLabel.height / 2f * (1f - hudScale));
         }
 
@@ -359,10 +356,11 @@ namespace CutTheRopeDX.GameMain
                 return 1f;
             }
 
+            // The region of world a screen of this shape exposes, which is the viewport taken back
+            // through the camera's own scale. Covering that is an ordinary cover fit against it.
             CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-            float scale = MathF.Max(
-                visible.w / cameraScale / texture._realWidth,
-                visible.h / cameraScale / texture._realHeight);
+            CTRRectangle worldWindow = new(0f, 0f, visible.w / cameraScale, visible.h / cameraScale);
+            float scale = LayoutMath.Cover(texture._realWidth, texture._realHeight, worldWindow).Scale;
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
 
