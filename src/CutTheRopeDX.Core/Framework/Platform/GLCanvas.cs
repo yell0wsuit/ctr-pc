@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <returns>The initialized canvas instance.</returns>
         public GLCanvas InitWithFrame()
         {
-            aspect = 1440f / 2560f;
+            aspect = ViewportLayout.DesignHeight / ViewportLayout.DesignWidth;
             touchesCount = 0;
             return this;
         }
@@ -243,16 +243,6 @@ namespace CutTheRopeDX.Framework.Platform
         public static void AfterRender()
         {
         }
-
-        /// <summary>
-        /// Default logical canvas width used by the game.
-        /// </summary>
-        public const float MASTER_WIDTH = 2560f;
-
-        /// <summary>
-        /// Default logical canvas height used by the game.
-        /// </summary>
-        public const float MASTER_HEIGHT = 1440f;
 
         /// <summary>
         /// Logical width of the region the projection describes.

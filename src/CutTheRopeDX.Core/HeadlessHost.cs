@@ -13,10 +13,10 @@ namespace CutTheRopeDX
     internal static class HeadlessHost
     {
         /// <summary>Default logical surface width, matching the engine's master resolution.</summary>
-        public const int DefaultWidth = 2560;
+        public const int DefaultWidth = (int)ViewportLayout.DesignWidth;
 
         /// <summary>Default logical surface height.</summary>
-        public const int DefaultHeight = 1440;
+        public const int DefaultHeight = (int)ViewportLayout.DesignHeight;
 
         /// <summary>Brings the engine up headless. Call once per process.</summary>
         /// <param name="width">Logical surface width.</param>

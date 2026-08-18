@@ -13,7 +13,8 @@ namespace CutTheRopeDX.Framework.Platform
         /// Gets or sets the active presentation instance. Desktop and headless hosts both write
         /// through this single instance.
         /// </summary>
-        public static ScreenPresentation Instance { get; set; } = new(2560, 1440);
+        public static ScreenPresentation Instance { get; set; } =
+            new((int)ViewportLayout.DesignWidth, (int)ViewportLayout.DesignHeight);
 
         /// <summary>
         /// Gets the logical game width.

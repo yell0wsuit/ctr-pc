@@ -244,8 +244,8 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public virtual void UpdateOrientation()
         {
-            PORTRAIT_SCREEN_WIDTH = 2560f;
-            PORTRAIT_SCREEN_HEIGHT = 1440f;
+            PORTRAIT_SCREEN_WIDTH = ViewportLayout.DesignWidth;
+            PORTRAIT_SCREEN_HEIGHT = ViewportLayout.DesignHeight;
             SCREEN_WIDTH = PORTRAIT_SCREEN_WIDTH;
             SCREEN_HEIGHT = PORTRAIT_SCREEN_HEIGHT;
         }

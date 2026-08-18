@@ -35,7 +35,8 @@ PlatformServices.VideoPlayerFactory = () => new BrowserVideoPlayer();
 
 BrowserAssetPlatform assets = new(surface);
 
-ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
+ScreenPresentation.Instance =
+    new ScreenPresentation((int)ViewportLayout.DesignWidth, (int)ViewportLayout.DesignHeight);
 CutTheRopeDX.CtrBootstrap.Initialize(
     assets,
     audio,
