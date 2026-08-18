@@ -1805,6 +1805,7 @@ namespace CutTheRopeDX.GameMain
         {
             DeleteView(1);
             CreateOptions();
+            Relayout(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>
@@ -1865,6 +1866,13 @@ namespace CutTheRopeDX.GameMain
                     CreateLeaderboards();
                     ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
                     ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
+
+                    // Every view above was rebuilt outside a layout pass, the picker on screen
+                    // included, and showing another one begins by drawing that picker to capture
+                    // the screen the crossfade fades from - before the pass inside ShowView runs.
+                    // Placed first, so the fade starts from a menu that is where it belongs rather
+                    // than one still sitting at the design box's own origin.
+                    Relayout(ScreenPresentation.Instance.Snapshot);
                     ShowView(VIEW_OPTIONS);
                 }
                 return;
