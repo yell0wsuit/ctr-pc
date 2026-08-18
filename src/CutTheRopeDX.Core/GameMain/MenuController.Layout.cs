@@ -126,7 +126,7 @@ namespace CutTheRopeDX.GameMain
             LayOutCenteredScenes(visible);
             LayOutLevelSelect(visible);
             LayOutPackSelect(visible);
-            LayOutAbout();
+            LayOutAbout(visible);
             CandySelectionView.Relayout(visible);
             LayOutReset(snapshot);
 
@@ -346,8 +346,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Lays out the About view by rebuilding it when the content scale it was built at no
-        /// longer matches the viewport.
+        /// Lays out the About view: the window the credits scroll inside follows the viewport on
+        /// every pass, and the credits themselves are rebuilt when the content scale they were
+        /// laid out at no longer matches it.
         /// </summary>
         /// <remarks>
         /// Rebuilt rather than rescaled in place, for the same reason the pack picker is: the
@@ -356,28 +357,32 @@ namespace CutTheRopeDX.GameMain
         /// move that building it again does not place correctly. Where the reader had scrolled to
         /// survives, because a resize is not a reason to throw them back to the top.
         /// </remarks>
-        private void LayOutAbout()
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void LayOutAbout(CTRRectangle visible)
         {
-            if (aboutView == null
-                || GetView(VIEW_ABOUT) == null
-                || aboutView.BuiltForScale == FittedScale)
+            if (aboutView == null || GetView(VIEW_ABOUT) == null)
             {
                 return;
             }
 
-            Vector scroll = aboutView.ScrollOffset;
-            bool autoScroll = aboutView.AutoScrollEnabled;
-            bool wasActive = activeViewID == VIEW_ABOUT;
-
-            DeleteView(VIEW_ABOUT);
-            CreateAbout();
-
-            aboutView.ScrollOffset = scroll;
-            aboutView.AutoScrollEnabled = autoScroll;
-            if (wasActive)
+            if (aboutView.BuiltForScale != FittedScale)
             {
-                GetView(VIEW_ABOUT).Show();
+                Vector scroll = aboutView.ScrollOffset;
+                bool autoScroll = aboutView.AutoScrollEnabled;
+                bool wasActive = activeViewID == VIEW_ABOUT;
+
+                DeleteView(VIEW_ABOUT);
+                CreateAbout();
+
+                aboutView.ScrollOffset = scroll;
+                aboutView.AutoScrollEnabled = autoScroll;
+                if (wasActive)
+                {
+                    GetView(VIEW_ABOUT).Show();
+                }
             }
+
+            aboutView.ResizeWindow(visible);
         }
 
         /// <summary>

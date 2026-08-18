@@ -114,8 +114,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured scrollable content container.</returns>
         private static ScrollableContainer BuildAboutContainer(IButtonDelegation buttonDelegate, float scale)
         {
-            float containerWidth = 1300f;
-            float containerHeight = 1100f;
+            float containerWidth = ContainerWidth;
+            float containerHeight = WindowHeight(ScreenPresentation.Instance.Snapshot.VisibleBounds);
 
             // VBox stacks all credit elements vertically within a fixed width.
             VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, containerWidth);
@@ -219,7 +219,63 @@ namespace CutTheRopeDX.GameMain
                 child.y = LayoutMath.CornerAnchoredOffset(child.y, child.height, scale, farEdge: false);
                 child.scaleX = child.scaleY = scale;
             }
+
+            // The box was measured from its children's authored heights, and every one of them
+            // now draws taller than that. How far the credits scroll is read off this height, so
+            // leaving it behind stops the reader short of the end - by the whole of the growth,
+            // which on a phone is the last third of the credits.
+            vBox.height = (int)MathF.Round(vBox.height * scale);
         }
+
+        /// <summary>
+        /// Sizes the scrolling window to the viewport, so a tall screen reads more of the credits
+        /// at once rather than through the slot a landscape one has room for.
+        /// </summary>
+        /// <remarks>
+        /// Applied on every layout pass rather than only when the view is built again: the window
+        /// is a clip rectangle, so unlike the wrap width behind
+        /// <see cref="BuiltForScale"/> it costs nothing to change and needs nothing re-measured.
+        /// The scroll offset is pulled back inside what the resized window can reach, because a
+        /// window that just grew leaves the reader past the end of the credits otherwise.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public void ResizeWindow(CTRRectangle visible)
+        {
+            if (currentContainer == null)
+            {
+                return;
+            }
+
+            currentContainer.width = (int)ContainerWidth;
+            currentContainer.height = (int)WindowHeight(visible);
+
+            Vector scroll = currentContainer.GetScroll();
+            scroll.Y = Framework.Helpers.CTRMathHelper.FIT_TO_BOUNDARIES(
+                scroll.Y,
+                0f,
+                currentContainer.GetMaxScroll().Y);
+            currentContainer.SetScroll(scroll);
+        }
+
+        /// <summary>
+        /// The height of the window the credits scroll inside, on a given viewport.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <returns>The window height in logical units.</returns>
+        private static float WindowHeight(CTRRectangle visible)
+        {
+            return visible.h - (WindowInset * 2f);
+        }
+
+        /// <summary>Width of the column the credits are laid out in.</summary>
+        private const float ContainerWidth = 1300f;
+
+        /// <summary>
+        /// Distance the scrolling window keeps from the top and bottom of the screen. Chosen so
+        /// the window is the height the credits were authored at on the design shape, where the
+        /// viewport is exactly the short side tall.
+        /// </summary>
+        private const float WindowInset = 170f;
 
         /// <summary>
         /// Creates a centered text block with the standard about font.
@@ -236,6 +292,10 @@ namespace CutTheRopeDX.GameMain
         {
             Text block = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             block.SetAlignment(2);
+
+            // Broken mid-word where a word has no break in it, which is what a credits URL is:
+            // wrapping on spaces alone left it running off both sides of the column.
+            block.wrapLongWords = true;
             block.SetStringandWidth(text, (int)(width / scale));
             return block;
         }
