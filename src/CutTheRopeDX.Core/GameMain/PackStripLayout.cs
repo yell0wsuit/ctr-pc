@@ -58,9 +58,29 @@ namespace CutTheRopeDX.GameMain
         /// The scroll points are laid out for a strip <see cref="MaxVisibleBoxes"/> boxes wide,
         /// where the selected box sits in the middle slot on its own. A narrower strip drops slots
         /// from both sides at once, so half a box of scroll per slot dropped puts the selected box
-        /// back in the middle of what is left.
+        /// back in the middle of what is left. Never negative: the strip bounces back from a
+        /// scroll before its own start, so what centers the box is the run-up in front of it
+        /// rather than scrolling past where the content begins.
         /// </remarks>
         public float PackOffset => (MaxVisibleBoxes - VisibleBoxes) * BoxWidth / 2f;
+
+        /// <summary>
+        /// Width of the run-up in front of the first box: a box wide, plus the overlap the gap
+        /// after it takes straight back.
+        /// </summary>
+        /// <remarks>
+        /// A run-up of exactly one box left every box sitting one overlap left of where the scroll
+        /// points expect it, so the selected box was drawn that far left of the middle of the
+        /// strip at every width - invisible between two neighbours, plain on a phone where it is
+        /// the only box the strip shows.
+        /// </remarks>
+        public float LeadingSpacer => BoxWidth - Spacing;
+
+        /// <summary>
+        /// Where the selected box sits inside the strip once it has come to rest, which is the
+        /// middle of it.
+        /// </summary>
+        public float SelectedBoxLeft => LeadingSpacer + Spacing - PackOffset;
 
         /// <summary>Gap between the strip's edge and the frame drawn outside it.</summary>
         public float FrameGap => AuthoredFrameGap * Scale;

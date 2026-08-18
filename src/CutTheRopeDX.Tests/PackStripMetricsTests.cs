@@ -56,6 +56,21 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TheSelectedBoxSitsInTheMiddleOfTheStrip()
+        {
+            // The strip is led by a spacer a whole box wide while its boxes overlap, so the offset
+            // that centers the selected box has to give that overlap back. Without it the box sat
+            // one overlap left of the middle at every width.
+            foreach (LayoutSurface surface in LayoutSurfaces.All)
+            {
+                PackStripLayout strip = LayoutFor(surface.Width, surface.Height);
+
+                Assert.Equal((strip.StripWidth - strip.BoxWidth) / 2f, strip.SelectedBoxLeft, 0.0001);
+                Assert.True(strip.PackOffset >= 0f, $"{surface.Name}: the strip scrolls before its own start");
+            }
+        }
+
+        [Fact]
         public void TheArtworkOfTheSelectedBoxIsDrawnWholeAtEveryWidth()
         {
             // The scroll points are laid out for a three-box strip, and a narrower one gives back
@@ -74,9 +89,7 @@ namespace CutTheRopeDX.Tests
                 {
                     PackStripLayout strip = MenuController.PackStrip();
 
-                    // Where the selected box lands inside the strip: the leading spacer and the
-                    // gap after it, less the scroll the pack offset holds the strip at.
-                    float boxLeft = strip.BoxWidth + strip.Spacing - strip.PackOffset;
+                    float boxLeft = strip.SelectedBoxLeft;
 
                     Assert.True(
                         boxLeft + (artLeftInBox * strip.Scale) >= 0f,
@@ -106,7 +119,7 @@ namespace CutTheRopeDX.Tests
                         0f,
                         strip.StripWidth,
                         ScreenPresentation.Instance.Snapshot.VisibleBounds.h);
-                    float boxLeftAtRest = strip.BoxWidth + strip.Spacing - strip.PackOffset;
+                    float boxLeftAtRest = strip.SelectedBoxLeft;
 
                     CTRRectangle hole = MenuController.MonsterSlot.RevealWindow(
                         boxLeftAtRest,

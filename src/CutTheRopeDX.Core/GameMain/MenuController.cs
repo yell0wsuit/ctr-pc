@@ -1062,7 +1062,7 @@ namespace CutTheRopeDX.GameMain
                     // center like everything else the strip draws, so the drift that puts on his
                     // left edge - the edge his position names - comes back out here.
                     image3.scaleX = image3.scaleY = strip.Scale;
-                    image3.x = packContainer.x + monsterSlot.width + strip.Spacing - strip.PackOffset
+                    image3.x = packContainer.x + strip.SelectedBoxLeft
                         - (image3.width * (1f - strip.Scale) / 2f);
                     image3.y = packContainer.y + (VisibleBounds.h / 2f);
                     image3.parentAnchor = -1;
@@ -1173,7 +1173,7 @@ namespace CutTheRopeDX.GameMain
             CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
             BaseElement baseElement2 = new()
             {
-                width = (int)MathF.Round(texture.preCutSize.X * strip.Scale),
+                width = (int)MathF.Round(strip.LeadingSpacer),
                 height = (int)MathF.Round(texture.preCutSize.Y * strip.Scale)
             };
             _ = hBox2.AddChild(baseElement2);
