@@ -105,6 +105,12 @@ namespace CutTheRopeDX.GameMain
         private HBox levelsStarText;
 
         /// <summary>
+        /// How many buttons per row the language picker was built with, so a viewport that fits a
+        /// different number can be noticed.
+        /// </summary>
+        private int languageColumnsBuiltFor;
+
+        /// <summary>
         /// The visible bounds the pack picker was built for. How many boxes fit across, and
         /// therefore the scroll points, follow from it, so a viewport of a different shape needs
         /// the view built again rather than nudged.
@@ -123,11 +129,12 @@ namespace CutTheRopeDX.GameMain
                 LayOutBackdrop(backdrop, visible);
             }
 
+            LayOutLanguageSelect();
             LayOutCenteredScenes(visible);
             LayOutLevelSelect(visible);
             LayOutPackSelect(visible);
             LayOutAbout(snapshot);
-            CandySelectionView.Relayout(visible);
+            CandySelectionView.Relayout(snapshot);
             LayOutReset(snapshot);
 
             // Every menu's navigation chrome is laid out together: it is the same element playing
@@ -346,6 +353,30 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Lays out the language picker by rebuilding it when the viewport fits a different number
+        /// of buttons across than it was built with.
+        /// </summary>
+        /// <remarks>
+        /// Rebuilt rather than reflowed: the rows are plain buttons, cheap to make again, and the
+        /// picker holds nothing a rebuild would lose.
+        /// </remarks>
+        private void LayOutLanguageSelect()
+        {
+            if (GetView(VIEW_LANGUAGE_SELECT) == null || LanguageColumns() == languageColumnsBuiltFor)
+            {
+                return;
+            }
+
+            bool wasActive = activeViewID == VIEW_LANGUAGE_SELECT;
+            DeleteView(VIEW_LANGUAGE_SELECT);
+            CreateLanguageSelection();
+            if (wasActive)
+            {
+                GetView(VIEW_LANGUAGE_SELECT).Show();
+            }
+        }
+
+        /// <summary>
         /// Lays out the About view: the window the credits scroll inside follows the viewport on
         /// every pass, and the credits themselves are rebuilt when the content scale they were
         /// laid out at no longer matches it.
@@ -406,9 +437,13 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         private void WrapResetText()
         {
+            // Divided by the scale the group it hangs in is drawn at, so what ends up that share
+            // of the screen is the drawn line rather than the one measured before the group grew.
+            // Measured in logical units alone it ran off both edges of a phone screen by the whole
+            // of the boost.
             resetText?.SetStringandWidth(
                 Application.GetString("RESET_TEXT"),
-                VisibleBounds.w * ResetTextWidthShare);
+                VisibleBounds.w * ResetTextWidthShare / FittedScale);
         }
 
         /// <summary>
