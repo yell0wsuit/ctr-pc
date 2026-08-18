@@ -467,6 +467,35 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Places one of the pieces drawn against the edges of the pack strip - a frame down one
+        /// of its sides, or a navigation arrow beside it - at the strip's scale.
+        /// </summary>
+        /// <remarks>
+        /// A piece is scaled about its own center, so the drift that puts on the edge it was
+        /// authored against is taken back out of its position here: the same correction a
+        /// corner-anchored element needs, measured against the strip's edge rather than the
+        /// screen's. Which edge that is, the piece's own anchor names.
+        /// </remarks>
+        /// <param name="element">Piece to place.</param>
+        /// <param name="edgeX">Where the piece's anchored edge belongs, in logical space.</param>
+        /// <param name="scale">Scale the strip is drawn at.</param>
+        /// <param name="mirroredX">Whether the piece is drawn mirrored horizontally.</param>
+        /// <param name="mirroredY">Whether the piece is drawn mirrored vertically.</param>
+        private static void PlacePackEdge(
+            BaseElement element,
+            float edgeX,
+            float scale,
+            bool mirroredX,
+            bool mirroredY)
+        {
+            float drift = element.width * (1f - scale) / 2f;
+            bool anchoredRight = (element.anchor & 4) != 0;
+            element.x = anchoredRight ? edgeX + drift : edgeX - drift;
+            element.scaleX = mirroredX ? -scale : scale;
+            element.scaleY = mirroredY ? -scale : scale;
+        }
+
+        /// <summary>
         /// Whether the host drives the menus by touch. No host reports this yet, so the pointer
         /// branch applies everywhere; it is the conservative one, because it carries the floor.
         /// </summary>
@@ -480,6 +509,18 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Smallest gap between a pack picker arrow and the edge of the screen.</summary>
         private const float PackArrowInset = 10f;
+
+        /// <summary>
+        /// Width the pack strip leaves to the screen around it, so the boxes it shows are never
+        /// pressed against the edges the navigation arrows sit in.
+        /// </summary>
+        private const float PackStripMargin = 200f;
+
+        /// <summary>How many boxes the pack strip shows at once at its widest.</summary>
+        private const int MaxVisibleBoxes = 3;
+
+        /// <summary>Authored gap between two boxes in the pack strip; they overlap slightly.</summary>
+        private const float BoxSpacing = -20f;
 
         /// <summary>Authored offset of a total-stars label from the right edge of the screen.</summary>
         private const float StarTotalInsetX = -30f;
