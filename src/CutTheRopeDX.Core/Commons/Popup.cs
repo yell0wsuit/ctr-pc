@@ -92,6 +92,13 @@ namespace CutTheRopeDX.Commons
             height = (int)visible.h;
             ContentRoot.width = width;
             ContentRoot.height = height;
+
+            // Everything a popup is made of is positioned absolutely, in the design box's own
+            // coordinates - which is the viewport only on a screen of the shape the game was drawn
+            // for. Carrying that box to the middle of whatever the viewport is puts the popup back
+            // in the middle of the screen; on the design shape it moves nothing.
+            ContentRoot.translateX = (visible.w - ViewportLayout.DesignWidth) / 2f;
+            ContentRoot.translateY = (visible.h - ViewportLayout.DesignHeight) / 2f;
         }
 
         /// <summary>
