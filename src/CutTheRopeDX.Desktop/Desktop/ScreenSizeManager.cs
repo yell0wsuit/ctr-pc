@@ -241,9 +241,10 @@ namespace CutTheRopeDX.Desktop
         /// Adopts a window size change and persists the result.
         /// </summary>
         /// <remarks>
-        /// The reported bounds are taken as they are, clamped only against the minimum and the
-        /// display. Nothing here reshapes the window: the layout adapts to whatever the user drags
-        /// it to, so correcting the size would only fight them for control of the frame.
+        /// The reported bounds are taken as they are: the layout adapts to whatever shape the user
+        /// drags the window into, so correcting it would only fight them for control of the frame.
+        /// The one exception is a drag past the floor, which is snapped back to it - below that
+        /// size there is no layout left to adapt.
         /// </remarks>
         /// <param name="newWindowRect">New window bounds reported by the host window.</param>
         public void FixWindowSize(Rectangle newWindowRect)

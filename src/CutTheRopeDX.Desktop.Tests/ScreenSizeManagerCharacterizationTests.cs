@@ -26,6 +26,11 @@ namespace CutTheRopeDX.Desktop.Tests
         [InlineData(400, 1200, 400, 1200)]
         [InlineData(200, 1200, 320, 1200)]
         [InlineData(1600, 200, 1600, 480)]
+        // A window dragged past the floor on both axes snaps back to it, and one dragged to the
+        // floor exactly is left alone.
+        [InlineData(100, 100, 320, 480)]
+        [InlineData(320, 480, 320, 480)]
+        [InlineData(319, 479, 320, 480)]
         // Neither axis may exceed the display.
         [InlineData(5000, 5000, 3840, 2160)]
         public void ClampWindowSizeKeepsTheRequestedAspect(
