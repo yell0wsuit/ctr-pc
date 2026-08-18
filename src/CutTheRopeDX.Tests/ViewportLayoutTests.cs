@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
 
 using Xunit;
@@ -140,6 +141,37 @@ namespace CutTheRopeDX.Tests
             ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720, 2f);
 
             Assert.Equal(2f, snapshot.DevicePixelRatio);
+        }
+
+        [Fact]
+        public void RenderTargetPixelsDoNotCarryTheLetterboxOrigin()
+        {
+            // The frame is drawn into a target the size of the drawn region, and where that region
+            // sits on the surface is applied when it is copied to the screen. A scissor rectangle
+            // that added the origin as well was pushed sideways by the width of the letterbox,
+            // which cut the edge off every element it clipped - a credits column, a grid of skins.
+            ViewportLayoutSnapshot wide = ViewportLayout.Compute(2572, 916);
+            Assert.True(wide.RenderViewport.x > 0f, "the fixture surface should be letterboxed");
+
+            CTRRectangle target = wide.ToRenderTarget(new CTRRectangle(0f, 0f, 100f, 50f));
+
+            Assert.Equal(0f, target.x);
+            Assert.Equal(0f, target.y);
+            Assert.Equal(100f * wide.Scale, target.w, 0.0001);
+            Assert.Equal(50f * wide.Scale, target.h, 0.0001);
+        }
+
+        [Fact]
+        public void RenderTargetPixelsScaleFromLogicalSpace()
+        {
+            ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720);
+
+            CTRRectangle target = snapshot.ToRenderTarget(new CTRRectangle(10f, 20f, 30f, 40f));
+
+            Assert.Equal(10f * snapshot.Scale, target.x, 0.0001);
+            Assert.Equal(20f * snapshot.Scale, target.y, 0.0001);
+            Assert.Equal(30f * snapshot.Scale, target.w, 0.0001);
+            Assert.Equal(40f * snapshot.Scale, target.h, 0.0001);
         }
 
         [Fact]

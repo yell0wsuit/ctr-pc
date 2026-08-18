@@ -37,5 +37,27 @@ namespace CutTheRopeDX.Framework.Platform
         /// supported range and never describes a region that is cropped away.
         /// </summary>
         public float Aspect => VisibleBounds.w / VisibleBounds.h;
+
+        /// <summary>
+        /// Converts a rectangle in logical space to pixels in the render target a frame is drawn
+        /// into.
+        /// </summary>
+        /// <remarks>
+        /// The target is the drawn region's own size, with its own origin. Where that region sits
+        /// on the surface - <see cref="RenderViewport"/>'s corner - is applied when the target is
+        /// copied to the screen, so a rectangle measured in this space must not carry it as well:
+        /// a scissor that did was pushed sideways by the width of the letterbox, and cut the edge
+        /// off whatever it was meant to clip.
+        /// </remarks>
+        /// <param name="logical">Rectangle in logical space.</param>
+        /// <returns>The same rectangle in render target pixels.</returns>
+        public CTRRectangle ToRenderTarget(CTRRectangle logical)
+        {
+            return new CTRRectangle(
+                logical.x * Scale,
+                logical.y * Scale,
+                logical.w * Scale,
+                logical.h * Scale);
+        }
     }
 }

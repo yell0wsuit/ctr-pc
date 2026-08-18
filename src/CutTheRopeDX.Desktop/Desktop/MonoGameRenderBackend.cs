@@ -500,17 +500,16 @@ namespace CutTheRopeDX.Desktop
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
 
-                // The rectangle arrives in logical units and the scissor is set in surface pixels
-                // measured from the render target's corner, so it takes both the published scale
-                // and the origin the drawn region starts at.
-                ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
-                float scale = snapshot.Scale;
-                Framework.CTRRectangle render = snapshot.RenderViewport;
+                // The rectangle arrives in logical units and the scissor is set in the render
+                // target's own pixels, which is what the frame is drawn into; the letterbox origin
+                // is applied when that target is copied to the screen.
+                Framework.CTRRectangle target = ScreenPresentation.Instance.Snapshot.ToRenderTarget(
+                    new Framework.CTRRectangle(x, y, width, height));
                 Rectangle scissorRect = new(
-                    (int)(render.x + (x * scale)),
-                    (int)(render.y + (y * scale)),
-                    (int)(width * scale),
-                    (int)(height * scale));
+                    (int)target.x,
+                    (int)target.y,
+                    (int)target.w,
+                    (int)target.h);
                 Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRect, bounds);
             }
             catch (Exception)
