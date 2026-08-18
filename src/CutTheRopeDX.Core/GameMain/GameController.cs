@@ -691,6 +691,12 @@ namespace CutTheRopeDX.GameMain
             overlayMode = mode;
             overlayModeApplied = true;
 
+            bool gameplay = mode == GameControllerOverlayMode.Gameplay;
+            bool paused = mode == GameControllerOverlayMode.Paused;
+            bool results = mode == GameControllerOverlayMode.Results;
+            bool leavingLiveGameplay = results && previousMode == GameControllerOverlayMode.Gameplay;
+            bool resultCloseAnimation = leavingLiveGameplay && !navigationExitActive;
+
             if (mode == GameControllerOverlayMode.Gameplay)
             {
                 DeactivateAllButtons();
@@ -702,16 +708,28 @@ namespace CutTheRopeDX.GameMain
                 // dropped while paused, stranding the button in its pressed state until restart.
                 ReleaseAllTouches(gameScene);
             }
+            else if (leavingLiveGameplay)
+            {
+                // The HUD buttons are about to stop taking input while staying on screen, so a
+                // press held at the moment gameplay ended has to be cancelled here, while they
+                // can still receive the touch-up. Left alone it would strand a button in its
+                // pressed state for the whole closing animation, in full view.
+                DeactivateAllButtons();
+            }
 
-            bool gameplay = mode == GameControllerOverlayMode.Gameplay;
-            bool paused = mode == GameControllerOverlayMode.Paused;
-            bool resultCloseAnimation = mode == GameControllerOverlayMode.Results
-                && previousMode == GameControllerOverlayMode.Gameplay
-                && !navigationExitActive;
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).SetEnabled(paused);
-            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).SetEnabled(gameplay);
-            view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
+
+            // The HUD buttons belong to the gameplay screen, so they are on show whenever that
+            // screen is - which is every mode except the paused one, where the menu owns the
+            // display. That covers both ways a level ends: finishing it, and quitting from the
+            // pause menu, where dismissing the menu reveals the gameplay screen again for the
+            // box to close over. Either way they ride the animation out inert, exactly as the
+            // collected-star row does, and it is the box drawing over them that takes them off
+            // screen rather than them blinking out from under it.
+            bool hudButtonsVisible = !paused;
+            SetHudButton(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON), hudButtonsVisible, gameplay);
+            SetHudButton(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON), hudButtonsVisible, gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
             gameScene.touchable = gameplay;
             gameScene.updateable = gameplay || resultCloseAnimation;
@@ -1002,6 +1020,24 @@ namespace CutTheRopeDX.GameMain
             // same way one is: fit the group it hangs from and the whole panel lands with it,
             // centered on the viewport it is shown over at every shape of window.
             PlaceFittedGroup(results?.result);
+        }
+
+        /// <summary>
+        /// Shows or hides a HUD button independently of whether it accepts input, which
+        /// <see cref="BaseElement.SetEnabled"/> cannot express because it ties the two together.
+        /// </summary>
+        /// <param name="button">HUD button to configure.</param>
+        /// <param name="visible">Whether the button is drawn.</param>
+        /// <param name="interactive">
+        /// Whether the button responds to touches. Never <see langword="true"/> while
+        /// <paramref name="visible"/> is <see langword="false"/>, which would leave an invisible
+        /// button taking presses.
+        /// </param>
+        private static void SetHudButton(BaseElement button, bool visible, bool interactive)
+        {
+            button.visible = visible;
+            button.updateable = visible;
+            button.touchable = visible && interactive;
         }
 
         /// <summary>

@@ -99,6 +99,76 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TheHudButtonsStayOnScreenButInertWhileTheBoxCloses()
+        {
+            // They ride out the closing box the way the collected-star row does, instead of
+            // blinking out on the frame the level ended. IsEnabled() cannot tell "hidden" from
+            // "shown but not listening", so the two flags are asserted separately.
+            (GameController controller, _) = Load();
+            View view = controller.GetView(0);
+
+            controller.LevelWon(LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2));
+
+            foreach (int id in new[] { GameView.VIEW_ELEMENT_PAUSE_BUTTON, GameView.VIEW_ELEMENT_RESTART_BUTTON })
+            {
+                BaseElement button = view.GetChild(id);
+                Assert.True(button.visible, $"element {id} should still be drawn");
+                Assert.False(button.touchable, $"element {id} should not take input");
+            }
+        }
+
+        [Fact]
+        public void PausingHidesTheHudButtonsOutright()
+        {
+            // The pause menu owns the screen, so the HUD chrome goes away rather than lingering
+            // inert behind it. This is the one mode that hides it.
+            (GameController controller, _) = Load();
+            View view = controller.GetView(0);
+
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            Assert.False(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).visible);
+            Assert.False(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).visible);
+        }
+
+        [Fact]
+        public void QuittingToTheMenuAlsoLeavesTheHudButtonsOnScreenButInert()
+        {
+            // Quitting runs through the pause menu, so the buttons are hidden when the quit is
+            // chosen. Dismissing that menu reveals the gameplay screen again for the box to close
+            // over, and the star row comes back with it - the HUD chrome has to as well, or it is
+            // the one piece of that screen missing for the whole animation.
+            (GameController controller, _) = Load();
+            View view = controller.GetView(0);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            controller.OnButtonPressed(GameControllerButtonId.MainMenu);
+
+            foreach (int id in new[] { GameView.VIEW_ELEMENT_PAUSE_BUTTON, GameView.VIEW_ELEMENT_RESTART_BUTTON })
+            {
+                BaseElement button = view.GetChild(id);
+                Assert.True(button.visible, $"element {id} should still be drawn");
+                Assert.False(button.touchable, $"element {id} should not take input");
+            }
+        }
+
+        [Fact]
+        public void ReturningToGameplayMakesTheHudButtonsLiveAgain()
+        {
+            (GameController controller, _) = Load();
+            View view = controller.GetView(0);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            controller.OnButtonPressed(GameControllerButtonId.Continue);
+
+            foreach (int id in new[] { GameView.VIEW_ELEMENT_PAUSE_BUTTON, GameView.VIEW_ELEMENT_RESTART_BUTTON })
+            {
+                Assert.True(view.GetChild(id).visible);
+                Assert.True(view.GetChild(id).touchable);
+            }
+        }
+
+        [Fact]
         public void ResultsModeFreezesSceneAfterBoxCloseDelay()
         {
             (GameController controller, GameScene scene) = Load();
