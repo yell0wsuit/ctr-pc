@@ -39,4 +39,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Baselines/**/*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

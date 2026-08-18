@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
@@ -11,7 +12,7 @@ namespace CutTheRopeDX.Desktop
     /// <summary>
     /// Manages the OS window, fullscreen toggling, and persisted window settings for the desktop
     /// renderer. Device-free presentation math (scaled view rect, coordinate transforms) lives in
-    /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="ScreenPresentation.SetSurfaceSize"/>
+    /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="CtrRenderer.OnSurfaceChanged"/>
     /// whenever the window or fullscreen bounds change, and implements <see cref="IWindowService"/>
     /// so Core code can command window behavior through <see cref="PlatformServices.Window"/>.
     /// </summary>
@@ -344,8 +345,10 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
-            ScreenPresentation.Instance.FullScreenCropWidth = _fullScreenCropWidth;
-            ScreenPresentation.Instance.SetSurfaceSize(sourceRect.Width, sourceRect.Height);
+            CtrRenderer.OnSurfaceChanged(
+                sourceRect.Width,
+                sourceRect.Height,
+                _fullScreenCropWidth);
         }
 
         private static void ApplyDesktopVkResize(

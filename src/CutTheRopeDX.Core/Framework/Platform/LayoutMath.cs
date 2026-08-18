@@ -1,0 +1,134 @@
+using System;
+
+using CutTheRopeDX.Framework.Core;
+
+namespace CutTheRopeDX.Framework.Platform
+{
+    /// <summary>
+    /// Pure layout arithmetic. Every scene layout is expressed in terms of these, so a fit or
+    /// anchor rule exists in exactly one place and can be tested without a renderer.
+    /// </summary>
+    internal static class LayoutMath
+    {
+        /// <summary>
+        /// Returns the largest rectangle of the given aspect ratio that fits inside
+        /// <paramref name="viewport"/>, centered.
+        /// </summary>
+        /// <param name="designWidth">Width of the design box.</param>
+        /// <param name="designHeight">Height of the design box.</param>
+        /// <param name="viewport">Rectangle to fit inside.</param>
+        /// <returns>The fitted, centered rectangle.</returns>
+        public static CTRRectangle FitInside(float designWidth, float designHeight, CTRRectangle viewport)
+        {
+            float scale = MathF.Min(viewport.w / designWidth, viewport.h / designHeight);
+            float width = designWidth * scale;
+            float height = designHeight * scale;
+            return new CTRRectangle(
+                viewport.x + ((viewport.w - width) / 2f),
+                viewport.y + ((viewport.h - height) / 2f),
+                width,
+                height);
+        }
+
+        /// <summary>
+        /// Returns the uniform scale at which an image of the given size covers
+        /// <paramref name="viewport"/> completely.
+        /// </summary>
+        /// <param name="imageWidth">Natural image width.</param>
+        /// <param name="imageHeight">Natural image height.</param>
+        /// <param name="viewport">Rectangle to cover.</param>
+        /// <returns>The covering scale.</returns>
+        public static float Cover(float imageWidth, float imageHeight, CTRRectangle viewport)
+        {
+            return MathF.Max(viewport.w / imageWidth, viewport.h / imageHeight);
+        }
+
+        /// <summary>
+        /// Returns the top-left position at which an element of the given size sits against
+        /// <paramref name="edge"/> of <paramref name="viewport"/>, inset from it.
+        /// </summary>
+        /// <param name="viewport">Rectangle to anchor against.</param>
+        /// <param name="edge">Which point of the viewport to anchor to.</param>
+        /// <param name="elementWidth">Width of the element being placed.</param>
+        /// <param name="elementHeight">Height of the element being placed.</param>
+        /// <param name="insetX">Horizontal distance from the anchored edge.</param>
+        /// <param name="insetY">Vertical distance from the anchored edge.</param>
+        /// <returns>The element's top-left position.</returns>
+        public static Vector AnchorPosition(
+            CTRRectangle viewport,
+            LayoutEdge edge,
+            float elementWidth,
+            float elementHeight,
+            float insetX,
+            float insetY)
+        {
+            float x = edge switch
+            {
+                LayoutEdge.TopLeft or LayoutEdge.MiddleLeft or LayoutEdge.BottomLeft
+                    => viewport.x + insetX,
+                LayoutEdge.TopCenter or LayoutEdge.MiddleCenter or LayoutEdge.BottomCenter
+                    => viewport.x + ((viewport.w - elementWidth) / 2f),
+                LayoutEdge.TopRight or LayoutEdge.MiddleRight or LayoutEdge.BottomRight
+                    => viewport.x + viewport.w - elementWidth - insetX,
+                _ => throw new ArgumentOutOfRangeException(nameof(edge), edge, null),
+            };
+            float y = edge switch
+            {
+                LayoutEdge.TopLeft or LayoutEdge.TopCenter or LayoutEdge.TopRight
+                    => viewport.y + insetY,
+                LayoutEdge.MiddleLeft or LayoutEdge.MiddleCenter or LayoutEdge.MiddleRight
+                    => viewport.y + ((viewport.h - elementHeight) / 2f),
+                LayoutEdge.BottomLeft or LayoutEdge.BottomCenter or LayoutEdge.BottomRight
+                    => viewport.y + viewport.h - elementHeight - insetY,
+                _ => throw new ArgumentOutOfRangeException(nameof(edge), edge, null),
+            };
+            return new Vector(x, y);
+        }
+
+        /// <summary>
+        /// Linearly remaps <paramref name="value"/> from one range to another. Used for the
+        /// aspect-ratio breakpoints scene layouts interpolate across.
+        /// </summary>
+        /// <param name="value">Value to remap.</param>
+        /// <param name="inMin">Start of the input range.</param>
+        /// <param name="inMax">End of the input range.</param>
+        /// <param name="outMin">Value returned at <paramref name="inMin"/>.</param>
+        /// <param name="outMax">Value returned at <paramref name="inMax"/>.</param>
+        /// <returns>The remapped value, unclamped.</returns>
+        public static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
+        {
+            return outMin + ((value - inMin) / (inMax - inMin) * (outMax - outMin));
+        }
+
+        /// <summary>
+        /// Fits a camera so that <paramref name="levelBounds"/> is entirely visible inside
+        /// <paramref name="viewport"/>, and reports which region of world space that exposes.
+        /// A viewport proportionally wider than the level reveals world beyond it rather than
+        /// adding bars; the anchor chooses where within that slack the window sits.
+        /// </summary>
+        /// <param name="levelBounds">Bounds of the level in world units.</param>
+        /// <param name="viewport">Viewport in logical units.</param>
+        /// <param name="anchorX">Horizontal position within the slack, 0 to 1.</param>
+        /// <param name="anchorY">Vertical position within the slack, 0 to 1.</param>
+        /// <returns>The camera scale and the visible world region.</returns>
+        public static CameraFit FitCamera(
+            CTRRectangle levelBounds,
+            CTRRectangle viewport,
+            float anchorX,
+            float anchorY)
+        {
+            float scale = MathF.Min(viewport.w / levelBounds.w, viewport.h / levelBounds.h);
+            float visibleWidth = viewport.w / scale;
+            float visibleHeight = viewport.h / scale;
+            float slackX = visibleWidth - levelBounds.w;
+            float slackY = visibleHeight - levelBounds.h;
+            return new CameraFit(
+                scale,
+                new CTRRectangle(
+                    levelBounds.x - (slackX * anchorX),
+                    levelBounds.y - (slackY * anchorY),
+                    visibleWidth,
+                    visibleHeight));
+        }
+    }
+}

@@ -768,6 +768,15 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Returns the element's name, or <see langword="null"/> if it has none.
+        /// </summary>
+        /// <returns>The name assigned by <see cref="SetName"/>.</returns>
+        public string GetName()
+        {
+            return name;
+        }
+
+        /// <summary>
         /// Recursively shows all visible children.
         /// </summary>
         public virtual void Show()

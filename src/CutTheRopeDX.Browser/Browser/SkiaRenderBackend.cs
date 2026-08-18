@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -455,12 +456,8 @@ namespace CutTheRopeDX.Browser
                 return;
             }
             using SKImage snapshot = _renderTarget.Snapshot();
-            ScreenPresentation presentation = ScreenPresentation.Instance;
-            SKRect destination = SKRect.Create(
-                presentation.ScaledViewX,
-                presentation.ScaledViewY,
-                presentation.ScaledViewWidth,
-                presentation.ScaledViewHeight);
+            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.LegacyContentBounds;
+            SKRect destination = SKRect.Create(bounds.x, bounds.y, bounds.w, bounds.h);
             surface.Canvas.Clear(SKColors.Black);
             surface.Canvas.DrawImage(snapshot, destination, LinearSampling, paint: null);
         }

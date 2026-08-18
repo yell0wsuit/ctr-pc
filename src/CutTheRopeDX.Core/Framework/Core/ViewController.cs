@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.Framework.Core
@@ -11,6 +12,45 @@ namespace CutTheRopeDX.Framework.Core
     /// </summary>
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {
+        /// <summary>
+        /// The coordinate box this controller's fixed content is authored in. Defaults to the
+        /// full design size, which reproduces the fixed layout the game shipped with.
+        /// </summary>
+        protected CTRRectangle DesignBox { get; set; } = new(
+            0f,
+            0f,
+            ViewportLayout.DesignWidth,
+            ViewportLayout.DesignHeight);
+
+        /// <summary>
+        /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
+        /// on read from the published viewport rather than cached, so it is correct the instant
+        /// the viewport changes and there is no second copy to keep in step.
+        /// </summary>
+        protected CTRRectangle FittedBox => LayoutMath.FitInside(
+            DesignBox.w,
+            DesignBox.h,
+            ScreenPresentation.Instance.Snapshot.VisibleBounds);
+
+        /// <summary>
+        /// Uniform scale from design-box coordinates to logical space.
+        /// </summary>
+        protected float FittedScale => FittedBox.w / DesignBox.w;
+
+        /// <summary>
+        /// Converts a pointer position in logical space into this controller's design space, so a
+        /// hit test against unscaled element rectangles lands where the element was drawn.
+        /// </summary>
+        /// <param name="logicalX">Pointer X in logical space.</param>
+        /// <param name="logicalY">Pointer Y in logical space.</param>
+        /// <returns>The pointer position in design space.</returns>
+        protected Vector PointerToDesignSpace(float logicalX, float logicalY)
+        {
+            CTRRectangle fitted = FittedBox;
+            float scale = fitted.w / DesignBox.w;
+            return Vect((logicalX - fitted.x) / scale, (logicalY - fitted.y) / scale);
+        }
+
         /// <summary>
         /// Initializes a controller with no parent.
         /// </summary>
@@ -109,6 +149,29 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Positions this controller's content for the given viewport. Called when the viewport
+        /// changes and when this controller becomes active, never on an ordinary frame.
+        /// </summary>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        protected virtual void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+        }
+
+        /// <summary>
+        /// Lays out this controller and every active descendant. Inactive children are skipped;
+        /// they lay out when they are activated.
+        /// </summary>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        public void RelayoutTree(ViewportLayoutSnapshot snapshot)
+        {
+            Relayout(snapshot);
+            if (activeChildID != -1)
+            {
+                GetChild(activeChildID)?.RelayoutTree(snapshot);
+            }
+        }
+
+        /// <summary>
         /// Registers a view under the specified identifier.
         /// </summary>
         /// <param name="v">View to register.</param>
@@ -157,6 +220,7 @@ namespace CutTheRopeDX.Framework.Core
             View view = views[n];
             Application.SharedRootController().OnControllerViewShow(view);
             view.Show();
+            Relayout(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>

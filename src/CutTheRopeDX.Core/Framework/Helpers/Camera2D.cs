@@ -9,6 +9,11 @@ namespace CutTheRopeDX.Framework.Helpers
     internal sealed class Camera2D : FrameworkTypes
     {
         /// <summary>
+        /// Uniform world-to-view scale. One means world units and view units coincide.
+        /// </summary>
+        public float Scale { get; set; } = 1f;
+
+        /// <summary>
         /// Initializes the camera with the specified movement speed and camera mode.
         /// </summary>
         /// <param name="s">Camera movement speed or proportional factor.</param>
@@ -65,10 +70,21 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
+        /// Adopts a computed fit: takes its scale and snaps to the origin of its visible region.
+        /// </summary>
+        /// <param name="fit">The fit to adopt.</param>
+        public void ApplyFit(CameraFit fit)
+        {
+            Scale = fit.Scale;
+            MoveToXYImmediate(fit.VisibleWorld.x, fit.VisibleWorld.y, true);
+        }
+
+        /// <summary>
         /// Applies the current camera translation to the renderer.
         /// </summary>
         public void ApplyCameraTransformation()
         {
+            Renderer.Scale(Scale, Scale, 1f);
             Renderer.Translate(-pos.X, -pos.Y, 0f);
         }
 
@@ -78,6 +94,38 @@ namespace CutTheRopeDX.Framework.Helpers
         public void CancelCameraTransformation()
         {
             Renderer.Translate(pos.X, pos.Y, 0f);
+            Renderer.Scale(1f / Scale, 1f / Scale, 1f);
+        }
+
+        /// <summary>
+        /// Converts a point in screen space into world space.
+        /// </summary>
+        /// <param name="sx">Screen-space X coordinate.</param>
+        /// <param name="sy">Screen-space Y coordinate.</param>
+        /// <returns>The corresponding world-space point.</returns>
+        public Vector ScreenToWorld(float sx, float sy)
+        {
+            return Vect(ScreenToWorldX(sx), ScreenToWorldY(sy));
+        }
+
+        /// <summary>
+        /// Converts a screen-space X coordinate into world space.
+        /// </summary>
+        /// <param name="sx">Screen-space X coordinate.</param>
+        /// <returns>The corresponding world-space X coordinate.</returns>
+        public float ScreenToWorldX(float sx)
+        {
+            return (sx / Scale) + pos.X;
+        }
+
+        /// <summary>
+        /// Converts a screen-space Y coordinate into world space.
+        /// </summary>
+        /// <param name="sy">Screen-space Y coordinate.</param>
+        /// <returns>The corresponding world-space Y coordinate.</returns>
+        public float ScreenToWorldY(float sy)
+        {
+            return (sy / Scale) + pos.Y;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Runtime.InteropServices.JavaScript;
 
 using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
@@ -30,11 +31,11 @@ namespace CutTheRopeDX.Browser
         [JSExport]
         internal static void OnPointer(double x, double y, int phase)
         {
-            ScreenPresentation presentation = ScreenPresentation.Instance;
-            int viewX = presentation.TransformWindowToViewX((int)x);
-            int viewY = presentation.TransformWindowToViewY((int)y);
-            float logicalX = presentation.TransformViewToGameX(viewX);
-            float logicalY = presentation.TransformViewToGameY(viewY);
+            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.LegacyContentBounds;
+            float viewX = (float)x - bounds.x;
+            float viewY = (float)y - bounds.y;
+            float logicalX = viewX * ViewportLayout.DesignWidth / bounds.w;
+            float logicalY = viewY * ViewportLayout.DesignHeight / bounds.h;
 
             _ = Application.SharedRootController().MouseMoved(logicalX, logicalY);
 

@@ -28,13 +28,24 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <summary>
-        /// Updates the logical screen metrics after the platform surface size changes.
+        /// The sole entry point for a surface size change. Publishes the viewport snapshot and
+        /// derives the screen metrics from it in one transition, so no consumer can observe a
+        /// half-updated state.
         /// </summary>
         /// <param name="width">The new surface width in pixels.</param>
         /// <param name="height">The new surface height in pixels.</param>
-        public static void OnSurfaceChanged(int width, int height)
+        /// <param name="cropWidth">
+        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
+        /// aspect.
+        /// </param>
+        public static void OnSurfaceChanged(int width, int height, bool cropWidth = true)
         {
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
             Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
+            if (changed)
+            {
+                Application.ExistingRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+            }
         }
 
         /// <summary>

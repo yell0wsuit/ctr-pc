@@ -24,7 +24,6 @@ namespace CutTheRopeDX
         /// <param name="language">Language to initialize with.</param>
         public static void Boot(int width, int height, Language language)
         {
-            ScreenPresentation.Instance.SetSurfaceSize(width, height);
             CtrBootstrap.Initialize(new HeadlessAssetPlatform(), null, width, height, language);
         }
 
