@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
@@ -38,6 +39,49 @@ namespace CutTheRopeDX.Tests
             Assert.True(
                 broken.height > unbroken.height,
                 $"the link still laid out as one line of {unbroken.height}");
+        }
+
+        [Theory]
+        [InlineData(100f)]
+        [InlineData(140f)]
+        [InlineData(180f)]
+        [InlineData(220f)]
+        [InlineData(257f)]
+        public void NoLineOfABrokenWordIsWiderThanTheColumn(float column)
+        {
+            // The break used to land after the character that overflowed rather than before it,
+            // so a broken line came out up to one character wider than the column. The credits
+            // column is exactly as wide as the container it scrolls in, so that character was
+            // drawn past the clip - half of it off each end of a centered line, which is how the
+            // project link read on an iPad or an ultrawide.
+            _ = HeadlessGame.Boot();
+
+            Text broken = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
+            broken.wrapLongWords = true;
+            broken.SetStringandWidth("https://github.com/yell0wsuit/cuttherope-dx/", column);
+
+            Assert.True(broken.Lines.Count > 1, $"the link fitted a {column} column unbroken");
+            foreach (FormattedString line in broken.Lines)
+            {
+                Assert.True(
+                    line.width <= column,
+                    $"a {line.width} line in a {column} column: \"{line.string_}\"");
+            }
+        }
+
+        [Fact]
+        public void ABrokenWordKeepsEveryCharacter()
+        {
+            // Breaking before the overflowing character has to carry it onto the next line, not
+            // drop it.
+            _ = HeadlessGame.Boot();
+
+            const string url = "https://github.com/yell0wsuit/cuttherope-dx/";
+            Text broken = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
+            broken.wrapLongWords = true;
+            broken.SetStringandWidth(url, 100f);
+
+            Assert.Equal(url, string.Concat(broken.Lines.Select(line => line.string_)));
         }
 
         [Fact]
