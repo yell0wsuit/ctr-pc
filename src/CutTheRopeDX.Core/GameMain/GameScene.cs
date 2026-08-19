@@ -318,12 +318,11 @@ namespace CutTheRopeDX.GameMain
         /// Sizes and positions the level-name label for the current viewport.
         /// </summary>
         /// <remarks>
-        /// The label's Y offset is a small negative fine-tune of its own font metrics (see
-        /// <see cref="LevelLabelInsetY"/>'s remarks), not a margin meant to read bigger along with
-        /// the rest of the HUD, so growing it the way an authored margin grows would push the
-        /// label further off the bottom edge as the scale climbs - the opposite of legible. It is
-        /// held at its unscaled screen position instead, and only the label's own size grows
-        /// around that fixed point.
+        /// Both insets are margins from their own edge of the viewport, so both grow with the HUD
+        /// the label belongs to: a label drawn half again as large against a margin that stayed
+        /// where it was would sit proportionally tighter into the corner the larger it got. The
+        /// Y offset was once a negative fine-tune of the font's metrics and was deliberately held
+        /// unscaled for that reason; it is a real margin now, and is treated like the X one.
         /// </remarks>
         private void PlaceLevelLabel()
         {
@@ -338,9 +337,9 @@ namespace CutTheRopeDX.GameMain
             levelLabel.x = LayoutMath.CornerAnchoredOffset(LevelLabelInsetX, levelLabel.width, hudScale, farEdge: false);
 
             bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-            float bottomInset = isChinese ? 0f : LevelLabelInsetY;
-            float targetBottom = VisibleBounds.h - bottomInset;
-            levelLabel.y = targetBottom + (levelLabel.height / 2f * (1f - hudScale));
+            float bottomInset = isChinese ? LevelLabelInsetYCJK : LevelLabelInsetY;
+            levelLabel.y = VisibleBounds.h
+                + LayoutMath.CornerAnchoredOffset(-bottomInset, levelLabel.height, hudScale, farEdge: true);
         }
 
         /// <summary>

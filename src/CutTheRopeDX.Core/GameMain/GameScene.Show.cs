@@ -123,15 +123,30 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Vertical offset, in design units, subtracted from <see cref="FrameworkTypes.VisibleBounds"/>'s
-        /// height to place the non-CJK level-number label. Negative because the shipped position
-        /// sits slightly below the design bounds.
+        /// height to place the non-CJK level-number label, lifting it clear of the bottom edge.
         /// </summary>
-        private const float LevelLabelInsetY = -15f;
+        /// <remarks>
+        /// The label used to be placed at -15, hanging below the bounds rather than sitting
+        /// inside them, which read as clipped on a viewport that draws the HUD large. These are
+        /// the H5 edition's numbers instead: its base profile is the same 2560x1440 design space,
+        /// so its authored offsets are read in the same units and transplant as written.
+        /// </remarks>
+        private const float LevelLabelInsetY = 5f;
+
+        /// <summary>
+        /// <see cref="LevelLabelInsetY"/> for CJK, whose taller glyph box sits lower in the line.
+        /// </summary>
+        /// <remarks>
+        /// Carries across the 15-unit lift this branch has always had over the Latin one. The H5
+        /// edition places every language alike, so there is nothing to copy here - only the
+        /// existing correction to preserve, now that the edge it is measured from has moved.
+        /// </remarks>
+        private const float LevelLabelInsetYCJK = 20f;
 
         /// <summary>
         /// Authored offset, in design units, of the level-number label from the left edge.
         /// </summary>
-        private const float LevelLabelInsetX = 15f;
+        private const float LevelLabelInsetX = 37f;
 
         /// <summary>
         /// Resolves the level's display name from its <c>levelName</c> attribute.
