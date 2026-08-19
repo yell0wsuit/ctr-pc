@@ -131,7 +131,7 @@ namespace CutTheRopeDX.GameMain
 
             LayOutLanguageSelect();
             LayOutCenteredScenes(visible);
-            LayOutLevelSelect(visible);
+            LayOutLevelSelect(snapshot);
             LayOutPackSelect(visible);
             LayOutAbout(snapshot);
             CandySelectionView.Relayout(snapshot);
@@ -141,8 +141,7 @@ namespace CutTheRopeDX.GameMain
             // the same role in each, and a scene that is not built yet simply has none to place.
             foreach (KeyValuePair<int, View> entry in views)
             {
-                PlaceCornerChrome(entry.Value?.GetChildWithName("backb") as Button, snapshot);
-                PlaceCornerChrome(entry.Value?.GetChildWithName("backButton") as Button, snapshot);
+                PlaceCornerChrome(BackButton(entry.Value), snapshot);
             }
         }
 
@@ -223,14 +222,15 @@ namespace CutTheRopeDX.GameMain
         /// mirrored about the middle of the screen, so the seam between the halves is the anchor
         /// everything on it is placed from.
         /// </summary>
-        /// <param name="visible">The logical region the viewport exposes.</param>
-        private void LayOutLevelSelect(CTRRectangle visible)
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        private void LayOutLevelSelect(ViewportLayoutSnapshot snapshot)
         {
             if (levelsCoverLeft == null)
             {
                 return;
             }
 
+            CTRRectangle visible = snapshot.VisibleBounds;
             float scale = FullScreenScale(visible, 1f);
             float seam = visible.w / 2f;
             float coverWidth = levelsCoverLeft.width;
@@ -260,16 +260,32 @@ namespace CutTheRopeDX.GameMain
                 // the pre-scale size while the content draws at the larger, scaled one.
                 levelsBox.width = (int)visible.w;
                 levelContainer.width = (int)visible.w;
-                levelContainer.height = (int)(visible.h - LevelsTopInset);
+
+                // Stopped above the button in the corner as well as below the top inset. The grid
+                // spans the whole width here, so unlike the fitted one it has no room to stand
+                // clear of that corner sideways: the last row would be scrolled to a rest under
+                // the button, and a tile under the button cannot be pressed.
+                levelContainer.height = (int)(visible.h
+                    - LevelsTopInset
+                    - CornerChromeRect(BackButton(GetView(VIEW_LEVEL_SELECT)), snapshot).h);
             }
             else
             {
                 // Capped so the widest row never grows past what the viewport actually shows -
                 // FittedScale alone assumes content narrow enough never to approach the design
-                // box's own edges, which a multi-column grid can violate well before that.
+                // box's own edges, which a multi-column grid can violate well before that - and
+                // then capped again against the chrome in the corners, which the grid would
+                // otherwise be drawn under.
                 float gridScale = levelsGridWidth > 0f
                     ? MathF.Min(FittedScale, visible.w / levelsGridWidth)
                     : FittedScale;
+                gridScale = LevelGridFit.ScaleFor(
+                    visible,
+                    gridScale,
+                    levelsGridWidth,
+                    levelsBox?.height ?? 0f,
+                    StarTotalRect(levelsStarText, visible),
+                    CornerChromeRect(BackButton(GetView(VIEW_LEVEL_SELECT)), snapshot));
                 PlaceFittedGroup(levelsGroup, gridScale);
             }
 
@@ -297,6 +313,70 @@ namespace CutTheRopeDX.GameMain
             starText.scaleX = starText.scaleY = scale;
             starText.x = LayoutMath.CornerAnchoredOffset(StarTotalInsetX, starText.width, scale, farEdge: true);
             starText.y = LayoutMath.CornerAnchoredOffset(StarTotalInsetY, starText.height, scale, farEdge: false);
+        }
+
+        /// <summary>
+        /// Where a total-stars label placed by <see cref="PlaceStarTotal"/> is drawn.
+        /// </summary>
+        /// <param name="starText">Label to measure, or <see langword="null"/> when the scene has none.</param>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <returns>The label's drawn rectangle, empty when there is no label.</returns>
+        private static CTRRectangle StarTotalRect(BaseElement starText, CTRRectangle visible)
+        {
+            if (starText == null)
+            {
+                return new CTRRectangle(0f, 0f, 0f, 0f);
+            }
+
+            float scale = FittedScale;
+            float width = starText.width * scale;
+            float height = starText.height * scale;
+            return new CTRRectangle(
+                visible.w - width + StarTotalInsetX,
+                StarTotalInsetY,
+                width,
+                height);
+        }
+
+        /// <summary>
+        /// The navigation button in a view's bottom-left corner, whichever of the two names the
+        /// scenes give it.
+        /// </summary>
+        /// <remarks>
+        /// The level picker calls it one thing and every other scene the other. Asked for by one
+        /// name alone, the picker's button came back as nothing at all - and the grid, told there
+        /// was no chrome to clear, was drawn straight over it.
+        /// </remarks>
+        /// <param name="view">View to look in, or <see langword="null"/>.</param>
+        /// <returns>The button, or <see langword="null"/> when the view has none.</returns>
+        private static Button BackButton(View view)
+        {
+            return (view?.GetChildWithName("backb") ?? view?.GetChildWithName("backButton")) as Button;
+        }
+
+        /// <summary>
+        /// Where the navigation button in the bottom-left corner is drawn.
+        /// </summary>
+        /// <param name="button">Button to measure, or <see langword="null"/> when the scene has none.</param>
+        /// <param name="snapshot">The viewport to measure against.</param>
+        /// <returns>The room the button takes in that corner, empty when there is no button.</returns>
+        private static CTRRectangle CornerChromeRect(Button button, ViewportLayoutSnapshot snapshot)
+        {
+            if (button == null)
+            {
+                return new CTRRectangle(0f, 0f, 0f, 0f);
+            }
+
+            ChromeRoom room = HudMetrics.RoomFor(
+                snapshot,
+                button.width,
+                button.height,
+                HudMetrics.IsTouchHost);
+            return new CTRRectangle(
+                0f,
+                snapshot.VisibleBounds.h - room.Height,
+                room.Width,
+                room.Height);
         }
 
         /// <summary>
