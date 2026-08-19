@@ -234,11 +234,12 @@ namespace CutTheRopeDX.GameMain
             float scale = FullScreenScale(visible, 1f);
             float seam = visible.w / 2f;
             float coverWidth = levelsCoverLeft.width;
-            float coverTop = LayoutMath.CornerAnchoredOffset(
+            float coverTopEdge = LevelCoverTopEdge(visible, levelsCoverLeft.height, scale);
+            float coverTop = coverTopEdge + LayoutMath.CornerAnchoredOffset(
                 0f, levelsCoverLeft.height, scale, farEdge: false);
 
             // Each half is scaled about its own center, so its position is chosen to put the
-            // scaled inner edge on the seam and the scaled top edge on the top of the screen.
+            // scaled inner edge on the seam and the scaled top edge where the cover starts.
             levelsCoverLeft.scaleX = levelsCoverLeft.scaleY = scale;
             levelsCoverLeft.x = seam - (coverWidth * (1f + scale) / 2f);
             levelsCoverLeft.y = coverTop;
@@ -388,8 +389,29 @@ namespace CutTheRopeDX.GameMain
         private void PlaceLevelSpines(CTRRectangle visible)
         {
             float scale = FullScreenScale(visible, 1f);
-            PlaceLevelSpine(levelsSpineLeft, 6, visible, scale);
-            PlaceLevelSpine(levelsSpineRight, 7, visible, scale);
+            float coverTopEdge = LevelCoverTopEdge(visible, levelsCoverLeft.height, scale);
+            PlaceLevelSpine(levelsSpineLeft, 6, visible, scale, coverTopEdge);
+            PlaceLevelSpine(levelsSpineRight, 7, visible, scale, coverTopEdge);
+        }
+
+        /// <summary>
+        /// Where the top edge of the level picker's box cover is drawn.
+        /// </summary>
+        /// <remarks>
+        /// The cover is authored to fill the design box exactly and is grown to cover whatever the
+        /// viewport exposes instead, which on a window wider than the design shape makes it taller
+        /// than the screen. That growth is split between the top and the bottom, because the
+        /// painting is lit about its own middle: hung entirely off the bottom, as it was, a window
+        /// half again as wide as 16:9 put the cover's middle on the bottom edge of the screen and
+        /// left the dark end of it across the top.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <param name="coverHeight">The cover's authored height.</param>
+        /// <param name="scale">Scale the cover is drawn at.</param>
+        /// <returns>The cover's drawn top edge, at or above the top of the screen.</returns>
+        private static float LevelCoverTopEdge(CTRRectangle visible, float coverHeight, float scale)
+        {
+            return (visible.h - (coverHeight * scale)) / 2f;
         }
 
         /// <summary>
@@ -399,13 +421,23 @@ namespace CutTheRopeDX.GameMain
         /// <param name="quad">Its quad in the level picker's texture, which carries its authored position.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
         /// <param name="scale">Scale the box cover is drawn at.</param>
-        private static void PlaceLevelSpine(Image spine, int quad, CTRRectangle visible, float scale)
+        /// <param name="coverTopEdge">Where the cover the binding sits on starts.</param>
+        private static void PlaceLevelSpine(
+            Image spine,
+            int quad,
+            CTRRectangle visible,
+            float scale,
+            float coverTopEdge)
         {
             float authoredX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, quad).X;
             float fromSeam = authoredX + (spine.width / 2f) - (ViewportLayout.DesignWidth / 2f);
             spine.scaleX = spine.scaleY = scale;
             spine.x = (visible.w / 2f) + (fromSeam * scale) - (spine.width / 2f);
-            spine.y = LayoutMath.CornerAnchoredOffset(LevelsSpineTop, spine.height, scale, farEdge: false);
+
+            // Measured down from the cover rather than from the screen: the binding is part of the
+            // painting, so it travels with it when the cover is taller than the screen.
+            spine.y = coverTopEdge
+                + LayoutMath.CornerAnchoredOffset(LevelsSpineTop, spine.height, scale, farEdge: false);
         }
 
         /// <summary>
