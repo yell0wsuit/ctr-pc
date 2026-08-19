@@ -62,10 +62,12 @@ namespace CutTheRopeDX
         }
 
         /// <summary>
-        /// Sizes the preferred back buffer to the saved windowed dimensions before the graphics device is
-        /// created, so the swapchain is born at its final size. Without this the device starts at MonoGame's
-        /// default size and the first window sizing in <see cref="LoadContent"/> rebuilds the swapchain,
-        /// flashing black during launch. Skipped when the last session was fullscreen, which is sized later.
+        /// Sizes the back buffer to the saved windowed dimensions before the window is shown, so the
+        /// swapchain reaches its final size without the first window sizing in
+        /// <see cref="LoadContent"/> having to rebuild it - which flashes black during launch and,
+        /// on a host that animates window resizes, leaves the drawable changing under a fixed
+        /// swapchain for as long as the animation runs. Skipped when the last session was
+        /// fullscreen, which is sized later.
         /// </summary>
         private static void PresizeSwapchain()
         {
@@ -82,6 +84,7 @@ namespace CutTheRopeDX
                 displayMode.Height);
             Global.GraphicsDeviceManager.PreferredBackBufferWidth = size.X;
             Global.GraphicsDeviceManager.PreferredBackBufferHeight = size.Y;
+            Global.GraphicsDeviceManager.ApplyChanges();
         }
 
         /// <summary>
