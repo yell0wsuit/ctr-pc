@@ -15,10 +15,16 @@ namespace CutTheRopeDX.Commons
         /// </summary>
         public Popup()
         {
-            ContentRoot = new BaseElement
+            // The design box, centered in the popup. Everything a popup is made of is positioned
+            // in that box's own coordinates, so hanging it all from a box of exactly that size
+            // means one element - this one - carries the whole popup to the middle of whatever the
+            // viewport is, and every child's own rectangle moves with it. Moving the drawing alone
+            // would leave those rectangles where they were, and a button is pressed by its
+            // rectangle.
+            ContentRoot = new PopupContent
             {
-                width = (int)VisibleBounds.w,
-                height = (int)VisibleBounds.h,
+                width = (int)ViewportLayout.DesignWidth,
+                height = (int)ViewportLayout.DesignHeight,
                 anchor = CENTER,
                 parentAnchor = CENTER
             };
@@ -88,17 +94,10 @@ namespace CutTheRopeDX.Commons
         /// <param name="visible">The logical region the viewport exposes.</param>
         public void Resize(CTRRectangle visible)
         {
+            // Only the popup itself follows the viewport; the design box inside it keeps its own
+            // size and is centered on whatever that comes to.
             width = (int)visible.w;
             height = (int)visible.h;
-            ContentRoot.width = width;
-            ContentRoot.height = height;
-
-            // Everything a popup is made of is positioned absolutely, in the design box's own
-            // coordinates - which is the viewport only on a screen of the shape the game was drawn
-            // for. Carrying that box to the middle of whatever the viewport is puts the popup back
-            // in the middle of the screen; on the design shape it moves nothing.
-            ContentRoot.translateX = (visible.w - ViewportLayout.DesignWidth) / 2f;
-            ContentRoot.translateY = (visible.h - ViewportLayout.DesignHeight) / 2f;
         }
 
         /// <summary>
@@ -114,6 +113,28 @@ namespace CutTheRopeDX.Commons
         /// Gets the root element that hosts popup content (background, text, buttons, etc.).
         /// </summary>
         public BaseElement ContentRoot { get; }
+
+        /// <summary>
+        /// The box a popup is composed in. Everything put in it is anchored to its top left
+        /// corner, in the design box's own coordinates, which is what the popup's pieces are
+        /// positioned in.
+        /// </summary>
+        /// <remarks>
+        /// Anchored here rather than at each place a piece is added, so a piece added without a
+        /// thought for it still moves with the box. Absolute placement - what a child gets by
+        /// default - would leave the piece where the design box would put it on a screen of the
+        /// design's own shape, and leave the rectangle it is pressed by there too.
+        /// </remarks>
+        private sealed class PopupContent : BaseElement
+        {
+            /// <inheritdoc />
+            public override int AddChildwithID(BaseElement c, int i)
+            {
+                int childId = base.AddChildwithID(c, i);
+                c.parentAnchor = TOP | LEFT;
+                return childId;
+            }
+        }
 
         /// <summary>
         /// Applies a uniform or non-uniform scale to the popup content root.
