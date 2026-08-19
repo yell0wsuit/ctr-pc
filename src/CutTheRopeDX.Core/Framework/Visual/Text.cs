@@ -343,6 +343,7 @@ namespace CutTheRopeDX.Framework.Visual
             while (cursor < textLength)
             {
                 char c = characters[cursor++];
+                float advance = 0f;
                 if (c is ' ' or '\n' or '*')
                 {
                     lineWidth += wordWidth;
@@ -357,20 +358,34 @@ namespace CutTheRopeDX.Framework.Visual
                 }
                 else
                 {
-                    wordWidth += font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, textLength);
+                    advance = font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, textLength);
+                    wordWidth += advance;
                 }
                 bool exceedsWrap = lineWidth + wordWidth > wrapWidth;
                 if (wrapLongWords && exceedsWrap && lineEnd == lineStart)
                 {
-                    lineWidth += wordWidth;
-                    lineEnd = cursor;
-                    wordWidth = 0f;
-                    wordStart = cursor;
+                    // Broken before the character that overflowed rather than after it: a line a
+                    // long word is broken into has to fit the wrap width like any other, or it is
+                    // drawn past whatever clips the text - and for a column as wide as the
+                    // container it scrolls in, that is both of its edges. The character carries
+                    // its own width onto the line it starts instead. One wider than the whole
+                    // column has nowhere to go, so it stays where it is and the line holds it
+                    // alone.
+                    bool nowhereToBreak = cursor - 1 == lineStart;
+                    lineWidth += nowhereToBreak ? wordWidth : wordWidth - advance;
+                    lineEnd = nowhereToBreak ? cursor : cursor - 1;
+                    wordWidth = nowhereToBreak ? 0f : advance;
+                    wordStart = lineEnd;
                 }
                 if ((lineWidth + wordWidth > wrapWidth && lineEnd != lineStart) || c == '\n')
                 {
+                    // The line can end before it starts: trimming the spaces a line break leaves
+                    // behind runs the start of the next line past the character being read, and a
+                    // second break arriving before the reading catches up would then describe a
+                    // line of negative length. What the text means there is an empty line, which
+                    // is what an end held at the start describes.
                     array[rangesLength++] = (short)lineStart;
-                    array[rangesLength++] = (short)lineEnd;
+                    array[rangesLength++] = (short)MAX(lineEnd, lineStart);
                     while (wordStart < textLength && characters[wordStart] == ' ')
                     {
                         wordStart++;
@@ -459,6 +474,11 @@ namespace CutTheRopeDX.Framework.Visual
         /// Whether to break long words that exceed the wrap width.
         /// </summary>
         public bool wrapLongWords;
+
+        /// <summary>
+        /// The lines the text was wrapped into, each with the width it measured.
+        /// </summary>
+        public IReadOnlyList<FormattedString> Lines => formattedStrings;
 
         /// <summary>
         /// Enables the ping-pong scrolling effect for text that overflows <see cref="pingPongClipWidth"/>.

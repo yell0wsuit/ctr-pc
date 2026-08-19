@@ -290,6 +290,31 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Repositions this element and its descendants for a new viewport.
+        /// </summary>
+        /// <remarks>
+        /// The default walks the subtree and does nothing else, so only elements that size or
+        /// place themselves against the screen need to override it. An element that does can be
+        /// reached wherever it is in the tree, without whoever owns the scene holding a reference
+        /// to it just to keep it current.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public virtual void Relayout(CTRRectangle visible)
+        {
+            int processed = 0;
+            int childId = 0;
+            while (processed < childs.Count)
+            {
+                if (childs.TryGetValue(childId, out BaseElement child))
+                {
+                    child?.Relayout(visible);
+                    processed++;
+                }
+                childId++;
+            }
+        }
+
+        /// <summary>
         /// Updates children and advances the current timeline by <paramref name="delta"/> seconds.
         /// </summary>
         /// <param name="delta">Elapsed time in seconds.</param>
@@ -977,7 +1002,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Horizontal translation offset applied during drawing.
         /// </summary>
-        private readonly float translateX;
+        public float translateX;
 
         /// <summary>
         /// Vertical translation offset applied during drawing.

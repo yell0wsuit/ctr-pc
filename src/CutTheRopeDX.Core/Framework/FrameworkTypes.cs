@@ -76,86 +76,6 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Transforms a logical X coordinate to a real screen X coordinate.
-        /// </summary>
-        /// <param name="x">Logical X coordinate.</param>
-        /// <returns>The corresponding real screen X coordinate.</returns>
-        public static float TransformToRealX(float x)
-        {
-            return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
-        }
-
-        /// <summary>
-        /// Transforms a logical Y coordinate to a real screen Y coordinate.
-        /// </summary>
-        /// <param name="y">Logical Y coordinate.</param>
-        /// <returns>The corresponding real screen Y coordinate.</returns>
-        public static float TransformToRealY(float y)
-        {
-            return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
-        }
-
-        /// <summary>
-        /// Transforms a real screen X coordinate to a logical X coordinate.
-        /// </summary>
-        /// <param name="x">Real screen X coordinate.</param>
-        /// <returns>The corresponding logical X coordinate.</returns>
-        public static float TransformFromRealX(float x)
-        {
-            return (x - VIEW_OFFSET_X) * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
-        }
-
-        /// <summary>
-        /// Transforms a real screen Y coordinate to a logical Y coordinate.
-        /// </summary>
-        /// <param name="y">Real screen Y coordinate.</param>
-        /// <returns>The corresponding logical Y coordinate.</returns>
-        public static float TransformFromRealY(float y)
-        {
-            return (y - VIEW_OFFSET_Y) * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
-        }
-
-        /// <summary>
-        /// Transforms a logical width to a real screen width.
-        /// </summary>
-        /// <param name="w">Logical width.</param>
-        /// <returns>The corresponding real screen width.</returns>
-        public static float TransformToRealW(float w)
-        {
-            return w * VIEW_SCREEN_WIDTH / SCREEN_WIDTH;
-        }
-
-        /// <summary>
-        /// Transforms a logical height to a real screen height.
-        /// </summary>
-        /// <param name="h">Logical height.</param>
-        /// <returns>The corresponding real screen height.</returns>
-        public static float TransformToRealH(float h)
-        {
-            return h * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT;
-        }
-
-        /// <summary>
-        /// Transforms a real screen width to a logical width.
-        /// </summary>
-        /// <param name="w">Real screen width.</param>
-        /// <returns>The corresponding logical width.</returns>
-        public static float TransformFromRealW(float w)
-        {
-            return w * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
-        }
-
-        /// <summary>
-        /// Transforms a real screen height to a logical height.
-        /// </summary>
-        /// <param name="h">Real screen height.</param>
-        /// <returns>The corresponding logical height.</returns>
-        public static float TransformFromRealH(float h)
-        {
-            return h * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
-        }
-
-        /// <summary>
         /// Returns the achievement identifier string unchanged (pass-through).
         /// </summary>
         /// <param name="s">Achievement identifier string.</param>
@@ -301,99 +221,50 @@ namespace CutTheRopeDX.Framework
         public const int GL_COLOR_BUFFER_BIT = 0;
 
         /// <summary>
-        /// Logical screen width in game coordinates.
+        /// Logical screen width in game coordinates: the fixed space levels are authored in.
         /// </summary>
-        public static float SCREEN_WIDTH = 320f;
+        /// <remarks>
+        /// The design size itself, not a value the host can change. It was a writable field while
+        /// the game sized itself to the window; now the window is described by
+        /// <see cref="VisibleBounds"/> and this stays the constant that world coordinates mean, so
+        /// making it settable could only reintroduce a second, disagreeing design size.
+        /// </remarks>
+        public static readonly float SCREEN_WIDTH = ViewportLayout.DesignWidth;
 
         /// <summary>
-        /// Logical screen height in game coordinates.
+        /// Logical screen height in game coordinates: the fixed space levels are authored in.
         /// </summary>
-        public static float SCREEN_HEIGHT = 480f;
+        /// <remarks>See <see cref="SCREEN_WIDTH"/>.</remarks>
+        public static readonly float SCREEN_HEIGHT = ViewportLayout.DesignHeight;
 
         /// <summary>
-        /// Actual device screen width in pixels.
+        /// The logical region the viewport currently exposes. Elements that span the whole screen
+        /// size to this; world logic stays on <see cref="SCREEN_WIDTH"/> and
+        /// <see cref="SCREEN_HEIGHT"/>, which describe the fixed space levels are authored in.
         /// </summary>
-        public static float REAL_SCREEN_WIDTH = 480f;
+        protected static CTRRectangle VisibleBounds =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
         /// <summary>
-        /// Actual device screen height in pixels.
+        /// Uniform scale design-space content is drawn at for the current viewport. Exposed here
+        /// so an element can size itself the moment it is created, without the scene that owns it
+        /// having to hold a copy and push it down.
         /// </summary>
-        public static float REAL_SCREEN_HEIGHT = 800f;
+        protected static float ContentScale => ContentFit.Scale;
 
         /// <summary>
-        /// Vertical offset applied when the screen is letterboxed.
+        /// Actual device surface width in pixels, read from the published viewport rather than
+        /// tracked alongside it.
         /// </summary>
-        public static float SCREEN_OFFSET_Y;
+        public static float REAL_SCREEN_WIDTH =>
+            ScreenPresentation.Instance.Snapshot.SurfaceWidth;
 
         /// <summary>
-        /// Horizontal offset applied when the screen is pillarboxed.
+        /// Actual device surface height in pixels, read from the published viewport rather than
+        /// tracked alongside it.
         /// </summary>
-        public static float SCREEN_OFFSET_X;
-
-        /// <summary>
-        /// Vertical scale factor for background images.
-        /// </summary>
-        public static float SCREEN_BG_SCALE_Y = 1f;
-
-        /// <summary>
-        /// Horizontal scale factor for background images.
-        /// </summary>
-        public static float SCREEN_BG_SCALE_X = 1f;
-
-        /// <summary>
-        /// Vertical scale factor for wide background images.
-        /// </summary>
-        public static float SCREEN_WIDE_BG_SCALE_Y = 1f;
-
-        /// <summary>
-        /// Horizontal scale factor for wide background images.
-        /// </summary>
-        public static float SCREEN_WIDE_BG_SCALE_X = 1f;
-
-        /// <summary>
-        /// Expanded logical screen height (accounts for aspect-ratio adjustments).
-        /// </summary>
-        public static float SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT;
-
-        /// <summary>
-        /// Expanded logical screen width (accounts for aspect-ratio adjustments).
-        /// </summary>
-        public static float SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH;
-
-        /// <summary>
-        /// Viewport width used for coordinate transforms.
-        /// </summary>
-        public static float VIEW_SCREEN_WIDTH = 480f;
-
-        /// <summary>
-        /// Viewport height used for coordinate transforms.
-        /// </summary>
-        public static float VIEW_SCREEN_HEIGHT = 800f;
-
-        /// <summary>
-        /// Horizontal viewport offset.
-        /// </summary>
-        public static float VIEW_OFFSET_X;
-
-        /// <summary>
-        /// Vertical viewport offset.
-        /// </summary>
-        public static float VIEW_OFFSET_Y;
-
-        /// <summary>
-        /// Current screen aspect ratio.
-        /// </summary>
-        public static float SCREEN_RATIO;
-
-        /// <summary>
-        /// Portrait-mode screen width.
-        /// </summary>
-        public static float PORTRAIT_SCREEN_WIDTH = 480f;
-
-        /// <summary>
-        /// Portrait-mode screen height.
-        /// </summary>
-        public static float PORTRAIT_SCREEN_HEIGHT = 320f;
+        public static float REAL_SCREEN_HEIGHT =>
+            ScreenPresentation.Instance.Snapshot.SurfaceHeight;
 
         /// <summary>
         /// <see langword="true"/> when running at iPad resolution.
@@ -406,14 +277,16 @@ namespace CutTheRopeDX.Framework
         public static bool IS_RETINA;
 
         /// <summary>
-        /// <see langword="true"/> when running at WVGA (800x480) resolution.
+        /// <see langword="true"/> when the surface is larger than WVGA (800x480) on either axis.
         /// </summary>
-        public static bool IS_WVGA;
-
-        /// <summary>
-        /// <see langword="true"/> when running at QVGA (320x240) resolution.
-        /// </summary>
-        public static bool IS_QVGA;
+        /// <remarks>
+        /// Derived from the published surface size. The low-memory variant the original had, which
+        /// forced this false regardless of resolution, had no caller left once the desktop and
+        /// browser hosts were the only ones.
+        /// </remarks>
+        public static bool IS_WVGA =>
+            ScreenPresentation.Instance.Snapshot.SurfaceWidth > 500
+            || ScreenPresentation.Instance.Snapshot.SurfaceHeight > 500;
 
         /// <summary>
         /// Stub API surface retained from the original analytics integration.

@@ -96,23 +96,26 @@
                 touch-action: none;
                 overscroll-behavior: none;
             }
+            /* The canvas is the viewport. The game reads this box back and lays itself out to
+               whatever shape it is, so constraining it here would be constraining the game.
+               Fixed positioning rather than viewport units because a mobile browser collapsing
+               its URL bar changes the visible area without changing 100vh. */
             #game {
                 display: block;
-                position: absolute;
-                width: 100vw;
-                height: calc(100vw * 9 / 16);
-                max-width: calc(100vh * 16 / 9);
-                max-height: 100vh;
+                position: fixed;
+                inset: 0;
+                width: 100%;
+                height: 100%;
             }
-            /* Shares the canvas's letterboxed box. z-index puts it over the game but
-               under the splash, so a cutscene can never show through the loading screen. */
+            /* Shares the canvas's box. A cutscene is genuinely fixed-aspect, so it keeps
+               object-fit rather than stretching. z-index puts it over the game but under the
+               splash, so a cutscene can never show through the loading screen. */
             #movie {
                 display: block;
-                position: absolute;
-                width: 100vw;
-                height: calc(100vw * 9 / 16);
-                max-width: calc(100vh * 16 / 9);
-                max-height: 100vh;
+                position: fixed;
+                inset: 0;
+                width: 100%;
+                height: 100%;
                 z-index: 5;
                 background: #000;
                 object-fit: contain;

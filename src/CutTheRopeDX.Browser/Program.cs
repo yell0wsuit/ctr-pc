@@ -15,6 +15,9 @@ await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
 
 int fbo = GLContextInterop.CreateContext("game");
+// Installed before the first measurement so the loop never has to measure again: from here on
+// the canvas reports its own changes.
+GLContextInterop.WatchCanvas("game");
 int[] size = GLContextInterop.CanvasSize("game");
 Console.WriteLine($"gl: fbo={fbo} size={size[0]}x{size[1]}");
 
@@ -35,8 +38,15 @@ PlatformServices.VideoPlayerFactory = () => new BrowserVideoPlayer();
 
 BrowserAssetPlatform assets = new(surface);
 
-ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-CutTheRopeDX.CtrBootstrap.Initialize(assets, audio, size[0], size[1], LanguageHelper.Current);
+ScreenPresentation.Instance =
+    new ScreenPresentation((int)ViewportLayout.DesignWidth, (int)ViewportLayout.DesignHeight);
+CutTheRopeDX.CtrBootstrap.Initialize(
+    assets,
+    audio,
+    size[0],
+    size[1],
+    LanguageHelper.Current,
+    (float)GLContextInterop.CanvasDevicePixelRatio());
 
 GameLoop.Surface = surface;
 GameLoop.Host = host;

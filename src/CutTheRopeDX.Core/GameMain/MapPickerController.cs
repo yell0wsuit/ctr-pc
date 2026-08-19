@@ -28,8 +28,8 @@ namespace CutTheRopeDX.GameMain
             RectangleElement rectangleElement = new()
             {
                 color = RGBAColor.whiteRGBA,
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h
             };
             _ = view.AddChild(rectangleElement);
             FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
@@ -50,8 +50,8 @@ namespace CutTheRopeDX.GameMain
             RectangleElement rectangleElement = new()
             {
                 color = RGBAColor.whiteRGBA,
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h
             };
             _ = view.AddChild(rectangleElement);
             FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);

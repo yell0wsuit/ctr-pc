@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using CutTheRopeDX.Framework.Core;
@@ -22,6 +23,14 @@ namespace CutTheRopeDX.Browser
         private SKImageFilter _dropShadow;
         private SKColor _dropShadowColor;
 
+        // Measuring and glyph lookup both cross into Skia, and Core's wrapping walks a string a
+        // character at a time - the same characters, over and over, for text that has not changed.
+        // Neither answer can move for a given font, so both are answered from here after the
+        // first ask.
+        private readonly Dictionary<char, float> _charWidths = [];
+        private readonly Dictionary<char, bool> _drawableChars = [];
+        private readonly float _fontHeight;
+
         public SkiaFont(SKTypeface typeface, FontConfiguration config)
         {
             Config = config;
@@ -35,6 +44,10 @@ namespace CutTheRopeDX.Browser
 
             Font = new SKFont(typeface, emSize);
             Fill = new SKPaint { IsAntialias = true };
+
+            SKFontMetrics sized = Font.Metrics;
+            _fontHeight = sized.Descent - sized.Ascent;
+            BaselineOffset = -sized.Ascent;
 
             lineOffset = config.LineSpacing;
             topSpacing = config.TopSpacing;
@@ -68,27 +81,52 @@ namespace CutTheRopeDX.Browser
         /// <summary>The configuration this font was built from.</summary>
         internal FontConfiguration Config { get; }
 
+        /// <summary>The distance from a line's top to its baseline.</summary>
+        internal float BaselineOffset { get; }
+
         /// <inheritdoc />
         public override float FontHeight()
         {
-            if (!IsAlive)
-            {
-                return Config.Size;
-            }
-            SKFontMetrics metrics = Font.Metrics;
-            return metrics.Descent - metrics.Ascent;
+            return IsAlive ? _fontHeight : Config.Size;
         }
 
         /// <inheritdoc />
         public override bool CanDraw(char c)
         {
-            return IsAlive && (c == ' ' || Font.ContainsGlyph(c));
+            if (!IsAlive)
+            {
+                return false;
+            }
+            if (c == ' ')
+            {
+                return true;
+            }
+            if (!_drawableChars.TryGetValue(c, out bool drawable))
+            {
+                drawable = Font.ContainsGlyph(c);
+                _drawableChars[c] = drawable;
+            }
+            return drawable;
         }
 
         /// <inheritdoc />
         public override float GetCharWidth(char c)
         {
-            return !IsAlive ? 0f : c == ' ' ? spaceWidth : Font.MeasureText(c.ToString());
+            if (!IsAlive)
+            {
+                return 0f;
+            }
+            if (c == ' ')
+            {
+                return spaceWidth;
+            }
+            if (!_charWidths.TryGetValue(c, out float width))
+            {
+                ReadOnlySpan<char> single = new(in c);
+                width = Font.MeasureText(single);
+                _charWidths[c] = width;
+            }
+            return width;
         }
 
         /// <inheritdoc />
@@ -267,7 +305,7 @@ namespace CutTheRopeDX.Browser
             }
 
             float y = call.DrawY + metrics.GetTopSpacing();
-            float baselineOffset = -font.Metrics.Ascent;
+            float baselineOffset = metrics.BaselineOffset;
             int lineHeight = (int)(metrics.FontHeight() + metrics.GetLineOffset());
             SKColor textColor = Modulate(config.Color, inherited, layerAlpha);
 

@@ -33,11 +33,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <returns>The initialized canvas instance.</returns>
         public GLCanvas InitWithFrame()
         {
-            xOffset = 0;
-            yOffset = 0;
-            origWidth = backingWidth = 2560;
-            origHeight = backingHeight = 1440;
-            aspect = backingHeight / backingWidth;
+            aspect = ViewportLayout.DesignHeight / ViewportLayout.DesignWidth;
             touchesCount = 0;
             return this;
         }
@@ -91,18 +87,20 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Configures the renderer viewport and orthographic projection for the current scaled view.
+        /// Configures the renderer viewport and orthographic projection from the published
+        /// viewport. The projection describes the logical region the game draws into and the
+        /// viewport describes the surface pixels it lands on; both come from the same snapshot so
+        /// they cannot disagree.
         /// </summary>
         public void SetDefaultProjection()
         {
-            // Always calculate offsets for proper letterboxing in both windowed and fullscreen modes
-            xOffset = ScreenPresentation.Instance.ScaledViewX;
-            xOffsetScaled = (int)(-xOffset / ScreenPresentation.Instance.WidthAspectRatio);
+            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+
             isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
-            Renderer.SetViewport(xOffset, yOffset, backingWidth, backingHeight);
+            Renderer.SetViewport(XOffset, YOffset, BackingWidth, BackingHeight);
             Renderer.SetMatrixMode(15);
             Renderer.LoadIdentity();
-            Renderer.SetOrthographic(0f, origWidth, origHeight, 0f, -1f, 1f);
+            Renderer.SetOrthographic(0f, visible.w, visible.h, 0f, -1f, 1f);
             Renderer.SetMatrixMode(14);
             Renderer.LoadIdentity();
         }
@@ -131,12 +129,10 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Recomputes backing dimensions from the scaled view rectangle and reapplies projection state.
+        /// Reapplies projection state after a surface change.
         /// </summary>
         public void Reshape()
         {
-            backingWidth = ScreenPresentation.Instance.ScaledViewWidth;
-            backingHeight = ScreenPresentation.Instance.ScaledViewHeight;
             SetDefaultProjection();
         }
 
@@ -249,24 +245,16 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Default logical canvas width used by the game.
+        /// Logical width of the region the projection describes.
         /// </summary>
-        public const float MASTER_WIDTH = 2560f;
+        internal static float ProjectionWidth =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds.w;
 
         /// <summary>
-        /// Default logical canvas height used by the game.
+        /// Logical height of the region the projection describes.
         /// </summary>
-        public const float MASTER_HEIGHT = 1440f;
-
-        /// <summary>
-        /// Logical canvas width used when building the default orthographic projection.
-        /// </summary>
-        private int origWidth;
-
-        /// <summary>
-        /// Logical canvas height used when building the default orthographic projection.
-        /// </summary>
-        private int origHeight;
+        internal static float ProjectionHeight =>
+            ScreenPresentation.Instance.Snapshot.VisibleBounds.h;
 
         /// <summary>
         /// Active input delegate that receives touch and button events.
@@ -304,30 +292,23 @@ namespace CutTheRopeDX.Framework.Platform
         public int touchesCount;
 
         /// <summary>
-        /// Horizontal viewport offset used for letterboxing.
+        /// Horizontal surface-pixel origin of the render viewport.
         /// </summary>
-        public int xOffset;
+        public static int XOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.x;
 
         /// <summary>
-        /// Vertical viewport offset used for letterboxing.
+        /// Vertical surface-pixel origin of the render viewport.
         /// </summary>
-        public int yOffset;
+        public static int YOffset => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.y;
 
         /// <summary>
-        /// Horizontal viewport offset converted into logical screen space.
+        /// Width of the render viewport in surface pixels.
         /// </summary>
-        public int xOffsetScaled;
-
-        // public int yOffsetScaled;
+        public static int BackingWidth => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.w;
 
         /// <summary>
-        /// Current backing-surface width after scaling and letterboxing.
+        /// Height of the render viewport in surface pixels.
         /// </summary>
-        public int backingWidth;
-
-        /// <summary>
-        /// Current backing-surface height after scaling and letterboxing.
-        /// </summary>
-        public int backingHeight;
+        public static int BackingHeight => (int)ScreenPresentation.Instance.Snapshot.RenderViewport.h;
     }
 }

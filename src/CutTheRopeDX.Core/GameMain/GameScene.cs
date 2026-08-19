@@ -7,6 +7,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -266,44 +267,181 @@ namespace CutTheRopeDX.GameMain
         public void FullscreenToggled(bool isFullscreen)
         {
             _ = isFullscreen;
-            BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
-            _ = (childWithName?.x = 15f + Canvas.xOffsetScaled);
+            RelayoutHud();
+        }
+
+        /// <summary>
+        /// Places the in-game chrome for the current viewport.
+        /// </summary>
+        /// <remarks>
+        /// The collected-stars row is scaled by <see cref="FrameworkTypes.ContentScale"/>, the
+        /// same boost menu content gets on a narrow viewport, read here rather than passed in: a
+        /// parameter meant one caller could hand the HUD a scale that disagreed with the rest of
+        /// the frame, and the one that took the default handed it 1 on every fullscreen toggle.
+        /// The row is grown from the screen's top-left corner rather than about each icon's own
+        /// center, so it stays flush against the corner instead of bleeding past it: each icon is
+        /// center-anchored, which already keeps it centered on its own position as it scales, so
+        /// multiplying that position by the scale is enough to grow the whole row from the corner
+        /// with no extra correction term.
+        /// </remarks>
+        public void RelayoutHud()
+        {
+            float hudScale = ContentScale;
+            PlaceLevelLabel();
+
             for (int i = 0; i < 3; i++)
             {
                 int starSize = hudStar[i].width;
-                hudStar[i].x = (starSize * i) + (starSize / 2) + Canvas.xOffsetScaled;
+                hudStar[i].x = ((starSize * i) + (starSize / 2)) * hudScale;
+                hudStar[i].y = hudStar[i].height / 2f * hudScale;
+                hudStar[i].scaleX = hudStar[i].scaleY = hudScale;
             }
             UpdateBackgroundScale();
         }
 
         /// <summary>
-        /// Computes a width-based scale so a background texture matches the internal screen width.
+        /// Projects the camera onto the viewport again, without a frame of gameplay having run.
         /// </summary>
-        /// <param name="texture">Background texture to measure.</param>
-        /// <returns>A safe width scale for the background texture.</returns>
-        private static float GetBackgroundWidthScale(CTRTexture2D texture)
+        /// <remarks>
+        /// The fit is otherwise applied by <see cref="Update"/>, which a paused scene never gets:
+        /// a window resized while the pause menu was up left the world drawn for the shape it had
+        /// when it was paused, and the background - whose cover scale is measured through the
+        /// camera's - short of the edges it no longer reached. Safe to call outside the update
+        /// loop, because the fit reads the tracked position and writes only what gets drawn.
+        /// </remarks>
+        public void RelayoutCamera()
         {
-            if (texture == null || texture._realWidth <= 0)
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+        }
+
+        /// <summary>
+        /// Sizes and positions the level-name label for the current viewport.
+        /// </summary>
+        /// <remarks>
+        /// Both insets are margins from their own edge of the viewport, so both grow with the HUD
+        /// the label belongs to: a label drawn half again as large against a margin that stayed
+        /// where it was would sit proportionally tighter into the corner the larger it got. The
+        /// Y offset was once a negative fine-tune of the font's metrics and was deliberately held
+        /// unscaled for that reason; it is a real margin now, and is treated like the X one.
+        /// </remarks>
+        private void PlaceLevelLabel()
+        {
+            BaseElement levelLabel = staticAniPool?.GetChildWithName("levelLabel");
+            if (levelLabel == null)
+            {
+                return;
+            }
+
+            float hudScale = ContentScale;
+            levelLabel.scaleX = levelLabel.scaleY = hudScale;
+            levelLabel.x = LayoutMath.CornerAnchoredOffset(LevelLabelInsetX, levelLabel.width, hudScale, farEdge: false);
+
+            bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
+            float bottomInset = isChinese ? LevelLabelInsetYCJK : LevelLabelInsetY;
+            levelLabel.y = VisibleBounds.h
+                + LayoutMath.CornerAnchoredOffset(-bottomInset, levelLabel.height, hudScale, farEdge: true);
+        }
+
+        /// <summary>
+        /// Computes the scale that makes a background texture cover the region of world the
+        /// screen exposes, letting the axis with room to spare crop.
+        /// </summary>
+        /// <remarks>
+        /// The art is one screen of the shape the game was drawn for, and the camera decides how
+        /// much world a screen of the current shape sees. Covering that region is a cover fit
+        /// against it: on a window taller in proportion, the height drives the scale and the
+        /// width crops; on a wider one, the width drives it. A fit by width alone leaves the art
+        /// short of the top and bottom edges of a tall window, and grows so much on a level whose
+        /// map is narrower than the screen that the repeat's seam is dragged into view. At the
+        /// shape the art was drawn for the two axes agree, so this is the authored scale exactly.
+        /// </remarks>
+        /// <param name="texture">Background texture to measure.</param>
+        /// <returns>A safe cover scale for the background texture.</returns>
+        private float GetBackgroundCoverScale(CTRTexture2D texture)
+        {
+            if (texture == null || texture._realWidth <= 0 || texture._realHeight <= 0)
             {
                 return 1f;
             }
 
-            float scale = SCREEN_WIDTH / texture._realWidth;
+            float cameraScale = camera?.Scale ?? 1f;
+            if (cameraScale <= 0f || float.IsNaN(cameraScale) || float.IsInfinity(cameraScale))
+            {
+                return 1f;
+            }
+
+            // The region of world a screen of this shape exposes, which is the viewport taken back
+            // through the camera's own scale. Covering that is an ordinary cover fit against it.
+            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            CTRRectangle worldWindow = new(0f, 0f, visible.w / cameraScale, visible.h / cameraScale);
+            float scale = LayoutMath.Cover(texture._realWidth, texture._realHeight, worldWindow).Scale;
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
 
         /// <summary>
-        /// Updates background scaling using the internal resolution.
+        /// Sizes and places the background for the region of world the screen currently exposes.
         /// </summary>
         private void UpdateBackgroundScale()
         {
-            // Keep backgrounds aligned to internal width
-            backgroundScale = GetBackgroundWidthScale(backTexture);
-            if (back != null)
+            backgroundScale = GetBackgroundCoverScale(backTexture);
+            if (back == null || backTexture == null)
             {
-                back.scaleX = backgroundScale;
-                back.scaleY = backgroundScale;
+                return;
             }
+
+            back.scaleX = backgroundScale;
+            back.scaleY = backgroundScale;
+
+            // Centered on the design screen: the frame the art and every level's placement inside
+            // it were drawn against. Growing about that center carries the art out past whichever
+            // edges the window reveals, where growing about its top-left corner would only push it
+            // down and to the right and leave the far edges to the repeat. It stays put in the
+            // world as the camera moves, so a level taller than the screen still scrolls past it.
+            back.x = (SCREEN_WIDTH / 2f / backgroundScale) - (backTexture._realWidth / 2f);
+            back.y = (SCREEN_HEIGHT / 2f / backgroundScale) - (backTexture._realHeight / 2f);
+        }
+
+        /// <summary>
+        /// Fits the camera to the level for the current viewport, holding it centered when the
+        /// whole level is already visible.
+        /// </summary>
+        /// <param name="snapshot">The viewport to fit against.</param>
+        private void ApplyCameraFit(ViewportLayoutSnapshot snapshot)
+        {
+            if (cameraBounds.w <= 0f || cameraBounds.h <= 0f)
+            {
+                return;
+            }
+
+            CTRRectangle viewport = snapshot.VisibleBounds;
+            bool locked = GameplayCamera.ScrollIsLocked(
+                cameraBounds.w, cameraBounds.h, viewport.w, viewport.h);
+
+            // On an axis the level exceeds, cameraWindow is capped to the design size rather than
+            // the full map, so it is the window - not the whole map - that fits the viewport; the
+            // anchor slides that window through the map's scrollable range first, exactly where
+            // the legacy bounded-pixel camera put it, before the fit's own anchor distributes
+            // whatever slack remains on an axis the level does not exceed.
+            float scrollableX = MathF.Max(0f, cameraBounds.w - cameraWindow.w);
+            float scrollableY = MathF.Max(0f, cameraBounds.h - cameraWindow.h);
+
+            // The anchor is read from where the tracking has driven the camera, which nothing here
+            // writes back to. A fit that took its anchor from its own previous result would
+            // subtract the viewport's slack afresh on every pass and walk the camera off the level.
+            float anchorX = locked || scrollableX <= 0f
+                ? 0.5f
+                : FIT_TO_BOUNDARIES((camera.pos.X - cameraBounds.x) / scrollableX, 0f, 1f);
+            float anchorY = locked || scrollableY <= 0f
+                ? 0.5f
+                : FIT_TO_BOUNDARIES((camera.pos.Y - cameraBounds.y) / scrollableY, 0f, 1f);
+
+            CTRRectangle window = new(
+                cameraBounds.x + (scrollableX * anchorX),
+                cameraBounds.y + (scrollableY * anchorY),
+                cameraWindow.w,
+                cameraWindow.h);
+
+            camera.ApplyFit(LayoutMath.FitCamera(window, viewport, anchorX, anchorY));
         }
 
         /// <summary>
@@ -1001,6 +1139,18 @@ namespace CutTheRopeDX.GameMain
         /// The Y origin of the loaded map.
         /// </summary>
         private float mapOriginY;
+
+        /// <summary>
+        /// The level's extent in world units. The camera fits this region into the viewport.
+        /// </summary>
+        private CTRRectangle cameraBounds;
+
+        /// <summary>
+        /// The region the camera can show at once, in world units. Equal to the level extent on
+        /// an axis the level does not exceed, and to the design size on an axis it does, which is
+        /// the axis the camera scrolls along.
+        /// </summary>
+        private CTRRectangle cameraWindow;
 
         // private bool spiderTookCandy;
 

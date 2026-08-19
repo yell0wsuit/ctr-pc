@@ -19,13 +19,23 @@ namespace CutTheRopeDX.Framework.Platform
         public const float DesignHeight = 1440f;
 
         /// <summary>
-        /// Narrowest supported width-to-height ratio. Taller surfaces are cropped to it.
+        /// Narrowest width-to-height ratio the content scale distinguishes. A surface narrower
+        /// than this is drawn whole, at the scale this shape is drawn at.
         /// </summary>
+        /// <remarks>
+        /// An endpoint of <see cref="ContentFit"/>'s curve rather than a bound on what may be
+        /// shown: the window is the player's to shape and the layout follows whatever they choose.
+        /// Cropping to the nearest endpoint instead is what put black bars down the sides of an
+        /// ultrawide window, and every background in the game covers the region it is handed, so
+        /// there was nothing for the crop to protect.
+        /// </remarks>
         public const float MinAspect = 0.4f;
 
         /// <summary>
-        /// Widest supported width-to-height ratio. Wider surfaces are cropped to it.
+        /// Widest width-to-height ratio the content scale distinguishes. A surface wider than this
+        /// is drawn whole, at the scale this shape is drawn at.
         /// </summary>
+        /// <remarks>See <see cref="MinAspect"/>.</remarks>
         public const float MaxAspect = 2.5f;
 
         /// <summary>
@@ -39,117 +49,28 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
         /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <param name="fullScreenCropWidth">
-        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
-        /// aspect. Preserves the behavior the desktop host selects.
-        /// </param>
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         /// <returns>The snapshot describing that surface.</returns>
         public static ViewportLayoutSnapshot Compute(
             int surfaceWidth,
             int surfaceHeight,
-            bool fullScreenCropWidth)
+            float devicePixelRatio = 1f)
         {
-            CTRRectangle legacy = ComputeLegacyContentBounds(
-                surfaceWidth,
-                surfaceHeight,
-                fullScreenCropWidth);
-            CTRRectangle render = ClampToSupportedAspect(surfaceWidth, surfaceHeight);
+            // The whole surface, whatever shape it is: what the game draws into is what the host
+            // gives it.
+            CTRRectangle render = new(0f, 0f, surfaceWidth, surfaceHeight);
             float scale = MathF.Min(render.w, render.h) / LogicalShortSide;
 
             return new ViewportLayoutSnapshot(
                 surfaceWidth,
                 surfaceHeight,
-                legacy,
-                legacy.w / DesignWidth,
                 render,
                 new CTRRectangle(0f, 0f, render.w / scale, render.h / scale),
                 scale,
+                devicePixelRatio,
                 surfaceWidth >= surfaceHeight
                     ? LayoutOrientation.Landscape
                     : LayoutOrientation.Portrait);
-        }
-
-        /// <summary>
-        /// Returns the centered sub-rectangle of the surface whose aspect ratio lies within the
-        /// supported range. Surfaces already inside the range are returned whole.
-        /// </summary>
-        /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
-        /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <returns>The rectangle the game draws into.</returns>
-        private static CTRRectangle ClampToSupportedAspect(int surfaceWidth, int surfaceHeight)
-        {
-            float aspect = surfaceWidth / (float)surfaceHeight;
-            if (aspect > MaxAspect)
-            {
-                float width = surfaceHeight * MaxAspect;
-                return new CTRRectangle((surfaceWidth - width) / 2f, 0f, width, surfaceHeight);
-            }
-            if (aspect < MinAspect)
-            {
-                float height = surfaceWidth / MinAspect;
-                return new CTRRectangle(0f, (surfaceHeight - height) / 2f, surfaceWidth, height);
-            }
-            return new CTRRectangle(0f, 0f, surfaceWidth, surfaceHeight);
-        }
-
-        /// <summary>
-        /// Reproduces the scaled view rectangle the fixed-layout presentation has always used.
-        /// </summary>
-        /// <param name="surfaceWidth">Drawable surface width in pixels.</param>
-        /// <param name="surfaceHeight">Drawable surface height in pixels.</param>
-        /// <param name="fullScreenCropWidth">Whether portrait surfaces crop width to a 5:4 band.</param>
-        /// <returns>The destination rectangle for fixed-layout content.</returns>
-        private static CTRRectangle ComputeLegacyContentBounds(
-            int surfaceWidth,
-            int surfaceHeight,
-            bool fullScreenCropWidth)
-        {
-            if (surfaceWidth >= surfaceHeight)
-            {
-                int scaledHeight = fullScreenCropWidth
-                    ? surfaceHeight
-                    : ScaledDesignHeight(surfaceWidth);
-                int scaledWidth = fullScreenCropWidth
-                    ? ScaledDesignWidth(scaledHeight)
-                    : surfaceWidth;
-                return new CTRRectangle(
-                    (surfaceWidth - scaledWidth) / 2,
-                    (surfaceHeight - scaledHeight) / 2,
-                    scaledWidth,
-                    scaledHeight);
-            }
-
-            int portraitHeight = fullScreenCropWidth
-                ? (int)(surfaceWidth / 5f * 4f)
-                : ScaledDesignHeight(surfaceWidth);
-            int portraitWidth = fullScreenCropWidth
-                ? ScaledDesignWidth(portraitHeight)
-                : surfaceWidth;
-            return new CTRRectangle(
-                (surfaceWidth - portraitWidth) / 2,
-                (surfaceHeight - portraitHeight) / 2,
-                portraitWidth,
-                portraitHeight);
-        }
-
-        /// <summary>
-        /// Returns the aspect-preserving design width for a scaled height.
-        /// </summary>
-        /// <param name="scaledHeight">Scaled height in surface pixels.</param>
-        /// <returns>Aspect-correct width.</returns>
-        private static int ScaledDesignWidth(int scaledHeight)
-        {
-            return (int)((scaledHeight / (DesignHeight / DesignWidth)) + 0.5);
-        }
-
-        /// <summary>
-        /// Returns the aspect-preserving design height for a scaled width.
-        /// </summary>
-        /// <param name="scaledWidth">Scaled width in surface pixels.</param>
-        /// <returns>Aspect-correct height.</returns>
-        private static int ScaledDesignHeight(int scaledWidth)
-        {
-            return (int)((scaledWidth * (DesignHeight / DesignWidth)) + 0.5);
         }
     }
 }

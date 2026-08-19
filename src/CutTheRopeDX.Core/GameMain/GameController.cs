@@ -144,18 +144,18 @@ namespace CutTheRopeDX.GameMain
             int hudQuadOffset = CTRResourceMgr.GetHudButtonQuadOffset();
             Button button = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, hudQuadOffset, GameControllerButtonId.Pause, this);
             button.anchor = button.parentAnchor = 12;
-            button.x = -Canvas.xOffsetScaled - 8f;
+            button.x = -8f;
             button.y = 8f;
             _ = gameView.AddChildwithID(button, 1);
             const int HudUiRestartQuad = 0;
             Button button2 = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, HudUiRestartQuad, GameControllerButtonId.Restart, this);
             button2.anchor = button2.parentAnchor = 12;
-            button2.x = -Canvas.xOffsetScaled - button.width - 16f;
+            button2.x = -button.width - 16f;
             button2.y = 8f;
             _ = gameView.AddChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
-            image.scaleX = image.scaleY = 1.25f;
+            image.scaleX = image.scaleY = PausePlateScale;
             image.rotationCenterY = -image.height / 2;
             image.passTransformationsToChilds = false;
             mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
@@ -164,10 +164,11 @@ namespace CutTheRopeDX.GameMain
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
             float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
+            mapNameLabel.x = RTD(-10) + labelXOffset;
             mapNameLabel.y = RTD(-5);
             _ = image.AddChild(mapNameLabel);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
+            pauseMenuPlate = image;
             Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
             _ = vBox.AddChild(c);
             if (!CustomLevelSession.IsActive)
@@ -187,7 +188,7 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(toggleButton2);
             _ = hBox.AddChild(toggleButton);
             _ = vBox.AddChild(hBox);
-            vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
+            vBox.y = (DesignBox.h - vBox.height) / 2f;
             bool flag3 = Preferences.GetBooleanForKey("SOUND_ON");
             bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
             if (!flag3)
@@ -198,8 +199,16 @@ namespace CutTheRopeDX.GameMain
             {
                 toggleButton.Toggle();
             }
-            _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
+
+            // The button column is composed in design space and fitted on its own, rather than
+            // hanging off the plate: the plate stays sized to its own art and the best-score
+            // label pinned against it (PlaceBestScoreLabel) reasons in logical units, so folding
+            // FittedScale into the plate too would throw that math off.
+            FittedGroup buttonsGroup = new() { anchor = 9, parentAnchor = 9 };
+            pauseButtonsGroup = buttonsGroup;
+            _ = buttonsGroup.AddChild(vBox);
+            _ = gameView.AddChildwithID(buttonsGroup, GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
             BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
@@ -208,7 +217,7 @@ namespace CutTheRopeDX.GameMain
             {
                 overlay.anchor = overlay.parentAnchor = 9;
                 overlay.Start();
-                _ = gameView.AddChildwithID(overlay, 5);
+                _ = gameView.AddChildwithID(overlay, 6);
             }
             AddViewwithID(gameView, 0);
         }
@@ -682,6 +691,12 @@ namespace CutTheRopeDX.GameMain
             overlayMode = mode;
             overlayModeApplied = true;
 
+            bool gameplay = mode == GameControllerOverlayMode.Gameplay;
+            bool paused = mode == GameControllerOverlayMode.Paused;
+            bool results = mode == GameControllerOverlayMode.Results;
+            bool leavingLiveGameplay = results && previousMode == GameControllerOverlayMode.Gameplay;
+            bool resultCloseAnimation = leavingLiveGameplay && !navigationExitActive;
+
             if (mode == GameControllerOverlayMode.Gameplay)
             {
                 DeactivateAllButtons();
@@ -693,15 +708,28 @@ namespace CutTheRopeDX.GameMain
                 // dropped while paused, stranding the button in its pressed state until restart.
                 ReleaseAllTouches(gameScene);
             }
+            else if (leavingLiveGameplay)
+            {
+                // The HUD buttons are about to stop taking input while staying on screen, so a
+                // press held at the moment gameplay ended has to be cancelled here, while they
+                // can still receive the touch-up. Left alone it would strand a button in its
+                // pressed state for the whole closing animation, in full view.
+                DeactivateAllButtons();
+            }
 
-            bool gameplay = mode == GameControllerOverlayMode.Gameplay;
-            bool paused = mode == GameControllerOverlayMode.Paused;
-            bool resultCloseAnimation = mode == GameControllerOverlayMode.Results
-                && previousMode == GameControllerOverlayMode.Gameplay
-                && !navigationExitActive;
             view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
-            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON).SetEnabled(gameplay);
-            view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON).SetEnabled(gameplay);
+            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).SetEnabled(paused);
+
+            // The HUD buttons belong to the gameplay screen, so they are on show whenever that
+            // screen is - which is every mode except the paused one, where the menu owns the
+            // display. That covers both ways a level ends: finishing it, and quitting from the
+            // pause menu, where dismissing the menu reveals the gameplay screen again for the
+            // box to close over. Either way they ride the animation out inert, exactly as the
+            // collected-star row does, and it is the box drawing over them that takes them off
+            // screen rather than them blinking out from under it.
+            bool hudButtonsVisible = !paused;
+            SetHudButton(view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTON), hudButtonsVisible, gameplay);
+            SetHudButton(view.GetChild(GameView.VIEW_ELEMENT_RESTART_BUTTON), hudButtonsVisible, gameplay);
             view.GetChild(GameView.VIEW_ELEMENT_RESULTS).touchable = mode == GameControllerOverlayMode.Results;
             gameScene.touchable = gameplay;
             gameScene.updateable = gameplay || resultCloseAnimation;
@@ -732,15 +760,22 @@ namespace CutTheRopeDX.GameMain
             if (cTRRootController.IsPicker())
             {
                 mapNameLabel.SetString("");
-                return;
             }
-            if (CustomLevelSession.IsActive)
+            else if (CustomLevelSession.IsActive)
             {
                 mapNameLabel.SetString(gameScene.ResolveLevelDisplayName() ?? string.Empty);
-                return;
             }
-            int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
-            mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
+            else
+            {
+                int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetBox(), cTRRootController.GetPack(), cTRRootController.GetLevel());
+                mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
+            }
+
+            // The label's width used to keep it on screen (PlaceBestScoreLabel) is only known
+            // once its string is actually set, which happens here rather than at the Relayout
+            // that otherwise places it - so it needs placing again now, using the width the text
+            // just settled into instead of whatever it carried in before (typically unset).
+            PlaceBestScoreLabel(ScreenPresentation.Instance.Snapshot.VisibleBounds);
         }
 
         /// <inheritdoc />
@@ -942,17 +977,175 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void FullscreenToggled(bool isFullscreen)
         {
+            _ = isFullscreen;
+            Relayout(ScreenPresentation.Instance.Snapshot);
+        }
+
+        /// <inheritdoc />
+        protected override void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+            base.Relayout(snapshot);
+
             View view = GetView(0);
+            if (view == null)
+            {
+                return;
+            }
+
+            CTRRectangle visible = snapshot.VisibleBounds;
+
             // Reposition the HUD buttons using the same edge offsets applied at construction,
             // otherwise the restart button collapses onto the pause button and they overlap.
+            // Both are grown from the screen's top-right corner by the same boost menu content
+            // gets on a narrow viewport, same idea as RelayoutHud's star row: the corner-relative
+            // offset scales along with the button itself, so the pair grows as one composition
+            // anchored to that corner instead of just getting bigger in place.
             Button pauseButton = (Button)view.GetChild(1);
             Button restartButton = (Button)view.GetChild(2);
-            pauseButton.x = -Canvas.xOffsetScaled - 8f;
-            restartButton.x = -Canvas.xOffsetScaled - pauseButton.width - 16f;
-            float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
-            mapNameLabel.x = RTD(-10) - Canvas.xOffsetScaled + labelXOffset;
-            GameScene gameScene = (GameScene)view.GetChild(0);
-            gameScene?.FullscreenToggled(isFullscreen);
+            PlaceCornerAnchoredHudButton(pauseButton, -8f, 8f, FittedScale);
+            PlaceCornerAnchoredHudButton(restartButton, -pauseButton.width - 16f, 8f, FittedScale);
+
+            PlacePausePlate(visible);
+            PlaceBestScoreLabel(visible);
+
+            // The button column is a design-space composition like a menu's, so it is fitted the
+            // same way one is rather than merely stretched to the viewport width.
+            PlaceFittedGroup(pauseButtonsGroup);
+
+            // Camera first: the HUD pass re-covers the background, and how much world a screen of
+            // this shape sees - which is what the background covers - is measured through the
+            // camera's own scale.
+            GameScene scene = (GameScene)view.GetChild(0);
+            scene?.RelayoutCamera();
+            scene?.RelayoutHud();
+
+            BoxOpenClose results = (BoxOpenClose)view.GetChild(4);
+            results?.RelayoutBox(visible);
+
+            // The result panel is a design-space composition like a menu's, so it is fitted the
+            // same way one is: fit the group it hangs from and the whole panel lands with it,
+            // centered on the viewport it is shown over at every shape of window.
+            PlaceFittedGroup(results?.result);
+
+            // Fitting the group centers the design box, which is not the same as centering the
+            // composition inside it - the panel is authored off-center in a taller canvas than
+            // the box it is read in. See BoxOpenClose.PanelCenteringOffset. Applied after the fit
+            // rather than folded into it, so the offset stays a property of the art it was
+            // measured from instead of a special case inside the shared placement rule.
+            if (results?.result != null)
+            {
+                Vector centering = BoxOpenClose.PanelCenteringOffset();
+                results.result.x += centering.X * FittedScale;
+                results.result.y += centering.Y * FittedScale;
+            }
+        }
+
+        /// <summary>
+        /// Pulls the pause plate out to the sides of the viewport.
+        /// </summary>
+        /// <remarks>
+        /// Widened rather than covered. Covering scales the sheet whole, and a viewport half again
+        /// as wide as the design shape would then hang its torn edge half again as far down the
+        /// screen, with the first button of the pause column underneath it. Widening leaves the
+        /// sheet the depth it was drawn at and only pulls its edges out; what stretches with it is
+        /// the tear along the bottom, which is irregular to begin with. The authored scale is the
+        /// floor, so the design shape is drawn exactly as it was composed, and a viewport narrower
+        /// than the sheet keeps overhanging the sides as it always has.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void PlacePausePlate(CTRRectangle visible)
+        {
+            if (pauseMenuPlate == null || pauseMenuPlate.width <= 0)
+            {
+                return;
+            }
+
+            pauseMenuPlate.scaleX = MathF.Max(PausePlateScale, visible.w / pauseMenuPlate.width);
+            pauseMenuPlate.scaleY = PausePlateScale;
+        }
+
+        /// <summary>
+        /// Scale the pause plate is drawn at on the design shape, where the sheet's own width
+        /// reaches the sides exactly.
+        /// </summary>
+        private const float PausePlateScale = 1.25f;
+
+        /// <summary>
+        /// Shows or hides a HUD button independently of whether it accepts input, which
+        /// <see cref="BaseElement.SetEnabled"/> cannot express because it ties the two together.
+        /// </summary>
+        /// <param name="button">HUD button to configure.</param>
+        /// <param name="visible">Whether the button is drawn.</param>
+        /// <param name="interactive">
+        /// Whether the button responds to touches. Never <see langword="true"/> while
+        /// <paramref name="visible"/> is <see langword="false"/>, which would leave an invisible
+        /// button taking presses.
+        /// </param>
+        private static void SetHudButton(BaseElement button, bool visible, bool interactive)
+        {
+            button.visible = visible;
+            button.updateable = visible;
+            button.touchable = visible && interactive;
+        }
+
+        /// <summary>
+        /// Grows a top-right-anchored HUD button from the screen's top-right corner, so its
+        /// authored edge offsets scale along with it rather than the button just getting bigger
+        /// in place.
+        /// </summary>
+        /// <param name="button">Button to place, anchored top-right (12) to the view.</param>
+        /// <param name="baseX">Authored X offset from the right edge, at scale one.</param>
+        /// <param name="baseY">Authored Y offset from the top edge, at scale one.</param>
+        /// <param name="scale">Uniform scale to grow the button and its corner offset by.</param>
+        private static void PlaceCornerAnchoredHudButton(Button button, float baseX, float baseY, float scale)
+        {
+            button.scaleX = button.scaleY = scale;
+            button.x = LayoutMath.CornerAnchoredOffset(baseX, button.width, scale, farEdge: true);
+            button.y = LayoutMath.CornerAnchoredOffset(baseY, button.height, scale, farEdge: false);
+        }
+
+        /// <summary>
+        /// Places the pause menu's best-score label, keeping it on screen.
+        /// </summary>
+        /// <remarks>
+        /// The label is authored hanging well past the right edge of the pause plate, which the
+        /// design width has room for. A viewport that exposes fewer logical units across does not,
+        /// so the offset gives way rather than letting the label run off the screen. It reduces to
+        /// the authored offset wherever there is room, which includes the shipped shape.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void PlaceBestScoreLabel(CTRRectangle visible)
+        {
+            if (mapNameLabel == null)
+            {
+                return;
+            }
+
+            float scale = FittedScale;
+            mapNameLabel.scaleX = mapNameLabel.scaleY = scale;
+
+            float authored = RTD(-10) + (LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f);
+            if (pauseMenuPlate == null)
+            {
+                mapNameLabel.x = authored;
+                return;
+            }
+
+            // The authored offset hangs the label off the right edge of the plate, which lands it
+            // a fixed distance from the right edge of the screen - but only on the design shape,
+            // where the plate is exactly one screen wide. What was composed is that distance from
+            // the corner, so that is what follows the viewport, and the offset which produces it
+            // is worked back out for whatever shape the window is. On a wide one the label used to
+            // be left stranded in the middle of the top edge, a plate's width in from the corner.
+            float plateEdgeAtDesignWidth = (ViewportLayout.DesignWidth + pauseMenuPlate.width) / 2f;
+            float insetFromRight = ViewportLayout.DesignWidth - plateEdgeAtDesignWidth - authored;
+
+            // Right-anchored by CalculateTopLeft (drawX = parentDrawX + parentWidth + x - width)
+            // and scaled about its own center, so half of what the boost adds falls outside that
+            // edge; only that half has to come back out of the offset.
+            float plateEdge = (visible.w + pauseMenuPlate.width) / 2f;
+            float halfTheBoost = mapNameLabel.width * (1f - scale) / 2f;
+            mapNameLabel.x = visible.w - insetFromRight - plateEdge + halfTheBoost;
         }
 
         /// <summary>
@@ -1032,6 +1225,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Pause-menu label that displays the active map or best score.</summary>
         private Text mapNameLabel;
+
+        /// <summary>The plate the pause menu is drawn on; the best-score label hangs off its edge.</summary>
+        private Image pauseMenuPlate;
+
+        /// <summary>
+        /// Design-space group the pause menu's button column is composed in, so it fits and
+        /// scales the same way a menu view's content does rather than staying pinned at 1x.
+        /// </summary>
+        private FittedGroup pauseButtonsGroup;
 
         /// <summary>Maps tracked touch slots to platform touch IDs.</summary>
         private readonly int[] touchAddressMap = new int[5];

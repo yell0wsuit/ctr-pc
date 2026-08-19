@@ -31,53 +31,42 @@ namespace CutTheRopeDX.Browser
     /// A <c>GL_SRC_ALPHA</c> source factor needs more than a blend mode: it multiplies the
     /// premultiplied fragment by its own alpha again, which no Skia blend mode reproduces. Those
     /// batches therefore fold the factor into the source itself, weighting the texture by its
-    /// alpha through <see cref="AlphaWeightMatrix"/> and the tint through
+    /// alpha through <see cref="SkiaTexture.Shader"/> and the tint through
     /// <see cref="VertexColorEncoding.ForRendererTint"/>.
     /// </para>
     /// </remarks>
     /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
-    internal sealed class SkiaRenderBackend(SkiaSurface surface) : IRenderBackend
+    internal sealed class SkiaRenderBackend(SkiaSurface surface) : IRenderBackend, IDisposable
     {
         private const int GL_BLEND = 1;
         private const int GL_SCISSOR_TEST = 4;
         private const int MODE_PROJECTION = 15;
-
-        /// <summary>
-        /// Rewrites a color to opaque grey carrying its own alpha, so multiplying a texture by it
-        /// weights the texture's color by its alpha and leaves its alpha untouched. Skia applies
-        /// color matrices to straight colors, so the row that fixes alpha at one is what keeps the
-        /// weighting off the alpha channel, and the destination factor still sees the source alpha
-        /// the fixed-function pipeline would have produced.
-        /// </summary>
-        private static readonly float[] AlphaWeightMatrix =
-        [
-            0f, 0f, 0f, 1f, 0f,
-            0f, 0f, 0f, 1f, 0f,
-            0f, 0f, 0f, 1f, 0f,
-            0f, 0f, 0f, 0f, 1f,
-        ];
-
-        /// <summary>
-        /// Filtering for every image this backend samples, both the sprite batches and the
-        /// presented render target. It matches the <c>SamplerState.LinearClamp</c> the desktop
-        /// backend draws quads and presents with, down to carrying no mipmaps: the textures are
-        /// uploaded without them, and the game only ever scales by the modest factor between its
-        /// internal resolution and the window. Skia defaults to nearest when a draw does not say
-        /// otherwise, which would leave every scaled or rotated sprite aliased.
-        /// </summary>
-        private static readonly SKSamplingOptions LinearSampling =
-            new(SKFilterMode.Linear, SKMipmapMode.None);
 
         private readonly MatrixStack _matrices = new();
         private readonly List<SKPoint> _positions = [];
         private readonly List<SKPoint> _texCoords = [];
         private readonly List<SKColor> _colors = [];
 
+        /// <summary>
+        /// The paint every batch draws through. Only its blend mode and shader vary, and both are
+        /// plain setters, so one paint is reused rather than a native Skia object being created
+        /// and destroyed for each of the batches a frame flushes.
+        /// </summary>
+        private readonly SKPaint _batchPaint = new() { Color = SKColors.White };
+
+        /// <summary>
+        /// Scratch space the sprite path bakes into. Core hands the same four-vertex quad down
+        /// hundreds of times a frame, so the baked copy is grown once and then reused.
+        /// </summary>
+        private VertexPositionColorTexture[] _bakedVertices = new VertexPositionColorTexture[4];
+
         private SKSurface _renderTarget;
         private int _renderTargetWidth;
         private int _renderTargetHeight;
         private SkiaTexture _boundTexture;
         private SkiaTexture _batchTexture;
+        private float _batchTextureWidth = 1f;
+        private float _batchTextureHeight = 1f;
         private SKBlendMode _batchBlendMode = SKBlendMode.SrcOver;
         private bool _batchWeightsSourceByAlpha;
         private Color _drawColor = new(255, 255, 255, 255);
@@ -150,20 +139,43 @@ namespace CutTheRopeDX.Browser
             }
 
             FlushQuads();
-            if (width == _renderTargetWidth && height == _renderTargetHeight)
+            if (width != _renderTargetWidth || height != _renderTargetHeight)
+            {
+                DropScissor();
+                _renderTarget?.Dispose();
+                _renderTarget = SKSurface.Create(
+                    surface.Context,
+                    budgeted: true,
+                    new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                    ?? throw new InvalidOperationException("Could not create the Skia render target.");
+                _renderTargetWidth = width;
+                _renderTargetHeight = height;
+            }
+
+            ApplyViewTransform();
+        }
+
+        /// <summary>
+        /// Puts the logical-to-surface step on the canvas itself, so every draw carries it without
+        /// knowing about it: geometry, text and clip rectangles all arrive in logical units and
+        /// Skia maps them the same way.
+        /// </summary>
+        /// <remarks>
+        /// The target is sized in surface pixels while drawing is authored in logical ones. Without
+        /// this the two are treated as the same unit, which fills the target only as far as the
+        /// logical extent reaches and leaves the rest of it blank - correct-looking only while the
+        /// viewport happens to expose exactly as many logical units as it has pixels.
+        /// </remarks>
+        private void ApplyViewTransform()
+        {
+            SKCanvas target = Target;
+            if (target == null)
             {
                 return;
             }
 
-            DropScissor();
-            _renderTarget?.Dispose();
-            _renderTarget = SKSurface.Create(
-                surface.Context,
-                budgeted: true,
-                new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
-                ?? throw new InvalidOperationException("Could not create the Skia render target.");
-            _renderTargetWidth = width;
-            _renderTargetHeight = height;
+            float scale = ScreenPresentation.Instance.Snapshot.Scale;
+            target.SetMatrix(SKMatrix.CreateScale(scale, scale));
         }
 
         /// <inheritdoc />
@@ -330,7 +342,17 @@ namespace CutTheRopeDX.Browser
         public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
         {
             Color tint = _drawColor;
-            VertexPositionColorTexture[] baked = new VertexPositionColorTexture[vertexCount];
+            // A fully transparent tint contributes nothing under either blend mode this backend
+            // uses, and the desktop backend drops the draw outright rather than submitting it.
+            if (QuadBaking.IsInvisible(tint))
+            {
+                return;
+            }
+            if (_bakedVertices.Length < vertexCount)
+            {
+                _bakedVertices = new VertexPositionColorTexture[vertexCount];
+            }
+            VertexPositionColorTexture[] baked = _bakedVertices;
             for (int i = 0; i < vertexCount; i++)
             {
                 baked[i] = QuadBaking.Bake(vertices[i], _matrices.ModelView, tint);
@@ -379,6 +401,10 @@ namespace CutTheRopeDX.Browser
             VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
         {
             Color tint = _drawColor;
+            if (QuadBaking.IsInvisible(tint))
+            {
+                return;
+            }
             EnsureBatchCompatible();
             for (int i = 0; i < indexCount; i++)
             {
@@ -456,10 +482,11 @@ namespace CutTheRopeDX.Browser
                 return;
             }
             using SKImage snapshot = _renderTarget.Snapshot();
-            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.LegacyContentBounds;
+            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.RenderViewport;
             SKRect destination = SKRect.Create(bounds.x, bounds.y, bounds.w, bounds.h);
             surface.Canvas.Clear(SKColors.Black);
-            surface.Canvas.DrawImage(snapshot, destination, LinearSampling, paint: null);
+            surface.Canvas.DrawImage(
+                snapshot, destination, SkiaTexture.LinearSampling, paint: null);
         }
 
         /// <inheritdoc />
@@ -482,28 +509,8 @@ namespace CutTheRopeDX.Browser
                 return;
             }
 
-            using SKPaint paint = new()
-            {
-                Color = SKColors.White,
-                BlendMode = _batchBlendMode,
-            };
-            using SKShader image = _batchTexture is null
-                ? null
-                : SKShader.CreateImage(
-                    _batchTexture.Image,
-                    SKShaderTileMode.Clamp,
-                    SKShaderTileMode.Clamp,
-                    LinearSampling);
-            using SKColorFilter alphaWeight = image is null || !_batchWeightsSourceByAlpha
-                ? null
-                : SKColorFilter.CreateColorMatrix(AlphaWeightMatrix);
-            using SKShader alphaOnly = alphaWeight is null
-                ? null
-                : image.WithColorFilter(alphaWeight);
-            using SKShader weighted = alphaOnly is null
-                ? null
-                : SKShader.CreateBlend(SKBlendMode.Modulate, image, alphaOnly);
-            paint.Shader = weighted ?? image;
+            _batchPaint.BlendMode = _batchBlendMode;
+            _batchPaint.Shader = _batchTexture?.Shader(_batchWeightsSourceByAlpha);
 
             using SKVertices vertices = SKVertices.CreateCopy(
                 SKVertexMode.Triangles,
@@ -511,7 +518,7 @@ namespace CutTheRopeDX.Browser
                 _batchTexture is null ? null : [.. _texCoords],
                 [.. _colors]);
 
-            Target.DrawVertices(vertices, SKBlendMode.Modulate, paint);
+            Target.DrawVertices(vertices, SKBlendMode.Modulate, _batchPaint);
 
             _positions.Clear();
             _texCoords.Clear();
@@ -537,6 +544,14 @@ namespace CutTheRopeDX.Browser
             surface.Flush();
         }
 
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _batchPaint.Dispose();
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+        }
+
         private void EnsureBatchCompatible()
         {
             // Source weighting is tracked alongside the blend mode rather than derived from it:
@@ -549,6 +564,8 @@ namespace CutTheRopeDX.Browser
             {
                 FlushQuads();
                 _batchTexture = _boundTexture;
+                _batchTextureWidth = _boundTexture?.Width ?? 1f;
+                _batchTextureHeight = _boundTexture?.Height ?? 1f;
                 _batchBlendMode = EffectiveBlendMode;
                 _batchWeightsSourceByAlpha = WeightsSourceByAlpha;
             }
@@ -571,10 +588,9 @@ namespace CutTheRopeDX.Browser
             _positions.Add(new SKPoint(vertex.Position.X, vertex.Position.Y));
             _colors.Add(ToSkiaColor(straightColor));
 
-            float width = _batchTexture?.Width ?? 1;
-            float height = _batchTexture?.Height ?? 1;
             _texCoords.Add(new SKPoint(
-                vertex.TextureCoordinate.X * width, vertex.TextureCoordinate.Y * height));
+                vertex.TextureCoordinate.X * _batchTextureWidth,
+                vertex.TextureCoordinate.Y * _batchTextureHeight));
         }
 
         /// <summary>

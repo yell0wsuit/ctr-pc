@@ -47,20 +47,31 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CoverPicksTheLargerAxisRatio()
+        public void CoverScalesToTheWidthWhenWidthIsTheShortfall()
         {
-            // A 2560x1440 image in a 3413x1440 viewport must scale up to cover the width.
-            float scale = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 3413f, 1440f));
+            // A 2560x1440 image in a 3413x1440 viewport has to grow to 3413 wide; the height
+            // overflows as a result, which is what covering means.
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 3413f, 1440f));
 
-            Assert.Equal(3413f / 2560f, scale, 0.001);
+            Assert.Equal(3413f / 2560f, fit.Scale, 0.001);
+            Assert.Equal(LayoutAxis.Horizontal, fit.DrivingAxis);
         }
 
         [Fact]
-        public void CoverPicksTheHeightWhenTheViewportIsTall()
+        public void CoverScalesToTheHeightWhenHeightIsTheShortfall()
         {
-            float scale = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 2560f));
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 2560f));
 
-            Assert.Equal(2560f / 1440f, scale, 0.001);
+            Assert.Equal(2560f / 1440f, fit.Scale, 0.001);
+            Assert.Equal(LayoutAxis.Vertical, fit.DrivingAxis);
+        }
+
+        [Fact]
+        public void CoverOfAnExactlyMatchingViewportIsUnitScale()
+        {
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 2560f, 1440f));
+
+            Assert.Equal(1f, fit.Scale, 0.001);
         }
 
         [Fact]
@@ -160,5 +171,59 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0f, fit.VisibleWorld.x, 0.01);
         }
+
+        [Fact]
+        public void CoverInsideFillsTheViewportAndCentersTheOverflow()
+        {
+            // A 2560x1440 design box in a 1440x1440 viewport: height drives the cover, so the box
+            // stays at scale one and the width it overflows by hangs off both sides equally.
+            CTRRectangle cover = LayoutMath.CoverInside(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 1440f));
+
+            Assert.Equal(2560f, cover.w, 0.01);
+            Assert.Equal(1440f, cover.h, 0.01);
+            Assert.Equal(-560f, cover.x, 0.01);
+            Assert.Equal(0f, cover.y, 0.01);
+        }
+
+        [Fact]
+        public void CoverInsideIsTheIdentityAtTheDesignShape()
+        {
+            // The rule every cover-fitted layer depends on: a viewport of the design shape must
+            // reduce to the authored placement, or the shipped composition moves.
+            CTRRectangle cover = LayoutMath.CoverInside(
+                2560f, 1440f, new CTRRectangle(0f, 0f, 2560f, 1440f));
+
+            Assert.Equal(2560f, cover.w, 0.01);
+            Assert.Equal(1440f, cover.h, 0.01);
+            Assert.Equal(0f, cover.x, 0.01);
+            Assert.Equal(0f, cover.y, 0.01);
+        }
+
+        [Theory]
+        [InlineData(1440f, 1440f)]
+        [InlineData(2560f, 1080f)]
+        [InlineData(720f, 1280f)]
+        public void ContainNeverOverflowsAndCoverNeverUnderfills(float width, float height)
+        {
+            CTRRectangle viewport = new(0f, 0f, width, height);
+
+            CTRRectangle contained = LayoutMath.FitInside(2560f, 1440f, viewport);
+            CTRRectangle covered = LayoutMath.CoverInside(2560f, 1440f, viewport);
+
+            Assert.True(contained.w <= width + 0.01f && contained.h <= height + 0.01f);
+            Assert.True(covered.w >= width - 0.01f && covered.h >= height - 0.01f);
+        }
+
+        [Fact]
+        public void PlaceBoxHonorsTheViewportOrigin()
+        {
+            CTRRectangle placed = LayoutMath.PlaceBox(100f, 100f, new CTRRectangle(50f, 20f, 400f, 200f), 2f);
+
+            Assert.Equal(200f, placed.w, 0.01);
+            Assert.Equal(200f, placed.h, 0.01);
+            Assert.Equal(150f, placed.x, 0.01);
+            Assert.Equal(20f, placed.y, 0.01);
+        }
+
     }
 }

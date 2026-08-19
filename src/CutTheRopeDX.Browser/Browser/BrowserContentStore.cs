@@ -81,62 +81,81 @@ namespace CutTheRopeDX.Browser
                     .Distinct(StringComparer.Ordinal)];
                 if (string.Equals(category.Name, "sounds", StringComparison.Ordinal))
                 {
-                    await PreloadSoundsAsync(audio, category.Name, paths);
+                    await PumpAsync(
+                        category.Name, paths, paths.Length, 0,
+                        path => PreloadSoundAsync(audio, path));
                     continue;
                 }
 
-                int loaded = paths.Count(path => _cache.ContainsKey(path));
-                FetchInterop.ReportContentProgress(category.Name, loaded, paths.Length);
-
                 string[] missing = [.. paths.Where(path => !_cache.ContainsKey(path))];
-                for (int offset = 0; offset < missing.Length; offset += PreloadConcurrency)
-                {
-                    Task<(string Path, byte[] Bytes)>[] requests = [.. missing
-                        .Skip(offset)
-                        .Take(PreloadConcurrency)
-                        .Select(FetchAssetAsync)];
-                    (string Path, byte[] Bytes)[] results = await Task.WhenAll(requests);
-                    foreach ((string path, byte[] bytes) in results)
-                    {
-                        if (bytes.Length == 0)
-                        {
-                            throw new InvalidOperationException(
-                                $"Could not preload content '{path}'.");
-                        }
-
-                        _cache[path] = bytes;
-                        loaded++;
-                        FetchInterop.ReportContentProgress(category.Name, loaded, paths.Length);
-                    }
-                }
+                await PumpAsync(
+                    category.Name, missing, paths.Length, paths.Length - missing.Length,
+                    FetchAssetAsync);
             }
         }
 
-        private async Task<(string Path, byte[] Bytes)> FetchAssetAsync(string path)
+        /// <summary>
+        /// Loads a list of assets, keeping a fixed number of requests in flight until the list
+        /// runs out.
+        /// </summary>
+        /// <remarks>
+        /// Loading in fixed batches instead makes every request in a batch wait for the slowest
+        /// one before the next batch starts, so the connection goes idle at each boundary. Pulling
+        /// from a shared cursor keeps it saturated for the whole preload, which is most of what a
+        /// player waits through on a first visit.
+        /// <para>
+        /// The cursor is not synchronized because it does not need to be: the browser host runs
+        /// single-threaded, so the workers interleave only where they await.
+        /// </para>
+        /// </remarks>
+        /// <param name="category">Asset category, for progress reporting.</param>
+        /// <param name="work">The paths still to load.</param>
+        /// <param name="total">Total assets in the category, including any already loaded.</param>
+        /// <param name="done">How many of that total were already loaded.</param>
+        /// <param name="load">Loads one path, throwing if it cannot.</param>
+        private static async Task PumpAsync(
+            string category, string[] work, int total, int done, Func<string, Task> load)
         {
-            return (path, await FetchInterop.GetBytesAsync(contentBaseUrl + path));
-        }
+            FetchInterop.ReportContentProgress(category, done, total);
+            int next = 0;
 
-        private static async Task PreloadSoundsAsync(
-            WebAudioBackend audio, string category, string[] paths)
-        {
-            int loaded = 0;
-            FetchInterop.ReportContentProgress(category, loaded, paths.Length);
-            for (int offset = 0; offset < paths.Length; offset += PreloadConcurrency)
+            async Task RunWorkerAsync()
             {
-                string[] batch = [.. paths.Skip(offset).Take(PreloadConcurrency)];
-                int[] results = await Task.WhenAll(batch.Select(audio.PreloadFileAsync));
-                for (int index = 0; index < results.Length; index++)
+                while (true)
                 {
-                    if (results[index] == 0)
+                    int index = next++;
+                    if (index >= work.Length)
                     {
-                        throw new InvalidOperationException(
-                            $"Could not preload audio content '{batch[index]}'.");
+                        return;
                     }
 
-                    loaded++;
-                    FetchInterop.ReportContentProgress(category, loaded, paths.Length);
+                    await load(work[index]);
+                    done++;
+                    FetchInterop.ReportContentProgress(category, done, total);
                 }
+            }
+
+            Task[] workers = new Task[Math.Min(PreloadConcurrency, work.Length)];
+            for (int i = 0; i < workers.Length; i++)
+            {
+                workers[i] = RunWorkerAsync();
+            }
+            await Task.WhenAll(workers);
+        }
+
+        private async Task FetchAssetAsync(string path)
+        {
+            byte[] bytes = await FetchInterop.GetBytesAsync(contentBaseUrl + path);
+            _cache[path] = bytes.Length != 0
+                ? bytes
+                : throw new InvalidOperationException($"Could not preload content '{path}'.");
+        }
+
+        private static async Task PreloadSoundAsync(WebAudioBackend audio, string path)
+        {
+            if (await audio.PreloadFileAsync(path) == 0)
+            {
+                throw new InvalidOperationException($"Could not preload audio content '{path}'.");
             }
         }
     }

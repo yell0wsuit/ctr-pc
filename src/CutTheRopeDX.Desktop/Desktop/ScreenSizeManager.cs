@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Desktop
 {
     /// <summary>
     /// Manages the OS window, fullscreen toggling, and persisted window settings for the desktop
-    /// renderer. Device-free presentation math (scaled view rect, coordinate transforms) lives in
+    /// renderer. Device-free presentation math (render viewport, coordinate transforms) lives in
     /// <see cref="ScreenPresentation"/>; this class feeds it via <see cref="CtrRenderer.OnSurfaceChanged"/>
     /// whenever the window or fullscreen bounds change, and implements <see cref="IWindowService"/>
     /// so Core code can command window behavior through <see cref="PlatformServices.Window"/>.
@@ -73,38 +73,23 @@ namespace CutTheRopeDX.Desktop
         public bool SkipSizeChanges { get; private set; }
 
         /// <summary>
-        /// Sets whether fullscreen view scaling should crop width instead of fitting the full game width.
-        /// Forwarded to <see cref="ScreenPresentation.Instance"/>, which owns the scaled-view-rect math.
-        /// </summary>
-        public bool FullScreenCropWidth
-        {
-            set
-            {
-                if (_fullScreenCropWidth != value)
-                {
-                    _fullScreenCropWidth = value;
-                    UpdateScaledView();
-                }
-            }
-        }
-
-        /// <summary>
         /// Initializes screen sizing from the current display mode, preferred window width, and fullscreen state.
         /// </summary>
         /// <param name="displayMode">Current display mode.</param>
         /// <param name="windowWidth">Preferred window width, or a non-positive value to derive one automatically.</param>
+        /// <param name="windowHeight">Preferred window height, or a non-positive value to derive one automatically.</param>
         /// <param name="isFullScreen"><see langword="true" /> to start in fullscreen mode.</param>
-        public void Init(DisplayMode displayMode, int windowWidth, bool isFullScreen)
+        public void Init(DisplayMode displayMode, int windowWidth, int windowHeight, bool isFullScreen)
         {
             FullScreenRectChanged(displayMode);
-            int targetWindowWidth = ClampWindowWidth(windowWidth, displayMode.Width);
-            WindowRectChanged(new Rectangle(0, 0, targetWindowWidth, ScreenPresentation.Instance.ScaledGameHeight(targetWindowWidth)));
+            Point target = ClampWindowSize(windowWidth, windowHeight, displayMode.Width, displayMode.Height);
+            WindowRectChanged(new Rectangle(0, 0, target.X, target.Y));
             if (isFullScreen)
             {
                 ToggleFullScreen();
                 return;
             }
-            ApplyWindowSize(WindowWidth);
+            ApplyWindowSize(WindowWidth, WindowHeight);
             CenterWindow();
             // Size the canvas to the window that was just established.
             Application.SharedCanvas().Reshape();
@@ -129,44 +114,113 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Clamps a requested window width to the game's minimum, the graphics profile maximum, and the
-        /// display width, deriving a default from the display when no positive width is supplied.
-        /// Shared by startup swapchain sizing and <see cref="Init"/> so both agree on the target width.
+        /// Clamps a requested window size to the game's minimum, the graphics profile maximum, and
+        /// the display, deriving a default from the display for either axis that is not supplied.
+        /// Shared by startup swapchain sizing and <see cref="Init"/> so both agree on the target.
         /// </summary>
+        /// <remarks>
+        /// Each axis is clamped on its own. The window's shape is the user's to choose and the
+        /// layout follows whatever they choose, so tying one axis to the other here would put the
+        /// aspect ratio back under the game's control.
+        /// </remarks>
         /// <param name="windowWidth">Requested window width, or a non-positive value to derive one from the display.</param>
+        /// <param name="windowHeight">Requested window height, or a non-positive value to derive one from the display.</param>
         /// <param name="displayWidth">Current display width.</param>
-        /// <returns>The clamped window width.</returns>
-        public static int ClampWindowWidth(int windowWidth, int displayWidth)
+        /// <param name="displayHeight">Current display height.</param>
+        /// <returns>The clamped window size.</returns>
+        public static Point ClampWindowSize(
+            int windowWidth,
+            int windowHeight,
+            int displayWidth,
+            int displayHeight)
         {
-            int targetWindowWidth = windowWidth > 0 ? windowWidth : displayWidth - 100;
-            targetWindowWidth = Math.Max(MIN_WINDOW_WIDTH, targetWindowWidth);
-            targetWindowWidth = Math.Min(targetWindowWidth, MAX_WINDOW_WIDTH);
-            targetWindowWidth = Math.Min(targetWindowWidth, displayWidth);
-            return targetWindowWidth;
+            return ClampWindowSize(
+                windowWidth, windowHeight, displayWidth, displayHeight, MAX_WINDOW_WIDTH);
         }
 
         /// <summary>
-        /// Applies a new window back-buffer <paramref name="width"/> and updates the tracked window rectangle.
+        /// The arithmetic behind <see cref="ClampWindowSize(int, int, int, int)"/>, with the
+        /// profile maximum passed in rather than read from the graphics device, so the clamping
+        /// rules can be exercised without one.
+        /// </summary>
+        /// <param name="windowWidth">Requested window width, or a non-positive value to derive one from the display.</param>
+        /// <param name="windowHeight">Requested window height, or a non-positive value to derive one from the display.</param>
+        /// <param name="displayWidth">Current display width.</param>
+        /// <param name="displayHeight">Current display height.</param>
+        /// <param name="maximum">Largest length the graphics profile permits on either axis.</param>
+        /// <returns>The clamped window size.</returns>
+        public static Point ClampWindowSize(
+            int windowWidth,
+            int windowHeight,
+            int displayWidth,
+            int displayHeight,
+            int maximum)
+        {
+            return new Point(
+                ClampAxis(windowWidth, displayWidth, MIN_WINDOW_WIDTH, maximum),
+                ClampAxis(windowHeight, displayHeight, MIN_WINDOW_HEIGHT, maximum));
+        }
+
+        /// <summary>
+        /// Clamps one window axis to its floor, the graphics profile maximum and the display.
+        /// </summary>
+        /// <param name="requested">Requested length, or a non-positive value to derive one from the display.</param>
+        /// <param name="displayLength">Display length on the same axis.</param>
+        /// <param name="minimum">Smallest permitted length.</param>
+        /// <param name="maximum">Largest permitted length.</param>
+        /// <returns>The clamped length.</returns>
+        private static int ClampAxis(int requested, int displayLength, int minimum, int maximum)
+        {
+            int target = requested > 0 ? requested : displayLength - 100;
+            target = Math.Max(minimum, target);
+            target = Math.Min(target, maximum);
+            return Math.Min(target, displayLength);
+        }
+
+        /// <summary>
+        /// Applies a new window back-buffer size and updates the tracked window rectangle.
         /// </summary>
         /// <param name="width">Target window width.</param>
-        public void ApplyWindowSize(int width)
+        /// <param name="height">Target window height.</param>
+        public void ApplyWindowSize(int width, int height)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
-            int height = ScreenPresentation.Instance.ScaledGameHeight(width);
-            // Skip the swapchain rebuild when the back buffer already matches the requested size.
-            // At startup the swapchain is created at this size (see Game1), so the first sizing here
-            // would otherwise rebuild it needlessly and flash black.
             GraphicsDevice device = graphicsDeviceManager.GraphicsDevice;
-            bool alreadySized = device != null
-                && device.PresentationParameters.BackBufferWidth == width
-                && device.PresentationParameters.BackBufferHeight == height;
+            Point backBuffer = device == null
+                ? Point.Zero
+                : new Point(
+                    device.PresentationParameters.BackBufferWidth,
+                    device.PresentationParameters.BackBufferHeight);
+            Rectangle client = Global.XnaGame.Window.ClientBounds;
+
             graphicsDeviceManager.PreferredBackBufferWidth = width;
             graphicsDeviceManager.PreferredBackBufferHeight = height;
-            if (!alreadySized)
+            if (NeedsSwapchainResize(backBuffer, new Point(client.Width, client.Height), new Point(width, height)))
             {
                 ApplyDesktopVkResize(graphicsDeviceManager);
             }
             WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
+        }
+
+        /// <summary>
+        /// Whether the swapchain has to be rebuilt to put the window and its back buffer at a size.
+        /// </summary>
+        /// <remarks>
+        /// The back buffer alone is not enough to go on. A drag past the window's floor is answered
+        /// by sizing the back buffer back up to it, which leaves the window itself wherever the
+        /// drag put it; a second drag past the floor then asks for a size the back buffer is
+        /// already at, and skipping the rebuild there leaves the two disagreeing - the picture
+        /// squeezed into a window smaller than it, and the swapchain reported as suboptimal and
+        /// rebuilt on every frame after. At startup both already match, which is the case the skip
+        /// is for: rebuilding there flashes the window black for nothing.
+        /// </remarks>
+        /// <param name="backBuffer">Size the back buffer is at now.</param>
+        /// <param name="window">Size the window's client area is at now.</param>
+        /// <param name="target">Size both are being put at.</param>
+        /// <returns><see langword="true"/> when a rebuild is needed.</returns>
+        public static bool NeedsSwapchainResize(Point backBuffer, Point window, Point target)
+        {
+            return backBuffer != target || window != target;
         }
 
         /// <summary>
@@ -178,8 +232,6 @@ namespace CutTheRopeDX.Desktop
             SkipSizeChanges = true;
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             bool isFullScreen = graphicsDeviceManager.IsFullScreen;
-            bool fullScreenCropWidth = _fullScreenCropWidth;
-            FullScreenCropWidth = true;
             if (isFullScreen)
             {
                 graphicsDeviceManager.PreferredBackBufferWidth = _windowRect.Width;
@@ -193,7 +245,6 @@ namespace CutTheRopeDX.Desktop
             graphicsDeviceManager.IsFullScreen = !isFullScreen;
             ApplyDesktopVkResize(graphicsDeviceManager);
             ApplyViewportToDevice();
-            FullScreenCropWidth = fullScreenCropWidth;
             SkipSizeChanges = false;
             EnableFullScreen(!isFullScreen);
             // Returning to windowed mode: re-center so the restored window is not stuck in a corner
@@ -209,8 +260,14 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Normalizes window size changes to the game's aspect-ratio constraints and persists the result.
+        /// Adopts a window size change and persists the result.
         /// </summary>
+        /// <remarks>
+        /// The reported bounds are taken as they are: the layout adapts to whatever shape the user
+        /// drags the window into, so correcting it would only fight them for control of the frame.
+        /// The one exception is a drag past the floor, which is snapped back to it - below that
+        /// size there is no layout left to adapt.
+        /// </remarks>
         /// <param name="newWindowRect">New window bounds reported by the host window.</param>
         public void FixWindowSize(Rectangle newWindowRect)
         {
@@ -218,34 +275,17 @@ namespace CutTheRopeDX.Desktop
             {
                 return;
             }
-            GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
             FullScreenRectChanged(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode);
             if (!IsFullScreen)
             {
                 try
                 {
-                    int targetWidth = graphicsDeviceManager.PreferredBackBufferWidth;
-                    if (newWindowRect.Width != WindowWidth)
-                    {
-                        targetWidth = newWindowRect.Width;
-                    }
-                    else if (newWindowRect.Height != WindowHeight)
-                    {
-                        targetWidth = ScreenPresentation.Instance.ScaledGameWidth(newWindowRect.Height);
-                    }
-                    if (targetWidth < 800 || ScreenPresentation.Instance.ScaledGameHeight(targetWidth) < ScreenPresentation.Instance.ScaledGameHeight(800))
-                    {
-                        targetWidth = 800;
-                    }
-                    if (targetWidth > MAX_WINDOW_WIDTH)
-                    {
-                        targetWidth = MAX_WINDOW_WIDTH;
-                    }
-                    if (targetWidth > ScreenWidth)
-                    {
-                        targetWidth = ScreenWidth;
-                    }
-                    ApplyWindowSize(targetWidth);
+                    Point target = ClampWindowSize(
+                        newWindowRect.Width,
+                        newWindowRect.Height,
+                        ScreenWidth,
+                        ScreenHeight);
+                    ApplyWindowSize(target.X, target.Y);
                 }
                 catch (Exception)
                 {
@@ -256,13 +296,13 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Applies the current scaled view rectangle to the graphics device viewport.
+        /// Applies the current render viewport to the graphics device viewport.
         /// </summary>
         public void ApplyViewportToDevice()
         {
-            ScreenPresentation presentation = ScreenPresentation.Instance;
-            Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
-            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(scaledViewRect, _windowRect) : Rectangle.Intersect(scaledViewRect, _fullScreenRect);
+            Framework.CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            Rectangle renderViewRect = new((int)render.x, (int)render.y, (int)render.w, (int)render.h);
+            Rectangle bounds = !IsFullScreen ? Rectangle.Intersect(renderViewRect, _windowRect) : Rectangle.Intersect(renderViewRect, _fullScreenRect);
             try
             {
                 Global.GraphicsDevice.Viewport = new Viewport(bounds);
@@ -333,10 +373,11 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Feeds the current active (window or fullscreen) bounds and crop-width flag into
-        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the scaled view rect. A no-op
-        /// while <see cref="SkipSizeChanges"/> is set, mirroring the batching <see cref="ToggleFullScreen"/>
-        /// relies on to defer recomputation until every field it touches has settled.
+        /// Feeds the current active (window or fullscreen) bounds into
+        /// <see cref="ScreenPresentation.Instance"/> so it recomputes the published viewport. A
+        /// no-op while <see cref="SkipSizeChanges"/> is set, mirroring the batching
+        /// <see cref="ToggleFullScreen"/> relies on to defer recomputation until every field it
+        /// touches has settled.
         /// </summary>
         private void UpdateScaledView()
         {
@@ -345,10 +386,14 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
             Rectangle sourceRect = IsFullScreen ? _fullScreenRect : _windowRect;
+
+            // MonoGame exposes no portable DPI scale, so the surface size is reported as-is at a
+            // unit ratio. If the backbuffer is ever allocated at a drawable size that differs from
+            // the client size, this becomes that ratio.
             CtrRenderer.OnSurfaceChanged(
                 sourceRect.Width,
                 sourceRect.Height,
-                _fullScreenCropWidth);
+                1f);
         }
 
         private static void ApplyDesktopVkResize(
@@ -369,9 +414,18 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Minimum allowed window width.
+        /// Minimum allowed window width. The narrowest surface the layout is built and tested
+        /// against, rather than a floor the shipped desktop shape implies: every menu now sizes
+        /// itself from the viewport, so what the window may not go below is what has been shown
+        /// to lay out.
         /// </summary>
-        public const int MIN_WINDOW_WIDTH = 800;
+        public const int MIN_WINDOW_WIDTH = 320;
+
+        /// <summary>
+        /// Minimum allowed window height, the other half of that surface. Each axis has its own
+        /// floor, so a window pulled flat keeps whatever width it had.
+        /// </summary>
+        public const int MIN_WINDOW_HEIGHT = 480;
 
         /// <summary>
         /// Current window rectangle.
@@ -382,10 +436,5 @@ namespace CutTheRopeDX.Desktop
         /// Current fullscreen display rectangle.
         /// </summary>
         private Rectangle _fullScreenRect;
-
-        /// <summary>
-        /// Whether fullscreen scaling should crop width.
-        /// </summary>
-        private bool _fullScreenCropWidth = true;
     }
 }

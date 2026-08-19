@@ -329,12 +329,17 @@ namespace CutTheRopeDX.Framework.Visual
             Renderer.FlushQuads();
             Viewport viewport = graphicsDevice.Viewport;
 
-            float viewportScaleX = viewport.Width / SCREEN_WIDTH;
-            float viewportScaleY = viewport.Height / SCREEN_HEIGHT;
+            // Text draws through its own batch rather than the quad pipeline, so it has to repeat
+            // the logical-to-surface step the orthographic projection performs for everything
+            // else. That step is the scale the viewport snapshot publishes. Deriving it from the
+            // fixed design size instead would agree with the rest of the frame only while the
+            // viewport happened to be exactly that size, and would scale the two axes by different
+            // amounts as soon as it was not.
+            float surfaceScale = ScreenPresentation.Instance.Snapshot.Scale;
 
             Matrix transformMatrix =
                 Renderer.GetModelViewMatrix() *
-                Matrix.CreateScale(viewportScaleX, viewportScaleY, 1f);
+                Matrix.CreateScale(surfaceScale, surfaceScale, 1f);
 
             // When fading multi-layer text, composite all layers at full opacity onto a
             // render target, then blit with the fade alpha so every layer fades uniformly.

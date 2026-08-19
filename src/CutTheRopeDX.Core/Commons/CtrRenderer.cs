@@ -28,20 +28,19 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <summary>
-        /// The sole entry point for a surface size change. Publishes the viewport snapshot and
-        /// derives the screen metrics from it in one transition, so no consumer can observe a
-        /// half-updated state.
+        /// The sole entry point for a surface size change. Publishes the viewport snapshot, which
+        /// every screen metric is then read from, so no consumer can observe a half-updated state.
         /// </summary>
         /// <param name="width">The new surface width in pixels.</param>
         /// <param name="height">The new surface height in pixels.</param>
-        /// <param name="cropWidth">
-        /// Whether portrait surfaces crop width to a 5:4 band instead of fitting the design
-        /// aspect.
-        /// </param>
-        public static void OnSurfaceChanged(int width, int height, bool cropWidth = true)
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
+        public static void OnSurfaceChanged(
+            int width,
+            int height,
+            float devicePixelRatio = 1f)
         {
-            bool changed = ScreenPresentation.Instance.SetSurfaceSize(width, height, cropWidth);
-            Java_com_zeptolab_ctr_CtrRenderer_nativeResize(width, height, false);
+            bool changed = ScreenPresentation.Instance.SetSurfaceSize(
+                width, height, devicePixelRatio);
             if (changed)
             {
                 Application.ExistingRootController()?.RelayoutTree(ScreenPresentation.Instance.Snapshot);
@@ -257,48 +256,6 @@ namespace CutTheRopeDX.Commons
                 gPaused = false;
                 CTRApp.ApplicationDidBecomeActive();
             }
-        }
-
-        /// <summary>
-        /// Recalculates the shared screen metrics for the current surface size.
-        /// </summary>
-        /// <param name="width">The surface width in pixels.</param>
-        /// <param name="height">The surface height in pixels.</param>
-        /// <param name="isLowMem">Whether the resize should use the low-memory layout path.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResize(int width, int height, bool isLowMem)
-        {
-            REAL_SCREEN_WIDTH = width;
-            REAL_SCREEN_HEIGHT = height;
-            SCREEN_RATIO = REAL_SCREEN_HEIGHT / REAL_SCREEN_WIDTH;
-            IS_WVGA = width > 500 || height > 500;
-            IS_QVGA = width < 280 || height < 280;
-            if (isLowMem)
-            {
-                IS_WVGA = false;
-            }
-            VIEW_SCREEN_WIDTH = REAL_SCREEN_WIDTH;
-            VIEW_SCREEN_HEIGHT = SCREEN_HEIGHT * REAL_SCREEN_WIDTH / SCREEN_WIDTH;
-            if (VIEW_SCREEN_HEIGHT > REAL_SCREEN_HEIGHT)
-            {
-                VIEW_SCREEN_HEIGHT = REAL_SCREEN_HEIGHT;
-                VIEW_SCREEN_WIDTH = SCREEN_WIDTH * REAL_SCREEN_HEIGHT / SCREEN_HEIGHT;
-            }
-            VIEW_OFFSET_X = (width - VIEW_SCREEN_WIDTH) / 2f;
-            VIEW_OFFSET_Y = (height - VIEW_SCREEN_HEIGHT) / 2f;
-            SCREEN_HEIGHT_EXPANDED = SCREEN_HEIGHT * REAL_SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
-            SCREEN_WIDTH_EXPANDED = SCREEN_WIDTH * REAL_SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
-            SCREEN_OFFSET_Y = (SCREEN_HEIGHT_EXPANDED - SCREEN_HEIGHT) / 2f;
-            SCREEN_OFFSET_X = (SCREEN_WIDTH_EXPANDED - SCREEN_WIDTH) / 2f;
-            SCREEN_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED / SCREEN_HEIGHT;
-            SCREEN_BG_SCALE_X = SCREEN_WIDTH_EXPANDED / SCREEN_WIDTH;
-            if (IS_WVGA)
-            {
-                SCREEN_WIDE_BG_SCALE_Y = SCREEN_HEIGHT_EXPANDED * 1.5f / 800;
-                SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
-                return;
-            }
-            SCREEN_WIDE_BG_SCALE_Y = SCREEN_BG_SCALE_Y;
-            SCREEN_WIDE_BG_SCALE_X = SCREEN_BG_SCALE_X;
         }
 
         /// <summary>

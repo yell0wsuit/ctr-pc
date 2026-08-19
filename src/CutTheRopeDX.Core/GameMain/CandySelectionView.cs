@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -20,9 +21,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Number of Flash XML frames skipped for static XML Om Nom previews.</summary>
         private const int XmlPreviewSkipFrames = 14;
-
-        /// <summary>Number of skin slots shown per grid row.</summary>
-        private const int GridItemsPerRow = 4;
 
         /// <summary>Number of Om Nom preview slots built per warmup tick.</summary>
         private const int OmNomWarmupSlotsPerTick = 1;
@@ -73,27 +71,15 @@ namespace CutTheRopeDX.GameMain
         private static Task omNomXmlPreparseTask;
 
         /// <summary>
-        /// Layout values used when building a selection grid.
-        /// </summary>
-        /// <param name="ContainerWidth">Width of the scrollable grid container.</param>
-        /// <param name="SlotScale">Scale applied to each slot background.</param>
-        /// <param name="ColumnSpacing">Horizontal spacing between slot columns.</param>
-        /// <param name="RowSpacing">Vertical spacing between slot rows.</param>
-        /// <param name="RowHeight">Height reserved for each row.</param>
-        private readonly record struct SelectionGridLayoutInfo(
-            float ContainerWidth,
-            float SlotScale,
-            float ColumnSpacing,
-            float RowSpacing,
-            float RowHeight);
-
-        /// <summary>
         /// Cached references for a built skin slot button.
         /// </summary>
         private sealed class SlotButtonData
         {
             /// <summary>Skin index represented by the slot.</summary>
             public int CandyIndex { get; set; }
+
+            /// <summary>The slot's button, so a layout pass can move and resize it.</summary>
+            public Button Slot { get; set; }
 
             /// <summary>Up-state slot background image.</summary>
             public Image UpImage { get; set; }
@@ -126,7 +112,7 @@ namespace CutTheRopeDX.GameMain
         private sealed class OmNomWarmupState
         {
             /// <summary>Grid being built incrementally.</summary>
-            public VBox Grid { get; init; }
+            public VBox Grid { get; set; }
 
             /// <summary>Slot buttons built so far.</summary>
             public List<SlotButtonData> SlotButtons { get; } = [];
@@ -137,17 +123,11 @@ namespace CutTheRopeDX.GameMain
             /// <summary>Currently selected Om Nom skin index.</summary>
             public int SelectedIndex { get; init; }
 
-            /// <summary>Scale applied to slot backgrounds.</summary>
-            public float SlotScale { get; init; }
-
-            /// <summary>Horizontal spacing between slot columns.</summary>
-            public float ColumnSpacing { get; init; }
-
-            /// <summary>Height reserved for each row.</summary>
-            public float RowHeight { get; init; }
-
-            /// <summary>Width of the scrollable grid container.</summary>
-            public float ContainerWidth { get; init; }
+            /// <summary>
+            /// How the screen is divided at the viewport the warmup is building for. Settable, so
+            /// a viewport that changes shape mid-warmup carries the rest of the slots with it.
+            /// </summary>
+            public SkinSelectionLayout Layout { get; set; }
 
             /// <summary>Total number of Om Nom skin slots to build.</summary>
             public int TotalItems { get; init; }
@@ -269,7 +249,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="selectedIndex">Currently selected skin index for the mode.</param>
         /// <param name="itemResourceName">Texture resource name for the slot item.</param>
         /// <param name="itemQuadIndex">Quad index for the slot item.</param>
-        /// <param name="slotScale">Scale applied to the slot background.</param>
+        /// <param name="layout">The layout the screen is drawn at.</param>
         /// <param name="buttonId">Button identifier assigned to the slot.</param>
         /// <param name="itemYOffset">Vertical offset applied to the item image.</param>
         /// <param name="doRestoreTransparency">Whether to restore cut transparency on the item image.</param>
@@ -279,7 +259,7 @@ namespace CutTheRopeDX.GameMain
             int selectedIndex,
             string itemResourceName,
             int itemQuadIndex,
-            float slotScale,
+            SkinSelectionLayout layout,
             MenuButtonId buttonId,
             float itemYOffset = -20f,
             bool doRestoreTransparency = false)
@@ -290,9 +270,6 @@ namespace CutTheRopeDX.GameMain
 
             Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
             Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
-
-            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
-            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
 
             // Add item image to both up and down states
             Image itemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
@@ -317,12 +294,15 @@ namespace CutTheRopeDX.GameMain
             slotButton.delegateButtonDelegate = currentButtonDelegate;
 
             // Store button data for later updates
-            slotButtons.Add(new SlotButtonData
+            SlotButtonData slotData = new()
             {
                 CandyIndex = itemIndex,
+                Slot = slotButton,
                 UpImage = slotBgUp,
                 DownImage = slotBgDown
-            });
+            };
+            SizeSlot(slotData, layout);
+            slotButtons.Add(slotData);
 
             return slotButton;
         }
@@ -449,8 +429,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The created grid.</returns>
         private static VBox CreateGrid(CandySelectionMode mode)
         {
-            SelectionGridLayoutInfo layout = CalculateGridLayout();
-            VBox itemGrid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.ContainerWidth);
+            SkinSelectionLayout layout = CurrentLayout();
+            VBox itemGrid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.GridWidth);
 
             // Get mode-specific configuration
             int totalItems;
@@ -491,13 +471,13 @@ namespace CutTheRopeDX.GameMain
             }
 
             // Build grid rows
-            for (int row = 0; row < ((totalItems + GridItemsPerRow - 1) / GridItemsPerRow); row++)
+            for (int row = 0; row < ((totalItems + layout.Columns - 1) / layout.Columns); row++)
             {
-                HBox rowBox = new HBox().InitWithOffsetAlignHeight(layout.ColumnSpacing, 16, layout.RowHeight);
+                HBox rowBox = NewRow(layout);
 
-                for (int col = 0; col < GridItemsPerRow; col++)
+                for (int col = 0; col < layout.Columns; col++)
                 {
-                    int itemIndex = (row * GridItemsPerRow) + col;
+                    int itemIndex = (row * layout.Columns) + col;
                     if (itemIndex >= totalItems)
                     {
                         break;
@@ -509,7 +489,7 @@ namespace CutTheRopeDX.GameMain
                         selectedIndex,
                         itemResourceName,
                         itemQuadIndex,
-                        layout.SlotScale,
+                        layout,
                         getButtonId(itemIndex),
                         itemYOffset,
                         doRestoreTransparency);
@@ -528,28 +508,137 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Calculates shared layout values for selection grids.
+        /// How the screen divides the viewport it is being drawn on.
         /// </summary>
-        /// <returns>The calculated selection grid layout.</returns>
-        private static SelectionGridLayoutInfo CalculateGridLayout()
+        /// <returns>The current layout.</returns>
+        private static SkinSelectionLayout CurrentLayout()
         {
-            float spriteSheetSlotWidth = 271f;
-            float spriteSheetSlotHeight = 336f;
-            float spriteSheetScale = 3f;
-            float baseSlotWidth = spriteSheetSlotWidth * spriteSheetScale;
-            float baseSlotHeight = spriteSheetSlotHeight * spriteSheetScale;
-            float baseSpacing = 20f;
-            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
-            float totalBaseWidth = (baseSlotWidth * GridItemsPerRow) + (baseSpacing * (GridItemsPerRow - 1));
-            float slotScale = containerWidth / totalBaseWidth;
-            float slotHeight = baseSlotHeight * slotScale;
+            return LayoutFor(ScreenPresentation.Instance.Snapshot);
+        }
 
-            return new SelectionGridLayoutInfo(
-                containerWidth,
-                slotScale,
-                baseSpacing,
-                10f,
-                slotHeight * 0.4f);
+        /// <summary>
+        /// How the screen divides a viewport, measuring the tabs it has already built.
+        /// </summary>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        /// <returns>The layout for that viewport.</returns>
+        private static SkinSelectionLayout LayoutFor(ViewportLayoutSnapshot snapshot)
+        {
+            float tabWidth = 0f;
+            float tabHeight = 0f;
+            foreach (Button tab in Tabs())
+            {
+                tabWidth = MathF.Max(tabWidth, tab?.width ?? 0f);
+                tabHeight = MathF.Max(tabHeight, tab?.height ?? 0f);
+            }
+
+            ChromeRoom room = backButton == null
+                ? default
+                : HudMetrics.RoomFor(
+                    snapshot,
+                    backButton.width,
+                    backButton.height,
+                    HudMetrics.IsTouchHost);
+
+            return SkinSelectionLayout.For(
+                snapshot.VisibleBounds,
+                ContentFit.ScaleForAspect(snapshot.Aspect),
+                tabWidth,
+                tabHeight,
+                TabCount,
+                room.Width,
+                room.Height);
+        }
+
+        /// <summary>How many tabs the screen has.</summary>
+        private const int TabCount = 4;
+
+        /// <summary>The screen's tab buttons, in the order they are shown.</summary>
+        /// <returns>The tabs.</returns>
+        private static Button[] Tabs()
+        {
+            return [candyTabButton, ropeTabButton, omNomTabButton, traceTabButton];
+        }
+
+        /// <summary>
+        /// Places the tabs across the top of the screen, wrapping onto as many rows as it takes to
+        /// keep them on it.
+        /// </summary>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        private static void PlaceTabs(SkinSelectionLayout layout)
+        {
+            Button[] tabs = Tabs();
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                Button tab = tabs[i];
+                if (tab == null)
+                {
+                    continue;
+                }
+
+                // Scaled about its own center: that leaves the horizontal offset alone, since the
+                // offset is the center's, and lifts the top by half the growth, which comes back
+                // out of the row's own top here.
+                tab.scaleX = tab.scaleY = layout.Scale;
+                tab.x = layout.TabX(i, tabs.Length);
+                tab.y = layout.TabTopFor(i) - (tab.height * (1f - layout.Scale) / 2f);
+            }
+        }
+
+        /// <summary>
+        /// Sizes the window the grid scrolls inside and places it below the tabs, keeping the
+        /// reader inside what the resized window can reach.
+        /// </summary>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        private static void PlaceWindow(SkinSelectionLayout layout)
+        {
+            if (currentContainer == null)
+            {
+                return;
+            }
+
+            currentContainer.anchor = currentContainer.parentAnchor = 10;
+            currentContainer.width = (int)layout.GridWidth;
+            currentContainer.height = (int)layout.WindowHeight;
+            currentContainer.y = layout.WindowTop;
+
+            Vector scroll = currentContainer.GetScroll();
+            scroll.Y = CTRMathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, currentContainer.GetMaxScroll().Y);
+            currentContainer.SetScroll(scroll);
+        }
+
+        /// <summary>Creates an empty row of slots at a layout's metrics.</summary>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        /// <returns>The row.</returns>
+        private static HBox NewRow(SkinSelectionLayout layout)
+        {
+            return new HBox().InitWithOffsetAlignHeight(layout.ColumnSpacing, 16, layout.RowHeight);
+        }
+
+        /// <summary>
+        /// Sizes one slot to a layout's cell. The button's own rectangle is the cell, so the row
+        /// spaces it by what is drawn and a touch lands where the slot looks like it is, and the
+        /// artwork is centered in that cell and scaled about its own middle.
+        /// </summary>
+        /// <param name="slot">Slot to size.</param>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        private static void SizeSlot(SlotButtonData slot, SkinSelectionLayout layout)
+        {
+            foreach (Image face in new[] { slot.UpImage, slot.DownImage })
+            {
+                if (face == null)
+                {
+                    continue;
+                }
+
+                face.anchor = face.parentAnchor = 18;
+                face.scaleX = face.scaleY = layout.Scale;
+            }
+
+            if (slot.Slot != null)
+            {
+                slot.Slot.width = (int)MathF.Round(layout.CellWidth);
+                slot.Slot.height = (int)MathF.Round(layout.CellHeight);
+            }
         }
 
         /// <summary>
@@ -595,15 +684,12 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The initialized warmup state.</returns>
         private static OmNomWarmupState CreateOmNomWarmupState()
         {
-            SelectionGridLayoutInfo layout = CalculateGridLayout();
+            SkinSelectionLayout layout = CurrentLayout();
             return new OmNomWarmupState
             {
-                Grid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.ContainerWidth),
+                Grid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.GridWidth),
                 SelectedIndex = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM"),
-                SlotScale = layout.SlotScale,
-                ColumnSpacing = layout.ColumnSpacing,
-                RowHeight = layout.RowHeight,
-                ContainerWidth = layout.ContainerWidth,
+                Layout = layout,
                 TotalItems = OmNomSkinRegistry.TotalSkinCount
             };
         }
@@ -677,10 +763,7 @@ namespace CutTheRopeDX.GameMain
             {
                 if (warmupState.CurrentRow == null)
                 {
-                    warmupState.CurrentRow = new HBox().InitWithOffsetAlignHeight(
-                        warmupState.ColumnSpacing,
-                        16,
-                        warmupState.RowHeight);
+                    warmupState.CurrentRow = NewRow(warmupState.Layout);
                     warmupState.ItemsInCurrentRow = 0;
                     _ = warmupState.Grid.AddChild(warmupState.CurrentRow);
                 }
@@ -689,7 +772,7 @@ namespace CutTheRopeDX.GameMain
                 Button slotButton = CreateOmNomSlotButton(
                     itemIndex,
                     warmupState.SelectedIndex,
-                    warmupState.SlotScale,
+                    warmupState.Layout,
                     MenuButtonId.ForOmNomSlot(itemIndex),
                     warmupState.SlotButtons,
                     warmupState.PreviewState);
@@ -698,7 +781,7 @@ namespace CutTheRopeDX.GameMain
                 warmupState.NextItemIndex++;
                 warmupState.ItemsInCurrentRow++;
 
-                if (warmupState.ItemsInCurrentRow >= GridItemsPerRow)
+                if (warmupState.ItemsInCurrentRow >= warmupState.Layout.Columns)
                 {
                     warmupState.CurrentRow = null;
                 }
@@ -880,7 +963,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="skinIndex">Om Nom skin index represented by the slot.</param>
         /// <param name="selectedIndex">Currently selected Om Nom skin index.</param>
-        /// <param name="slotScale">Scale applied to the slot background.</param>
+        /// <param name="layout">The layout the screen is drawn at.</param>
         /// <param name="buttonId">Button identifier assigned to the slot.</param>
         /// <param name="targetSlotButtons">Slot button list that receives cached slot data.</param>
         /// <param name="previewState">Preview build state updated when an animated preview is created.</param>
@@ -888,7 +971,7 @@ namespace CutTheRopeDX.GameMain
         private static Button CreateOmNomSlotButton(
             int skinIndex,
             int selectedIndex,
-            float slotScale,
+            SkinSelectionLayout layout,
             MenuButtonId buttonId,
             List<SlotButtonData> targetSlotButtons,
             OmNomPreviewBuildState previewState)
@@ -899,8 +982,6 @@ namespace CutTheRopeDX.GameMain
 
             Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
             Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
-            slotBgUp.scaleX = slotBgUp.scaleY = slotScale;
-            slotBgDown.scaleX = slotBgDown.scaleY = slotScale;
 
             Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
             slotButton.delegateButtonDelegate = currentButtonDelegate;
@@ -908,6 +989,7 @@ namespace CutTheRopeDX.GameMain
             SlotButtonData slotButtonData = new()
             {
                 CandyIndex = skinIndex,
+                Slot = slotButton,
                 UpImage = slotBgUp,
                 DownImage = slotBgDown,
                 UpPreview = CreateAndAttachOmNomPreview(
@@ -924,6 +1006,7 @@ namespace CutTheRopeDX.GameMain
                     previewState)
             };
 
+            SizeSlot(slotButtonData, layout);
             targetSlotButtons.Add(slotButtonData);
             return slotButton;
         }
@@ -1045,14 +1128,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="buttonId">Button identifier assigned to the tab.</param>
         /// <param name="font">Font used by the tab text.</param>
         /// <param name="buttonDelegate">Button delegate that receives tab press events.</param>
-        /// <param name="width">Receives the tab button width.</param>
         /// <returns>The configured tab button.</returns>
         private static Button CreateTabButton(
             string textKey,
             MenuButtonId buttonId,
             FontGeneric font,
-            IButtonDelegation buttonDelegate,
-            out float width)
+            IButtonDelegation buttonDelegate)
         {
             Image buttonUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
             Image buttonDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
@@ -1070,10 +1151,143 @@ namespace CutTheRopeDX.GameMain
             Button button = new Button().InitWithUpElementDownElementandID(buttonUp, buttonDown, buttonId);
             button.delegateButtonDelegate = buttonDelegate;
             button.anchor = button.parentAnchor = 10;
-            button.y = 50f;
-            width = buttonDown.width;
             return button;
         }
+
+        /// <summary>
+        /// Covers the visible bounds with the selection background.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private static void CoverBackground(CTRRectangle visible)
+        {
+            backgroundImage.scaleX = backgroundImage.scaleY =
+                LayoutMath.Cover(backgroundImage.width, backgroundImage.height, visible).Scale;
+        }
+
+        /// <summary>
+        /// Lays the selection screen out for the viewport: the backdrop, the tabs across the top,
+        /// the window below them, and the grids inside it.
+        /// </summary>
+        /// <remarks>
+        /// The grids are flowed again rather than built again, because a slot owns an animated
+        /// preview that is expensive to make and cheap to move: the same buttons are dealt into
+        /// rows of whatever width the new viewport takes. Every mode's grid is flowed, not only
+        /// the one on screen, so switching tabs after a resize does not show a stale one.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to lay out against.</param>
+        public static void Relayout(ViewportLayoutSnapshot snapshot)
+        {
+            if (backgroundRoot == null)
+            {
+                return;
+            }
+
+            CTRRectangle visible = snapshot.VisibleBounds;
+            backgroundRoot.width = (int)visible.w;
+            backgroundRoot.height = (int)visible.h;
+            CoverBackground(visible);
+
+            SkinSelectionLayout layout = LayoutFor(snapshot);
+            PlaceTabs(layout);
+            ReflowGrids(layout);
+            PlaceWindow(layout);
+        }
+
+        /// <summary>
+        /// Deals every built grid's slots into rows again at a new layout, including one a warmup
+        /// is still filling.
+        /// </summary>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        private static void ReflowGrids(SkinSelectionLayout layout)
+        {
+            foreach (CandySelectionMode mode in Enum.GetValues<CandySelectionMode>())
+            {
+                CandySelectionModeState state = modeCache.GetState(mode);
+                if (state.Grid == null || state.SlotButtons is not List<SlotButtonData> slots)
+                {
+                    continue;
+                }
+
+                bool onScreen = mode == currentMode;
+                if (onScreen)
+                {
+                    DetachModeGrid(mode);
+                }
+
+                state.Grid = FlowGrid(slots, layout, out _, out _);
+
+                if (onScreen)
+                {
+                    AttachCachedGrid(state);
+                }
+            }
+
+            if (omNomWarmupState != null)
+            {
+                omNomWarmupState.Layout = layout;
+                omNomWarmupState.Grid = FlowGrid(
+                    omNomWarmupState.SlotButtons,
+                    layout,
+                    out HBox lastRow,
+                    out int lastRowCount);
+
+                // The warmup carries on where it left off, so it is handed back the row it was
+                // filling rather than starting a fresh one, which would leave a short row wherever
+                // the viewport happened to change.
+                bool rowHasRoom = lastRow != null && lastRowCount < layout.Columns;
+                omNomWarmupState.CurrentRow = rowHasRoom ? lastRow : null;
+                omNomWarmupState.ItemsInCurrentRow = rowHasRoom ? lastRowCount : 0;
+            }
+        }
+
+        /// <summary>
+        /// Deals slots into rows of a fresh grid, sizing each to the layout's cell.
+        /// </summary>
+        /// <param name="slots">Slots to deal, in the order they are shown.</param>
+        /// <param name="layout">The layout the screen is drawn at.</param>
+        /// <param name="lastRow">Receives the row the last slot went into.</param>
+        /// <param name="lastRowCount">Receives how many slots that row holds.</param>
+        /// <returns>The grid.</returns>
+        private static VBox FlowGrid(
+            List<SlotButtonData> slots,
+            SkinSelectionLayout layout,
+            out HBox lastRow,
+            out int lastRowCount)
+        {
+            VBox grid = new VBox().InitWithOffsetAlignWidth(layout.RowSpacing, 2, layout.GridWidth);
+            lastRow = null;
+            lastRowCount = 0;
+
+            foreach (SlotButtonData slot in slots)
+            {
+                if (slot?.Slot == null)
+                {
+                    continue;
+                }
+
+                SizeSlot(slot, layout);
+                if (lastRow == null || lastRowCount == layout.Columns)
+                {
+                    lastRow = NewRow(layout);
+                    lastRowCount = 0;
+                    _ = grid.AddChild(lastRow);
+                }
+
+                _ = lastRow.AddChild(slot.Slot);
+                lastRowCount++;
+            }
+
+            return grid;
+        }
+
+        /// <summary>The element the selection view's contents hang from.</summary>
+        private static BaseElement backgroundRoot;
+
+        /// <summary>The painted background behind the selection grid.</summary>
+        private static Image backgroundImage;
+
+        /// <summary>The button back to the main menu, drawn in the corner over the grid.</summary>
+        private static Button backButton;
 
         /// <summary>
         /// Creates the full candy and skin selection menu view.
@@ -1086,7 +1300,6 @@ namespace CutTheRopeDX.GameMain
             out ScrollableContainer candyContainer)
         {
             MenuView menuView = new();
-            const float tabGap = 24f;
 
             // Store delegate for later use
             currentButtonDelegate = buttonDelegate;
@@ -1098,57 +1311,50 @@ namespace CutTheRopeDX.GameMain
             omNomWarmupState = null;
             omNomXmlPreparseTask = null;
 
+            CTRRectangle visibleBounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
             BaseElement background = new()
             {
-                width = (int)FrameworkTypes.SCREEN_WIDTH,
-                height = (int)FrameworkTypes.SCREEN_HEIGHT
+                width = (int)visibleBounds.w,
+                height = (int)visibleBounds.h
             }; // ensure child anchors use the full screen bounds instead of 0x0
 
             Image bgImage = Image.Image_createWithResID(Resources.BackgroundImg.SkinBackground);
             bgImage.anchor = bgImage.parentAnchor = 18; // center
-
-            // Scale background to cover the whole screen (match other menu backgrounds)
-            float bgScale = MathF.Max(FrameworkTypes.SCREEN_WIDTH / bgImage.width, FrameworkTypes.SCREEN_HEIGHT / bgImage.height);
-            bgImage.scaleX = bgImage.scaleY = bgScale;
             _ = background.AddChild(bgImage);
+            backgroundRoot = background;
+            backgroundImage = bgImage;
+            CoverBackground(visibleBounds);
 
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
-            candyTabButton = CreateTabButton("CANDIES_BTN", MenuButtonId.CandySelect, font, buttonDelegate, out float candyTabWidth);
+            candyTabButton = CreateTabButton("CANDIES_BTN", MenuButtonId.CandySelect, font, buttonDelegate);
             _ = background.AddChild(candyTabButton);
-            ropeTabButton = CreateTabButton("ROPE_SKINS_BTN", MenuButtonId.RopeSelect, font, buttonDelegate, out float ropeTabWidth);
+            ropeTabButton = CreateTabButton("ROPE_SKINS_BTN", MenuButtonId.RopeSelect, font, buttonDelegate);
             _ = background.AddChild(ropeTabButton);
-            omNomTabButton = CreateTabButton("OM_NOM_BTN", MenuButtonId.OmNomSelect, font, buttonDelegate, out float omNomTabWidth);
+            omNomTabButton = CreateTabButton("OM_NOM_BTN", MenuButtonId.OmNomSelect, font, buttonDelegate);
             _ = background.AddChild(omNomTabButton);
-            traceTabButton = CreateTabButton("TRACES_BTN", MenuButtonId.TraceSelect, font, buttonDelegate, out float traceTabWidth);
+            traceTabButton = CreateTabButton("TRACES_BTN", MenuButtonId.TraceSelect, font, buttonDelegate);
             _ = background.AddChild(traceTabButton);
 
-            float tabStride = MathF.Max(
-                MathF.Max(candyTabWidth, ropeTabWidth),
-                MathF.Max(omNomTabWidth, traceTabWidth)) + tabGap;
-            candyTabButton.x = SkinSelectionTabLayout.GetCenteredX(0, 4, tabStride);
-            ropeTabButton.x = SkinSelectionTabLayout.GetCenteredX(1, 4, tabStride);
-            omNomTabButton.x = SkinSelectionTabLayout.GetCenteredX(2, 4, tabStride);
-            traceTabButton.x = SkinSelectionTabLayout.GetCenteredX(3, 4, tabStride);
+            SkinSelectionLayout layout = LayoutFor(ScreenPresentation.Instance.Snapshot);
+            PlaceTabs(layout);
 
-            // Create scrollable container (initially empty, will be populated by RebuildGrid)
-            float containerWidth = FrameworkTypes.SCREEN_WIDTH - 20f;
-            float containerHeight = 1100f;
-
-            // Create empty container initially
+            // Create empty container initially; the grids that go in it are built per mode.
             gridContainer = new BaseElement
             {
-                width = (int)containerWidth,
+                width = (int)layout.GridWidth,
                 height = 10
             };
 
-            candyContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, containerHeight, gridContainer);
-            candyContainer.anchor = candyContainer.parentAnchor = 18;
-            candyContainer.y = 50f;
+            candyContainer = new ScrollableContainer().InitWithWidthHeightContainer(
+                layout.GridWidth,
+                layout.WindowHeight,
+                gridContainer);
 
             _ = background.AddChild(candyContainer);
 
             // Store container reference and build initial grid
             currentContainer = candyContainer;
+            PlaceWindow(layout);
             UpdateTabButtonStates(); // Set initial tab button states (candy active)
             AttachCurrentModeGrid();
             StartOmNomWarmup();
@@ -1156,9 +1362,8 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(background);
 
             // Back button to return to main menu
-            Button backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackFromCandySelect);
+            backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackFromCandySelect);
             backButton.SetName("backb");
-            backButton.x = FrameworkTypes.Canvas.xOffsetScaled;
             _ = menuView.AddChild(backButton);
 
             return menuView;

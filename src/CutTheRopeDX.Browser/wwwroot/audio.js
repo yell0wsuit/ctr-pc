@@ -82,9 +82,8 @@ function startVoice(handle, buffer) {
 
 export function play(key, loop, volume) {
     const buffer = buffers.get(key);
-    const pending =
-        buffer === undefined ? decodes.get(key) : Promise.resolve(buffer);
-    if (pending === undefined) {
+    const pending = buffer === undefined ? decodes.get(key) : undefined;
+    if (buffer === undefined && pending === undefined) {
         return 0;
     }
 
@@ -99,12 +98,16 @@ export function play(key, loop, volume) {
         offset: 0,
         startedAt: 0,
     });
-    void ensureContext()
-        .resume()
-        .catch(() => {
-            // Browsers reject resume outside a user gesture. The global gesture handlers
-            // below will retry while this queued voice remains ready to start.
-        });
+    resumeIfSuspended();
+
+    // Everything the game plays during a level is already decoded, and going through a promise
+    // for those would put a microtask between the cut and its sound for no reason. Only a
+    // buffer still in flight has to wait.
+    if (buffer !== undefined) {
+        startVoice(handle, buffer);
+        return handle;
+    }
+
     void pending.then((decoded) => {
         if (decoded === null) {
             voices.delete(handle);
@@ -191,8 +194,27 @@ export function durationOf(key) {
     return buffer === undefined ? 0 : buffer.duration;
 }
 
+// A running context needs no resuming, so neither the play path nor a gesture pays for a
+// promise once the browser has let the graph start.
+function resumeIfSuspended() {
+    if (ensureContext().state === "running") {
+        return;
+    }
+    void resume().catch(() => {
+        // Browsers reject resume outside a user gesture. The gesture handlers below retry
+        // while any queued voice remains ready to start.
+    });
+}
+
 function resumeFromGesture() {
-    void resume();
+    if (context !== null && context.state === "running") {
+        globalThis.removeEventListener("pointerdown", resumeFromGesture);
+        globalThis.removeEventListener("keydown", resumeFromGesture);
+        return;
+    }
+    void resume().catch(() => {
+        // The gesture was not one the browser accepts as user activation; the next one will be.
+    });
 }
 
 globalThis.addEventListener("pointerdown", resumeFromGesture, {

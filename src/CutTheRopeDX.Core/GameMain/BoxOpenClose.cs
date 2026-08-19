@@ -4,6 +4,7 @@ using System.Globalization;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -167,16 +168,140 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Spans the transition box across the viewport and refits the box cover to it.
+        /// </summary>
+        /// <remarks>
+        /// The result panel is not placed here. It is a design-space composition like a menu's,
+        /// so the controller fits it the same way it fits those, and all this has to guarantee is
+        /// that the panel's group hangs from the viewport's own origin.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        public void RelayoutBox(CTRRectangle visible)
+        {
+            width = (int)visible.w;
+            height = (int)visible.h;
+            CoverFitAnimations(visible);
+        }
+
+        /// <summary>
+        /// Scales the transition animation so the box covers every edge of the viewport, and
+        /// centers what overhangs.
+        /// </summary>
+        /// <remarks>
+        /// The covers are one fixed-size piece of art each, sized to meet in the middle of the
+        /// design box, and their open and close positions are all derived from that. Cover-fitting
+        /// the group that holds them is what lets the pair still reach both edges of a viewport
+        /// the design box does not fill, without every placement inside needing to know about it.
+        /// The group scales about its own origin, so the fit is a scale and a centering offset.
+        /// </remarks>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void CoverFitAnimations(CTRRectangle visible)
+        {
+            if (openCloseAnims == null)
+            {
+                return;
+            }
+
+            CTRRectangle covered = LayoutMath.CoverInside(
+                ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
+            float scale = covered.w / ViewportLayout.DesignWidth;
+            openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
+
+            // Centered through the renderer's translation rather than this element's position. The
+            // pieces inside are placed absolutely, which means they resolve their own position
+            // without consulting this one - moving the group would scale them about a new point
+            // and leave them exactly where they were. The translation is divided by the scale
+            // because it is applied in the space the scale has already been taken into.
+            openCloseAnims.translateX = covered.x / scale;
+            openCloseAnims.translateY = covered.y / scale;
+        }
+
+        /// <summary>
+        /// Index of the last anchor marker that belongs to the result panel's body.
+        /// </summary>
+        /// <remarks>
+        /// The marker after it places the improved-result stamp, which is decorative, appears on
+        /// some results and not others, and is authored well off to one side. Letting it into the
+        /// measurement would pull the panel sideways to balance something most results never draw.
+        /// </remarks>
+        private const int LastPanelBodyQuad = 11;
+
+        /// <summary>
+        /// The offset, in design units, that brings the authored result composition onto the
+        /// center of the design box it is fitted inside.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Every piece of the panel is placed from an anchor marker authored on the
+        /// <c>menu_results</c> art canvas, which is 2560x1597 - taller than the 2560x1440 design
+        /// box the group is fitted to. Centering that box therefore does not center what it holds:
+        /// the composition is authored low in its own canvas and is drawn low on every screen. It
+        /// reads as centered at the design shape only because the whole panel is small there;
+        /// a phone-shaped viewport draws it at up to 1.55x and the gap above it opens up.
+        /// </para>
+        /// <para>
+        /// Measured from the markers rather than from what the panel paints. The score counts up
+        /// while the panel is on screen and the pass text differs with the stars earned, so the
+        /// painted extent changes width under its own animation - centering on that would slide
+        /// the panel sideways as the digits climb. The markers are fixed data and answer the same
+        /// way on every frame.
+        /// </para>
+        /// </remarks>
+        /// <returns>The design-space offset to apply to the placed panel group.</returns>
+        public static Vector PanelCenteringOffset()
+        {
+            float left = float.MaxValue;
+            float top = float.MaxValue;
+            float right = float.MinValue;
+            float bottom = float.MinValue;
+            for (int quad = 0; quad <= LastPanelBodyQuad; quad++)
+            {
+                Vector marker = Image.GetQuadOffset(Resources.Img.MenuResults, quad);
+                left = MathF.Min(left, marker.X);
+                top = MathF.Min(top, marker.Y);
+                right = MathF.Max(right, marker.X);
+                bottom = MathF.Max(bottom, marker.Y);
+            }
+
+            return Vect(
+                (ViewportLayout.DesignWidth / 2f) - ((left + right) / 2f),
+                (ViewportLayout.DesignHeight / 2f) - ((top + bottom) / 2f));
+        }
+
+        /// <summary>
+        /// Hangs one authored piece of the result panel from the panel's group.
+        /// </summary>
+        /// <remarks>
+        /// Anchored to the group's own corner, which is what makes the design-space position each
+        /// piece was authored with be read from where the fit put the group rather than from the
+        /// corner of the screen. A piece left resolving against the screen stays where the design
+        /// size put it while the rest of the panel moves.
+        /// </remarks>
+        /// <param name="piece">Panel piece to add.</param>
+        private void AddPanelPiece(BaseElement piece)
+        {
+            piece.parentAnchor = 9;
+            _ = result.AddChild(piece);
+        }
+
+        /// <summary>
         /// Initializes the transition box UI, result panel, buttons, and score labels.
         /// </summary>
         /// <param name="b">Button delegate that receives result-panel button events.</param>
         /// <returns>The initialized transition box instance.</returns>
         public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
-            result = new BaseElement();
+            // Every piece of the result panel is authored in design coordinates, so they hang from
+            // a group the layout pass fits to the viewport and the whole panel follows it. Sitting
+            // at the viewport's own origin, rather than centered inside a parent, is what lets the
+            // group's fitted position mean what it says.
+            result = new FittedGroup { anchor = 9, parentAnchor = 9 };
             _ = AddChildwithID(result, 1);
-            anchor = parentAnchor = 18;
-            result.anchor = result.parentAnchor = 18;
+            anchor = 9;
+            parentAnchor = -1;
+            x = 0f;
+            y = 0f;
+            RelayoutBox(VisibleBounds);
             result.SetEnabled(false);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -190,27 +315,27 @@ namespace CutTheRopeDX.GameMain
             image.anchor = 18;
             image.SetName("star1");
             Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuResults, 0);
-            _ = result.AddChild(image);
+            AddPanelPiece(image);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
             image2.anchor = 18;
             image2.SetName("star2");
             Image.SetElementPositionWithQuadOffset(image2, Resources.Img.MenuResults, 1);
-            _ = result.AddChild(image2);
+            AddPanelPiece(image2);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
             image3.anchor = 18;
             image3.SetName("star3");
             Image.SetElementPositionWithQuadOffset(image3, Resources.Img.MenuResults, 2);
-            _ = result.AddChild(image3);
+            AddPanelPiece(image3);
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(Application.GetString("LEVEL_CLEARED1"));
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuResults, 3);
             text.anchor = 18;
             text.SetName("passText");
-            _ = result.AddChild(text);
+            AddPanelPiece(text);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 15);
             image4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(image4, Resources.Img.MenuResults, 4);
-            _ = result.AddChild(image4);
+            AddPanelPiece(image4);
             stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, CTRResourceMgr.GetResultStampQuad());
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -221,40 +346,40 @@ namespace CutTheRopeDX.GameMain
             stamp.anchor = 18;
             stamp.SetEnabled(false);
             Image.SetElementPositionWithQuadOffset(stamp, Resources.Img.MenuResults, 12);
-            _ = result.AddChild(stamp);
+            AddPanelPiece(stamp);
             Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("REPLAY"), 8, b);
             button.anchor = 18;
             // Custom levels hide the NEXT/MENU buttons, so replay takes the centered menu slot instead.
             Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, CustomLevelSession.IsActive ? 9 : 11);
-            _ = result.AddChild(button);
+            AddPanelPiece(button);
             if (!CustomLevelSession.IsActive)
             {
                 Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
                 button2.anchor = 18;
                 Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuResults, 10);
-                _ = result.AddChild(button2);
+                AddPanelPiece(button2);
                 Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
                 button3.anchor = 18;
                 Image.SetElementPositionWithQuadOffset(button3, Resources.Img.MenuResults, 9);
-                _ = result.AddChild(button3);
+                AddPanelPiece(button3);
             }
             Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text2.SetName("dataTitle");
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuResults, 5);
-            _ = result.AddChild(text2);
+            AddPanelPiece(text2);
             Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             text3.SetName("dataValue");
             text3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuResults, 6);
-            _ = result.AddChild(text3);
+            AddPanelPiece(text3);
             Text text4 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.FontNumbersBig));
             text4.SetName("scoreValue");
             text4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text4, Resources.Img.MenuResults, 8);
-            _ = result.AddChild(text4);
+            AddPanelPiece(text4);
             confettiAnims = new BaseElement();
-            _ = result.AddChild(confettiAnims);
+            AddPanelPiece(confettiAnims);
             openCloseAnims = null;
             boxAnim = -1;
             delegateboxClosed = null;
@@ -268,6 +393,10 @@ namespace CutTheRopeDX.GameMain
         public static BaseElement CreateConfettiParticleNear()
         {
             Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
+
+            // Spawned across the design box and animated in design coordinates, so it travels with
+            // the panel it bursts over instead of falling where the design size alone would put it.
+            confetti.parentAnchor = 9;
             confetti.DoRestoreCutTransparency();
             int confettiVariant = RND_RANGE(0, 2);
             int firstFrame = 18;
@@ -285,7 +414,7 @@ namespace CutTheRopeDX.GameMain
                 firstFrame = 9;
                 lastFrame = 17;
             }
-            float spawnX = RND_RANGE((int)RTPD(-100), (int)SCREEN_WIDTH);
+            float spawnX = RND_RANGE((int)RTPD(-100), (int)ViewportLayout.DesignWidth);
             float spawnY = RND_RANGE((int)RTPD(-40), (int)RTPD(100));
             float fadeDuration = FLOAT_RND_RANGE(2, 5);
             int i = confetti.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, firstFrame, lastFrame);
@@ -432,14 +561,25 @@ namespace CutTheRopeDX.GameMain
             timeline.delegateTimelineDelegate = this;
             _ = openCloseAnims.AddChild(image);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float leftCoverX = (SCREEN_WIDTH / 2f) - quadSize.X;
+
+            // The whole animation is authored against the design size and cover-fitted to the
+            // viewport by the group that holds it, the way a menu backdrop is. Measuring the
+            // pieces against the viewport instead would move them relative to art that had not
+            // moved with them.
+            float boxWidth = ViewportLayout.DesignWidth;
+
+            // Where the two halves of the cover meet. The flaps and the loading piece are placed
+            // against this rather than against a cover's own width: the two are only the same
+            // thing while one cover is exactly half the box.
+            float seamX = boxWidth / 2f;
+            float leftCoverX = seamX - quadSize.X;
             Image coverBackgroundLeft = Image.Image_createWithResIDQuad(boxCover, 0);
             Image coverBackgroundRight = Image.Image_createWithResIDQuad(boxCover, 0);
             coverBackgroundLeft.x = leftCoverX;
             coverBackgroundLeft.rotationCenterX = -coverBackgroundLeft.width / 2f;
             coverBackgroundRight.rotationCenterX = coverBackgroundLeft.rotationCenterX;
             coverBackgroundRight.rotation = 180f;
-            coverBackgroundRight.x = SCREEN_WIDTH - ((SCREEN_WIDTH / 2f) - coverBackgroundLeft.width);
+            coverBackgroundRight.x = seamX + coverBackgroundLeft.width;
             coverBackgroundRight.y = -0.5f;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -502,15 +642,15 @@ namespace CutTheRopeDX.GameMain
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - coverBackgroundLeft.width + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH + rightClosedX), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth + rightClosedX), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - RTD(9)), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - coverBackgroundLeft.width + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth - RTD(9)), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + rightRestInset), (int)loadingY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
@@ -541,15 +681,15 @@ namespace CutTheRopeDX.GameMain
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - coverBackgroundLeft.width + RTD(7)), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)SCREEN_WIDTH, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + RTD(7)), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)boxWidth, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
             else
             {
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - 40f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline.AddKeyFrame(KeyFrame.MakePos((int)(SCREEN_WIDTH - coverBackgroundLeft.width + 20f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(boxWidth - 40f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakePos((int)(seamX + 20f), 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
@@ -639,6 +779,7 @@ namespace CutTheRopeDX.GameMain
         {
             openCloseAnims = new BaseElement();
             _ = AddChildwithID(openCloseAnims, 0);
+            CoverFitAnimations(VisibleBounds);
         }
 
         /// <summary>

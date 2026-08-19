@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Main menu controller that builds menu views, handles menu buttons, and coordinates transitions into gameplay.
     /// </summary>
-    internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
+    internal sealed partial class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
         /// <summary>
         /// Creates a full-width text button using the standard menu button quads.
@@ -218,13 +218,23 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="l">Whether to include the menu logo and logo candy button.</param>
         /// <param name="s">Whether to include the rotating shadow layer.</param>
+        /// <param name="viewId">View the backdrop belongs to, so a layout pass can find it again.</param>
+        /// <param name="designGroup">
+        /// Group carrying the scene's design-space content, or <see langword="null"/> for a scene
+        /// that has not been converted to one. When supplied, the logo is placed in it rather than
+        /// on the backdrop, and it is hung from the backdrop above the decorative layers.
+        /// </param>
         /// <returns>The configured background element.</returns>
-        public BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
+        public BaseElement CreateBackgroundWithLogowithShadow(
+            bool l,
+            bool s,
+            int viewId,
+            BaseElement designGroup = null)
         {
             BaseElement baseElement = new()
             {
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h
             };
 
             // Select secondary background based on special events
@@ -248,6 +258,8 @@ namespace CutTheRopeDX.GameMain
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
             _ = baseElement.AddChild(image);
+            Image frontLayer = null;
+            Image shadowLayer = null;
             if (l)
             {
                 // Select main background based on special events
@@ -271,6 +283,7 @@ namespace CutTheRopeDX.GameMain
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
                 _ = image.AddChild(image2);
+                frontLayer = image2;
 
                 // Add event-specific decorations to logo -- layer bottom
                 switch (true)
@@ -289,11 +302,13 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 // Main logo
+                // The logo is design-space content: it belongs to the fitted group where the scene
+                // has one, and to the backdrop where it does not.
+                BaseElement logoParent = designGroup ?? baseElement;
                 Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 52);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
-                _ = baseElement.AddChild(image3);
 
                 // Candy on rope (positioned under the logo)
                 // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
@@ -364,7 +379,8 @@ namespace CutTheRopeDX.GameMain
                         break;
                 }
 
-                _ = baseElement.AddChild(image3);
+                _ = logoParent.AddChild(image3);
+
             }
             if (s)
             {
@@ -378,7 +394,23 @@ namespace CutTheRopeDX.GameMain
                 _ = image4.AddTimeline(timeline);
                 image4.PlayTimeline(0);
                 _ = baseElement.AddChild(image4);
+                shadowLayer = image4;
             }
+
+            // Added last, so the scene's content draws over the decorative layers rather than
+            // being split across them the way it was when the two shared one parent.
+            if (designGroup != null)
+            {
+                _ = baseElement.AddChild(designGroup);
+            }
+            MenuBackdrop backdrop = new(baseElement, image, frontLayer, shadowLayer);
+            backdrops[viewId] = backdrop;
+
+            // Covered here as well as in the layout pass, because a scene can be built at a shape
+            // no later pass will announce a change from: the pack picker rebuilds itself from
+            // inside one, and the authored scale it would otherwise keep covers the design shape
+            // alone - on a phone it left the top half of the screen black.
+            LayOutBackdrop(backdrop, VisibleBounds);
             return baseElement;
         }
 
@@ -386,10 +418,12 @@ namespace CutTheRopeDX.GameMain
         /// Creates the menu background with an optional logo and the default shadow layer.
         /// </summary>
         /// <param name="l">Whether to include the menu logo and logo candy button.</param>
+        /// <param name="viewId">View the backdrop belongs to, so a layout pass can find it again.</param>
+        /// <param name="designGroup">Group carrying the scene's design-space content, if it has one.</param>
         /// <returns>The configured background element.</returns>
-        public BaseElement CreateBackgroundWithLogo(bool l)
+        public BaseElement CreateBackgroundWithLogo(bool l, int viewId, BaseElement designGroup = null)
         {
-            return CreateBackgroundWithLogowithShadow(l, true);
+            return CreateBackgroundWithLogowithShadow(l, true, viewId, designGroup);
         }
 
         /// <summary>
@@ -620,8 +654,13 @@ namespace CutTheRopeDX.GameMain
         public void CreateMainMenu()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(true);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, SCREEN_WIDTH);
+
+            // Everything the scene authors in design coordinates hangs from here; the layout pass
+            // fits this one element and the whole composition follows it.
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            mainMenuGroup = designGroup;
+            BaseElement baseElement = CreateBackgroundWithLogo(true, VIEW_MAIN_MENU, designGroup);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
             Button c = CreateButtonWithTextIDDelegate(Application.GetString("PLAY"), MenuButtonId.Play, this);
@@ -640,7 +679,7 @@ namespace CutTheRopeDX.GameMain
                 Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor, this);
                 _ = vBox.AddChild(c3);
             }
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
             bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
             if (flag)
             {
@@ -649,8 +688,8 @@ namespace CutTheRopeDX.GameMain
                 baseElement2.parentAnchor = baseElement2.anchor = 18;
                 baseElement2.width = baseElement.width;
                 baseElement2.height = baseElement.height;
-                baseElement2.x -= Canvas.xOffsetScaled;
                 _ = baseElement.AddChild(baseElement2);
+                mainMenuSocial = baseElement2;
                 CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
                 Button button = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 3, 3, MenuButtonId.OpenTwitter, this);
                 button.anchor = 9;
@@ -688,7 +727,9 @@ namespace CutTheRopeDX.GameMain
         public void CreateOptions()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            optionsGroup = designGroup;
+            BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false, VIEW_OPTIONS);
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), -1, null);
             BaseElement baseElement3 = CreateControlButtontitleAnchortextbuttonIDdelegate(6, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
@@ -696,7 +737,7 @@ namespace CutTheRopeDX.GameMain
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(baseElement2);
             _ = hBox.AddChild(baseElement3);
-            _ = menuView.AddChild(hBox);
+            _ = designGroup.AddChild(hBox);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
@@ -707,7 +748,8 @@ namespace CutTheRopeDX.GameMain
             _ = image.AddTimeline(timeline);
             image.PlayTimeline(0);
             _ = menuView.AddChild(image);
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
+            optionsShadow = image;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
             ToggleButton toggleButton = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
             ToggleButton toggleButton2 = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound);
@@ -721,7 +763,8 @@ namespace CutTheRopeDX.GameMain
             _ = vBox.AddChild(c2);
             Button c3 = CreateButtonWithTextIDDelegate(Application.GetString("CREDITS"), MenuButtonId.ShowCredits, this);
             _ = vBox.AddChild(c3);
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
+            _ = menuView.AddChild(designGroup);
             hBox.y = (vBox.height / 2) + 10;
             vBox.y = -hBox.height / 2;
             bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
@@ -742,7 +785,6 @@ namespace CutTheRopeDX.GameMain
             }
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromOptions);
             button.SetName("backb");
-            button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 1);
@@ -754,25 +796,28 @@ namespace CutTheRopeDX.GameMain
         public void CreateReset()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_RESET);
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            resetGroup = designGroup;
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
-            text.SetStringandWidth(Application.GetString("RESET_TEXT"), ScreenPresentation.Instance.SurfaceWidth * 0.95f);
             text.anchor = text.parentAnchor = 18;
-            _ = baseElement.AddChild(text);
+            _ = designGroup.AddChild(text);
             text.y = -200f;
+            resetText = text;
+            WrapResetText();
             Button button = CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
             button.anchor = button.parentAnchor = 34;
             button.y = -540f;
             Button button2 = CreateButtonWithTextIDDelegate(Application.GetString("NO"), MenuButtonId.ConfirmResetNo, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
-            _ = baseElement.AddChild(button);
-            _ = baseElement.AddChild(button2);
+            _ = designGroup.AddChild(button);
+            _ = designGroup.AddChild(button2);
             _ = menuView.AddChild(baseElement);
+            _ = menuView.AddChild(designGroup);
             Button button3 = CreateBackButtonWithDelegateID(this, MenuButtonId.BackToOptions);
             button3.SetName("backb");
-            button3.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button3);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 4);
@@ -784,14 +829,17 @@ namespace CutTheRopeDX.GameMain
         public void CreateLanguageSelection()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_LANGUAGE_SELECT);
+            FittedGroup designGroup = new() { anchor = 9, parentAnchor = 9 };
+            languageGroup = designGroup;
 
             IReadOnlyList<string> langCodes = LanguageHelper.UiLanguageCodes;
             string currentLocale = LanguageHelper.CurrentCode;
-            int columns = 3;
+            int columns = LanguageColumns();
+            languageColumnsBuiltFor = columns;
 
             // Build rows using VBox of HBoxes (same pattern as options menu)
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
 
             for (int i = 0; i < langCodes.Count; i += columns)
@@ -799,7 +847,7 @@ namespace CutTheRopeDX.GameMain
                 string firstName = LanguageHelper.GetLanguageDisplayName(langCodes[i]);
                 bool firstSelected = langCodes[i] == currentLocale;
                 Button firstButton = CreateShortButtonWithTextIDDelegate(firstName, MenuButtonId.ForLanguage(i), this, firstSelected);
-                HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, firstButton.height);
+                HBox hBox = new HBox().InitWithOffsetAlignHeight(LanguageGridLayout.ButtonSpacing, 16, firstButton.height);
                 _ = hBox.AddChild(firstButton);
 
                 for (int j = 1; j < columns && i + j < langCodes.Count; j++)
@@ -813,15 +861,30 @@ namespace CutTheRopeDX.GameMain
                 _ = vBox.AddChild(hBox);
             }
 
-            _ = baseElement.AddChild(vBox);
+            _ = designGroup.AddChild(vBox);
             _ = menuView.AddChild(baseElement);
+            _ = menuView.AddChild(designGroup);
             Button backButton = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromLanguage);
             backButton.SetName("backb");
-            backButton.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(backButton);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, VIEW_LANGUAGE_SELECT);
         }
+
+        /// <summary>
+        /// Gets how many language buttons fit in a row on the viewport being drawn to.
+        /// </summary>
+        /// <returns>The number of buttons per row.</returns>
+        public static int LanguageColumns()
+        {
+            return LanguageGridLayout.ColumnsFor(
+                VisibleBounds,
+                FittedScale,
+                Image.GetQuadSize(Resources.Img.MenuButtons, LanguageButtonQuad).X);
+        }
+
+        /// <summary>Quad the language buttons are drawn from, which is what sets their width.</summary>
+        private const int LanguageButtonQuad = 3;
 
         /// <summary>
         /// Builds the movie playback view.
@@ -831,11 +894,12 @@ namespace CutTheRopeDX.GameMain
             MovieView movieView = new();
             RectangleElement rectangleElement = new()
             {
-                width = (int)SCREEN_WIDTH,
-                height = (int)SCREEN_HEIGHT,
+                width = (int)VisibleBounds.w,
+                height = (int)VisibleBounds.h,
                 color = RGBAColor.blackRGBA
             };
             _ = movieView.AddChild(rectangleElement);
+            moviePlate = rectangleElement;
             AttachSnowfallOverlay(movieView);
             AddViewwithID(movieView, 7);
         }
@@ -845,9 +909,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CreateAbout()
         {
-            BaseElement background = CreateBackgroundWithLogo(false);
+            BaseElement background = CreateBackgroundWithLogo(false, VIEW_ABOUT);
             aboutView = new AboutView();
-            MenuView menuView = aboutView.CreateAbout(background, this);
+            MenuView menuView = aboutView.CreateAbout(background, this, FittedScale);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 3);
         }
@@ -892,14 +956,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Gets the horizontal pack offset used when the screen can only show two boxes comfortably.
+        /// How the pack strip divides the viewport it is being drawn on, measured against the
+        /// artwork's own width.
         /// </summary>
-        /// <returns>The pack offset in screen units.</returns>
-        public static float GetPackOffset()
+        /// <remarks>
+        /// Derived on read rather than kept, so it is right the instant the viewport changes and
+        /// there is no second copy to keep in step. The strip is drawn at the scale every other
+        /// menu's design-space content is fitted at; it cannot hang from a
+        /// <see cref="ViewController.PlaceFittedGroup(BaseElement)"/> group, because it clips with
+        /// a scissor rectangle no ancestor transform reaches, so it reads the scale and applies it
+        /// to its own metrics instead. Held at one, it was the one composition that did not spend
+        /// the room a viewport away from the design shape hands it: on a phone everything around a
+        /// box grew and the box stayed the size the landscape design drew it.
+        /// </remarks>
+        /// <returns>The current layout.</returns>
+        public static PackStripLayout PackStrip()
         {
-            float availableScreenWidth = SCREEN_WIDTH + (Canvas.xOffset * 2);
-            float boxWidth = GetBoxWidth();
-            return boxWidth * 3f > availableScreenWidth - 200f ? boxWidth / 2f : 0f;
+            return PackStripLayout.For(VisibleBounds, FittedScale, GetBoxWidth());
         }
 
         /// <summary>
@@ -951,9 +1024,16 @@ namespace CutTheRopeDX.GameMain
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
+            PackStripLayout strip = PackStrip();
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
-            image.anchor = image.parentAnchor = 9;
+
+            // Centered in the tile rather than pinned to its top left, because the tile is the
+            // scaled size and the artwork is scaled about its own center: everything hanging off
+            // the box - its label, its lock, its badge - is authored against the unscaled artwork
+            // and rides that one transform, so only the tile has to know the scale.
+            image.anchor = image.parentAnchor = 18;
+            image.scaleX = image.scaleY = strip.Scale;
             if (flag)
             {
                 _ = baseElement.AddChild(image);
@@ -972,8 +1052,8 @@ namespace CutTheRopeDX.GameMain
                 text.anchor = 10;
                 text.parentAnchor = 34;
                 text.SetStringandWidth(newString, 600f);
-                text.y = -60f;
-                text.scaleX = text.scaleY = 0.7f;
+                text.y = -60f * strip.Scale;
+                text.scaleX = text.scaleY = 0.7f * strip.Scale;
                 text.rotationCenterY = -text.height / 2;
                 _ = touchBaseElement.AddChild(text);
             }
@@ -983,7 +1063,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     // drawing om nom and the background behind him in the box
                     int q3 = 1;
-                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n));
+                    MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n), strip);
                     monsterSlot.c = c;
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
@@ -992,10 +1072,15 @@ namespace CutTheRopeDX.GameMain
                     Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, q3);
                     image3.DoRestoreCutTransparency();
                     image3.anchor = 17;
-                    monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
-                    monsterSlot.e = monsterSlot.s + 1200f;
-                    image3.x = packContainer.x - 0f + monsterSlot.width + -20f - GetPackOffset();
-                    image3.y = packContainer.y + (SCREEN_HEIGHT / 2f);
+
+                    // Om Nom is placed in screen space, not in the box's, because the reveal
+                    // window slides over him as the strip scrolls past. He is scaled about his own
+                    // center like everything else the strip draws, so the drift that puts on his
+                    // left edge - the edge his position names - comes back out here.
+                    image3.scaleX = image3.scaleY = strip.Scale;
+                    image3.x = packContainer.x + strip.SelectedBoxLeft
+                        - (image3.width * (1f - strip.Scale) / 2f);
+                    image3.y = packContainer.y + (VisibleBounds.h / 2f);
                     image3.parentAnchor = -1;
                     _ = monsterSlot.AddChild(image3);
                 }
@@ -1015,7 +1100,15 @@ namespace CutTheRopeDX.GameMain
                     image4.SetName("lockHideMe");
                     image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
-                    _ = baseElement.AddChild(image4);
+
+                    // Hung from the box art, the way the lock it is replacing is on a box that is
+                    // still locked. This is the same quad drawn at the same place, so it has to
+                    // resolve against the same thing: on the tile instead it read the tile's
+                    // corner and missed the strip's scale, and the lock burst away from wherever
+                    // the one it was standing in for had been sitting. Its own timeline scales it
+                    // from one to two, which now compounds with the box's scale rather than
+                    // replacing it.
+                    _ = image.AddChild(image4);
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5f));
@@ -1067,8 +1160,8 @@ namespace CutTheRopeDX.GameMain
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1.05f, 0.95f, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2f));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25f));
             _ = baseElement.AddTimeline(timeline2);
-            baseElement.height = touchBaseElement.height = image.height;
-            baseElement.width = touchBaseElement.width = image.width;
+            baseElement.height = touchBaseElement.height = (int)MathF.Round(image.height * strip.Scale);
+            baseElement.width = touchBaseElement.width = (int)MathF.Round(image.width * strip.Scale);
             return touchBaseElement;
         }
 
@@ -1078,22 +1171,18 @@ namespace CutTheRopeDX.GameMain
         public void CreatePackSelect()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(false);
+            BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
             string text = Application.GetString("TOTAL_STARS").ToString();
             text = text.Replace("%d", "");
             HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
-            hBox.x = -30f - Canvas.xOffsetScaled;
-            hBox.y = 40f;
+            PlaceStarTotal(hBox);
             hBox.SetName("text");
-            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(-20f, 16, SCREEN_HEIGHT);
-            float availableScreenWidth = SCREEN_WIDTH + (Canvas.xOffset * 2);
-            float boxWidth = GetBoxWidth();
-            float containerWidth = boxWidth * 3f;
-            if (containerWidth > availableScreenWidth - 200f)
-            {
-                containerWidth = boxWidth * 2f;
-            }
-            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(containerWidth, SCREEN_HEIGHT, hBox2);
+            PackStripLayout strip = PackStrip();
+            HBox hBox2 = new HBox().InitWithOffsetAlignHeight(strip.Spacing, 16, VisibleBounds.h);
+            packContainer = new ScrollableContainer().InitWithWidthHeightContainer(
+                strip.StripWidth,
+                VisibleBounds.h,
+                hBox2);
             packContainer.minAutoScrollToSpointLength = RTD(5);
             packContainer.shouldBounceHorizontally = true;
             packContainer.resetScrollOnShow = false;
@@ -1102,17 +1191,17 @@ namespace CutTheRopeDX.GameMain
             packContainer.dontHandleTouchUpsHandledByChilds = true;
             packContainer.TurnScrollPointsOnWithCapacity(CTRPreferences.GetPacksCount() + 2);
             packContainer.delegateScrollableContainerProtocol = this;
-            packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
+            packContainer.x = (VisibleBounds.w / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
             CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
             BaseElement baseElement2 = new()
             {
-                width = (int)texture.preCutSize.X,
-                height = (int)texture.preCutSize.Y
+                width = (int)MathF.Round(strip.LeadingSpacer),
+                height = (int)MathF.Round(texture.preCutSize.Y * strip.Scale)
             };
             _ = hBox2.AddChild(baseElement2);
-            float scrollPointX = 0f + GetPackOffset();
+            float scrollPointX = 0f + strip.PackOffset;
             int displayCount = CTRPreferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
             for (int i = 0; i < displayCount; i++)
             {
@@ -1122,47 +1211,80 @@ namespace CutTheRopeDX.GameMain
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
                 _ = packContainer.AddScrollPointAtXY(scrollPointX, 0f);
-                touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
-                scrollPointX += touchBaseElement.width + -20f;
+                touchBaseElement.bbc = MakeRectangle(0f, 0f, strip.Spacing, 0f);
+                scrollPointX += touchBaseElement.width + strip.Spacing;
             }
             hBox2.width += 1000;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
             image.anchor = 17;
-            image.y += SCREEN_HEIGHT / 2f;
-            image.x = packContainer.x - 2f;
+            image.y += VisibleBounds.h / 2f;
+            PlacePackEdge(
+                image,
+                packContainer.x - strip.FrameGap,
+                strip.Scale,
+                mirroredX: false,
+                mirroredY: false);
             _ = baseElement.AddChild(image);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
             image2.anchor = 20;
-            image2.y += SCREEN_HEIGHT / 2f;
-            image2.x = packContainer.x + packContainer.width + 2f;
+            image2.y += VisibleBounds.h / 2f;
+            PlacePackEdge(
+                image2,
+                packContainer.x + packContainer.width + strip.FrameGap,
+                strip.Scale,
+                mirroredX: true,
+                mirroredY: true);
             _ = baseElement.AddChild(image2);
-            image2.scaleX = image2.scaleY = -1f;
             _ = baseElement.AddChild(packContainer);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
             image3.anchor = 20;
-            image3.y += SCREEN_HEIGHT / 2f;
-            image3.x = packContainer.x + 3f;
+            image3.y += VisibleBounds.h / 2f;
+            PlacePackEdge(
+                image3,
+                packContainer.x + strip.SeamGap,
+                strip.Scale,
+                mirroredX: false,
+                mirroredY: false);
             _ = baseElement.AddChild(image3);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
             image4.anchor = 17;
-            image4.y += SCREEN_HEIGHT / 2f;
-            image4.x = packContainer.x + packContainer.width - 3f;
-            image4.scaleX = image4.scaleY = -1f;
+            image4.y += VisibleBounds.h / 2f;
+            PlacePackEdge(
+                image4,
+                packContainer.x + packContainer.width - strip.SeamGap,
+                strip.Scale,
+                mirroredX: true,
+                mirroredY: true);
             _ = baseElement.AddChild(image4);
             prevb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackUI, 6, 7, MenuButtonId.PreviousPack, this);
             prevb.parentAnchor = 17;
             prevb.anchor = 20;
-            prevb.x = packContainer.x - 40f;
+            // The arrows sit outside the box strip where the screen is wide enough to hold them
+            // there, and slide onto its edge where it is not, rather than off the screen.
+            PlacePackEdge(
+                prevb,
+                MAX(
+                    packContainer.x - strip.ArrowGap,
+                    (prevb.width * strip.Scale) + PackArrowInset),
+                strip.Scale,
+                mirroredX: false,
+                mirroredY: false);
             _ = baseElement.AddChild(prevb);
             nextb = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuPackUI, 6, 7, MenuButtonId.NextPack, this);
             nextb.anchor = nextb.parentAnchor = 17;
-            nextb.x = packContainer.x + packContainer.width + 40f;
-            nextb.scaleX = -1f;
+            PlacePackEdge(
+                nextb,
+                MIN(
+                    packContainer.x + packContainer.width + strip.ArrowGap,
+                    VisibleBounds.w - (nextb.width * strip.Scale) - PackArrowInset),
+                strip.Scale,
+                mirroredX: true,
+                mirroredY: false);
             _ = baseElement.AddChild(nextb);
             _ = menuView.AddChild(baseElement);
+            packSelectBuiltFor = VisibleBounds;
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.BackFromPackSelect);
             button.SetName("backb");
-            button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 5);
@@ -1323,12 +1445,14 @@ namespace CutTheRopeDX.GameMain
             string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
             Image image = Image.Image_createWithResIDQuad(boxCover, 0);
             Image image2 = Image.Image_createWithResIDQuad(boxCover, 0);
-            Vector quadSize = Image.GetQuadSize(boxCover, 0);
-            float x = (SCREEN_WIDTH / 2f) - quadSize.X;
+            float x = (VisibleBounds.w / 2f) - image.width;
             image.x = x;
-            image2.x = SCREEN_WIDTH / 2f;
+            image.passTransformationsToChilds = false;
+            image2.x = VisibleBounds.w / 2f;
             image2.rotation = 180f;
             image2.y -= 0.5f;
+            levelsCoverLeft = image;
+            levelsCoverRight = image2;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
@@ -1338,10 +1462,11 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(image);
             Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
             Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
-            image3.x = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;
             image3.y = 80f;
-            image4.x = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 7).X;
             image4.y = 80f;
+            levelsSpineLeft = image3;
+            levelsSpineRight = image4;
+            PlaceLevelSpines(VisibleBounds);
             _ = menuView.AddChild(image3);
             _ = menuView.AddChild(image4);
             Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
@@ -1360,6 +1485,7 @@ namespace CutTheRopeDX.GameMain
             _ = image5.AddTimeline(timeline3);
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
+            levelsShadow = image5;
             HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
 
             hBox.x = -30f;
@@ -1390,9 +1516,16 @@ namespace CutTheRopeDX.GameMain
 
             float verticalSpacing = 55f;
             float rowHeight = 203f * buttonScale;
-            VBox vBox = new VBox().InitWithOffsetAlignWidth(verticalSpacing, 2, SCREEN_WIDTH);
+
+            // The scrollable case can't be fitted (see LayOutLevelSelect), so it keeps composing
+            // against the live viewport width the way it always has; the non-scrollable case
+            // composes against the fixed design width instead, like a menu's content.
+            bool scrollable = levelsInPack > 25;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(
+                verticalSpacing, 2, scrollable ? VisibleBounds.w : DesignBox.w);
             vBox.SetName("levelsBox");
             vBox.x = 0f;
+            float widestRow = 0f;
             int levelIndex = 0;
             for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
@@ -1409,46 +1542,57 @@ namespace CutTheRopeDX.GameMain
                     }
                     _ = hBox2.AddChild(levelButton);
                 }
+                widestRow = MathF.Max(widestRow, hBox2.width);
                 _ = vBox.AddChild(hBox2);
             }
-            float levelsTopY = 110f;
-            float availableHeight = SCREEN_HEIGHT - levelsTopY;
             BaseElement levelsElement;
-            if (levelsInPack > 25)
+            BaseElement levelsRoot;
+            if (scrollable)
             {
+                float availableHeight = VisibleBounds.h - LevelsTopInset;
                 vBox.y = 0f;
-                vBox.height += (int)levelsTopY - 15;
-                levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(SCREEN_WIDTH, availableHeight, vBox);
+                vBox.height += (int)LevelsTopInset - 15;
+                levelContainer = new ScrollableContainer().InitWithWidthHeightContainer(VisibleBounds.w, availableHeight, vBox);
                 levelContainer.shouldBounceVertically = true;
-                levelContainer.y = levelsTopY;
+                levelContainer.y = LevelsTopInset;
                 levelsElement = levelContainer;
+                levelsGroup = null;
+                levelsRoot = levelsElement;
             }
             else
             {
                 levelContainer = null;
-                vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
+                vBox.anchor = vBox.parentAnchor = 9;
+                vBox.y = (DesignBox.h - vBox.height) / 2f;
                 levelsElement = vBox;
+                levelsGridWidth = widestRow;
+
+                FittedGroup group = new() { anchor = 9, parentAnchor = 9 };
+                levelsGroup = group;
+                _ = group.AddChild(levelsElement);
+                levelsRoot = group;
             }
+            levelsBox = vBox;
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = levelsElement.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
-            hBox.x = -30f - Canvas.xOffsetScaled;
+            hBox.x = -30f;
+            levelsStarText = hBox;
             Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
-            _ = menuView.AddChild(levelsElement);
+            _ = menuView.AddChild(levelsRoot);
             Button button = CreateBackButtonWithDelegateID(this, MenuButtonId.PackSelect);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
             _ = button.AddTimeline(timeline6);
-            button.x = Canvas.xOffsetScaled;
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 6);
@@ -1669,6 +1813,7 @@ namespace CutTheRopeDX.GameMain
         {
             DeleteView(1);
             CreateOptions();
+            Relayout(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>
@@ -1729,6 +1874,13 @@ namespace CutTheRopeDX.GameMain
                     CreateLeaderboards();
                     ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
                     ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
+
+                    // Every view above was rebuilt outside a layout pass, the picker on screen
+                    // included, and showing another one begins by drawing that picker to capture
+                    // the screen the crossfade fades from - before the pass inside ShowView runs.
+                    // Placed first, so the fade starts from a menu that is where it belongs rather
+                    // than one still sitting at the design box's own origin.
+                    Relayout(ScreenPresentation.Instance.Snapshot);
                     ShowView(VIEW_OPTIONS);
                 }
                 return;
@@ -2174,25 +2326,7 @@ namespace CutTheRopeDX.GameMain
         {
             DeleteView(5);
             CreatePackSelect();
-            BaseElement childWithName = GetView(0).GetChild(0).GetChildWithName("container");
-            _ = (childWithName?.x = -Canvas.xOffsetScaled);
-            BaseElement childWithName2 = GetView(5).GetChild(0).GetChildWithName("text");
-            _ = (childWithName2?.x = -20f - Canvas.xOffsetScaled);
-            for (int i = 0; i < 10; i++)
-            {
-                View view3 = GetView(i);
-                if (view3 != null)
-                {
-                    BaseElement childWithName3 = view3.GetChildWithName("backb");
-                    _ = (childWithName3?.x = Canvas.xOffsetScaled);
-                }
-            }
-            BaseElement view4 = GetView(6);
-            if (view4 != null)
-            {
-                view4.GetChildWithName("backButton").x = Canvas.xOffsetScaled;
-                view4.GetChildWithName("starText").x = -Canvas.xOffsetScaled;
-            }
+            Relayout(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>
@@ -2426,7 +2560,7 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = base.OnTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
-                CTRRectangle rectangle = RectInRectIntersection(MakeRectangle(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT), r);
+                CTRRectangle rectangle = RectInRectIntersection(VisibleBounds, r);
                 if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2)
                 {
                     delegateValue.OnButtonPressed(bid);
@@ -2461,14 +2595,15 @@ namespace CutTheRopeDX.GameMain
             /// Dimensions and positioning are derived from the MenuPackUI texture.
             /// </summary>
             /// <param name="color">Background fill color for the slot.</param>
+            /// <param name="strip">Layout the pack strip is built at.</param>
             /// <returns>A new <see cref="MonsterSlot"/> instance.</returns>
-            public static MonsterSlot Create(RGBAColor color)
+            public static MonsterSlot Create(RGBAColor color, PackStripLayout strip)
             {
                 CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
                 MonsterSlot slot = new()
                 {
-                    width = (int)texture.preCutSize.X,
-                    height = (int)texture.preCutSize.Y,
+                    width = (int)MathF.Round(texture.preCutSize.X * strip.Scale),
+                    height = (int)MathF.Round(texture.preCutSize.Y * strip.Scale),
                     FillColor = color,
                     quadOffset = texture.quadOffsets[QuadIndex],
                     quadSize = Vect(texture.quadRects[QuadIndex].w, texture.quadRects[QuadIndex].h)
@@ -2476,39 +2611,67 @@ namespace CutTheRopeDX.GameMain
                 return slot;
             }
 
+            /// <summary>
+            /// The window the hole in a box exposes Om Nom through.
+            /// </summary>
+            /// <remarks>
+            /// Om Nom is drawn where the selected box comes to rest and stays there; the hole
+            /// travels with its box, so what shows of him is whatever the hole is over. The window
+            /// is the hole's own place in the artwork, taken at the strip's scale and clipped to
+            /// the strip, so a box scrolling out of view cannot reveal him past its edge.
+            /// </remarks>
+            /// <param name="boxLeft">Left edge of the box the hole is in, in logical space.</param>
+            /// <param name="scale">Scale the strip is drawn at.</param>
+            /// <param name="strip">The scrolling strip's rectangle, in logical space.</param>
+            /// <returns>The window, empty when the hole is outside the strip.</returns>
+            public static CTRRectangle RevealWindow(float boxLeft, float scale, CTRRectangle strip)
+            {
+                float left = MathF.Max(boxLeft + (RevealInset * scale), strip.x);
+                float right = MathF.Min(boxLeft + ((RevealInset + RevealWidth) * scale), strip.x + strip.w);
+                return MakeRectangle(left, 0f, MathF.Max(0f, right - left), VisibleBounds.h);
+            }
+
             /// <inheritdoc/>
+            /// <remarks>
+            /// The scale is read here rather than kept from when the slot was built, so there is
+            /// no second copy of it to fall behind the viewport. The slot carries no transform of
+            /// its own, which is what keeps the window it clips to in the same space the
+            /// container's own scissor rectangle is in.
+            /// </remarks>
             public override void Draw()
             {
                 PreDraw();
+                float scale = PackStrip().Scale;
+
                 // Draw the colored rectangle at the quad offset position
                 DrawHelper.DrawSolidRectWOBorder(
-                    drawX + quadOffset.X,
-                    drawY + quadOffset.Y,
-                    quadSize.X,
-                    quadSize.Y,
+                    drawX + (quadOffset.X * scale),
+                    drawY + (quadOffset.Y * scale),
+                    quadSize.X * scale,
+                    quadSize.Y * scale,
                     FillColor);
 
                 // Apply scissor clipping to reveal Om Nom during scroll animation
-                float scrollX = c.GetScroll().X;
-                Vector preCutSize = Application.GetTexture(Resources.Img.MenuPackUI).preCutSize;
-                if (scrollX >= s && scrollX < e)
+                CTRRectangle strip = MakeRectangle(c.drawX, c.drawY, c.width, c.height);
+                CTRRectangle window = RevealWindow(drawX, scale, strip);
+                if (window.w <= 0f)
                 {
-                    scrollX -= preCutSize.X + -20f;
-                    float clipOffsetX = scrollX - ((s + e) / 2f);
-                    Renderer.SetScissor(250f - clipOffsetX, 0f, 200f, SCREEN_HEIGHT);
-                    PostDraw();
-                    Renderer.SetScissor(c.drawX, c.drawY, c.width, c.height);
+                    return;
                 }
+
+                Renderer.SetScissor(window.x, window.y, window.w, window.h);
+                PostDraw();
+                Renderer.SetScissor(strip.x, strip.y, strip.w, strip.h);
             }
 
-            /// <summary>Reference to the scrollable container for scroll position.</summary>
+            /// <summary>Reference to the scrollable container the slot scrolls inside.</summary>
             public ScrollableContainer c;
 
-            /// <summary>Start scroll position for scissor clipping.</summary>
-            public float s;
+            /// <summary>Authored distance from the left edge of a box to the hole in it.</summary>
+            private const float RevealInset = 240f;
 
-            /// <summary>End scroll position for scissor clipping.</summary>
-            public float e;
+            /// <summary>Authored width of the hole in a box.</summary>
+            private const float RevealWidth = 200f;
 
             /// <summary>Offset within the preCut area where the quad is drawn.</summary>
             private Vector quadOffset;

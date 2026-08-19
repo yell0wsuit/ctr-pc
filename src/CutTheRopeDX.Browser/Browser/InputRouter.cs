@@ -31,11 +31,18 @@ namespace CutTheRopeDX.Browser
         [JSExport]
         internal static void OnPointer(double x, double y, int phase)
         {
-            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.LegacyContentBounds;
-            float viewX = (float)x - bounds.x;
-            float viewY = (float)y - bounds.y;
-            float logicalX = viewX * ViewportLayout.DesignWidth / bounds.w;
-            float logicalY = viewY * ViewportLayout.DesignHeight / bounds.h;
+            ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
+            CTRRectangle render = snapshot.RenderViewport;
+
+            // Surface pixels relative to the drawn region. Touches are reported in this space
+            // rather than in logical units: Core divides what it is handed by the viewport scale
+            // on the way in, so a logical position would be scaled a second time and land further
+            // from the corner the further out it was - the pointer would drift away from itself.
+            float viewX = (float)x - render.x;
+            float viewY = (float)y - render.y;
+
+            float logicalX = viewX / snapshot.Scale;
+            float logicalY = viewY / snapshot.Scale;
 
             _ = Application.SharedRootController().MouseMoved(logicalX, logicalY);
 

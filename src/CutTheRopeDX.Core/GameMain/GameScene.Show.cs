@@ -82,9 +82,7 @@ namespace CutTheRopeDX.GameMain
                 Text text = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Primary);
                 text.anchor = 33;
                 text.SetName("levelLabel");
-                text.x = 15f + Canvas.xOffsetScaled;
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
-                text.y = isChinese ? SCREEN_HEIGHT : SCREEN_HEIGHT + 15f; // the box and level number or level name in game
                 if (levelLabel.Secondary != null)
                 {
                     Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
@@ -105,6 +103,11 @@ namespace CutTheRopeDX.GameMain
                 text.PlayTimeline(0);
                 timeline6.delegateTimelineDelegate = staticAniPool;
                 _ = staticAniPool.AddChild(text);
+
+                // The label is rebuilt from scratch here on every level start and restart, so it
+                // needs the current HUD scale applied immediately rather than waiting on the next
+                // viewport-driven relayout, which may not come before the player sees it.
+                PlaceLevelLabel();
             }
             foreach (PointerGestureState gesture in pointerGestures)
             {
@@ -117,6 +120,33 @@ namespace CutTheRopeDX.GameMain
             PlatformServices.Cursor?.ReleaseButtons();
             CTRRootController.LogEvent("IG_SHOWN");
         }
+
+        /// <summary>
+        /// Vertical offset, in design units, subtracted from <see cref="FrameworkTypes.VisibleBounds"/>'s
+        /// height to place the non-CJK level-number label, lifting it clear of the bottom edge.
+        /// </summary>
+        /// <remarks>
+        /// The label used to be placed at -15, hanging below the bounds rather than sitting
+        /// inside them, which read as clipped on a viewport that draws the HUD large. These are
+        /// the H5 edition's numbers instead: its base profile is the same 2560x1440 design space,
+        /// so its authored offsets are read in the same units and transplant as written.
+        /// </remarks>
+        private const float LevelLabelInsetY = 5f;
+
+        /// <summary>
+        /// <see cref="LevelLabelInsetY"/> for CJK, whose taller glyph box sits lower in the line.
+        /// </summary>
+        /// <remarks>
+        /// Carries across the 15-unit lift this branch has always had over the Latin one. The H5
+        /// edition places every language alike, so there is nothing to copy here - only the
+        /// existing correction to preserve, now that the edge it is measured from has moved.
+        /// </remarks>
+        private const float LevelLabelInsetYCJK = 20f;
+
+        /// <summary>
+        /// Authored offset, in design units, of the level-number label from the left edge.
+        /// </summary>
+        private const float LevelLabelInsetX = 40f;
 
         /// <summary>
         /// Resolves the level's display name from its <c>levelName</c> attribute.
@@ -173,12 +203,17 @@ namespace CutTheRopeDX.GameMain
                 float targetCameraY = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
                 float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
                 float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+
+                // Seat the tracked position at the authored start point and let the fit derive the
+                // rest from it, the way every later frame does.
                 camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
+                ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
                 initialCameraToStarDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
                 return;
             }
             ignoreTouches = false;
             camera.MoveToXYImmediate(0f, 0f, true);
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>

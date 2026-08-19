@@ -62,10 +62,12 @@ namespace CutTheRopeDX
         }
 
         /// <summary>
-        /// Sizes the preferred back buffer to the saved windowed dimensions before the graphics device is
-        /// created, so the swapchain is born at its final size. Without this the device starts at MonoGame's
-        /// default size and the first window sizing in <see cref="LoadContent"/> rebuilds the swapchain,
-        /// flashing black during launch. Skipped when the last session was fullscreen, which is sized later.
+        /// Sizes the back buffer to the saved windowed dimensions before the window is shown, so the
+        /// swapchain reaches its final size without the first window sizing in
+        /// <see cref="LoadContent"/> having to rebuild it - which flashes black during launch and,
+        /// on a host that animates window resizes, leaves the drawable changing under a fixed
+        /// swapchain for as long as the animation runs. Skipped when the last session was
+        /// fullscreen, which is sized later.
         /// </summary>
         private static void PresizeSwapchain()
         {
@@ -74,11 +76,15 @@ namespace CutTheRopeDX
             {
                 return;
             }
-            int savedWidth = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
-            int displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            int width = ScreenSizeManager.ClampWindowWidth(savedWidth, displayWidth);
-            Global.GraphicsDeviceManager.PreferredBackBufferWidth = width;
-            Global.GraphicsDeviceManager.PreferredBackBufferHeight = ScreenPresentation.Instance.ScaledGameHeight(width);
+            DisplayMode displayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+            Microsoft.Xna.Framework.Point size = ScreenSizeManager.ClampWindowSize(
+                Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"),
+                Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"),
+                displayMode.Width,
+                displayMode.Height);
+            Global.GraphicsDeviceManager.PreferredBackBufferWidth = size.X;
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = size.Y;
+            Global.GraphicsDeviceManager.ApplyChanges();
         }
 
         /// <summary>
@@ -193,8 +199,13 @@ namespace CutTheRopeDX
             // the window-size read has to happen before ScreenSizeManager.Init.
             Preferences.LoadPreferences();
             int windowWidthPref = Preferences.GetIntForKey("PREFS_WINDOW_WIDTH");
+            int windowHeightPref = Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT");
             bool isFullScreen = Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN");
-            Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, windowWidthPref, isFullScreen);
+            Global.ScreenSizeManager.Init(
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode,
+                windowWidthPref,
+                windowHeightPref,
+                isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
 
             CtrBootstrap.Initialize(
@@ -385,7 +396,6 @@ namespace CutTheRopeDX
             }
             Global.GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
-            Global.ScreenSizeManager.FullScreenCropWidth = false;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             Rectangle destinationRectangle = new(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
@@ -399,7 +409,6 @@ namespace CutTheRopeDX
         {
             frameCounter++;
             GraphicsDevice.Clear(Color.Black);
-            Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
             Renderer.BeginFrame();

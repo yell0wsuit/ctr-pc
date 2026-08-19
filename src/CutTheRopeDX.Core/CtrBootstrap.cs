@@ -22,19 +22,21 @@ namespace CutTheRopeDX
         /// <param name="surfaceWidth">Logical surface width.</param>
         /// <param name="surfaceHeight">Logical surface height.</param>
         /// <param name="language">Language to initialize the engine with.</param>
+        /// <param name="devicePixelRatio">Physical pixels per logical pixel on the host surface.</param>
         public static void Initialize(
             IAssetPlatform platform,
             IAudioBackend audioBackend,
             int surfaceWidth,
             int surfaceHeight,
-            Language language)
+            Language language,
+            float devicePixelRatio = 1f)
         {
             AssetPlatform.Current = platform;
             SoundMgr.SetBackend(audioBackend);
             Preferences.LoadPreferences();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(language);
             CtrRenderer.OnSurfaceCreated();
-            CtrRenderer.OnSurfaceChanged(surfaceWidth, surfaceHeight);
+            CtrRenderer.OnSurfaceChanged(surfaceWidth, surfaceHeight, devicePixelRatio);
         }
     }
 }

@@ -86,6 +86,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
+
             ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
             float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
             float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
@@ -135,6 +136,11 @@ namespace CutTheRopeDX.GameMain
             {
                 time += delta;
             }
+
+            // Project where the tracking just left the camera onto the current viewport. Last,
+            // because this reads the tracked position and writes only what gets drawn.
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+
             if (bungees.Count > 0)
             {
                 // Bodies whose rotation a rope already drove this frame; one rope per body.

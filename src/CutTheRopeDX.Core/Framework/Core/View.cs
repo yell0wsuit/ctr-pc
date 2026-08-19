@@ -13,8 +13,8 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public View()
         {
-            width = (int)SCREEN_WIDTH;
-            height = (int)SCREEN_HEIGHT;
+            width = (int)VisibleBounds.w;
+            height = (int)VisibleBounds.h;
         }
 
         /// <inheritdoc />

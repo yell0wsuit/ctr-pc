@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
@@ -30,13 +31,53 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        /// <summary>A controller that keeps the base layout pass, so its views are sized by it.</summary>
+        private sealed class PlainController : ViewController
+        {
+            public View View { get; } = new();
+
+            public PlainController()
+            {
+                AddViewwithID(View, 0);
+            }
+
+            public void LayOut(ViewportLayoutSnapshot snapshot)
+            {
+                Relayout(snapshot);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(Surfaces))]
+        public void TheBaseLayoutPassSizesEveryViewToTheViewport(string name, int width, int height)
+        {
+            LayoutSurfaces.WithSurface(width, height, () =>
+            {
+                // Built at the default surface, then laid out at this one: a view that kept its
+                // construction size would hold everything anchored to its edges or centered in it
+                // wherever the previous viewport put them.
+                PlainController controller = new();
+                controller.LayOut(ScreenPresentation.Instance.Snapshot);
+
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Assert.Equal((int)visible.w, controller.View.width);
+                Assert.Equal((int)visible.h, controller.View.height);
+                Assert.False(string.IsNullOrEmpty(name));
+            });
+        }
+
+        public static TheoryData<string, int, int> Surfaces()
+        {
+            return LayoutSurfaces.Theory();
+        }
+
         [Fact]
         public void ShowingAViewLaysTheControllerOutForTheCurrentSnapshot()
         {
             // ShowView rather than Activate: every real controller calls base.Activate() before
             // it builds its views, so laying out from Activate would always see an empty tree.
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
 
@@ -50,7 +91,7 @@ namespace CutTheRopeDX.Tests
         public void OrdinaryFramesDoNotLayOut()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
             controller.ShowView(0);
@@ -66,12 +107,12 @@ namespace CutTheRopeDX.Tests
         public void APushLaysOutExactlyOnce()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController controller = new();
             controller.WithView();
             controller.ShowView(0);
 
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1600, 900, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1600, 900);
             controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
             Assert.Equal(2, controller.RelayoutCount);
@@ -82,7 +123,7 @@ namespace CutTheRopeDX.Tests
         public void APushReachesTheActiveChild()
         {
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController parent = new();
             CountingController child = new();
             parent.AddChildwithID(child, 0);
@@ -100,7 +141,7 @@ namespace CutTheRopeDX.Tests
             // ActiveChild() would throw here: activeChildID is -1 and childs is a dictionary.
             // The walk must guard on that rather than rely on a null return.
             _ = HeadlessGame.Boot();
-            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720, true);
+            _ = ScreenPresentation.Instance.SetSurfaceSize(1280, 720);
             CountingController parent = new();
             CountingController inactive = new();
             parent.AddChildwithID(inactive, 1);

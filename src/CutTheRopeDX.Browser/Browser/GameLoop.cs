@@ -17,6 +17,7 @@ namespace CutTheRopeDX.Browser
         private static double _lastTimestampMs;
         private static double _accumulator;
         private static bool _active = true;
+        private static int _canvasGeneration = -1;
 
         internal static SkiaSurface Surface { get; set; }
 
@@ -117,16 +118,35 @@ namespace CutTheRopeDX.Browser
             }
         }
 
+        /// <summary>
+        /// Adopts a new canvas shape, on the frames where there is one.
+        /// </summary>
+        /// <remarks>
+        /// The shape is watched rather than measured. Reading it every frame meant a DOM
+        /// measurement and a marshalled array crossing into the runtime sixty times a second to
+        /// answer "nothing changed"; the watcher answers that with a single integer, and the
+        /// measurement only happens on the frames where the answer is different.
+        /// </remarks>
         private static void ResizeIfNeeded()
         {
+            int generation = GLContextInterop.CanvasChangeCount();
+            if (generation == _canvasGeneration)
+            {
+                return;
+            }
+            _canvasGeneration = generation;
+
             int[] canvas = GLContextInterop.CanvasSize("game");
-            if (canvas[0] == Surface.Width && canvas[1] == Surface.Height)
+            float ratio = (float)GLContextInterop.CanvasDevicePixelRatio();
+            if (canvas[0] == Surface.Width
+                && canvas[1] == Surface.Height
+                && ratio == ScreenPresentation.Instance.Snapshot.DevicePixelRatio)
             {
                 return;
             }
 
             Surface.Resize(canvas[0], canvas[1]);
-            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1]);
+            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1], ratio);
         }
 
         private static void Present()

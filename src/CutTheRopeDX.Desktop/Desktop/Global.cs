@@ -1,3 +1,5 @@
+using CutTheRopeDX.Framework.Platform;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,7 +28,8 @@ namespace CutTheRopeDX.Desktop
         /// <summary>
         /// Gets or sets the screen size manager responsible for logical-to-window transforms.
         /// </summary>
-        public static ScreenSizeManager ScreenSizeManager { get; set; } = new(2560, 1440);
+        public static ScreenSizeManager ScreenSizeManager { get; set; } =
+            new((int)ViewportLayout.DesignWidth, (int)ViewportLayout.DesignHeight);
 
         /// <summary>
         /// Gets the shared desktop mouse cursor helper.

@@ -20,6 +20,29 @@ namespace CutTheRopeDX.Browser
         [JSImport("canvasSize", "glcontext")]
         public static partial int[] CanvasSize(string canvasId);
 
+        /// <summary>
+        /// Starts reporting canvas shape changes through <see cref="CanvasChangeCount"/>, so the
+        /// loop no longer has to measure the DOM to find out whether anything moved.
+        /// </summary>
+        [JSImport("watchCanvas", "glcontext")]
+        public static partial void WatchCanvas(string canvasId);
+
+        /// <summary>
+        /// A counter the watcher bumps whenever the canvas backing size or the device pixel ratio
+        /// changes. Equal values mean neither has moved since the last look.
+        /// </summary>
+        [JSImport("canvasChangeCount", "glcontext")]
+        public static partial int CanvasChangeCount();
+
+        /// <summary>
+        /// Returns the device pixel ratio the last <see cref="CanvasSize"/> call applied to the
+        /// canvas backing store. Call it after <see cref="CanvasSize"/> so the two describe the
+        /// same measurement.
+        /// </summary>
+        /// <returns>Physical pixels per logical pixel, clamped to at most 2.</returns>
+        [JSImport("canvasDevicePixelRatio", "glcontext")]
+        public static partial double CanvasDevicePixelRatio();
+
         /// <summary>Returns the document base URL for resolving app-relative resources.</summary>
         [JSImport("documentBaseUrl", "glcontext")]
         public static partial string DocumentBaseUrl();

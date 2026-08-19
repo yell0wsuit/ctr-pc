@@ -13,29 +13,151 @@ namespace CutTheRopeDX.Framework.Core
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {
         /// <summary>
-        /// The coordinate box this controller's fixed content is authored in. Defaults to the
-        /// full design size, which reproduces the fixed layout the game shipped with.
+        /// The coordinate box this controller's content is authored in, recomputed from the
+        /// published viewport on every read. Its width is always the design width; its height is a
+        /// the authored design size unless a scene declares otherwise.
         /// </summary>
-        protected CTRRectangle DesignBox { get; set; } = new(
-            0f,
-            0f,
-            ViewportLayout.DesignWidth,
-            ViewportLayout.DesignHeight);
+        /// <remarks>
+        /// Constant by default. How large the content is drawn is <see cref="FittedScale"/>'s job,
+        /// not this one's: shortening the box would raise the scale, but it would also bring what
+        /// hangs from the bottom edge up toward what hangs from the top, compressing the
+        /// composition instead of enlarging it. A scene whose content wants a different shape
+        /// overrides this getter; it never writes one.
+        /// </remarks>
+        protected virtual CTRRectangle DesignBox => new(
+            0f, 0f, ViewportLayout.DesignWidth, ViewportLayout.DesignHeight);
 
         /// <summary>
         /// Where <see cref="DesignBox"/> lands in logical space at the current viewport. Derived
         /// on read from the published viewport rather than cached, so it is correct the instant
         /// the viewport changes and there is no second copy to keep in step.
         /// </summary>
-        protected CTRRectangle FittedBox => LayoutMath.FitInside(
-            DesignBox.w,
-            DesignBox.h,
-            ScreenPresentation.Instance.Snapshot.VisibleBounds);
+        /// <remarks>
+        /// Centered, and free to be larger than the viewport. Containing the box instead would
+        /// size the composition from the design width, and since logical space already normalizes
+        /// the viewport's shorter side, that shrinks content on any viewport narrower than the
+        /// design shape - a menu whose content column occupies the middle third of its box would
+        /// be scaled down for the sake of two empty margins. What overflows is margin; the
+        /// background covers it separately.
+        /// </remarks>
+        protected CTRRectangle FittedBox => FittedBoxAt(FittedScale);
 
         /// <summary>
-        /// Uniform scale from design-box coordinates to logical space.
+        /// Uniform scale from design-box coordinates to logical space. A function of the viewport
+        /// alone, so it is <see cref="ContentFit.Scale"/>; controllers reach it through this name
+        /// because that is what their layout code reads, not because they own a second copy.
         /// </summary>
-        protected float FittedScale => FittedBox.w / DesignBox.w;
+        protected static float FittedScale => ContentFit.Scale;
+
+        /// <summary>
+        /// <see cref="FittedBox"/> at an explicit scale rather than <see cref="FittedScale"/>.
+        /// The one place the design box's placement is computed, so <see cref="FittedBox"/> and
+        /// <see cref="PlaceFittedGroup(BaseElement, float)"/> cannot drift apart.
+        /// </summary>
+        /// <param name="scale">Uniform scale from design-box coordinates to logical space.</param>
+        /// <returns>The placed, centered design box in logical space.</returns>
+        private CTRRectangle FittedBoxAt(float scale)
+        {
+            CTRRectangle design = DesignBox;
+            return LayoutMath.PlaceBox(
+                design.w,
+                design.h,
+                ScreenPresentation.Instance.Snapshot.VisibleBounds,
+                scale);
+        }
+
+        /// <summary>
+        /// Sizes, scales and positions the element that carries this controller's design-space
+        /// content, so everything under it is drawn as though the design box were the screen.
+        /// </summary>
+        /// <remarks>
+        /// The position is not simply the fitted box's corner. <see cref="BaseElement"/> scales
+        /// about its own center, so a group placed at that corner would drift by half the box
+        /// times the shortfall in scale. Taking that back out here is what makes a child authored
+        /// at <c>x</c> land at <c>FittedBox.x + x * FittedScale</c>, which is the placement rule
+        /// every scene's constants assume.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        protected void PlaceFittedGroup(BaseElement group)
+        {
+            PlaceFittedGroup(group, FittedScale);
+        }
+
+        /// <summary>
+        /// <see cref="PlaceFittedGroup(BaseElement)"/> at an explicit scale rather than
+        /// <see cref="FittedScale"/>.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="FittedScale"/> assumes the content is narrow enough, relative to
+        /// <see cref="DesignBox"/>'s width, that it never approaches the design box's own edges
+        /// even boosted - true for a single button column, not for content authored close to the
+        /// full design width (a multi-column grid, say). A caller whose content can hit that
+        /// ceiling should pass <c>Math.Min(FittedScale, ownOverflowLimit)</c> here instead of
+        /// calling the parameterless overload.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        /// <param name="scale">Uniform scale from design-box coordinates to logical space.</param>
+        protected void PlaceFittedGroup(BaseElement group, float scale)
+        {
+            if (group == null)
+            {
+                return;
+            }
+
+            CTRRectangle design = DesignBox;
+            CTRRectangle fitted = FittedBoxAt(scale);
+
+            group.width = (int)design.w;
+            group.height = (int)design.h;
+            group.scaleX = group.scaleY = scale;
+
+            // The center taken back out here is the one the renderer will scale about, integer
+            // shift and all. Using the exact box height instead would leave the content off by
+            // half a unit times the shortfall in scale, on any box whose height is odd.
+            group.x = fitted.x - ((group.width >> 1) * (1f - scale));
+            group.y = fitted.y - ((group.height >> 1) * (1f - scale));
+        }
+
+        /// <summary>
+        /// <see cref="PlaceFittedGroup(BaseElement)"/>, held under the scale at which the content
+        /// under <paramref name="group"/> still clears the screen edge by
+        /// <see cref="FittedContentFit.EdgeMargin"/>.
+        /// </summary>
+        /// <remarks>
+        /// The group is placed twice: measuring the content needs the group sized to its design
+        /// box, and placing it is what sizes it. The first placement is the one the second may
+        /// reduce, so a scene that ends up unhindered is placed exactly as it always was.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        protected void PlaceFittedContent(BaseElement group)
+        {
+            PlaceFittedContent(group, FittedScale);
+        }
+
+        /// <summary>
+        /// <see cref="PlaceFittedContent(BaseElement)"/> starting from an explicit scale rather
+        /// than <see cref="FittedScale"/>, for a scene that has already held itself under a
+        /// ceiling of its own.
+        /// </summary>
+        /// <param name="group">Element holding the design-space content.</param>
+        /// <param name="desired">The scale the content would be drawn at unhindered.</param>
+        protected void PlaceFittedContent(BaseElement group, float desired)
+        {
+            if (group == null)
+            {
+                return;
+            }
+
+            PlaceFittedGroup(group, desired);
+            PlaceFittedGroup(
+                group,
+                FittedContentFit.ScaleFor(
+                    ScreenPresentation.Instance.Snapshot.VisibleBounds,
+                    DesignBox,
+                    DesignExtent.Measure(group),
+                    desired,
+                    FittedContentFit.EdgeMargin));
+        }
 
         /// <summary>
         /// Converts a pointer position in logical space into this controller's design space, so a
@@ -152,9 +274,30 @@ namespace CutTheRopeDX.Framework.Core
         /// Positions this controller's content for the given viewport. Called when the viewport
         /// changes and when this controller becomes active, never on an ordinary frame.
         /// </summary>
+        /// <remarks>
+        /// The base implementation sizes every registered view to the viewport. Views are the
+        /// frame edge-anchored and centered content resolves against, so one left at the size it
+        /// was built for holds all of its content where the previous viewport put it. An override
+        /// places what a scene positions itself, and calls this first.
+        /// </remarks>
         /// <param name="snapshot">The viewport to lay out against.</param>
         protected virtual void Relayout(ViewportLayoutSnapshot snapshot)
         {
+            if (views == null)
+            {
+                return;
+            }
+
+            CTRRectangle visible = snapshot.VisibleBounds;
+            foreach (View view in views.Values)
+            {
+                if (view != null)
+                {
+                    view.width = (int)visible.w;
+                    view.height = (int)visible.h;
+                    view.Relayout(visible);
+                }
+            }
         }
 
         /// <summary>
@@ -209,6 +352,14 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Shows the view with the specified identifier, hiding any currently active view first.
         /// </summary>
+        /// <remarks>
+        /// The view is built and laid out before the root controller is told about it, because
+        /// being told is when the root controller draws this view and keeps the picture as the
+        /// incoming half of its crossfade. A picture taken any earlier is of a composition that
+        /// has not been positioned for this viewport yet, and the fade then plays that stale
+        /// picture over the screen before the live view replaces it - which reads as the scene
+        /// rescaling or shuffling itself into place a moment after it appears.
+        /// </remarks>
         /// <param name="n">View identifier to show.</param>
         public virtual void ShowView(int n)
         {
@@ -218,9 +369,9 @@ namespace CutTheRopeDX.Framework.Core
             }
             activeViewID = n;
             View view = views[n];
-            Application.SharedRootController().OnControllerViewShow(view);
             view.Show();
             Relayout(ScreenPresentation.Instance.Snapshot);
+            Application.SharedRootController().OnControllerViewShow(view);
         }
 
         /// <summary>

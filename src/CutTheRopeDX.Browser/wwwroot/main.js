@@ -27,8 +27,23 @@ const canvas = document.getElementById("game");
 const input = exports.CutTheRopeDX.Browser.InputRouter;
 const loop = exports.CutTheRopeDX.Browser.GameLoop;
 
+// getBoundingClientRect forces the browser to settle layout before it answers, and a drag
+// asks once per pointermove. The rectangle only moves when the canvas box does, so it is
+// measured then and reused for every event in between.
+let canvasRect = null;
+const invalidateCanvasRect = () => {
+    canvasRect = null;
+};
+new ResizeObserver(invalidateCanvasRect).observe(canvas);
+globalThis.addEventListener("resize", invalidateCanvasRect);
+globalThis.addEventListener("scroll", invalidateCanvasRect, {
+    capture: true,
+    passive: true,
+});
+
 const toBacking = (event) => {
-    const rect = canvas.getBoundingClientRect();
+    canvasRect ??= canvas.getBoundingClientRect();
+    const rect = canvasRect;
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     return [
@@ -82,8 +97,9 @@ canvas.addEventListener(
     { passive: false },
 );
 
+const RESERVED_KEYS = new Set(["Space", "ArrowLeft", "ArrowRight"]);
 const sendKey = (event, down) => {
-    if (["Space", "ArrowLeft", "ArrowRight"].includes(event.code)) {
+    if (RESERVED_KEYS.has(event.code)) {
         event.preventDefault();
     }
     input.OnKey(event.code, down);

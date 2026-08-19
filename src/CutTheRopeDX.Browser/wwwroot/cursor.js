@@ -4,7 +4,10 @@
 // scene, so the CSS equivalent is the faithful port: same two images, same top-left hotspot,
 // and the pointer keeps the responsiveness of a real cursor instead of trailing a frame behind.
 
-const GAME_WIDTH = 2560;
+// Logical length of the viewport's shorter side, matching ViewportLayout.LogicalShortSide.
+// The engine scales everything it draws by the short side, so a cursor scaled by anything
+// else would agree with the art at one window shape and disagree at every other.
+const GAME_SHORT_SIDE = 1440;
 
 // Below this the resize is not worth redrawing for.
 const SCALE_EPSILON = 0.01;
@@ -42,12 +45,12 @@ function apply() {
 
 /** Redraws both bitmaps for the canvas's current size, if that size changed enough. */
 function rescale() {
-    const width = canvas.clientWidth;
-    if (width === 0) {
+    const shortSide = Math.min(canvas.clientWidth, canvas.clientHeight);
+    if (shortSide === 0) {
         return;
     }
 
-    const scale = width / GAME_WIDTH;
+    const scale = shortSide / GAME_SHORT_SIDE;
     if (Math.abs(scale - appliedScale) < SCALE_EPSILON) {
         return;
     }

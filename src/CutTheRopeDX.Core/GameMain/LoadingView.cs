@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -79,6 +80,20 @@ namespace CutTheRopeDX.GameMain
             }
 
             float progressPercent = currentPercent;
+
+            // The closed box is drawn straight to the renderer at design coordinates, so it is
+            // cover-fitted here the way the transition animation and the menu backdrops are.
+            // Without it the two halves meet wherever the design width happens to fall on the
+            // viewport rather than in the middle of it, and a taller viewport is left uncovered
+            // below the design height.
+            CTRRectangle visible = VisibleBounds;
+            CTRRectangle cover = LayoutMath.CoverInside(
+                ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
+            float coverScale = cover.w / ViewportLayout.DesignWidth;
+            Renderer.PushMatrix();
+            Renderer.Translate(cover.x, cover.y, 0f);
+            Renderer.Scale(coverScale, coverScale, 1f);
+
             CTRTexture2D texture = Application.GetTexture(boxCover);
             Renderer.SetColor(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
@@ -95,7 +110,13 @@ namespace CutTheRopeDX.GameMain
             if (!game)
             {
                 Renderer.Enable(Renderer.GL_SCISSOR_TEST);
-                Renderer.SetScissor(0f, 0f, SCREEN_WIDTH, 1200f * progressPercent / 100f);
+                // A scissor is a device rectangle rather than geometry, so it does not travel
+                // through the transform above and is given in logical units instead.
+                Renderer.SetScissor(
+                    0f,
+                    0f,
+                    visible.w,
+                    cover.y + (1200f * coverScale * progressPercent / 100f));
             }
             Renderer.SetColor(Color.White);
             leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;
@@ -117,6 +138,7 @@ namespace CutTheRopeDX.GameMain
                 float loadingBarOffset = 1120f * progressPercent / 100f;
                 DrawHelper.DrawImageQuad(texture2, 8, 1084f, loadingBarOffset - 100f);
             }
+            Renderer.PopMatrix();
             PostDraw();
             Renderer.SetColor(Color.White);
             Renderer.Disable(Renderer.GL_TEXTURE_2D);

@@ -194,25 +194,23 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 _ = VectEqual(targetPoint, vectZero);
                 _ = Vect(container.x, container.y);
-                Vector v = VectMult(VectNeg(move), 7f); // Decelerate faster after scrolling
+                Vector v = VectMult(VectNeg(move), deaccelerationSpeed);
                 move = VectAdd(move, VectMult(v, delta));
-                Vector off = VectMult(move, delta);
-                if (MathF.Abs(off.X) < 0.2f)
+
+                // Compared against the speed rather than this frame's displacement: the same
+                // glide must end at the same place whether the host draws at 60 or 120 Hz, and
+                // a per-frame distance threshold stops a fast display's glide sooner.
+                if (MathF.Abs(move.X) < minScrollSpeed)
                 {
-                    off.X = 0f;
                     move.X = 0f;
                 }
-                if (MathF.Abs(off.Y) < 0.2f)
+                if (MathF.Abs(move.Y) < minScrollSpeed)
                 {
-                    off.Y = 0f;
                     move.Y = 0f;
                 }
-                _ = MoveContainerBy(off);
+                _ = MoveContainerBy(VectMult(move, delta));
             }
-            if (inertiaTimeoutLeft > 0f)
-            {
-                inertiaTimeoutLeft -= delta;
-            }
+            CloseVelocitySample(delta);
         }
 
         /// <inheritdoc />
@@ -222,6 +220,7 @@ namespace CutTheRopeDX.Framework.Visual
             passTouches = false;
             touchReleaseTimer = 0f;
             move = vectZero;
+            ResetVelocitySamples();
             if (resetScrollOnShow)
             {
                 SetScroll(vectZero);
@@ -255,6 +254,7 @@ namespace CutTheRopeDX.Framework.Visual
             movingToSpoint = false;
             targetSpoint = -1;
             dragStart = Vect(tx, ty);
+            ResetVelocitySamples();
             return true;
         }
 
@@ -283,8 +283,17 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 Vector vector2 = VectSub(vector, dragStart);
                 dragStart = vector;
-                vector2.X = FIT_TO_BOUNDARIES(vector2.X, 0f - maxTouchMoveLength, maxTouchMoveLength);
-                vector2.Y = FIT_TO_BOUNDARIES(vector2.Y, 0f - maxTouchMoveLength, maxTouchMoveLength);
+
+                // A pointer that jumps discontinuously - capture lost and regained, or a second
+                // finger landing elsewhere - is dropped whole rather than clamped. Clamping
+                // applied part of the jump and discarded the rest, which also meant every
+                // genuine fast swipe fell behind the finger by whatever the cap cut off.
+                // dragStart has already advanced, so the next event measures from where the
+                // pointer really is instead of repeating the rejected distance.
+                if (MathF.Abs(vector2.X) > maxTouchMoveLength || MathF.Abs(vector2.Y) > maxTouchMoveLength)
+                {
+                    return false;
+                }
                 totalDrag = VectAdd(totalDrag, vector2);
                 if ((touchTimer > 0f || untouchChildsOnMove) && VectLength(totalDrag) > touchMoveIgnoreLength)
                 {
@@ -308,9 +317,8 @@ namespace CutTheRopeDX.Framework.Visual
                 {
                     vector2.Y /= 2f;
                 }
-                staticMove = MoveContainerBy(vector2);
+                pendingDrag = VectAdd(pendingDrag, MoveContainerBy(vector2));
                 move = vectZero;
-                inertiaTimeoutLeft = inertiaTimeout;
                 return true;
             }
             return false;
@@ -346,12 +354,7 @@ namespace CutTheRopeDX.Framework.Visual
                 return false;
             }
             touchState = TOUCH_STATE.UP;
-            if (inertiaTimeoutLeft > 0f)
-            {
-                float inertiaRatio = inertiaTimeoutLeft / inertiaTimeout;
-                move = VectMult(staticMove, inertiaRatio * 50f);
-                // movingByInertion = true;
-            }
+            move = MeasureReleaseVelocity();
             if (spointsNum > 0)
             {
                 if (!canSkipScrollPoints)
@@ -401,8 +404,8 @@ namespace CutTheRopeDX.Framework.Visual
             spointsCapacity = -1;
             targetSpoint = -1;
             lastTargetSpoint = -1;
-            // deaccelerationSpeed = 3f;
-            inertiaTimeout = 0.1f;
+            deaccelerationSpeed = 3f;
+            minScrollSpeed = 12f;
             // scrollToPointDuration = 0.35f;
             canSkipScrollPoints = false;
             shouldBounceHorizontally = false;
@@ -413,7 +416,12 @@ namespace CutTheRopeDX.Framework.Visual
             // window is smaller than the 2560-wide logical screen, so a plain click routinely
             // produces one. PopupBuilder already overrides this to the same tolerance.
             touchMoveIgnoreLength = 5f;
-            maxTouchMoveLength = 40f;
+
+            // Sized against the design space rather than left at the 40 the original carried: in
+            // a 480-wide design that was five screen widths a second and only outliers reached
+            // it, but the same number in this 2560-wide one caps drags below one screen width a
+            // second, which an ordinary swipe passes.
+            maxTouchMoveLength = ViewportLayout.DesignWidth / 4f;
             touchPassTimeout = 0.5f;
             minAutoScrollToSpointLength = -1f;
             resetScrollOnShow = true;
@@ -537,6 +545,7 @@ namespace CutTheRopeDX.Framework.Visual
         public void SetScroll(Vector s)
         {
             move = vectZero;
+            ResetVelocitySamples();
             container.x = 0f - s.X;
             container.y = 0f - s.Y;
             movingToSpoint = false;
@@ -669,6 +678,59 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Files the drag accumulated since the previous frame as one velocity sample and starts
+        /// a fresh one.
+        /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds that the sample covers.</param>
+        private void CloseVelocitySample(float delta)
+        {
+            velocitySampleDrags[velocitySampleCursor] = pendingDrag;
+            velocitySampleDurations[velocitySampleCursor] = delta;
+            velocitySampleCursor = (velocitySampleCursor + 1) % VelocitySampleCount;
+            pendingDrag = vectZero;
+        }
+
+        /// <summary>Discards the sampled drag history so a new gesture starts from rest.</summary>
+        private void ResetVelocitySamples()
+        {
+            Array.Clear(velocitySampleDrags);
+            Array.Clear(velocitySampleDurations);
+            velocitySampleCursor = 0;
+            pendingDrag = vectZero;
+        }
+
+        /// <summary>
+        /// Averages the sampled drag over the time it took to cover, giving a release speed in
+        /// units per second.
+        /// </summary>
+        /// <returns>Velocity to hand to inertia, or zero if the finger was at rest.</returns>
+        /// <remarks>
+        /// Deliberately measured across several frames rather than from the last pointer event.
+        /// The desktop host samples the mouse once per frame, but the browser host forwards each
+        /// DOM pointer event as it arrives while logic steps at a fixed rate, so a per-event
+        /// reading scaled with the pointer's report rate: the same flick came out at half
+        /// strength on a 120 Hz phone, and a stray pixel of jitter as the finger left the glass
+        /// replaced the whole gesture. Averaging over a window makes the answer depend only on
+        /// how fast the finger actually travelled.
+        ///
+        /// The drag accumulated since the last frame closed is left out on purpose. It is at
+        /// most one frame of travel, and admitting it would mean pairing it with a guessed
+        /// duration - which is exactly how a final stray pixel would creep back in.
+        /// </remarks>
+        private Vector MeasureReleaseVelocity()
+        {
+            Vector travelled = vectZero;
+            float elapsed = 0f;
+            for (int i = 0; i < VelocitySampleCount; i++)
+            {
+                travelled = VectAdd(travelled, velocitySampleDrags[i]);
+                elapsed += velocitySampleDurations[i];
+            }
+
+            return elapsed > 0f ? VectMult(travelled, 1f / elapsed) : vectZero;
+        }
+
+        /// <summary>
         /// Provides smooth, momentum-based scrolling in response to mouse wheel input.
         /// </summary>
         /// <param name="scrollDelta">
@@ -682,8 +744,10 @@ namespace CutTheRopeDX.Framework.Visual
                 return; // No scrolling needed if content fits
             }
 
-            // Convert scroll wheel delta to scroll velocity for smooth scrolling
-            float scrollVelocity = scrollDelta * 4f;
+            // Inertia decays exponentially, so a starting speed of v travels v/deacceleration
+            // before it stops. Stating the notch as the distance it should cover and solving for
+            // the speed keeps the wheel where it has always been when that constant is retuned.
+            float scrollVelocity = scrollDelta * WheelGlidePerDelta * deaccelerationSpeed;
 
             // Add to existing momentum for smooth, accumulating scrolling
             // The Update() method handles deceleration automatically
@@ -711,9 +775,36 @@ namespace CutTheRopeDX.Framework.Visual
         private Vector dragStart;
 
         /// <summary>
-        /// Most recent drag displacement, reused to seed inertial scrolling on release.
+        /// Number of frames of drag history averaged to find the release velocity. Five frames is
+        /// about 83 ms at 60 Hz: long enough to ride out per-event jitter, short enough that only
+        /// the end of the gesture counts.
         /// </summary>
-        private Vector staticMove;
+        private const int VelocitySampleCount = 5;
+
+        /// <summary>
+        /// Distance one unit of mouse-wheel delta should carry the content.
+        /// </summary>
+        private const float WheelGlidePerDelta = 4f / 7f;
+
+        /// <summary>
+        /// Drag covered during each of the last <see cref="VelocitySampleCount"/> frames.
+        /// </summary>
+        private readonly Vector[] velocitySampleDrags = new Vector[VelocitySampleCount];
+
+        /// <summary>
+        /// Frame duration each entry of <see cref="velocitySampleDrags"/> was measured over.
+        /// </summary>
+        private readonly float[] velocitySampleDurations = new float[VelocitySampleCount];
+
+        /// <summary>
+        /// Next slot to overwrite in the velocity sample ring.
+        /// </summary>
+        private int velocitySampleCursor;
+
+        /// <summary>
+        /// Drag accumulated by pointer events since the current frame's sample opened.
+        /// </summary>
+        private Vector pendingDrag;
 
         /// <summary>
         /// Current scrolling velocity used for inertia and mouse-wheel momentum.
@@ -721,11 +812,6 @@ namespace CutTheRopeDX.Framework.Visual
         private Vector move;
 
         // private bool movingByInertion;
-
-        /// <summary>
-        /// Remaining time window during which drag motion can be converted into inertial movement.
-        /// </summary>
-        private float inertiaTimeoutLeft;
 
         /// <summary>
         /// Whether the container is currently animating toward a snap point.
@@ -801,12 +887,16 @@ namespace CutTheRopeDX.Framework.Visual
 
         // private float fixedDelta;
 
-        // private float deaccelerationSpeed;
+        /// <summary>
+        /// Rate at which inertial movement decays, per second. A release at speed <c>v</c> travels
+        /// <c>v / deaccelerationSpeed</c> before it stops.
+        /// </summary>
+        private float deaccelerationSpeed;
 
         /// <summary>
-        /// Maximum time after a drag movement during which inertia can still be applied on release.
+        /// Speed below which inertial movement is treated as finished, in units per second.
         /// </summary>
-        private float inertiaTimeout;
+        private float minScrollSpeed;
 
         // private float scrollToPointDuration;
 
@@ -831,7 +921,8 @@ namespace CutTheRopeDX.Framework.Visual
         public float touchMoveIgnoreLength;
 
         /// <summary>
-        /// Maximum per-frame drag delta applied from touch movement before clamping.
+        /// Largest single-event drag delta accepted as real pointer movement. Anything beyond it
+        /// is read as the pointer jumping rather than travelling, and is discarded.
         /// </summary>
         private float maxTouchMoveLength;
 

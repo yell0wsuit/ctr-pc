@@ -180,7 +180,10 @@ namespace CutTheRopeDX.Desktop
         {
             if (cap == GL_SCISSOR_TEST)
             {
-                SetScissor(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                // Turning clipping off means letting the whole drawn region through, which is the
+                // region the viewport exposes rather than the fixed design size.
+                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                SetScissor(0f, 0f, visible.w, visible.h);
             }
             if (cap == GL_BLEND)
             {
@@ -253,9 +256,9 @@ namespace CutTheRopeDX.Desktop
             {
                 Global.GraphicsDevice.Clear(Color.Black);
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                ScreenPresentation presentation = ScreenPresentation.Instance;
-                Rectangle scaledViewRect = new(presentation.ScaledViewX, presentation.ScaledViewY, presentation.ScaledViewWidth, presentation.ScaledViewHeight);
-                Global.SpriteBatch.Draw(s_RenderTarget, scaledViewRect, Color.White);
+                CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
+                Rectangle renderViewRect = new((int)render.x, (int)render.y, (int)render.w, (int)render.h);
+                Global.SpriteBatch.Draw(s_RenderTarget, renderViewRect, Color.White);
                 Global.SpriteBatch.End();
                 BlendParams.InvalidateDeviceCache();
             }
@@ -496,9 +499,17 @@ namespace CutTheRopeDX.Desktop
             try
             {
                 Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
-                float scaleX = FrameworkTypes.SCREEN_WIDTH / bounds.Width;
-                float scaleY = FrameworkTypes.SCREEN_HEIGHT / bounds.Height;
-                Rectangle scissorRect = new((int)(x / scaleX), (int)(y / scaleY), (int)(width / scaleX), (int)(height / scaleY));
+
+                // The rectangle arrives in logical units and the scissor is set in the render
+                // target's own pixels, which is what the frame is drawn into; the letterbox origin
+                // is applied when that target is copied to the screen.
+                CTRRectangle target = ScreenPresentation.Instance.Snapshot.ToRenderTarget(
+                    new CTRRectangle(x, y, width, height));
+                Rectangle scissorRect = new(
+                    (int)target.x,
+                    (int)target.y,
+                    (int)target.w,
+                    (int)target.h);
                 Global.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRect, bounds);
             }
             catch (Exception)

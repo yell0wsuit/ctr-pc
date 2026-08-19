@@ -83,7 +83,11 @@ namespace CutTheRopeDX.Tests
             camera.ApplyFit(fit);
 
             Assert.Equal(1f, camera.Scale, 0.001);
-            Assert.Equal(-520f, camera.pos.X, 0.01);
+            Assert.Equal(-520f, camera.RenderPos.X, 0.01);
+            Assert.Equal(0f, camera.RenderPos.Y, 0.01);
+
+            // The tracked position is the fit's input, so the fit must leave it alone.
+            Assert.Equal(0f, camera.pos.X, 0.01);
             Assert.Equal(0f, camera.pos.Y, 0.01);
         }
     }
