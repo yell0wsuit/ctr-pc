@@ -217,6 +217,58 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Index of the last anchor marker that belongs to the result panel's body.
+        /// </summary>
+        /// <remarks>
+        /// The marker after it places the improved-result stamp, which is decorative, appears on
+        /// some results and not others, and is authored well off to one side. Letting it into the
+        /// measurement would pull the panel sideways to balance something most results never draw.
+        /// </remarks>
+        private const int LastPanelBodyQuad = 11;
+
+        /// <summary>
+        /// The offset, in design units, that brings the authored result composition onto the
+        /// center of the design box it is fitted inside.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Every piece of the panel is placed from an anchor marker authored on the
+        /// <c>menu_results</c> art canvas, which is 2560x1597 - taller than the 2560x1440 design
+        /// box the group is fitted to. Centering that box therefore does not center what it holds:
+        /// the composition is authored low in its own canvas and is drawn low on every screen. It
+        /// reads as centered at the design shape only because the whole panel is small there;
+        /// a phone-shaped viewport draws it at up to 1.55x and the gap above it opens up.
+        /// </para>
+        /// <para>
+        /// Measured from the markers rather than from what the panel paints. The score counts up
+        /// while the panel is on screen and the pass text differs with the stars earned, so the
+        /// painted extent changes width under its own animation - centering on that would slide
+        /// the panel sideways as the digits climb. The markers are fixed data and answer the same
+        /// way on every frame.
+        /// </para>
+        /// </remarks>
+        /// <returns>The design-space offset to apply to the placed panel group.</returns>
+        public static Vector PanelCenteringOffset()
+        {
+            float left = float.MaxValue;
+            float top = float.MaxValue;
+            float right = float.MinValue;
+            float bottom = float.MinValue;
+            for (int quad = 0; quad <= LastPanelBodyQuad; quad++)
+            {
+                Vector marker = Image.GetQuadOffset(Resources.Img.MenuResults, quad);
+                left = MathF.Min(left, marker.X);
+                top = MathF.Min(top, marker.Y);
+                right = MathF.Max(right, marker.X);
+                bottom = MathF.Max(bottom, marker.Y);
+            }
+
+            return Vect(
+                (ViewportLayout.DesignWidth / 2f) - ((left + right) / 2f),
+                (ViewportLayout.DesignHeight / 2f) - ((top + bottom) / 2f));
+        }
+
+        /// <summary>
         /// Hangs one authored piece of the result panel from the panel's group.
         /// </summary>
         /// <remarks>

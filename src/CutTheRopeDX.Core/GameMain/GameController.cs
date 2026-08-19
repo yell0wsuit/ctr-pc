@@ -1026,6 +1026,18 @@ namespace CutTheRopeDX.GameMain
             // same way one is: fit the group it hangs from and the whole panel lands with it,
             // centered on the viewport it is shown over at every shape of window.
             PlaceFittedGroup(results?.result);
+
+            // Fitting the group centers the design box, which is not the same as centering the
+            // composition inside it - the panel is authored off-center in a taller canvas than
+            // the box it is read in. See BoxOpenClose.PanelCenteringOffset. Applied after the fit
+            // rather than folded into it, so the offset stays a property of the art it was
+            // measured from instead of a special case inside the shared placement rule.
+            if (results?.result != null)
+            {
+                Vector centering = BoxOpenClose.PanelCenteringOffset();
+                results.result.x += centering.X * FittedScale;
+                results.result.y += centering.Y * FittedScale;
+            }
         }
 
         /// <summary>

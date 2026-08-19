@@ -22,14 +22,23 @@ namespace CutTheRopeDX.Tests
         private const string PanelCenterPiece = "star2";
 
         [Fact]
-        public void PanelIsDrawnWhereItWasAuthoredAtTheDesignShape()
+        public void CompositionIsCenteredOnTheViewportAtTheDesignShape()
         {
             WithPanel(2560, 1440, (panel, visible) =>
             {
-                // The authored center of the composition, a shade left of the design center. What
-                // matters below is that this offset is preserved, not that it is zero.
-                Assert.Equal(1260f, DrawnCenterX(panel, PanelCenterPiece), 0.5);
-                Assert.Equal(1280f, visible.w / 2f, 0.5);
+                // The panel used to be drawn exactly where it was authored, which left it a shade
+                // left of the design center and well below it: its pieces are placed from anchor
+                // markers on an art canvas taller than the design box they are read in. Fitting
+                // that box centers the box, not the composition inside it. What is centered here
+                // is the composition's own span - the buttons at its sides, the pass text and the
+                // bottom button at its ends - because that is what reads as the panel's middle.
+                (float left, float right, float _, float bottom) = DrawnButtonCenterExtent(panel);
+
+                Assert.Equal(visible.w / 2f, (left + right) / 2f, 0.5);
+                Assert.Equal(
+                    visible.h / 2f,
+                    (DrawnCenterY(panel, "passText") + bottom) / 2f,
+                    0.5);
             });
         }
 
@@ -139,6 +148,43 @@ namespace CutTheRopeDX.Tests
                     controller.Dispose();
                 }
             });
+        }
+
+        /// <summary>
+        /// The drawn centers of the panel's buttons, reduced to the extremes on each axis.
+        /// </summary>
+        /// <remarks>
+        /// Centers rather than painted edges, because the composition's placement is authored as a
+        /// set of anchor points and it is those the layout centers. The buttons are what reach
+        /// furthest to each side and furthest down, so their centers are the span that matters.
+        /// </remarks>
+        /// <param name="panel">Element carrying the panel's design-space content.</param>
+        /// <returns>The leftmost, rightmost, topmost and bottommost button centers.</returns>
+        private static (float Left, float Right, float Top, float Bottom) DrawnButtonCenterExtent(
+            BaseElement panel)
+        {
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
+
+            foreach (KeyValuePair<int, BaseElement> entry in panel.GetChilds())
+            {
+                if (entry.Value is not Button button)
+                {
+                    continue;
+                }
+
+                float x = ToDrawnX(panel, button.drawX + (button.width / 2f));
+                float y = ToDrawnY(panel, button.drawY + (button.height / 2f));
+                left = System.MathF.Min(left, x);
+                right = System.MathF.Max(right, x);
+                top = System.MathF.Min(top, y);
+                bottom = System.MathF.Max(bottom, y);
+            }
+
+            Assert.True(right > left, "the panel drew no buttons to measure");
+            return (left, right, top, bottom);
         }
 
         /// <summary>
