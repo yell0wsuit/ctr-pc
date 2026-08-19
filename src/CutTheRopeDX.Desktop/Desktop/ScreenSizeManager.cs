@@ -185,20 +185,42 @@ namespace CutTheRopeDX.Desktop
         public void ApplyWindowSize(int width, int height)
         {
             GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
-            // Skip the swapchain rebuild when the back buffer already matches the requested size.
-            // At startup the swapchain is created at this size (see Game1), so the first sizing here
-            // would otherwise rebuild it needlessly and flash black.
             GraphicsDevice device = graphicsDeviceManager.GraphicsDevice;
-            bool alreadySized = device != null
-                && device.PresentationParameters.BackBufferWidth == width
-                && device.PresentationParameters.BackBufferHeight == height;
+            Point backBuffer = device == null
+                ? Point.Zero
+                : new Point(
+                    device.PresentationParameters.BackBufferWidth,
+                    device.PresentationParameters.BackBufferHeight);
+            Rectangle client = Global.XnaGame.Window.ClientBounds;
+
             graphicsDeviceManager.PreferredBackBufferWidth = width;
             graphicsDeviceManager.PreferredBackBufferHeight = height;
-            if (!alreadySized)
+            if (NeedsSwapchainResize(backBuffer, new Point(client.Width, client.Height), new Point(width, height)))
             {
                 ApplyDesktopVkResize(graphicsDeviceManager);
             }
             WindowRectChanged(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
+        }
+
+        /// <summary>
+        /// Whether the swapchain has to be rebuilt to put the window and its back buffer at a size.
+        /// </summary>
+        /// <remarks>
+        /// The back buffer alone is not enough to go on. A drag past the window's floor is answered
+        /// by sizing the back buffer back up to it, which leaves the window itself wherever the
+        /// drag put it; a second drag past the floor then asks for a size the back buffer is
+        /// already at, and skipping the rebuild there leaves the two disagreeing - the picture
+        /// squeezed into a window smaller than it, and the swapchain reported as suboptimal and
+        /// rebuilt on every frame after. At startup both already match, which is the case the skip
+        /// is for: rebuilding there flashes the window black for nothing.
+        /// </remarks>
+        /// <param name="backBuffer">Size the back buffer is at now.</param>
+        /// <param name="window">Size the window's client area is at now.</param>
+        /// <param name="target">Size both are being put at.</param>
+        /// <returns><see langword="true"/> when a rebuild is needed.</returns>
+        public static bool NeedsSwapchainResize(Point backBuffer, Point window, Point target)
+        {
+            return backBuffer != target || window != target;
         }
 
         /// <summary>

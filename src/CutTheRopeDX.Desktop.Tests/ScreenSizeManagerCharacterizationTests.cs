@@ -45,6 +45,36 @@ namespace CutTheRopeDX.Desktop.Tests
             Assert.Equal(expectedHeight, clamped.Y);
         }
 
+        [Theory]
+        // Startup: the swapchain was created at this size and the window is already there, which
+        // is the one case worth skipping - rebuilding it flashes the window black for nothing.
+        [InlineData(320, 480, 320, 480, 320, 480, false)]
+        // A drag past the floor is answered by sizing back up to it, which leaves the window where
+        // the drag put it. A second drag then asks for a size the back buffer is already at: skip
+        // that and the picture stays squeezed into a smaller window, and the swapchain is reported
+        // suboptimal and rebuilt on every frame after.
+        [InlineData(320, 480, 200, 300, 320, 480, true)]
+        // An ordinary resize, where neither matches yet.
+        [InlineData(800, 600, 800, 600, 1024, 768, true)]
+        // Before the device exists there is nothing to compare against.
+        [InlineData(0, 0, 800, 600, 800, 600, true)]
+        public void ASwapchainIsRebuiltWheneverTheWindowAndItsBackBufferDisagree(
+            int backBufferWidth,
+            int backBufferHeight,
+            int windowWidth,
+            int windowHeight,
+            int targetWidth,
+            int targetHeight,
+            bool expected)
+        {
+            Assert.Equal(
+                expected,
+                ScreenSizeManager.NeedsSwapchainResize(
+                    new Point(backBufferWidth, backBufferHeight),
+                    new Point(windowWidth, windowHeight),
+                    new Point(targetWidth, targetHeight)));
+        }
+
         [Fact]
         public void WindowResizeRefreshesTheCoreScreenMetrics()
         {
