@@ -146,7 +146,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Authored offset, in design units, of the level-number label from the left edge.
         /// </summary>
-        private const float LevelLabelInsetX = 37f;
+        private const float LevelLabelInsetX = 40f;
 
         /// <summary>
         /// Resolves the level's display name from its <c>levelName</c> attribute.
