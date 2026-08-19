@@ -1100,7 +1100,15 @@ namespace CutTheRopeDX.GameMain
                     image4.SetName("lockHideMe");
                     image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
-                    _ = baseElement.AddChild(image4);
+
+                    // Hung from the box art, the way the lock it is replacing is on a box that is
+                    // still locked. This is the same quad drawn at the same place, so it has to
+                    // resolve against the same thing: on the tile instead it read the tile's
+                    // corner and missed the strip's scale, and the lock burst away from wherever
+                    // the one it was standing in for had been sitting. Its own timeline scales it
+                    // from one to two, which now compounds with the box's scale rather than
+                    // replacing it.
+                    _ = image.AddChild(image4);
                     Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                     timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5f));
