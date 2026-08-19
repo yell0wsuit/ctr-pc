@@ -208,13 +208,13 @@ namespace CutTheRopeDX.GameMain
         {
             // The main menu composes inside its design box, so the whole composition scales and
             // moves as one rather than each end being pinned to an edge on its own.
-            PlaceFittedGroup(mainMenuGroup);
+            PlaceFittedContent(mainMenuGroup);
             Span(mainMenuSocial, visible);
             Span(moviePlate, visible);
-            PlaceFittedGroup(optionsGroup);
+            PlaceFittedContent(optionsGroup);
             SetScale(optionsShadow, FullScreenScale(visible, 2f));
-            PlaceFittedGroup(languageGroup);
-            PlaceFittedGroup(resetGroup);
+            PlaceFittedContent(languageGroup);
+            PlaceFittedContent(resetGroup);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace CutTheRopeDX.GameMain
                     levelsBox?.height ?? 0f,
                     StarTotalRect(levelsStarText, visible),
                     CornerChromeRect(BackButton(GetView(VIEW_LEVEL_SELECT)), snapshot));
-                PlaceFittedGroup(levelsGroup, gridScale);
+                PlaceFittedContent(levelsGroup, gridScale);
             }
 
             PlaceStarTotal(levelsStarText);

@@ -119,6 +119,47 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// <see cref="PlaceFittedGroup(BaseElement)"/>, held under the scale at which the content
+        /// under <paramref name="group"/> still clears the screen edge by
+        /// <see cref="FittedContentFit.EdgeMargin"/>.
+        /// </summary>
+        /// <remarks>
+        /// The group is placed twice: measuring the content needs the group sized to its design
+        /// box, and placing it is what sizes it. The first placement is the one the second may
+        /// reduce, so a scene that ends up unhindered is placed exactly as it always was.
+        /// </remarks>
+        /// <param name="group">Element holding the design-space content.</param>
+        protected void PlaceFittedContent(BaseElement group)
+        {
+            PlaceFittedContent(group, FittedScale);
+        }
+
+        /// <summary>
+        /// <see cref="PlaceFittedContent(BaseElement)"/> starting from an explicit scale rather
+        /// than <see cref="FittedScale"/>, for a scene that has already held itself under a
+        /// ceiling of its own.
+        /// </summary>
+        /// <param name="group">Element holding the design-space content.</param>
+        /// <param name="desired">The scale the content would be drawn at unhindered.</param>
+        protected void PlaceFittedContent(BaseElement group, float desired)
+        {
+            if (group == null)
+            {
+                return;
+            }
+
+            PlaceFittedGroup(group, desired);
+            PlaceFittedGroup(
+                group,
+                FittedContentFit.ScaleFor(
+                    ScreenPresentation.Instance.Snapshot.VisibleBounds,
+                    DesignBox,
+                    DesignExtent.Measure(group),
+                    desired,
+                    FittedContentFit.EdgeMargin));
+        }
+
+        /// <summary>
         /// Converts a pointer position in logical space into this controller's design space, so a
         /// hit test against unscaled element rectangles lands where the element was drawn.
         /// </summary>
