@@ -84,7 +84,6 @@ namespace CutTheRopeDX
                 displayMode.Height);
             Global.GraphicsDeviceManager.PreferredBackBufferWidth = size.X;
             Global.GraphicsDeviceManager.PreferredBackBufferHeight = size.Y;
-            Global.GraphicsDeviceManager.ApplyChanges();
         }
 
         /// <summary>
