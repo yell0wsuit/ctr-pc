@@ -11,17 +11,18 @@ Setting font.flavor = "woff2" here is the one-line change if that ever returns.
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import io
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from pathlib import Path
 
 from fontTools.subset import Options, Subsetter
 from fontTools.ttLib import TTFont
 
-from . import manifest, progress
+from . import pipeline, progress
 
 SETTINGS = "ttf:subset:v1"
 
@@ -98,6 +99,28 @@ def _settings_for_charset(charset: set[str]) -> str:
     return f"{SETTINGS}:{len(charset)}:{digest}"
 
 
+def write_subset(job: pipeline.Job, locales_dir: Path) -> None:
+    """Subsets one job's typeface. Runs in a pool worker."""
+    charset = collect_charset(locales_dir, FONT_LANGUAGES[job.source.name])
+    job.out_path.write_bytes(subset_font(job.source, charset))
+
+
+def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
+    locales_dir = content_root / "locales"
+    for font_file, languages in sorted(FONT_LANGUAGES.items()):
+        source = content_root / "fonts" / font_file
+        if not source.exists():
+            continue
+        relative = Path("fonts") / f"{Path(font_file).stem}.ttf"
+        charset = collect_charset(locales_dir, languages)
+        yield pipeline.Job(
+            source,
+            relative.as_posix(),
+            out_root / relative,
+            _settings_for_charset(charset),
+        )
+
+
 def convert_fonts(
     content_root: Path,
     out_root: Path,
@@ -105,35 +128,10 @@ def convert_fonts(
     report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Subsets every mapped font, skipping unchanged outputs."""
-    converted = 0
-    skipped = 0
-    locales_dir = content_root / "locales"
-    present = [
-        (font_file, languages)
-        for font_file, languages in sorted(FONT_LANGUAGES.items())
-        if (content_root / "fonts" / font_file).exists()
-    ]
-
-    report.start("fonts", len(present))
-    try:
-        for font_file, languages in present:
-            source = content_root / "fonts" / font_file
-            relative = Path("fonts") / f"{Path(font_file).stem}.ttf"
-            out_rel = relative.as_posix()
-            out_path = out_root / relative
-            report.advance(out_rel)
-            charset = collect_charset(locales_dir, languages)
-            stamp = manifest.stamp_for(source, _settings_for_charset(charset))
-
-            if manifest.is_current(entries, out_rel, stamp, out_path):
-                skipped += 1
-                continue
-
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_bytes(subset_font(source, charset))
-            entries[out_rel] = stamp
-            converted += 1
-    finally:
-        report.finish()
-
-    return converted, skipped
+    return pipeline.run_stage(
+        "fonts",
+        _jobs(content_root, out_root),
+        functools.partial(write_subset, locales_dir=content_root / "locales"),
+        entries,
+        report,
+    )

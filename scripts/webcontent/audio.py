@@ -6,10 +6,12 @@ mono is transparent for them and cuts 21 MB of WAV to under 2 MB.
 
 from __future__ import annotations
 
+import functools
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 
-from . import manifest, progress
+from . import pipeline, progress
 
 MUSIC_BITRATE_K = 192
 SFX_BITRATE_K = 96
@@ -44,6 +46,33 @@ def ogg_command(
     return command
 
 
+def write_ogg(job: pipeline.Job, ffmpeg: Path, content_root: Path) -> None:
+    """Converts one job. Runs in a pool worker."""
+    sfx = is_sfx(job.source.relative_to(content_root))
+    subprocess.run(
+        ogg_command(
+            ffmpeg,
+            job.source,
+            job.out_path,
+            SFX_BITRATE_K if sfx else MUSIC_BITRATE_K,
+            mono=sfx,
+        ),
+        check=True,
+    )
+
+
+def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
+    for source in sorted((content_root / "sounds").rglob("*.wav")):
+        relative = source.relative_to(content_root)
+        out_relative = relative.with_suffix(".ogg")
+        yield pipeline.Job(
+            source,
+            out_relative.as_posix(),
+            out_root / out_relative,
+            settings_for(relative),
+        )
+
+
 def convert_audio(
     content_root: Path,
     out_root: Path,
@@ -52,38 +81,11 @@ def convert_audio(
     report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every WAV under content_root/sounds, skipping unchanged outputs."""
-    converted = 0
-    skipped = 0
-    sources = sorted((content_root / "sounds").rglob("*.wav"))
-    report.start("audio", len(sources))
-    try:
-        for source in sources:
-            relative = source.relative_to(content_root)
-            out_relative = relative.with_suffix(".ogg")
-            out_rel = out_relative.as_posix()
-            out_path = out_root / out_relative
-            report.advance(out_rel)
-            stamp = manifest.stamp_for(source, settings_for(relative))
-
-            if manifest.is_current(entries, out_rel, stamp, out_path):
-                skipped += 1
-                continue
-
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            sfx = is_sfx(relative)
-            subprocess.run(
-                ogg_command(
-                    ffmpeg,
-                    source,
-                    out_path,
-                    SFX_BITRATE_K if sfx else MUSIC_BITRATE_K,
-                    mono=sfx,
-                ),
-                check=True,
-            )
-            entries[out_rel] = stamp
-            converted += 1
-    finally:
-        report.finish()
-
-    return converted, skipped
+    return pipeline.run_stage(
+        "audio",
+        _jobs(content_root, out_root),
+        functools.partial(write_ogg, ffmpeg=ffmpeg, content_root=content_root),
+        entries,
+        report,
+        cpu_bound=False,
+    )
