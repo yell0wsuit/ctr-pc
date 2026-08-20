@@ -91,13 +91,6 @@ jobs:
                   dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
                   -c Release -o dist -p:RunAOTCompilation=true
 
-            # GitHub Pages project sites live under /<repo>/, so the app's assets must resolve
-            # from there. Injected only into the published index.html, leaving the source
-            # (which serves from / during local dev) unchanged.
-            - name: Set base href for project page
-              run: |
-                  sed -i "s#<head>#<head>\n        <base href=\"/${{ github.event.repository.name }}/\" />#" dist/wwwroot/index.html
-
             # Without this, GitHub Pages (Jekyll) drops the _framework/ runtime folder.
             - name: Disable Jekyll
               run: touch dist/wwwroot/.nojekyll
