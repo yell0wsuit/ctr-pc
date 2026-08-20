@@ -9,11 +9,12 @@ The rule is self-tuning: no hand-maintained exclusion list to fall out of date.
 from __future__ import annotations
 
 import io
+from collections.abc import Callable, Iterator
 from pathlib import Path
 
 from PIL import Image
 
-from . import manifest, progress
+from . import pipeline, progress
 
 QUALITY = 80
 LOSSLESS_FALLBACK_RATIO = 0.60
@@ -24,7 +25,7 @@ SETTINGS = "webp:q80+ll60"
 def pick_encoding(
     png_size: int,
     lossy: bytes,
-    lossless: bytes,
+    encode_lossless: Callable[[], bytes],
     ratio: float = LOSSLESS_FALLBACK_RATIO,
 ) -> tuple[bytes, str]:
     """Chooses between the lossy and lossless encodings of one image.
@@ -32,9 +33,14 @@ def pick_encoding(
     Lossy is kept whenever it compresses well. Once it exceeds `ratio` of the source
     size it has stopped paying for its quality loss, so whichever encoding is actually
     smaller wins.
+
+    The lossless encoding arrives as a callable rather than as bytes because it costs
+    about five times what the lossy one does and roughly one image in twelve reaches
+    the test, making it the bulk of the stage when produced up front and discarded.
     """
     if len(lossy) <= ratio * png_size:
         return lossy, "lossy"
+    lossless = encode_lossless()
     if len(lossless) < len(lossy):
         return lossless, "lossless"
     return lossy, "lossy"
@@ -55,12 +61,26 @@ def encode_webp(source: Path) -> tuple[bytes, str]:
     lossy_buffer = io.BytesIO()
     image.save(lossy_buffer, "WEBP", quality=QUALITY, method=METHOD)
 
-    lossless_buffer = io.BytesIO()
-    image.save(lossless_buffer, "WEBP", lossless=True, method=METHOD)
+    def encode_lossless() -> bytes:
+        lossless_buffer = io.BytesIO()
+        image.save(lossless_buffer, "WEBP", lossless=True, method=METHOD)
+        return lossless_buffer.getvalue()
 
     return pick_encoding(
-        source.stat().st_size, lossy_buffer.getvalue(), lossless_buffer.getvalue()
+        source.stat().st_size, lossy_buffer.getvalue(), encode_lossless
     )
+
+
+def write_webp(job: pipeline.Job) -> None:
+    """Converts one job. Runs in a pool worker."""
+    data, _kind = encode_webp(job.source)
+    job.out_path.write_bytes(data)
+
+
+def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
+    for source in sorted((content_root / "images").rglob("*.png")):
+        relative = source.relative_to(content_root).with_suffix(".webp")
+        yield pipeline.Job(source, relative.as_posix(), out_root / relative, SETTINGS)
 
 
 def convert_images(
@@ -70,28 +90,6 @@ def convert_images(
     report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every PNG under content_root/images, skipping unchanged outputs."""
-    converted = 0
-    skipped = 0
-    sources = sorted((content_root / "images").rglob("*.png"))
-    report.start("images", len(sources))
-    try:
-        for source in sources:
-            relative = source.relative_to(content_root).with_suffix(".webp")
-            out_rel = relative.as_posix()
-            out_path = out_root / relative
-            report.advance(out_rel)
-            stamp = manifest.stamp_for(source, SETTINGS)
-
-            if manifest.is_current(entries, out_rel, stamp, out_path):
-                skipped += 1
-                continue
-
-            data, _kind = encode_webp(source)
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_bytes(data)
-            entries[out_rel] = stamp
-            converted += 1
-    finally:
-        report.finish()
-
-    return converted, skipped
+    return pipeline.run_stage(
+        "images", _jobs(content_root, out_root), write_webp, entries, report
+    )

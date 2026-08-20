@@ -9,26 +9,48 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from webcontent import images
 
 
+def _lossless(data: bytes):
+    """A lossless encoder that records whether it was ever asked to run."""
+    calls = []
+
+    def encode() -> bytes:
+        calls.append(1)
+        return data
+
+    encode.calls = calls
+    return encode
+
+
 def test_lossy_wins_when_comfortably_smaller():
-    chosen, kind = images.pick_encoding(1000, b"x" * 100, b"y" * 900)
+    chosen, kind = images.pick_encoding(1000, b"x" * 100, _lossless(b"y" * 900))
     assert kind == "lossy"
     assert chosen == b"x" * 100
 
 
 def test_lossless_wins_when_lossy_exceeds_ratio_and_lossless_is_smaller():
-    chosen, kind = images.pick_encoding(1000, b"x" * 900, b"y" * 500)
+    chosen, kind = images.pick_encoding(1000, b"x" * 900, _lossless(b"y" * 500))
     assert kind == "lossless"
     assert chosen == b"y" * 500
 
 
 def test_lossy_kept_when_over_ratio_but_still_smaller_than_lossless():
-    chosen, kind = images.pick_encoding(1000, b"x" * 700, b"y" * 950)
+    chosen, kind = images.pick_encoding(1000, b"x" * 700, _lossless(b"y" * 950))
     assert kind == "lossy"
 
 
 def test_boundary_at_exactly_the_ratio_keeps_lossy():
-    chosen, kind = images.pick_encoding(1000, b"x" * 600, b"y" * 100)
+    chosen, kind = images.pick_encoding(1000, b"x" * 600, _lossless(b"y" * 100))
     assert kind == "lossy"
+
+
+def test_lossless_is_not_encoded_when_lossy_already_wins():
+    """The whole point of the callable: the expensive encode never runs."""
+    encode = _lossless(b"y" * 100)
+    images.pick_encoding(1000, b"x" * 100, encode)
+    assert encode.calls == []
+
+    images.pick_encoding(1000, b"x" * 900, encode)
+    assert encode.calls == [1]
 
 
 def _write_png(path: Path, size, color) -> None:

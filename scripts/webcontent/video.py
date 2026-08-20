@@ -10,15 +10,21 @@ so `find_system_ffmpeg` is used instead and the encoders are verified up front.
 
 from __future__ import annotations
 
+import functools
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 
-from . import manifest, progress
+from . import pipeline, progress
 
 CRF = 32
 AUDIO_BITRATE_K = 96
 REQUIRED_ENCODERS = ("libvpx-vp9", "libopus")
 SETTINGS = f"webm:vp9:crf{CRF}:opus:{AUDIO_BITRATE_K}k"
+
+#: Concurrent encodes. Deliberately low: `-row-mt 1` already spreads one clip across
+#: the machine, so running many at once trades cores between them rather than adding any.
+MAX_CONCURRENT = 2
 
 
 def webm_command(ffmpeg: Path, source: Path, dest: Path) -> list[str]:
@@ -57,6 +63,17 @@ def webm_command(ffmpeg: Path, source: Path, dest: Path) -> list[str]:
     ]
 
 
+def write_webm(job: pipeline.Job, ffmpeg: Path) -> None:
+    """Converts one job. Runs in a pool worker."""
+    subprocess.run(webm_command(ffmpeg, job.source, job.out_path), check=True)
+
+
+def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
+    for source in sorted((content_root / "video_hd").rglob("*.mp4")):
+        relative = source.relative_to(content_root).with_suffix(".webm")
+        yield pipeline.Job(source, relative.as_posix(), out_root / relative, SETTINGS)
+
+
 def convert_videos(
     content_root: Path,
     out_root: Path,
@@ -65,28 +82,12 @@ def convert_videos(
     report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
     """Converts every MP4 under content_root/video_hd, skipping unchanged outputs."""
-    converted = 0
-    skipped = 0
-    sources = sorted((content_root / "video_hd").rglob("*.mp4"))
-    report.start("video", len(sources))
-    try:
-        for source in sources:
-            relative = source.relative_to(content_root)
-            out_relative = relative.with_suffix(".webm")
-            out_rel = out_relative.as_posix()
-            out_path = out_root / out_relative
-            report.advance(out_rel)
-            stamp = manifest.stamp_for(source, SETTINGS)
-
-            if manifest.is_current(entries, out_rel, stamp, out_path):
-                skipped += 1
-                continue
-
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run(webm_command(ffmpeg, source, out_path), check=True)
-            entries[out_rel] = stamp
-            converted += 1
-    finally:
-        report.finish()
-
-    return converted, skipped
+    return pipeline.run_stage(
+        "video",
+        _jobs(content_root, out_root),
+        functools.partial(write_webm, ffmpeg=ffmpeg),
+        entries,
+        report,
+        cpu_bound=False,
+        max_workers=MAX_CONCURRENT,
+    )
