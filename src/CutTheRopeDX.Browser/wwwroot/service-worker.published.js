@@ -6,9 +6,9 @@
 // Storage is split in two, because the runtime and the game content age differently.
 //
 //   Shell cache   — the .NET runtime and the page shell, named after the manifest version and
-//                   replaced wholesale when it changes. Those files carry a fingerprint in
-//                   their own names, so a new build requests new URLs regardless and keeping
-//                   the old ones would only waste space.
+//                   replaced wholesale when it changes. The runtime files are fingerprinted, so
+//                   a new build requests new URLs for those regardless; index.html and the loose
+//                   .js files are not, and the version in the cache name is what retires them.
 //   Content cache — the ~36MB under content/, kept across versions. These URLs are stable, so
 //                   a cached entry stays valid until its bytes actually change. Each entry
 //                   records the manifest hash it was stored from, and activation drops only
@@ -46,8 +46,8 @@ const shellExclude = [
 const shellAssets = self.assetsManifest.assets.filter(
     (asset) => !shellExclude.some((pattern) => pattern.test(asset.url)),
 );
-const shellUrls = new Set(
-    shellAssets.map((asset) => new URL(asset.url, scopeUrl).href),
+const shellHashes = new Map(
+    shellAssets.map((asset) => [new URL(asset.url, scopeUrl).href, asset.hash]),
 );
 const contentHashes = new Map(
     self.assetsManifest.assets
@@ -138,8 +138,9 @@ async function onFetch(event) {
         return serveContent(request, contentHash);
     }
 
-    if (shellUrls.has(request.url)) {
-        return serveShell(request);
+    const shellHash = shellHashes.get(request.url);
+    if (shellHash !== undefined) {
+        return serveShell(request, shellHash);
     }
 
     return fetch(request);
@@ -155,13 +156,16 @@ async function serveContent(request, hash) {
     const cache = await caches.open(contentCacheName);
     let response = await cache.match(request);
     if (!response) {
-        // A range response cannot be stored in Cache Storage. Fetch the whole asset once so
-        // every later range can be served from the same cached bytes, including offline.
-        const fetchRequest = request.headers.has("range")
-            ? requestWithoutRange(request)
-            : request;
-        response = await fetch(fetchRequest);
-        if (response.ok && response.status === 200) {
+        // A range response can be stored in neither Cache Storage nor an integrity check, both
+        // of which want a whole body. The full asset is fetched once and every later range is
+        // served out of those same cached bytes, including offline.
+        const fetchRequest = requestWithoutRange(request);
+        const { response: fetched, verified } = await fetchVerified(
+            fetchRequest,
+            hash,
+        );
+        response = fetched;
+        if (verified && response.ok && response.status === 200) {
             await cache.put(fetchRequest, withHash(response.clone(), hash));
         }
     }
@@ -174,7 +178,36 @@ async function serveContent(request, hash) {
 }
 
 /**
- * Copies a media request without its Range header so the network returns a cacheable 200.
+ * Fetches an asset and reports whether it is the one this publish expects.
+ *
+ * Content URLs are stable across versions, so a max-age still counting down from the previous
+ * publish would otherwise answer with the previous publish's bytes. "no-cache" revalidates with
+ * the origin instead of trusting that copy, and the integrity check is what keeps bytes that
+ * are stale anyway from being stored under the current hash — an entry no later activation
+ * could tell apart from a genuinely current one, which is how a stale asset becomes permanent.
+ *
+ * @param {Request} request
+ * @param {string} hash Manifest hash the response has to match.
+ * @returns {Promise<{response: Response, verified: boolean}>}
+ */
+async function fetchVerified(request, hash) {
+    try {
+        const response = await fetch(
+            new Request(request, { integrity: hash, cache: "no-cache" }),
+        );
+        return { response, verified: true };
+    } catch {
+        // Either the network is gone, in which case the retry fails the same way and the
+        // caller sees the rejection it would have seen anyway, or the origin is still mid
+        // rollout. Serving unverified bytes uncached keeps the game playable now and leaves
+        // the next load free to pick up the real ones.
+        return { response: await fetch(request), verified: false };
+    }
+}
+
+/**
+ * Copies a request without its Range header, if it carries one, so the network answers with a
+ * whole cacheable 200.
  *
  * @param {Request} request
  */
@@ -242,16 +275,17 @@ function rangeNotSatisfiable(length) {
  * install, which is all-or-nothing and would otherwise leave the cache empty for good.
  *
  * @param {Request} request
+ * @param {string} hash Manifest hash the response has to match.
  */
-async function serveShell(request) {
+async function serveShell(request, hash) {
     const cache = await caches.open(shellCacheName);
     const cached = await cache.match(request);
     if (cached) {
         return cached;
     }
 
-    const response = await fetch(request);
-    if (response.ok && response.status === 200) {
+    const { response, verified } = await fetchVerified(request, hash);
+    if (verified && response.ok && response.status === 200) {
         await cache.put(request, response.clone());
     }
     return response;
