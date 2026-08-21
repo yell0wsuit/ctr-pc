@@ -205,7 +205,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.False(front.visible);
             Assert.False(cup.visible);
 
-            _ = scene.TouchDownXYIndex((int)gun.x, (int)gun.y, 0);
+            _ = Pointer.Down(scene, (int)gun.x, (int)gun.y, 0);
 
             AssertSprite(Resources.Img.ObjGun, 3, front);
         }
@@ -223,8 +223,8 @@ namespace CutTheRopeDX.Tests.Interactions
             AssertSprite(Resources.Img.ObjSticker, 3, cup.back);
             AssertSprite(Resources.Img.ObjSticker, 4, cup.front);
 
-            _ = scene.TouchDownXYIndex((int)cup.x, (int)cup.y, 0);
-            _ = scene.TouchUpXYIndex((int)cup.x, (int)cup.y, 0);
+            _ = Pointer.Down(scene, (int)cup.x, (int)cup.y, 0);
+            _ = Pointer.Up(scene, (int)cup.x, (int)cup.y, 0);
 
             AssertSprite(Resources.Img.ObjSticker, 1, cup.back);
             AssertSprite(Resources.Img.ObjSticker, 2, cup.front);
@@ -419,7 +419,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Grab gun = scene.Grabs()[0];
             Assert.Null(gun.RopeOf());
 
-            _ = scene.TouchDownXYIndex((int)gun.x, (int)gun.y, 0);
+            _ = Pointer.Down(scene, (int)gun.x, (int)gun.y, 0);
 
             Assert.NotNull(gun.RopeOf());
             Assert.Equal(425, gun.RopeOf().GetLength());
@@ -463,9 +463,9 @@ namespace CutTheRopeDX.Tests.Interactions
 
             int rx = (int)rail.x;
             int ry = (int)rail.y;
-            _ = scene.TouchDownXYIndex(rx, ry, 0);
-            _ = scene.TouchMoveXYIndex(rx + 150, ry, 0);
-            _ = scene.TouchUpXYIndex(rx + 150, ry, 0);
+            _ = Pointer.Down(scene, rx, ry, 0);
+            _ = Pointer.Move(scene, rx + 150, ry, 0);
+            _ = Pointer.Up(scene, rx + 150, ry, 0);
 
             Assert.Equal(1430f, rail.x, Places);
             AssertPos(1430f, 180f, rail.RopeOf().bungeeAnchor.pos);
@@ -490,18 +490,18 @@ namespace CutTheRopeDX.Tests.Interactions
             int wx = (int)wheel.x;
             int wy = (int)wheel.y;
 
-            Assert.True(scene.TouchDownXYIndex(wx + 80, wy, 0), "the wheel did not claim the touch");
+            Assert.True(Pointer.Down(scene, wx + 80, wy, 0), "the wheel did not claim the touch");
             Assert.Equal(4, wheel.RopeOf().parts.Count);
 
             for (int i = 1; i <= 24; i++)
             {
                 double a = i * (Math.PI / 12.0);
-                _ = scene.TouchMoveXYIndex(wx + (int)(80 * Math.Cos(a)), wy + (int)(80 * Math.Sin(a)), 0);
+                _ = Pointer.Move(scene, wx + (int)(80 * Math.Cos(a)), wy + (int)(80 * Math.Sin(a)), 0);
             }
 
             Assert.Equal(5, wheel.RopeOf().parts.Count);
 
-            _ = scene.TouchUpXYIndex(wx + 80, wy, 0);
+            _ = Pointer.Up(scene, wx + 80, wy, 0);
         }
 
         // ---------------------------------------------------------------- suction cup
@@ -526,8 +526,8 @@ namespace CutTheRopeDX.Tests.Interactions
             Grab cup = scene.Grabs()[0];
             Assert.Equal(360f, cup.RopeOf().bungeeAnchor.pos.Y, Places);
 
-            _ = scene.TouchDownXYIndex((int)cup.x, (int)cup.y, 0);
-            _ = scene.TouchUpXYIndex((int)cup.x, (int)cup.y, 0);
+            _ = Pointer.Down(scene, (int)cup.x, (int)cup.y, 0);
+            _ = Pointer.Up(scene, (int)cup.x, (int)cup.y, 0);
 
             HeadlessGame.StepFrames(scene, 60);
 

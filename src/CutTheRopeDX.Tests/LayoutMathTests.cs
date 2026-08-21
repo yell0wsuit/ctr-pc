@@ -128,51 +128,6 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void FitCameraContainsTheLevelBounds()
-        {
-            // A 2560x1440 level in a 2560x1440 viewport fits exactly at 1:1.
-            CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                anchorX: 0.5f,
-                anchorY: 0.5f);
-
-            Assert.Equal(1f, fit.Scale, 0.001);
-            Assert.Equal(2560f, fit.VisibleWorld.w, 0.01);
-            Assert.Equal(1440f, fit.VisibleWorld.h, 0.01);
-        }
-
-        [Fact]
-        public void FitCameraRevealsExtraWorldOnAWiderViewport()
-        {
-            // The level is unchanged but the viewport is wider, so the same scale exposes more
-            // world horizontally. This is what makes wide screens show more instead of bars.
-            CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 3600f, 1440f),
-                anchorX: 0.5f,
-                anchorY: 0.5f);
-
-            Assert.Equal(1f, fit.Scale, 0.001);
-            Assert.Equal(3600f, fit.VisibleWorld.w, 0.01);
-            Assert.Equal(1440f, fit.VisibleWorld.h, 0.01);
-            // Centered anchor puts the extra 1040 units half either side of the level.
-            Assert.Equal(-520f, fit.VisibleWorld.x, 0.01);
-        }
-
-        [Fact]
-        public void FitCameraAnchorSlidesTheVisibleWindow()
-        {
-            CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 3600f, 1440f),
-                anchorX: 0f,
-                anchorY: 0.5f);
-
-            Assert.Equal(0f, fit.VisibleWorld.x, 0.01);
-        }
-
-        [Fact]
         public void CoverInsideFillsTheViewportAndCentersTheOverflow()
         {
             // A 2560x1440 design box in a 1440x1440 viewport: height drives the cover, so the box

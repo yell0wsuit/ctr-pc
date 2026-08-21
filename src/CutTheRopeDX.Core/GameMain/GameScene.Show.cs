@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -166,7 +167,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void StartCamera()
         {
-            if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
+            CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            float visibleHeight = VisibleWorldHeight(viewport);
+            float scrollableX = MathF.Max(0f, cameraBounds.w - LockedViewWidth);
+            float scrollableY = MathF.Max(0f, cameraBounds.h - visibleHeight);
+
+            // The opening pan belongs to levels drawn larger than the screen they were composed
+            // against, not to every level a wide monitor happens to crop. Gating it on the window
+            // instead made an ordinary level open with a fly-in that swallowed the first touches.
+            if (cameraBounds.w > LockedViewWidth || cameraBounds.h > AuthoredScreenHeight)
             {
                 ignoreTouches = true;
                 fastenCamera = false;
@@ -174,35 +183,30 @@ namespace CutTheRopeDX.GameMain
                 camera.speed = 20f;
                 cameraMoveMode = 0;
                 ConstraintedPoint constraintedPoint = CameraFocusPoint();
+
+                // Start at the far end of the scroll range from the point being followed, so the
+                // opening pan travels across the level towards it.
                 float cameraStartX;
                 float cameraStartY;
-                if (mapWidth > SCREEN_WIDTH)
+                if (scrollableX > 0f)
                 {
-                    if (constraintedPoint.pos.X > mapWidth / 2)
-                    {
-                        cameraStartX = 0f;
-                        cameraStartY = 0f;
-                    }
-                    else
-                    {
-                        cameraStartX = mapWidth - SCREEN_WIDTH;
-                        cameraStartY = 0f;
-                    }
-                }
-                else if (constraintedPoint.pos.Y > mapHeight / 2)
-                {
-                    cameraStartX = 0f;
-                    cameraStartY = 0f;
+                    cameraStartX = constraintedPoint.pos.X > cameraBounds.x + (cameraBounds.w / 2f)
+                        ? cameraBounds.x
+                        : cameraBounds.x + scrollableX;
+                    cameraStartY = cameraBounds.y;
                 }
                 else
                 {
-                    cameraStartX = 0f;
-                    cameraStartY = mapHeight - SCREEN_HEIGHT;
+                    cameraStartX = cameraBounds.x;
+                    cameraStartY = constraintedPoint.pos.Y > cameraBounds.y + (cameraBounds.h / 2f)
+                        ? cameraBounds.y
+                        : cameraBounds.y + scrollableY;
                 }
-                float targetCameraX = constraintedPoint.pos.X - (SCREEN_WIDTH / 2f);
-                float targetCameraY = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
-                float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
-                float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+
+                float boundedCameraX = BoundedCameraTarget(
+                    constraintedPoint.pos.X, cameraBounds.x, cameraBounds.w, LockedViewWidth);
+                float boundedCameraY = BoundedCameraTarget(
+                    constraintedPoint.pos.Y, cameraBounds.y, cameraBounds.h, visibleHeight);
 
                 // Seat the tracked position at the authored start point and let the fit derive the
                 // rest from it, the way every later frame does.
@@ -212,7 +216,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             ignoreTouches = false;
-            camera.MoveToXYImmediate(0f, 0f, true);
+            camera.MoveToXYImmediate(cameraBounds.x, cameraBounds.y, true);
             ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
         }
 

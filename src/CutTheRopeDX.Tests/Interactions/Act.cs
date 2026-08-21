@@ -350,7 +350,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public static void TapClaw(GameScene scene, MechanicalHand hand)
         {
             Vector claw = hand.ClawPosition();
-            Assert.True(scene.TouchDownXYIndex(claw.X, claw.Y, 0), "the claw tap was not handled");
+            Assert.True(Pointer.Down(scene, claw.X, claw.Y, 0), "the claw tap was not handled");
             HeadlessGame.StepFrames(scene, 1);
         }
 

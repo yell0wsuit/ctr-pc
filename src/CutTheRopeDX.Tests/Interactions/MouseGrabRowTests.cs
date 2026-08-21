@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests.Interactions
             (GameScene scene, CandyContext candy) = Rig(s => s);
             Mouse mouse = Act.CarryByMouse(scene, candy);
 
-            Assert.True(scene.TouchDownXYIndex((int)mouse.x, (int)mouse.y, 0));
+            Assert.True(Pointer.Down(scene, (int)mouse.x, (int)mouse.y, 0));
 
             Assert.False(scene.MouseCarries(candy));
             Assert.Equal(candy.Lifecycle.IsGravitySuppressed, candy.WholeBody.Point.disableGravity);

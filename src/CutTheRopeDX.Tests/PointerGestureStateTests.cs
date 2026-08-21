@@ -113,10 +113,10 @@ namespace CutTheRopeDX.Tests
 
             Exception exception = Record.Exception(() =>
             {
-                Assert.True(scene.TouchDownXYIndex(10_000f, 10_000f, pointerIndex));
-                Assert.True(scene.TouchMoveXYIndex(10_000f, 10_000f, pointerIndex));
-                Assert.True(scene.TouchUpXYIndex(10_000f, 10_000f, pointerIndex));
-                Assert.False(scene.TouchDraggedXYIndex(10_000f, 10_000f, pointerIndex));
+                Assert.True(Pointer.Down(scene, 10_000f, 10_000f, pointerIndex));
+                Assert.True(Pointer.Move(scene, 10_000f, 10_000f, pointerIndex));
+                Assert.True(Pointer.Up(scene, 10_000f, 10_000f, pointerIndex));
+                Assert.False(Pointer.Dragged(scene, 10_000f, 10_000f, pointerIndex));
             });
 
             Assert.Null(exception);
@@ -141,14 +141,14 @@ namespace CutTheRopeDX.Tests
                 Assert.True(scene.gameplayFlow.TryBeginLoss());
             }
 
-            Assert.True(scene.TouchDownXYIndex(10_000f, 10_000f, 0));
-            Assert.True(scene.TouchMoveXYIndex(10_020f, 10_000f, 0));
+            Assert.True(Pointer.Down(scene, 10_000f, 10_000f, 0));
+            Assert.True(Pointer.Move(scene, 10_020f, 10_000f, 0));
 
             Assert.True(gesture.IsDragging);
             Assert.True(gesture.Trace.IsAlive);
             Assert.Empty(gesture.Cuts);
 
-            Assert.True(scene.TouchUpXYIndex(10_020f, 10_000f, 0));
+            Assert.True(Pointer.Up(scene, 10_020f, 10_000f, 0));
             Assert.False(gesture.IsDragging);
         }
 

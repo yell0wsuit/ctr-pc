@@ -2,8 +2,8 @@ using System.Reflection;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
-using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -30,29 +30,32 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CameraStartsAtTheOriginForANonScrollingLevel()
+        public void CameraStartsAtTheLevelOriginForANonScrollingLevel()
         {
             _ = HeadlessGame.Boot();
             GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
             Camera2D camera = ReadCamera(scene);
 
-            Assert.Equal(0f, camera.pos.X, 0.01);
+            // The tracked position lives in the level's own frame, so a level centered in the
+            // design frame starts at that level's left edge rather than at the frame's.
+            Assert.Equal(800f, camera.pos.X, 0.01);
             Assert.Equal(0f, camera.pos.Y, 0.01);
-            Assert.Equal(0f, camera.target.X, 0.01);
+            Assert.Equal(800f, camera.target.X, 0.01);
             Assert.Equal(0f, camera.target.Y, 0.01);
         }
 
         [Fact]
-        public void ScreenToWorldAddsTheCameraPositionToday()
+        public void ScreenToWorldIsTheIdentityAtTheDesignSize()
         {
             _ = HeadlessGame.Boot();
             GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
             Camera2D camera = ReadCamera(scene);
+            Vector world = camera.ScreenToWorld(640f, 360f);
 
-            Assert.Equal(640f, 640f + camera.pos.X, 0.01);
-            Assert.Equal(360f, 360f + camera.pos.Y, 0.01);
+            Assert.Equal(640f, world.X, 0.01);
+            Assert.Equal(360f, world.Y, 0.01);
         }
 
         [Theory]
@@ -78,9 +81,9 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
-        [InlineData(0, 0, 0f, 0f, 0f, 0f)]
+        [InlineData(0, 0, 800f, 0f, 800f, 0f)]
         // The tall level is still moving toward the bottom of its 2880-unit map at frame 60.
-        [InlineData(0, 14, 0f, 381.6959f, 0f, 1440f)]
+        [InlineData(0, 14, 800f, 381.6959f, 800f, 1440f)]
         public void CameraPositionAfterSixtyFramesIsPinned(
             int pack,
             int level,
@@ -117,19 +120,18 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CameraFitReproducesTodaysCenteringAtSixteenNine()
+        public void TheCameraShowsTheWholeDesignFrameAtSixteenNine()
         {
-            // FitCamera over a 960x1440 level in a 2560x1440 viewport must land the level exactly
-            // where offsetX = (2560 - 960) / 2 put it.
-            CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 960f, 1440f),
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                0.5f,
-                0.5f);
+            // A 960x1440 level in a 2560x1440 viewport must land exactly where the level's own
+            // offsetX = (2560 - 960) / 2 put it, which is the design frame's origin.
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
-            Assert.Equal(1f, fit.Scale, 0.001);
-            Assert.Equal(-800f, fit.VisibleWorld.x, 0.01);
-            Assert.Equal(2560f, fit.VisibleWorld.w, 0.01);
+            Camera2D camera = ReadCamera(scene);
+
+            Assert.Equal(1f, camera.Scale, 0.001);
+            Assert.Equal(0f, camera.RenderPos.X, 0.01);
+            Assert.Equal(0f, camera.RenderPos.Y, 0.01);
         }
 
         private static Camera2D ReadCamera(GameScene scene)

@@ -70,10 +70,10 @@ namespace CutTheRopeDX.Tests.Interactions
             int hookX = (int)hook.x;
             int hookY = (int)hook.y;
 
-            Assert.True(scene.TouchDownXYIndex(hookX, hookY, 0));
-            _ = scene.TouchMoveXYIndex(hookX + 100, hookY, 0);
+            Assert.True(Pointer.Down(scene, hookX, hookY, 0));
+            _ = Pointer.Move(scene, hookX + 100, hookY, 0);
             Assert.NotEqual(startX, hook.x);
-            _ = scene.TouchUpXYIndex(hookX + 100, hookY, 0);
+            _ = Pointer.Up(scene, hookX + 100, hookY, 0);
 
             // And the radius still attaches.
             Assert.True(Interaction.StepUntil(scene, () => hook.Rope != null));
@@ -111,15 +111,15 @@ namespace CutTheRopeDX.Tests.Interactions
             int lengthBefore = hook.Rope.GetLength();
 
             // Start on the right side of the wheel.
-            Assert.True(scene.TouchDownXYIndex(hookX + 80, hookY, 0));
+            Assert.True(Pointer.Down(scene, hookX + 80, hookY, 0));
 
             // Rotate in the direction that rolls the rope back.
-            _ = scene.TouchMoveXYIndex(hookX + 57, hookY - 57, 0);
-            _ = scene.TouchMoveXYIndex(hookX, hookY - 80, 0);
-            _ = scene.TouchMoveXYIndex(hookX - 57, hookY - 57, 0);
-            _ = scene.TouchMoveXYIndex(hookX - 80, hookY, 0);
+            _ = Pointer.Move(scene, hookX + 57, hookY - 57, 0);
+            _ = Pointer.Move(scene, hookX, hookY - 80, 0);
+            _ = Pointer.Move(scene, hookX - 57, hookY - 57, 0);
+            _ = Pointer.Move(scene, hookX - 80, hookY, 0);
 
-            _ = scene.TouchUpXYIndex(hookX - 80, hookY, 0);
+            _ = Pointer.Up(scene, hookX - 80, hookY, 0);
 
             Assert.NotEqual(lengthBefore, hook.Rope.GetLength());
         }
@@ -156,8 +156,8 @@ namespace CutTheRopeDX.Tests.Interactions
             int cupX = (int)cup.x;
             int cupY = (int)cup.y;
 
-            Assert.True(scene.TouchDownXYIndex(cupX, cupY, 0));
-            _ = scene.TouchUpXYIndex(cupX, cupY, 0);
+            Assert.True(Pointer.Down(scene, cupX, cupY, 0));
+            _ = Pointer.Up(scene, cupX, cupY, 0);
 
             Assert.False(cup.Mount.IsMounted);
             Assert.Equal(-1f, cup.Rope.bungeeAnchor.pin.X);
@@ -191,13 +191,13 @@ namespace CutTheRopeDX.Tests.Interactions
             int gunX = (int)gun.x;
             int gunY = (int)gun.y;
 
-            Assert.True(scene.TouchDownXYIndex(gunX, gunY, 0));
+            Assert.True(Pointer.Down(scene, gunX, gunY, 0));
 
             Assert.NotNull(gun.Rope);
 
             Bungee fired = gun.Rope;
 
-            _ = scene.TouchDownXYIndex(gunX, gunY, 0);
+            _ = Pointer.Down(scene, gunX, gunY, 0);
             Assert.Same(fired, gun.Rope);
         }
 

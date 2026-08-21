@@ -88,10 +88,11 @@ namespace CutTheRopeDX.GameMain
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
 
             ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
-            float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
-            float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
-            float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
-            float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+            CTRRectangle cameraViewport = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            float boundedCameraX = BoundedCameraTarget(
+                constraintedPoint4.pos.X, cameraBounds.x, cameraBounds.w, LockedViewWidth);
+            float boundedCameraY = BoundedCameraTarget(
+                constraintedPoint4.pos.Y, cameraBounds.y, cameraBounds.h, VisibleWorldHeight(cameraViewport));
             camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);
             if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {

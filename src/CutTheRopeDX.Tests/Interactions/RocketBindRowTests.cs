@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Mouse second = scene.Mice()[1];
             Rocket rocket = candy.Lifecycle.Attachments.Rocket;
-            Assert.True(scene.TouchDownXYIndex((int)second.x, (int)second.y, 0));
+            Assert.True(Pointer.Down(scene, (int)second.x, (int)second.y, 0));
             float releaseX = candy.WholeBody.Point.pos.X;
             float releaseY = candy.WholeBody.Point.pos.Y;
             float rocketReleaseX = rocket.x;

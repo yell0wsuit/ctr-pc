@@ -185,36 +185,5 @@ namespace CutTheRopeDX.Framework.Platform
         {
             return outMin + ((value - inMin) / (inMax - inMin) * (outMax - outMin));
         }
-
-        /// <summary>
-        /// Fits a camera so that <paramref name="levelBounds"/> is entirely visible inside
-        /// <paramref name="viewport"/>, and reports which region of world space that exposes.
-        /// A viewport proportionally wider than the level reveals world beyond it rather than
-        /// adding bars; the anchor chooses where within that slack the window sits.
-        /// </summary>
-        /// <param name="levelBounds">Bounds of the level in world units.</param>
-        /// <param name="viewport">Viewport in logical units.</param>
-        /// <param name="anchorX">Horizontal position within the slack, 0 to 1.</param>
-        /// <param name="anchorY">Vertical position within the slack, 0 to 1.</param>
-        /// <returns>The camera scale and the visible world region.</returns>
-        public static CameraFit FitCamera(
-            CTRRectangle levelBounds,
-            CTRRectangle viewport,
-            float anchorX,
-            float anchorY)
-        {
-            float scale = MathF.Min(viewport.w / levelBounds.w, viewport.h / levelBounds.h);
-            float visibleWidth = viewport.w / scale;
-            float visibleHeight = viewport.h / scale;
-            float slackX = visibleWidth - levelBounds.w;
-            float slackY = visibleHeight - levelBounds.h;
-            return new CameraFit(
-                scale,
-                new CTRRectangle(
-                    levelBounds.x - (slackX * anchorX),
-                    levelBounds.y - (slackY * anchorY),
-                    visibleWidth,
-                    visibleHeight));
-        }
     }
 }
