@@ -1,7 +1,11 @@
+using System.Reflection;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -88,6 +92,55 @@ namespace CutTheRopeDX.Tests
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = previous;
             }
+        }
+
+        [Fact]
+        public void DesktopCandyBoundingBoxKeepsItsAuthoredCenterOffsetForAnySkinCanvas()
+        {
+            bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
+            try
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = false;
+                GameObject differentlySizedSkin = new()
+                {
+                    width = 500,
+                    height = 300
+                };
+                MethodInfo getBounds = typeof(GameScene).GetMethod(
+                    "GetCandyBoundingBox",
+                    BindingFlags.Static | BindingFlags.NonPublic,
+                    binder: null,
+                    types: [typeof(GameObject)],
+                    modifiers: null);
+
+                CTRRectangle bounds = (CTRRectangle)getBounds.Invoke(null, [differentlySizedSkin]);
+                float centerOffsetX = bounds.x + (bounds.w / 2f) - (differentlySizedSkin.width / 2f);
+                float centerOffsetY = bounds.y + (bounds.h / 2f) - (differentlySizedSkin.height / 2f);
+
+                Assert.Equal(1.5f, centerOffsetX, precision: 3);
+                Assert.Equal(0f, centerOffsetY, precision: 3);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
+        }
+
+        [Fact]
+        public void MobileCandyCollisionBoxKeepsTheIosCenterOffsetForTheActiveSkin()
+        {
+            GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Candy(160, 200)
+                .OmNom(160, 440)
+                .Build();
+            GameObject visual = scene.Candy().WholeBody.Visual;
+
+            float centerOffsetX = visual.bb.x + (visual.bb.w / 2f) - (visual.width / 2f);
+            float centerOffsetY = visual.bb.y + (visual.bb.h / 2f) - (visual.height / 2f);
+
+            Assert.Equal(1.5f, centerOffsetX, precision: 3);
+            Assert.Equal(-1.5f, centerOffsetY, precision: 3);
         }
 
         [Fact]

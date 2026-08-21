@@ -101,7 +101,7 @@ namespace CutTheRopeDX.GameMain
             GameObject candyObj = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
             candyObj.DoRestoreCutTransparency();
             candyObj.anchor = 18;
-            candyObj.bb = GetCandyBoundingBox();
+            candyObj.bb = GetCandyBoundingBox(candyObj);
             candyObj.passTransformationsToChilds = false;
             candyObj.scaleX = candyObj.scaleY = 0.71f;
 
