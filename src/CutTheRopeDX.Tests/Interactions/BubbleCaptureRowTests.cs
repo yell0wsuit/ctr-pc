@@ -8,8 +8,8 @@ namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
     /// Interaction matrix, "Bubble capture" row: a bubble is the weakest claim on a candy. It keeps
-    /// ropes and a carrying mouse, replaces an earlier bubble, and simply pops against a rocket or
-    /// a snail rather than taking the candy from them.
+    /// ropes, a rocket, and a carrying mouse, replaces an earlier bubble, and simply pops against a
+    /// snail rather than taking the candy from it.
     /// </summary>
     public sealed class BubbleCaptureRowTests
     {
@@ -24,15 +24,15 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void BubbleCapturePopsAgainstARocketBoundCandyWithoutCapturingIt()
+        public void BubbleCaptureCoexistsWithARocketBoundCandy()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Rocket(160, 200, impulse: 0f));
             Rocket rocket = Act.BindRocket(scene, candy);
 
-            Bubble bubble = Act.PushBubbleAgainst(scene, candy);
+            Bubble bubble = Act.CaptureInBubble(scene, candy);
 
             Assert.True(bubble.popped);
-            Assert.Null(candy.WholeBody.Bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
             Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
         }
 

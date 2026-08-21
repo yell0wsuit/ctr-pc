@@ -566,17 +566,6 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     CandyContext ctx = body.Owner;
-                    if (ctx.Lifecycle.Attachments.HasActiveRocket)
-                    {
-                        // Rocket-bound candy pops bubbles it touches instead of entering
-                        // them (Experiments reference): the bubble is consumed, never captured.
-                        PopBubbleAtXY(bubble3.x, bubble3.y);
-                        bubble3.popped = true;
-                        bubble3.RemoveChildWithID(0);
-                        conveyors.Remove(bubble3);
-                        captured = true;
-                        break;
-                    }
 
                     // Already carried by a different bubble: release the old one and swap to the new
                     // bubble. Without this, a bubbled body skips every new bubble (e.g. a bubbled
@@ -1079,10 +1068,6 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
-
-                            // A rocket and a bubble are contradictory drivers on the same point;
-                            // the Experiments reference pops the bubble at bind.
-                            PopCandyBubble(body);
 
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
