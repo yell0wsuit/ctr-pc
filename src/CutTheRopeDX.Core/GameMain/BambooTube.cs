@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
@@ -159,7 +160,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            float captureRadius = BambooCaptureRadius * interactionScale;
+            float captureRadius = ActivePhysicsConstants.BambooCaptureRadius * interactionScale;
             if (VectDistance(candyPoint.pos, bambooHole1) < captureRadius && IsCandyMovingInside(candyPoint, bambooHole1))
             {
                 bambooHoleOut = bambooHole2;
@@ -339,9 +340,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Bounding-box half-size in unscaled points.</summary>
         private const float BambooBaseBbSize = 75f;
-
-        /// <summary>Capture radius in unscaled points. Scaled by <see cref="interactionScale"/> at runtime.</summary>
-        private const float BambooCaptureRadius = 17.5f;
 
         /// <summary>Launch speed in points per physics step (Verlet impulse magnitude).</summary>
         private const float BambooThrowSpeed = 7.5f;

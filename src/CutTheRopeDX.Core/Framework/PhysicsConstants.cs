@@ -47,6 +47,9 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.BubbleCaptureRadius" />
         public const float BubbleCaptureRadius = 85f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.BambooCaptureRadius" />
+        public const float BambooCaptureRadius = 17.5f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.CandyBreakGravityY" />
         public const float CandyBreakGravityY = 500f;
 
