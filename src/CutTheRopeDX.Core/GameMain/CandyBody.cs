@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
@@ -88,6 +89,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets or sets residual rope-swing rotation that decays while no rope steers the body.</summary>
         public float ResidualRotation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pre-integration visual position used by mobile rocket collision.
+        /// </summary>
+        public Vector RocketCollisionDrawPosition { get; set; }
 
         /// <summary>Gets or sets whether the water-surface splash has been emitted.</summary>
         public bool Splashes { get; set; }

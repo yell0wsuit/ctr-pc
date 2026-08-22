@@ -319,6 +319,10 @@ namespace CutTheRopeDX.GameMain
             // presence guards are the enumerator's job.
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Physics))
             {
+                if (ActivePhysicsConstants.UseMobilePhysicsModel)
+                {
+                    body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
+                }
                 body.Point.Update(delta * ropePhysicsSpeed);
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
@@ -1063,7 +1067,13 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
-                            bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, body.Visual);
+                            bool intersects = ActivePhysicsConstants.UseMobilePhysicsModel
+                                ? GameObject.ObjectsIntersectRotatedWithUnrotatedAt(
+                                    rocket,
+                                    body.Visual,
+                                    body.RocketCollisionDrawPosition.X,
+                                    body.RocketCollisionDrawPosition.Y)
+                                : GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, body.Visual);
                             if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, candyPresent: true, ctx.Lifecycle.Attachments.InLantern, intersects))
                             {
                                 continue;
