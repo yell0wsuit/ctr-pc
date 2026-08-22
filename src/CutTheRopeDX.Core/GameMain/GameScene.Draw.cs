@@ -306,7 +306,7 @@ namespace CutTheRopeDX.GameMain
                     body.Visual.Draw();
                 }
             }
-            waterLayer?.DrawFront(camera.RenderPos.Y);
+            waterLayer?.DrawFront();
             foreach (LightBulb bulb in LightEmitterVisuals())
             {
                 bulb?.DrawBottleAndFirefly();

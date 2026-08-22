@@ -443,6 +443,29 @@ namespace CutTheRopeDX.GameMain
                 cameraWindow.h);
 
             camera.ApplyFit(LayoutMath.FitCamera(window, viewport, anchorX, anchorY));
+            RelayoutWaterCoverage(snapshot);
+        }
+
+        /// <summary>Extends water through any world exposed beyond the authored level frame.</summary>
+        private void RelayoutWaterCoverage(ViewportLayoutSnapshot snapshot)
+        {
+            if (waterLayer == null || camera.Scale <= 0f)
+            {
+                return;
+            }
+
+            CTRRectangle viewport = snapshot.VisibleBounds;
+            float visibleLeft = camera.RenderPos.X;
+            float visibleRight = visibleLeft + (viewport.w / camera.Scale);
+            float visibleBottom = camera.RenderPos.Y + (viewport.h / camera.Scale);
+
+            float authoredLeft = mapWidth < SCREEN_WIDTH ? 0f : mapOriginX;
+            float authoredRight = mapWidth < SCREEN_WIDTH ? SCREEN_WIDTH : mapOriginX + mapWidth;
+            waterLayer.RelayoutCoverage(
+                MathF.Min(authoredLeft, visibleLeft),
+                MathF.Max(authoredRight, visibleRight),
+                MathF.Max(mapOriginY + mapHeight, visibleBottom));
+            waterLayer.RelayoutViewportClip(camera.RenderPos, camera.Scale);
         }
 
         /// <summary>
