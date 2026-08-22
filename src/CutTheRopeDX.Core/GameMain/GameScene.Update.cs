@@ -1202,7 +1202,8 @@ namespace CutTheRopeDX.GameMain
                         bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
                         bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
                         body.Point.pos.X, body.Point.pos.Y, body.Point.prevPos.X, body.Point.prevPos.Y,
-                        bouncerCollisionRadius))
+                        bouncerCollisionRadius,
+                        includeSweep: !ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
                         anyCandyHit = true;
 

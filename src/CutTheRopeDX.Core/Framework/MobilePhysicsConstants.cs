@@ -5,6 +5,10 @@ namespace CutTheRopeDX.Framework
     /// </summary>
     internal static class MobilePhysicsConstants
     {
+        // The high-resolution iOS bouncer quad widths are asset pixels. Normalize only those
+        // widths to the authored 320-wide space; native collision literals remain logical units.
+        private const float IosHighResolutionScale = 1.5f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.TimeScale" />
         public const float TimeScale = 1f;
 
@@ -189,13 +193,18 @@ namespace CutTheRopeDX.Framework
         public const float ElectroSpikesObjectWidth = 267f;
 
         /// <summary>
-        /// WP7 first-quad width of the small bouncer (obj_bouncer_01, quad 0), subtract 20.
+        /// iOS high-resolution first-quad width of the small bouncer (obj_bouncer_01, quad 0).
+        /// Normalize the asset width to authored coordinates, then subtract the native logical
+        /// 20-unit end-cap.
         /// </summary>
-        public const float BouncerSmallCollisionWidth = 46f;
+        public const float BouncerSmallCollisionWidth = (100f / IosHighResolutionScale) - 20f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.BouncerCollisionWidth" />
-        /// <remarks>obj_bouncer_02 quad 0, subtract 20</remarks>
-        public const float BouncerLargeCollisionWidth = 91f;
+        /// <remarks>
+        /// iOS high-resolution obj_bouncer_02 quad 0 is 150 asset pixels wide. Normalize it to
+        /// authored coordinates, then subtract the native logical 20-unit end-cap.
+        /// </remarks>
+        public const float BouncerLargeCollisionWidth = (150f / IosHighResolutionScale) - 20f;
 
         /// <summary>
         /// Rocket catch-slat box from the Experiments base assets: quad 10 is 116x58 centered
