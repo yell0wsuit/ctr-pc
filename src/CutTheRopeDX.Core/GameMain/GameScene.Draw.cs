@@ -39,7 +39,8 @@ namespace CutTheRopeDX.GameMain
             Renderer.PushMatrix();
             Renderer.Scale(back.scaleX, back.scaleY, 1f);
             back.Draw();
-            if (mapHeight > SCREEN_HEIGHT)
+            int p2Count = BackgroundTiling.GetP2Count(mapHeight, SCREEN_HEIGHT);
+            if (p2Count > 0)
             {
                 int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
                 int p2Y = PackConfig.GetBoxBackgroundP2Y(pack);
@@ -58,10 +59,20 @@ namespace CutTheRopeDX.GameMain
                         Renderer.Enable(Renderer.GL_BLEND);
                         Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
 
-                        // Hung from the same corner the first piece is, at the authored offset
-                        // below it. The two are one picture, so a piece placed from the origin
-                        // instead would come away from the other wherever the fit has moved it.
-                        DrawHelper.DrawImagePart(p2Texture, p2Rect, back.x, back.y + p2Y);
+                        // P2 is authored for the first seam. Repeat it at the P1 cadence so maps
+                        // with three sections dress both their top and bottom seams.
+                        for (int seamIndex = 0; seamIndex < p2Count; seamIndex++)
+                        {
+                            float adjustedP2Y = BackgroundTiling.ResolveP2Y(
+                                p2Y,
+                                backTexture._realHeight,
+                                seamIndex);
+                            DrawHelper.DrawImagePart(
+                                p2Texture,
+                                p2Rect,
+                                back.x,
+                                back.y + adjustedP2Y);
+                        }
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
                 }
