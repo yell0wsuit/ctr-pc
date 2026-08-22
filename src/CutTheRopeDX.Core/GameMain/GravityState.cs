@@ -12,7 +12,7 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class GravityState
     {
-        private readonly List<Image> earthAnimations = [];
+        private readonly List<EarthAnimationPlacement> earthAnimations = [];
         private readonly List<ToggleButton> buttons = [];
         private int toggleTouchIndex = -1;
 
@@ -55,7 +55,19 @@ namespace CutTheRopeDX.GameMain
         {
             if (earthAnimation != null)
             {
-                earthAnimations.Add(earthAnimation);
+                earthAnimations.Add(new EarthAnimationPlacement(
+                    earthAnimation,
+                    new Vector(earthAnimation.x, earthAnimation.y)));
+            }
+        }
+
+        /// <summary>Places every earth image relative to the fitted P1 background origin.</summary>
+        public void RelayoutEarthAnimations(float backgroundX, float backgroundY)
+        {
+            foreach (EarthAnimationPlacement placement in earthAnimations)
+            {
+                placement.Image.x = backgroundX + placement.AuthoredPosition.X;
+                placement.Image.y = backgroundY + placement.AuthoredPosition.Y;
             }
         }
 
@@ -130,18 +142,18 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Advances all gravity-owned earth animations.</summary>
         public void UpdateEarthAnimations(float delta)
         {
-            foreach (Image earthAnimation in earthAnimations)
+            foreach (EarthAnimationPlacement placement in earthAnimations)
             {
-                earthAnimation.Update(delta);
+                placement.Image.Update(delta);
             }
         }
 
         /// <summary>Draws all gravity-owned earth animations.</summary>
         public void DrawEarthAnimations()
         {
-            foreach (Image earthAnimation in earthAnimations)
+            foreach (EarthAnimationPlacement placement in earthAnimations)
             {
-                earthAnimation.Draw();
+                placement.Image.Draw();
             }
         }
 
@@ -159,8 +171,9 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            foreach (Image earthAnimation in earthAnimations)
+            foreach (EarthAnimationPlacement placement in earthAnimations)
             {
+                Image earthAnimation = placement.Image;
                 if (animateEarth)
                 {
                     earthAnimation.PlayTimeline(IsInverted ? 1 : 0);
@@ -175,5 +188,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
         }
+
+        private sealed record EarthAnimationPlacement(Image Image, Vector AuthoredPosition);
     }
 }

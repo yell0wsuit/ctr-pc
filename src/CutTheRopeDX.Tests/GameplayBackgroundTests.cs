@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
+using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -171,6 +173,26 @@ namespace CutTheRopeDX.Tests
                     + $"{cameraX + FrameworkTypes.SCREEN_WIDTH}");
         }
 
+        [Fact]
+        public void EarthImageKeepsItsAuthoredOffsetFromP1AfterResize()
+        {
+            _ = HeadlessGame.Boot();
+
+            LayoutSurfaces.WithSurface(2560, 1440, () =>
+            {
+                GameScene scene = HeadlessGame.LoadLevel(pack: 7, level: 0);
+
+                CtrRenderer.OnSurfaceChanged(1868, 1674);
+                scene.RelayoutCamera();
+                scene.RelayoutHud();
+
+                TileMap background = Read<TileMap>(scene, "back");
+                Image earth = ReadFirstEarthImage(scene.gravityState);
+                Assert.Equal(1284f, earth.x - background.x, 0.01);
+                Assert.Equal(724f, earth.y - background.y, 0.01);
+            });
+        }
+
         /// <summary>
         /// Loads a level laid out for the given surface and hands its background to
         /// <paramref name="body"/> along with the region of world the screen exposes.
@@ -234,6 +256,26 @@ namespace CutTheRopeDX.Tests
                 .GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.GetValue(target);
             return Assert.IsType<T>(value);
+        }
+
+        private static Image ReadFirstEarthImage(GravityState gravityState)
+        {
+            object value = gravityState.GetType()
+                .GetField("earthAnimations", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.GetValue(gravityState);
+            IList earthAnimations = Assert.IsAssignableFrom<IList>(value);
+            _ = Assert.Single(earthAnimations);
+            object first = earthAnimations[0];
+            if (first is Image image)
+            {
+                return image;
+            }
+
+            PropertyInfo imageProperty = first.GetType().GetProperty(
+                "Image",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            Assert.NotNull(imageProperty);
+            return Assert.IsType<Image>(imageProperty.GetValue(first));
         }
 
         public static TheoryData<string, int, int> Surfaces()

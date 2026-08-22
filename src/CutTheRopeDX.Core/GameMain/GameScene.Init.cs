@@ -192,6 +192,7 @@ namespace CutTheRopeDX.GameMain
             image.x += xs;
             image.y += ys;
             gravityState.AddEarthAnimation(image);
+            gravityState.RelayoutEarthAnimations(back.x, back.y);
         }
     }
 }
