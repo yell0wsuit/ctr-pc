@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -67,6 +68,9 @@ namespace CutTheRopeDX.GameMain
         /// Randomly repositioned spotlight element.
         /// </summary>
         private Image spotLight;
+
+        /// <summary>Ambient light strips distributed across the current water width.</summary>
+        private readonly List<Image> ambientLights = [];
 
         /// <summary>
         /// Whether this water element is being released and should stop drawing or updating.
@@ -161,18 +165,19 @@ namespace CutTheRopeDX.GameMain
             backTileSize = GetQuadSize(Resources.Img.WaterTile, 2);
             xOffsetBack = backTileSize.X;
 
-            const int ambientLights = 10;
-            for (int i = 0; i <= ambientLights; i++)
+            const int ambientLightCount = 10;
+            for (int i = 0; i <= ambientLightCount; i++)
             {
-                RGBAColor alphaColor = (i is 0 or ambientLights)
+                RGBAColor alphaColor = (i is 0 or ambientLightCount)
                     ? RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f)
                     : RGBAColor.solidOpaqueRGBA;
-                Image light = CreateLightWithXPosquadalphaColordelegate(SCREEN_WIDTH / ambientLights * (i - 1f), 7, alphaColor, this);
+                Image light = CreateLightWithXPosquadalphaColordelegate(width / (float)ambientLightCount * (i - 1f), 7, alphaColor, this);
+                ambientLights.Add(light);
                 _ = AddChild(light);
             }
 
             spotLight = CreateLightWithXPosquadalphaColordelegate(
-                RND_RANGE((int)SCREEN_WIDTH / 4, (int)SCREEN_WIDTH * 3 / 4),
+                RND_RANGE(width / 4, width * 3 / 4),
                 6,
                 RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f),
                 this);
@@ -203,7 +208,6 @@ namespace CutTheRopeDX.GameMain
 
                 scissorElement = new ScissorElement
                 {
-                    parentAnchor = 9,
                     width = width,
                     height = height,
                     y = topTileSize.Y
@@ -213,6 +217,67 @@ namespace CutTheRopeDX.GameMain
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// Resizes the water body to cover responsive world bounds without moving its surface.
+        /// </summary>
+        /// <param name="left">Left edge of the required world-space coverage.</param>
+        /// <param name="right">Right edge of the required world-space coverage.</param>
+        /// <param name="bottom">Bottom edge of the required world-space coverage.</param>
+        public void RelayoutCoverage(float left, float right, float bottom)
+        {
+            float oldWidth = width;
+            float spotFraction = oldWidth > 0f && spotLight != null
+                ? spotLight.x / oldWidth
+                : 0.5f;
+            float coverageLeft = MathF.Floor(left);
+            float coverageRight = MathF.Ceiling(right);
+
+            x = coverageLeft;
+            width = Math.Max(0, (int)(coverageRight - coverageLeft));
+            height = Math.Max(0, (int)MathF.Ceiling(bottom - y));
+
+            if (bubbles != null)
+            {
+                bubbles.width = width;
+                bubbles.height = height;
+                bubbles.x = width / 2f;
+                bubbles.posVar.X = width / 2f;
+            }
+
+            if (scissorElement != null)
+            {
+                scissorElement.width = width;
+                scissorElement.height = height;
+            }
+
+            int ambientLightCount = ambientLights.Count - 1;
+            if (ambientLightCount > 0)
+            {
+                for (int i = 0; i < ambientLights.Count; i++)
+                {
+                    ambientLights[i].x = width / (float)ambientLightCount * (i - 1f);
+                }
+            }
+
+            _ = (spotLight?.x = FIT_TO_BOUNDARIES(spotFraction * width, width / 4f, width * 3f / 4f));
+        }
+
+        /// <summary>Projects the world-space water clip into the camera's viewport coordinates.</summary>
+        /// <param name="cameraPosition">World-space top-left of the camera.</param>
+        /// <param name="cameraScale">World-to-viewport scale.</param>
+        public void RelayoutViewportClip(Vector cameraPosition, float cameraScale)
+        {
+            if (scissorElement == null || cameraScale <= 0f)
+            {
+                return;
+            }
+
+            scissorElement.x = (x - cameraPosition.X) * cameraScale;
+            scissorElement.y = (y + topTileSize.Y - cameraPosition.Y) * cameraScale;
+            scissorElement.width = (int)MathF.Ceiling(width * cameraScale);
+            scissorElement.height = (int)MathF.Ceiling(height * cameraScale);
         }
 
         /// <summary>
@@ -239,7 +304,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ty">The Y position to spawn particles at.</param>
         public void AddParticlesAtXY(float tx, float ty)
         {
-            if (isReleasing || bubbles == null)
+            if (isReleasing
+                || bubbles == null
+                || tx < x
+                || tx > x + width
+                || ty <= y
+                || ty > y + height)
             {
                 return;
             }
@@ -289,8 +359,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Draws the front layer of the water (top shadow, bubbles with additive blending, and top tile).
         /// </summary>
-        /// <param name="cameraY">The camera Y offset used to adjust the scissor region.</param>
-        public void DrawFront(float cameraY)
+        public void DrawFront()
         {
             if (isReleasing)
             {
@@ -301,11 +370,6 @@ namespace CutTheRopeDX.GameMain
             DrawHelper.DrawImageTiled(texture, 1, drawX, drawY, width, topShadowSize.Y);
 
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-            if (scissorElement != null)
-            {
-                scissorElement.y = topTileSize.Y - cameraY;
-                scissorElement.height = height;
-            }
             PostDraw();
 
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -317,7 +381,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc/>
         public override void Draw()
         {
-            DrawFront(0f);
+            DrawFront();
         }
 
         /// <inheritdoc/>
@@ -368,7 +432,7 @@ namespace CutTheRopeDX.GameMain
 
             if (ReferenceEquals(t.element, spotLight))
             {
-                t.element.x = RND_RANGE((int)SCREEN_WIDTH / 4, (int)SCREEN_WIDTH * 3 / 4);
+                t.element.x = RND_RANGE(width / 4, width * 3 / 4);
             }
         }
 
@@ -396,6 +460,7 @@ namespace CutTheRopeDX.GameMain
                 scissorElement = null;
                 aniPool = null;
                 spotLight = null;
+                ambientLights.Clear();
             }
             base.Dispose(disposing);
         }

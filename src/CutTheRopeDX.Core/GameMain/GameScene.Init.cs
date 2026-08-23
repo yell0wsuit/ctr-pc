@@ -60,7 +60,8 @@ namespace CutTheRopeDX.GameMain
                 throw new InvalidDataException($"Pack config is missing boxBackground for pack {cTRRootController.GetPack()}.");
             }
             back = new TileMap().InitWithRowsColumns(1, 1);
-            back.SetRepeatHorizontally(TileMap.Repeat.NONE);
+            // Wide levels can move the camera past one P1 width, so repeat it on both axes.
+            back.SetRepeatHorizontally(TileMap.Repeat.ALL);
             back.SetRepeatVertically(TileMap.Repeat.ALL);
             // Cache the background texture so we can keep scaling tied to internal width.
             backTexture = Application.GetTexture(boxBackground);
@@ -191,6 +192,7 @@ namespace CutTheRopeDX.GameMain
             image.x += xs;
             image.y += ys;
             gravityState.AddEarthAnimation(image);
+            gravityState.RelayoutEarthAnimations(back.x, back.y);
         }
     }
 }
