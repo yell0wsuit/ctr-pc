@@ -130,6 +130,12 @@ namespace CutTheRopeDX.Framework
         public static float BubbleCaptureRadius => SelectScaled(PhysicsConstants.BubbleCaptureRadius, MobilePhysicsConstants.BubbleCaptureRadius);
 
         /// <summary>
+        /// Raw level-space radius used when a bamboo tube captures the candy center.
+        /// The tube applies the level's interaction scale after selecting the physics model.
+        /// </summary>
+        public static float BambooCaptureRadius => SelectRaw(PhysicsConstants.BambooCaptureRadius, MobilePhysicsConstants.BambooCaptureRadius);
+
+        /// <summary>
         /// Gravity acceleration applied to candy break particles.
         /// </summary>
         public static float CandyBreakGravityY => SelectScaled(PhysicsConstants.CandyBreakGravityY, MobilePhysicsConstants.CandyBreakGravityY);

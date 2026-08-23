@@ -58,6 +58,29 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void MobileBambooExitScalesTheIosLaunchStepIntoWorldCoordinates()
+        {
+            GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .BambooTube(20, 40, TubeMouth.CatchesFalling)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Interaction.Hover(candy);
+            Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => candy.Lifecycle.Presence == CandyPresence.Present),
+                "the tube never released the candy");
+
+            float dx = candy.WholeBody.Point.pos.X - candy.WholeBody.Point.prevPos.X;
+            float dy = candy.WholeBody.Point.pos.Y - candy.WholeBody.Point.prevPos.Y;
+            float launchStep = MathF.Sqrt((dx * dx) + (dy * dy));
+            Assert.InRange(launchStep, 22.4f, 22.6f);
+        }
+
+        [Fact]
         public void HatEntryHidesTheWholeBodyInASockSessionCarryingItsExitSpeed()
         {
             (GameScene scene, CandyContext candy) = HatRig();

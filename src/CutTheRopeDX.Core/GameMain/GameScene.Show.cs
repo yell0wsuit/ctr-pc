@@ -34,6 +34,10 @@ namespace CutTheRopeDX.GameMain
             // Load all game objects from XML
             LoadObjectsFromMap(map, mapScale, mapOffsetX, mapOffsetY, mapGridOffsetX, mapGridOffsetY);
 
+            // Claim candies that start inside a claw before a taut authored rope gets its first
+            // constraint pass. The normal hand update still owns all later catches and releases.
+            UpdateHands(0f);
+
             conveyors.SortBelts();
 
             // Bind objects to transporters once at scene setup (matches iOS [GameScene show])

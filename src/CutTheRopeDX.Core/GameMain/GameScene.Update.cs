@@ -319,6 +319,10 @@ namespace CutTheRopeDX.GameMain
             // presence guards are the enumerator's job.
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Physics))
             {
+                if (ActivePhysicsConstants.UseMobilePhysicsModel)
+                {
+                    body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
+                }
                 body.Point.Update(delta * ropePhysicsSpeed);
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
@@ -566,17 +570,6 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     CandyContext ctx = body.Owner;
-                    if (ctx.Lifecycle.Attachments.HasActiveRocket)
-                    {
-                        // Rocket-bound candy pops bubbles it touches instead of entering
-                        // them (Experiments reference): the bubble is consumed, never captured.
-                        PopBubbleAtXY(bubble3.x, bubble3.y);
-                        bubble3.popped = true;
-                        bubble3.RemoveChildWithID(0);
-                        conveyors.Remove(bubble3);
-                        captured = true;
-                        break;
-                    }
 
                     // Already carried by a different bubble: release the old one and swap to the new
                     // bubble. Without this, a bubbled body skips every new bubble (e.g. a bubbled
@@ -1074,15 +1067,17 @@ namespace CutTheRopeDX.GameMain
                             {
                                 continue;
                             }
-                            bool intersects = GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, body.Visual);
+                            bool intersects = ActivePhysicsConstants.UseMobilePhysicsModel
+                                ? GameObject.ObjectsIntersectRotatedWithUnrotatedAt(
+                                    rocket,
+                                    body.Visual,
+                                    body.RocketCollisionDrawPosition.X,
+                                    body.RocketCollisionDrawPosition.Y)
+                                : GameObject.ObjectsIntersectRotatedWithUnrotated(rocket, body.Visual);
                             if (!RocketBind.ShouldBind(rocket.state == Rocket.STATE_ROCKET_IDLE, candyPresent: true, ctx.Lifecycle.Attachments.InLantern, intersects))
                             {
                                 continue;
                             }
-
-                            // A rocket and a bubble are contradictory drivers on the same point;
-                            // the Experiments reference pops the bubble at bind.
-                            PopCandyBubble(body);
 
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
@@ -1207,7 +1202,8 @@ namespace CutTheRopeDX.GameMain
                         bouncer.t1.X, bouncer.t1.Y, bouncer.t2.X, bouncer.t2.Y,
                         bouncer.b1.X, bouncer.b1.Y, bouncer.b2.X, bouncer.b2.Y,
                         body.Point.pos.X, body.Point.pos.Y, body.Point.prevPos.X, body.Point.prevPos.Y,
-                        bouncerCollisionRadius))
+                        bouncerCollisionRadius,
+                        includeSweep: !ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
                         anyCandyHit = true;
 

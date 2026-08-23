@@ -213,7 +213,7 @@ namespace CutTheRopeDX.GameMain
             InstallSplitCandyState();
 
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
-            candy.bb = GetCandyBoundingBox();
+            candy.bb = GetCandyBoundingBox(candy);
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 if (body.Role != CandyBodyRole.Whole)

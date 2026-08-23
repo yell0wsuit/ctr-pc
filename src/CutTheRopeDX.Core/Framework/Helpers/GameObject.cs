@@ -217,14 +217,27 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns><see langword="true"/> when the objects intersect; otherwise <see langword="false"/>.</returns>
         public static bool ObjectsIntersectRotatedWithUnrotated(GameObject o1, GameObject o2)
         {
+            return ObjectsIntersectRotatedWithUnrotatedAt(o1, o2, o2.drawX, o2.drawY);
+        }
+
+        /// <summary>
+        /// Tests OBB intersection using an explicit draw position for the unrotated object.
+        /// </summary>
+        /// <param name="o1">Rotated object.</param>
+        /// <param name="o2">Unrotated object.</param>
+        /// <param name="o2DrawX">Draw-space X position to use for <paramref name="o2"/>.</param>
+        /// <param name="o2DrawY">Draw-space Y position to use for <paramref name="o2"/>.</param>
+        /// <returns><see langword="true"/> when the objects intersect; otherwise <see langword="false"/>.</returns>
+        internal static bool ObjectsIntersectRotatedWithUnrotatedAt(GameObject o1, GameObject o2, float o2DrawX, float o2DrawY)
+        {
             Vector o1TopLeft = Vect(o1.drawX + o1.rbb.tlX, o1.drawY + o1.rbb.tlY);
             Vector o1TopRight = Vect(o1.drawX + o1.rbb.trX, o1.drawY + o1.rbb.trY);
             Vector o1BottomRight = Vect(o1.drawX + o1.rbb.brX, o1.drawY + o1.rbb.brY);
             Vector o1BottomLeft = Vect(o1.drawX + o1.rbb.blX, o1.drawY + o1.rbb.blY);
-            Vector o2TopLeft = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y);
-            Vector o2TopRight = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y);
-            Vector o2BottomRight = Vect(o2.drawX + o2.bb.x + o2.bb.w, o2.drawY + o2.bb.y + o2.bb.h);
-            Vector o2BottomLeft = Vect(o2.drawX + o2.bb.x, o2.drawY + o2.bb.y + o2.bb.h);
+            Vector o2TopLeft = Vect(o2DrawX + o2.bb.x, o2DrawY + o2.bb.y);
+            Vector o2TopRight = Vect(o2DrawX + o2.bb.x + o2.bb.w, o2DrawY + o2.bb.y);
+            Vector o2BottomRight = Vect(o2DrawX + o2.bb.x + o2.bb.w, o2DrawY + o2.bb.y + o2.bb.h);
+            Vector o2BottomLeft = Vect(o2DrawX + o2.bb.x, o2DrawY + o2.bb.y + o2.bb.h);
             return ObbInOBB(o1TopLeft, o1TopRight, o1BottomRight, o1BottomLeft, o2TopLeft, o2TopRight, o2BottomRight, o2BottomLeft);
         }
 

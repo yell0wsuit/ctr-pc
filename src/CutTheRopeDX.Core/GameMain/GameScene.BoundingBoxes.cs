@@ -1,4 +1,5 @@
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Helpers;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -40,6 +41,39 @@ namespace CutTheRopeDX.GameMain
         internal static CTRRectangle GetCandyBoundingBox()
         {
             return SelectPhysicsBoundingBox(142f, 157f, 112f, 104f, 46f, 49f, 35f, 35f);
+        }
+
+        /// <summary>
+        /// Returns the candy collision box positioned relative to the active sprite's center.
+        /// </summary>
+        /// <remarks>
+        /// Collision metadata was authored inside a mode-specific canonical candy canvas. Candy
+        /// skins are cosmetic, so preserve the selected metadata box's center offset rather than
+        /// copying its absolute X/Y into a potentially different skin canvas.
+        /// </remarks>
+        private static CTRRectangle GetCandyBoundingBox(GameObject visual)
+        {
+            CTRRectangle bounds = GetCandyBoundingBox();
+            if (visual == null)
+            {
+                return bounds;
+            }
+
+            float sourceCanvasWidth = 393f;
+            float sourceCanvasHeight = 418f;
+            if (ActivePhysicsConstants.UseMobilePhysicsModel)
+            {
+                float scale = ActivePhysicsConstants.Wp7ToWorldScale;
+                sourceCanvasWidth = 126f * scale;
+                sourceCanvasHeight = 134f * scale;
+            }
+
+            float centerOffsetX = bounds.x + (bounds.w / 2f) - (sourceCanvasWidth / 2f);
+            float centerOffsetY = bounds.y + (bounds.h / 2f) - (sourceCanvasHeight / 2f);
+
+            bounds.x = (visual.width / 2f) + centerOffsetX - (bounds.w / 2f);
+            bounds.y = (visual.height / 2f) + centerOffsetY - (bounds.h / 2f);
+            return bounds;
         }
 
         /// <summary>Returns the bounding box for the split candy (after being cut in half).</summary>

@@ -1,3 +1,6 @@
+using System;
+
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -76,6 +79,37 @@ namespace CutTheRopeDX.Tests.Interactions
             Interaction.PlaceCandyAt(candy, hand.ClawPosition());
 
             Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.Hand == hand));
+        }
+
+        [Fact]
+        public void SuppliedMobileHandLayoutCatchesAndRetainsTheCandy()
+        {
+            GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Candy(178, 96)
+                .Hand(177, 194, segmentLength: 93, segmentAngle: -90f, rotatable: true)
+                .Rope(89, 284, length: 45)
+                .OmNom(187, 435)
+                .Build();
+            CandyContext candy = scene.Candy();
+            MechanicalHand hand = scene.Hands()[0];
+            Vector claw = hand.ClawPosition();
+            Vector candyPosition = candy.WholeBody.Point.pos;
+            float initialDistance = MathF.Sqrt(
+                MathF.Pow(claw.X - candyPosition.X, 2f) + MathF.Pow(claw.Y - candyPosition.Y, 2f));
+
+            Assert.True(
+                initialDistance < MechanicalHand.MH_GRAB_DISTANCE,
+                $"loaded claw ({claw.X}, {claw.Y}) is {initialDistance} world units from candy ({candyPosition.X}, {candyPosition.Y})");
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Same(hand, candy.Lifecycle.Attachments.Hand);
+
+            HeadlessGame.StepFrames(scene, 120);
+
+            Assert.Same(hand, candy.Lifecycle.Attachments.Hand);
+            Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
         }
 
         [Fact]

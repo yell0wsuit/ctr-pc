@@ -248,7 +248,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RocketConsumedBubbleDoesNotBlockGhostCycling()
+        public void RocketCarriedGhostBubbleRemainsOwnedUntilItIsPopped()
         {
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
@@ -261,12 +261,12 @@ namespace CutTheRopeDX.Tests
             ghost.ResetToForm(GhostForm.Bubble);
             _ = Act.BindRocket(scene, candy);
 
-            Bubble consumed = Act.PushBubbleAgainst(scene, candy);
+            Bubble carried = Act.CaptureInBubble(scene, candy);
 
-            Assert.True(consumed.popped);
-            Assert.Null(candy.WholeBody.Bubble);
-            Assert.True(ghost.OnTouchDownXY(ghost.x, ghost.y));
-            Assert.Equal(GhostForm.Grab, ghost.Form);
+            Assert.True(carried.popped);
+            Assert.Same(carried, candy.WholeBody.Bubble);
+            Assert.False(ghost.OnTouchDownXY(ghost.x, ghost.y));
+            Assert.Equal(GhostForm.Bubble, ghost.Form);
         }
 
         private static (Ghost Ghost, List<Bubble> Bubbles, List<Grab> Grabs, List<Bouncer> Bouncers) CreateGhost()

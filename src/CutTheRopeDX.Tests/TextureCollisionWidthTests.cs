@@ -84,15 +84,27 @@ namespace CutTheRopeDX.Tests
 
         // Both originals set the bouncer's collision width from the initial sprite (quad 0) and
         // never advance it with the bounce animation, so only the first quad width is used.
-        // Mobile applies the Experiments-style end-cap of 20 (1x) to the quad-0 width.
+        // Mobile first normalizes the high-resolution iOS quad into authored level space,
+        // then applies the native 20-unit logical end-cap.
         [Theory]
-        [InlineData(false, 138f)] // small quad 0: (66 - 20) * 3
-        [InlineData(true, 273f)]  // large quad 0: (111 - 20) * 3
-        public void BouncerWidthMobileUsesWp7FirstQuadWidth(bool large, float expected)
+        [InlineData(false, 140f)] // small quad 0: ((100 / 1.5) - 20) * 3
+        [InlineData(true, 240f)]  // large quad 0: ((150 / 1.5) - 20) * 3
+        public void BouncerWidthMobileUsesIosFirstQuadWidth(bool large, float expected)
         {
             float result = WithMobilePhysics(true, () =>
                 ActivePhysicsConstants.BouncerCollisionWidth(large));
             Assert.Equal(expected, result, precision: 3);
+        }
+
+        [Fact]
+        public void BouncerCandyBoxAndBandMobileUseNativeLogicalUnits()
+        {
+            (float radius, float height) = WithMobilePhysics(true, () => (
+                ActivePhysicsConstants.BouncerCollisionRadius,
+                ActivePhysicsConstants.BouncerHeight));
+
+            Assert.Equal(60f, radius, precision: 3); // 20 * 3
+            Assert.Equal(15f, height, precision: 3); // 5 * 3
         }
 
         [Theory]

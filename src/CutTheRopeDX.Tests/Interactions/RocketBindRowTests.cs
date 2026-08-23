@@ -8,8 +8,8 @@ namespace CutTheRopeDX.Tests.Interactions
 {
     /// <summary>
     /// Interaction matrix, "Rocket bind" row: the rocket steals from nobody. It coexists with a
-    /// hand or a mouse on a zero-rest FLY bind, keeps ropes and snail, pops a bubble it cannot
-    /// share the point with, and burns out any rocket already on the candy.
+    /// hand or a mouse on a zero-rest FLY bind, keeps ropes, bubble, and snail, and burns out any
+    /// rocket already on the candy.
     /// </summary>
     public sealed class RocketBindRowTests
     {
@@ -52,15 +52,16 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void RocketBindPopsItsBubble()
+        public void RocketBindKeepsItsBubble()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Bubble(160, 200));
             Bubble bubble = Act.CaptureInBubble(scene, candy);
 
-            _ = Act.BindRocket(scene, candy);
+            Rocket rocket = Act.BindRocket(scene, candy);
 
-            Assert.Null(candy.WholeBody.Bubble);
+            Assert.Same(bubble, candy.WholeBody.Bubble);
             Assert.True(bubble.popped);
+            Assert.Same(rocket, candy.Lifecycle.Attachments.Rocket);
         }
 
         [Fact]
