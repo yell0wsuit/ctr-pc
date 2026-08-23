@@ -1,5 +1,5 @@
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.GameMain;
 
 using Xunit;
 
