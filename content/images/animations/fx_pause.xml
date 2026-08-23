@@ -1,0 +1,14 @@
+<FlashAnimation width="640" height="960" src="fx_pause">
+ <Image rotationCenterY="33" anchorX="48" anchorY="67" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="Wave" src="fx_pause" quadToDraw="0" rotationCenterX="0">
+  <Timeline ID="0">
+   <Pos>319.55,480.6(1)@0+319.55,480.6(4)@0.9666667+319.55,480.6(4)@1.033333</Pos>
+   <Scale>3.68329,0.0641785(1)@0+2.80188,3.06065(4)@0.9666667+3.68329,0.0641785(4)@1+3.68329,0.0641785(4)@0.03333334</Scale>
+   <Color>1,1,1,0.0507812(1)@0+1,1,1,0.601562(4)@0.9666667+1,1,1,0.0507812(4)@1+1,1,1,0.0507812(4)@0.03333334</Color>
+   <Skew>0,0(1)@0+0,0(4)@0.9666667+0,0(4)@1.033333</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,0,0(1)@0+AC_SAP,self,48,67(1)@0+AC_SRC,self,0,33(1)@0+AC_SV,self,0,1(4)@0.9666667+AC_SDQ,self,0,0(4)@0+AC_SAP,self,48,67(4)@0+AC_SRC,self,0,33(4)@0+AC_SV,self,0,1(4)@1.033333+AC_SDQ,self,0,0(4)@0+AC_SAP,self,48,67(4)@0+AC_SRC,self,0,33(4)@0</Action>
+  </Timeline>
+ </Image>
+ <Timeline ID="0">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@2</Action>
+ </Timeline>
+</FlashAnimation>

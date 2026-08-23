@@ -1,0 +1,48 @@
+<FlashAnimation width="640" height="960" src="obj_pause">
+ <Image rotationCenterY="-0.0500031" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="Layer 6" src="obj_pause" quadToDraw="4" rotationCenterX="0">
+  <Timeline ID="1">
+   <Pos>0,0(1)@0+-105.0023,-103.5648(1)@0.1666667+-104.917,-103.5336(0)@0.3+-104.9017,-103.5411(0)@0.1666667+-104.9017,-103.5411(0)@0.03333334</Pos>
+   <Scale>0,0(1)@0+1.49188,1.49188(1)@0.1666667+0.770096,0.770096(0)@0.3+0.475449,0.475449(0)@0.1666667+0.475449,0.475449(0)@0.03333334</Scale>
+   <Color>0,0,0,0(1)@0+1,1,1,0(1)@0.1666667+1,1,1,0.5(0)@0.3+1,1,1,0(0)@0.1666667+1,1,1,0(0)@0.03333334</Color>
+   <Skew>0,0(1)@0+0,0(1)@0.1666667+360,360(0)@0.3+360,360(0)@0.2</Skew>
+   <Action>AC_SV,self,0,0(1)@0+AC_SV,self,0,1(1)@0.1666667+AC_SDQ,self,4,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0,-0.0500031(1)@0+AC_SV,self,0,1(0)@0.3+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,-0.0999985,-0.0500031(0)@0+AC_SV,self,0,1(0)@0.2+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,-0.0500031,0(0)@0</Action>
+  </Timeline>
+  <EmptyTimelines>0</EmptyTimelines>
+ </Image>
+ <Image rotationCenterY="0" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="Layer 7" src="obj_pause" quadToDraw="4" rotationCenterX="0">
+  <Timeline ID="1">
+   <Pos>-104.9498,-103.5912(1)@0+-104.99,-103.4415(0)@0.3+-104.9434,-103.5471(0)@0.1666667+-104.9434,-103.5471(0)@0.03333334+0,0(1)@0.1666667</Pos>
+   <Scale>1.32762,1.32762(1)@0+0.606949,0.606949(0)@0.3+0.36911,0.36911(0)@0.1666667+0.36911,0.36911(0)@0.03333334+0,0(1)@0.1666667</Scale>
+   <Color>1,1,1,0(1)@0+1,1,1,0.5(0)@0.3+1,1,1,0(0)@0.1666667+1,1,1,0(0)@0.03333334+0,0,0,0(1)@0.1666667</Color>
+   <Skew>0,0(1)@0+-360,-360(0)@0.3+-360,-360(0)@0.1666667+-360,-360(0)@0.03333334+0,0(1)@0.1666667</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,4,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0,0(1)@0+AC_SV,self,0,1(0)@0.3+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0.0500031,-0.0999985(0)@0+AC_SV,self,0,1(0)@0.1666667+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0+AC_SV,self,0,0(1)@0.1666667+AC_SDQ,self,0,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0,0(1)@0</Action>
+  </Timeline>
+  <EmptyTimelines>0</EmptyTimelines>
+ </Image>
+ <Image rotationCenterY="0" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="Layer 5" src="obj_pause" quadToDraw="4" rotationCenterX="-0.0500031">
+  <Timeline ID="0">
+   <Pos>0,0(1)@0+-104.9494,-103.3869(1)@0.1666667+-104.9368,-103.3899(0)@0.2+-104.9575,-103.4239(0)@0.3+-104.9575,-103.4239(0)@0.03333334</Pos>
+   <Scale>0,0(1)@0+0.543121,0.543121(1)@0.1666667+0.707198,0.707198(0)@0.2+1.44421,1.44421(0)@0.3+1.44421,1.44421(0)@0.03333334</Scale>
+   <Color>0,0,0,0(1)@0+1,1,1,0.0507812(1)@0.1666667+1,1,1,0.699219(0)@0.2+1,1,1,0(0)@0.3+1,1,1,0(0)@0.03333334</Color>
+   <Skew>0,0(1)@0+0,0(1)@0.1666667+-431.982,-431.982(0)@0.2+-360,-360(0)@0.3+-360,-360(0)@0.03333334</Skew>
+   <Action>AC_SV,self,0,0(1)@0+AC_SV,self,0,1(1)@0.1666667+AC_SDQ,self,4,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,-0.0500031,0(1)@0+AC_SV,self,0,1(0)@0.2+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,-0.0500031,0(0)@0+AC_SV,self,0,1(0)@0.3333333+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0</Action>
+  </Timeline>
+  <EmptyTimelines>1</EmptyTimelines>
+ </Image>
+ <Image rotationCenterY="0" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="Layer 4" src="obj_pause" quadToDraw="4" rotationCenterX="0.0999985">
+  <Timeline ID="0">
+   <Pos>-104.9914,-103.3928(1)@0+-104.8997,-103.4212(0)@0.2+-104.9576,-103.4238(0)@0.3+-104.9576,-103.4238(0)@0.03333334+0,0(1)@0.1666667</Pos>
+   <Scale>0.563354,0.563354(1)@0+0.819615,0.819615(0)@0.2+1.44421,1.44421(0)@0.3+1.44421,1.44421(0)@0.03333334+0,0(1)@0.1666667</Scale>
+   <Color>1,1,1,0.0507812(1)@0+1,1,1,0.5(0)@0.2+1,1,1,0(0)@0.3+1,1,1,0(0)@0.03333334+0,0,0,0(1)@0.1666667</Color>
+   <Skew>0,0(1)@0+431.982,431.982(0)@0.2+360,360(0)@0.3+360,360(0)@0.03333334+0,0(1)@0.1666667</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,4,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0.0999985,0(1)@0+AC_SV,self,0,1(0)@0.2+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0+AC_SV,self,0,1(0)@0.3+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0+AC_SV,self,0,1(0)@0.03333334+AC_SDQ,self,4,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,0(0)@0+AC_SV,self,0,0(1)@0.1666667+AC_SDQ,self,0,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0,0(1)@0</Action>
+  </Timeline>
+  <EmptyTimelines>1</EmptyTimelines>
+ </Image>
+ <Timeline ID="0">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@0.7</Action>
+ </Timeline>
+ <Timeline ID="1">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@0.6666667</Action>
+ </Timeline>
+</FlashAnimation>

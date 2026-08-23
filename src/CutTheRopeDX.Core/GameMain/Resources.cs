@@ -328,6 +328,7 @@ namespace CutTheRopeDX.GameMain
             public const string FxSleep = "fx_sleep";
             public const string FxBubbles = "fx_bubbles";
             public const string FxCutChain = "fx_cut_chain";
+            public const string FxPause = "fx_pause";
             public const string HatHalloween = "hat_halloween";
             public const string HatXmas = "hat_xmas";
             public const string CharAnimationsPrehistoric = "char_animations_body_prehistoric";
@@ -375,6 +376,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjLantern = "obj_lantern";
             public const string Bgr15Cover = "bgr_15_cover";
             public const string ObjMouse = "obj_mouse";
+            public const string ObjPause = "obj_pause";
             public const string Bgr16Cover = "bgr_16_cover";
             public const string ObjLighter = "obj_lighter";
             public const string Bgr17Cover = "bgr_17_cover";
@@ -612,6 +614,8 @@ namespace CutTheRopeDX.GameMain
             public const string MouseRustle = "mouse_rustle";
             public const string MouseTap = "mouse_tap";
             public const string MouseIdle = "mouse_idle";
+            public const string PauseDown = "pause_down";
+            public const string PauseUp = "pause_up";
             public const string MonsterSleep1 = "monster_sleep01";
             public const string MonsterSleep2 = "monster_sleep02";
             public const string MonsterSleep3 = "monster_sleep03";
