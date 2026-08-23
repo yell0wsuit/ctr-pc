@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -41,6 +42,28 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 switcher.ShowRunning();
+            }
+        }
+
+        /// <summary>
+        /// Rewinds every candy point to where it started the step and clears its motion, so a
+        /// stopped world stays exactly where it was. Integration still runs; this undoes it,
+        /// which keeps forces and constraints consistent when time restarts.
+        /// </summary>
+        private void HoldFrozenPoints()
+        {
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                ConstraintedPoint point = body.Point;
+                if (point == null)
+                {
+                    continue;
+                }
+
+                point.a = vectZero;
+                point.v = vectZero;
+                point.posDelta = vectZero;
+                point.pos = point.prevPos;
             }
         }
     }

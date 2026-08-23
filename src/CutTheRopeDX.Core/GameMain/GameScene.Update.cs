@@ -1592,6 +1592,10 @@ namespace CutTheRopeDX.GameMain
                     _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
             }
+            if (timeFrozen)
+            {
+                HoldFrozenPoints();
+            }
             switch (gameplayFlow.Advance(delta))
             {
                 case RestartStep.SwapScene:
