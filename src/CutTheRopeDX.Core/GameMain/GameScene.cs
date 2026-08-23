@@ -1027,6 +1027,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private List<Rocket> rockets;
 
+        /// <summary>Buttons that stop and restart time.</summary>
+        private List<PauseSwitcher> pauseSwitchers;
+
+        /// <summary>Whether time is currently stopped.</summary>
+        private bool timeFrozen;
+
+        /// <summary>Pointer held on a time-freeze button, or -1 when none is held.</summary>
+        private int pauseSwitcherTouchIndex = -1;
+
         /// <summary>
         /// All active mechanical hand objects in the loaded level.
         /// </summary>

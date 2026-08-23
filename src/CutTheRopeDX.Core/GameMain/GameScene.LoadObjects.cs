@@ -54,6 +54,9 @@ namespace CutTheRopeDX.GameMain
                         case "gravitySwitch":
                             LoadGravityButton(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
+                        case "pauseSwitcher":
+                            LoadPauseSwitcher(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
                         case "star":
                             LoadStar(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;

@@ -63,6 +63,22 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Bubble>>(scene, "bubbles");
         }
 
+        /// <summary>All time-freeze buttons loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The switcher list.</returns>
+        public static List<PauseSwitcher> PauseSwitchers(this GameScene scene)
+        {
+            return Field<List<PauseSwitcher>>(scene, "pauseSwitchers");
+        }
+
+        /// <summary>Whether the scene currently has time stopped.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns><see langword="true"/> when time is frozen.</returns>
+        public static bool IsTimeFrozen(this GameScene scene)
+        {
+            return Field<bool>(scene, "timeFrozen");
+        }
+
         /// <summary>All ghosts.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The ghost list.</returns>

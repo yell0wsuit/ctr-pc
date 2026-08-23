@@ -411,6 +411,15 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(spike);
         }
 
+        /// <summary>Adds a time-freeze button.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario PauseSwitcher(int x, int y)
+        {
+            return Add(Node("pauseSwitcher", x, y));
+        }
+
         /// <summary>Adds a conveyor belt.</summary>
         /// <param name="x">Level-space X of the belt centre.</param>
         /// <param name="y">Level-space Y of the belt centre.</param>

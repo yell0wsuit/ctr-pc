@@ -49,6 +49,9 @@ namespace CutTheRopeDX.GameMain
             bouncers = [];
             rotatedCircles = [];
             rockets = [];
+            pauseSwitchers = [];
+            timeFrozen = false;
+            pauseSwitcherTouchIndex = -1;
             hands = [];
             snailobjects = [];
             ghosts = [];
