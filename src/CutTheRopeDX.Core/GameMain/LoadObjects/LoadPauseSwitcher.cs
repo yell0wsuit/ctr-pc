@@ -18,6 +18,7 @@ namespace CutTheRopeDX.GameMain
             PauseSwitcher switcher = PauseSwitcher.Create();
             switcher.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             switcher.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            switcher.Update(0f);
             pauseSwitchers.Add(switcher);
         }
     }

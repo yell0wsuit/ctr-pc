@@ -28,7 +28,6 @@ namespace CutTheRopeDX.GameMain
             PauseSwitcher switcher = new();
             _ = switcher.InitWithTexture(Application.GetTexture(Resources.Img.ObjPause));
             switcher.SetDrawQuad(RunningQuad);
-            switcher.SetBBFromFirstQuad();
             switcher.anchor = 18;
             return switcher;
         }

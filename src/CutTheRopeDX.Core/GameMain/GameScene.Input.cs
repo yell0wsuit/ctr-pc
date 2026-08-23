@@ -102,6 +102,12 @@ namespace CutTheRopeDX.GameMain
             Vector world = camera.ScreenToWorld(tx, ty);
             float worldX = world.X;
             float worldY = world.Y;
+            PauseSwitcher pressedSwitcher = PauseSwitcherAt(worldX, worldY);
+            if (pressedSwitcher != null)
+            {
+                pauseSwitcherTouchIndex = ti;
+                pauseSwitcherTouchTarget = pressedSwitcher;
+            }
             waterLayer?.AddParticlesAtXY(worldX, worldY);
             if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
             {
@@ -459,6 +465,10 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             gesture.End();
+            int capturedSwitcherTouchIndex = pauseSwitcherTouchIndex;
+            PauseSwitcher capturedSwitcher = pauseSwitcherTouchTarget;
+            pauseSwitcherTouchIndex = -1;
+            pauseSwitcherTouchTarget = null;
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
@@ -492,6 +502,15 @@ namespace CutTheRopeDX.GameMain
                 if (gravityState.IsInToggleTouchZone(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     OnButtonPressed(0);
+                }
+            }
+
+            if (capturedSwitcherTouchIndex == ti && capturedSwitcher != null)
+            {
+                PauseSwitcher releasedSwitcher = PauseSwitcherAt(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty));
+                if (ReferenceEquals(capturedSwitcher, releasedSwitcher))
+                {
+                    ToggleTimeFreeze(capturedSwitcher);
                 }
             }
 

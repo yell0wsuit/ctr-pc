@@ -79,6 +79,18 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<bool>(scene, "timeFrozen");
         }
 
+        /// <summary>Converts an object's world position to the input API's screen coordinates.</summary>
+        /// <param name="scene">Scene whose camera performs the conversion.</param>
+        /// <param name="gameObject">Object whose position is converted.</param>
+        /// <returns>The object's position in screen space.</returns>
+        public static Vector ScreenPositionOf(this GameScene scene, GameObject gameObject)
+        {
+            Camera2D camera = Field<Camera2D>(scene, "camera");
+            return new Vector(
+                (gameObject.x - camera.RenderPos.X) * camera.Scale,
+                (gameObject.y - camera.RenderPos.Y) * camera.Scale);
+        }
+
         /// <summary>All ghosts.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The ghost list.</returns>

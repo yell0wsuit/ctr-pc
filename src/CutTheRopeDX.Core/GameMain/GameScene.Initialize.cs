@@ -52,6 +52,7 @@ namespace CutTheRopeDX.GameMain
             pauseSwitchers = [];
             timeFrozen = false;
             pauseSwitcherTouchIndex = -1;
+            pauseSwitcherTouchTarget = null;
             hands = [];
             snailobjects = [];
             ghosts = [];

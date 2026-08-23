@@ -1036,6 +1036,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Pointer held on a time-freeze button, or -1 when none is held.</summary>
         private int pauseSwitcherTouchIndex = -1;
 
+        /// <summary>The time-freeze button captured by the active pointer.</summary>
+        private PauseSwitcher pauseSwitcherTouchTarget;
+
         /// <summary>
         /// All active mechanical hand objects in the loaded level.
         /// </summary>
