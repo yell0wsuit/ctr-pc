@@ -95,6 +95,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<AnimationsPool>(scene, "particlesAniPool");
         }
 
+        /// <summary>The screen-space animation pool containing the level label.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The scene's static animation pool.</returns>
+        public static AnimationsPool StaticAnimations(this GameScene scene)
+        {
+            return Field<AnimationsPool>(scene, "staticAniPool");
+        }
+
         /// <summary>Converts an object's world position to the input API's screen coordinates.</summary>
         /// <param name="scene">Scene whose camera performs the conversion.</param>
         /// <param name="gameObject">Object whose position is converted.</param>

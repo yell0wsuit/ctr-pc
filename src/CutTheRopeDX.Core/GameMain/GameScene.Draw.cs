@@ -332,12 +332,13 @@ namespace CutTheRopeDX.GameMain
             DrawCuts();
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
-            staticAniPool.Draw();
             if (pauseSwitcherWaves?.visible == true)
             {
                 pauseSwitcherWaves.Draw();
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
+            // Screen-space gameplay UI stays readable while the world is frozen.
+            staticAniPool.Draw();
             PostDraw();
         }
 

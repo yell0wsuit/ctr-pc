@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         private const float ChildTimeScale = 0.8f;
         private const int VerticalWavesPerEdge = 5;
         private const int HorizontalWavesPerEdge = 8;
-        private const float AtlasTransparentInsetPerSide = 1f;
+        private const float AtlasEdgeBleedPerSide = 3f;
         private const int FadeInTimeline = 0;
         private const int FadeOutTimeline = 1;
 
@@ -39,6 +39,7 @@ namespace CutTheRopeDX.GameMain
             {
                 visible = false,
                 color = RGBAColor.transparentRGBA,
+                blendingMode = 2,
                 plate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 2)
             };
 
@@ -63,15 +64,18 @@ namespace CutTheRopeDX.GameMain
             height = (int)MathF.Round(coverHeight);
             if (plate != null && plate.width > 0 && plate.height > 0)
             {
-                float visiblePlateWidth = plate.width - (AtlasTransparentInsetPerSide * 2f);
-                float visiblePlateHeight = plate.height - (AtlasTransparentInsetPerSide * 2f);
+                // Keep the atlas's transparent border and faint antialias ramp outside the
+                // viewport. Merely excluding the fully transparent texel leaves the much weaker
+                // left ramp visible as a dark strip against the frozen scene.
+                float visiblePlateWidth = plate.width - (AtlasEdgeBleedPerSide * 2f);
+                float visiblePlateHeight = plate.height - (AtlasEdgeBleedPerSide * 2f);
                 plate.scaleX = coverWidth / visiblePlateWidth;
                 plate.scaleY = coverHeight / visiblePlateHeight;
 
                 if (innerPlate != null)
                 {
-                    float visibleInnerWidth = innerPlate.width - (AtlasTransparentInsetPerSide * 2f);
-                    float visibleInnerHeight = innerPlate.height - (AtlasTransparentInsetPerSide * 2f);
+                    float visibleInnerWidth = innerPlate.width - (AtlasEdgeBleedPerSide * 2f);
+                    float visibleInnerHeight = innerPlate.height - (AtlasEdgeBleedPerSide * 2f);
                     innerPlate.scaleX = visiblePlateWidth / visibleInnerWidth;
                     innerPlate.scaleY = visiblePlateHeight / visibleInnerHeight;
                 }
@@ -155,11 +159,11 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < VerticalWavesPerEdge; i++)
             {
-                waveEffect.SpawnInto(wavePool, RandomUpTo(width), 0f, 0, 90f);
+                waveEffect.SpawnInto(wavePool, RandomUpTo(width), 0f, 0, 180f);
             }
             for (int i = 0; i < HorizontalWavesPerEdge; i++)
             {
-                waveEffect.SpawnInto(wavePool, 0f, RandomUpTo(height), 0, 180f);
+                waveEffect.SpawnInto(wavePool, 0f, RandomUpTo(height), 0, 90f);
             }
             for (int i = 0; i < HorizontalWavesPerEdge; i++)
             {
