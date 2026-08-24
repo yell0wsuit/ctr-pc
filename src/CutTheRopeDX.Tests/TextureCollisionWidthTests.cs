@@ -1,6 +1,8 @@
 using System;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -119,35 +121,58 @@ namespace CutTheRopeDX.Tests
 
         // Rocket catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
         // pinned from XML quads and expressed center-relative to the rocket object.
-        // Mobile: Experiments base quad 10 = 116x58 centered at (91,67) on the 199x134 sheet, x3.
-        [Fact]
-        public void RocketCatchBoxMobileUsesExperimentsBaseQuad()
+        // Experiments base quad 10 = 116x58 centered at (91,67) on the 199x134 sheet, x3.
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RocketCatchBoxExperimentsUsesBaseQuad(bool mobilePhysics)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(true, () => (
-                ActivePhysicsConstants.RocketCatchBoxWidth,
-                ActivePhysicsConstants.RocketCatchBoxHeight,
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
+            (float w, float h, float ox, float oy) = WithMobilePhysics(mobilePhysics, () => (
+                ActivePhysicsConstants.RocketCatchBoxWidth(usesTimeTravelPhysics: false),
+                ActivePhysicsConstants.RocketCatchBoxHeight(usesTimeTravelPhysics: false),
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX(usesTimeTravelPhysics: false),
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY(usesTimeTravelPhysics: false)));
             Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
             Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
             Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
             Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
         }
 
-        // Desktop uses the same iOS logical hitbox transformed into DX world coordinates; the
-        // repacked atlas does not own gameplay collision.
-        [Fact]
-        public void RocketCatchBoxDesktopUsesFrozenDxAtlasQuad()
+        // Time Travel resource 0x8A quad 10 is 358x179 in the DX sheet, centered at
+        // (288,208.5) in its restored 619x418 source frame.
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RocketCatchBoxTimeTravelUsesItsOwnQuad(bool mobilePhysics)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(false, () => (
-                ActivePhysicsConstants.RocketCatchBoxWidth,
-                ActivePhysicsConstants.RocketCatchBoxHeight,
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
-            Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
-            Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
-            Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
+            (float w, float h, float ox, float oy) = WithMobilePhysics(mobilePhysics, () => (
+                ActivePhysicsConstants.RocketCatchBoxWidth(usesTimeTravelPhysics: true),
+                ActivePhysicsConstants.RocketCatchBoxHeight(usesTimeTravelPhysics: true),
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX(usesTimeTravelPhysics: true),
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY(usesTimeTravelPhysics: true)));
+            Assert.Equal(232.7f, w, precision: 3);  // 358 * 0.65
+            Assert.Equal(8.95f, h, precision: 3);   // 179 * 0.05
+            Assert.Equal(-21.5f, ox, precision: 3); // 288 - 619/2
+            Assert.Equal(-0.5f, oy, precision: 3);  // 208.5 - 418/2
+        }
+
+        [Fact]
+        public void RocketVariantsUseTheirNativeScale()
+        {
+            GameScene experiments = Scenario.New()
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .Build();
+            GameScene timeTravel = Scenario.New()
+                .Design("background", "Medieval")
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .Build();
+
+            Assert.Equal(0.7f, Assert.Single(experiments.Rockets()).scaleX);
+            Assert.Equal(0.71f, Assert.Single(timeTravel.Rockets()).scaleX);
         }
     }
 }

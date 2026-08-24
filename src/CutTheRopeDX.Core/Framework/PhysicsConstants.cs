@@ -122,6 +122,9 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.RocketPointWeight" />
         public const float RocketPointWeight = 0.5f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.ExperimentsRocketVelocityDamping" />
+        public const float ExperimentsRocketVelocityDamping = 14f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeDamping" />
         public const float SteamTubeDamping = 5f;
 
@@ -205,6 +208,18 @@ namespace CutTheRopeDX.Framework
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
         public const float RocketCatchBoxCenterOffsetY = 0f; // (67 - 134/2) * 3
+
+        /// <summary>Time Travel rocket catch-slat width from resource 0x8A, quad 10.</summary>
+        public const float TimeTravelRocketCatchBoxWidth = 232.7f; // 358 * 0.65
+
+        /// <summary>Time Travel rocket catch-slat height from resource 0x8A, quad 10.</summary>
+        public const float TimeTravelRocketCatchBoxHeight = 8.95f; // 179 * 0.05
+
+        /// <summary>Time Travel rocket quad center relative to its restored source center.</summary>
+        public const float TimeTravelRocketCatchBoxCenterOffsetX = -21.5f; // 288 - 619/2
+
+        /// <summary>Time Travel rocket quad center relative to its restored source center.</summary>
+        public const float TimeTravelRocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
 
         /// <summary>
         /// Maximum rope length used to size rope drawing buffers.

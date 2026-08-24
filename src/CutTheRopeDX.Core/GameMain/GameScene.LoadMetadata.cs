@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
@@ -67,6 +68,11 @@ namespace CutTheRopeDX.GameMain
             mapOffsetY = 0;
             ActivePhysicsConstants.UseMobilePhysicsModel = false;
             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
+            usesTimeTravelRocketPhysics = LevelMetadataLayerSelection.SelectLayers(mapNode)
+                .SelectMany(layer => layer.Elements())
+                .Any(element =>
+                    element.Name.LocalName == "pauseSwitcher"
+                    || (element.Name.LocalName == "gameDesign" && element.Attribute("background") != null));
 
             CTRRootController rc = (CTRRootController)Application.SharedRootController();
 

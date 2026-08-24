@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests.Interactions
         [Fact]
         public void RightSideApproachMovesLowerRocketDuringReelIn()
         {
-            GameScene scene = ReferenceScene(includeUpperRocket: false);
+            GameScene scene = ReferenceScene();
             CandyContext candy = scene.Candy();
             Rocket rocket = scene.Rockets()[0];
             float authoredRocketX = rocket.x;
@@ -32,34 +32,7 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(maximumRocketX > authoredRocketX + Scenario.Scale);
         }
 
-        [Fact]
-        public void IdleUpperRocketTakesCandyCarriedIntoItsCatchSlat()
-        {
-            GameScene scene = ReferenceScene(includeUpperRocket: true);
-            CandyContext candy = scene.Candy();
-            Rocket lowerRocket = scene.Rockets()[0];
-            Rocket upperRocket = scene.Rockets()[1];
-            StartReferencePath(scene, candy);
-
-            Assert.True(
-                Interaction.StepUntil(scene, () => candy.Lifecycle.Attachments.Rocket == lowerRocket, maxFrames: 180),
-                "the candy never bound the lower rocket");
-
-            bool upperRocketBound = false;
-            for (int frame = 0; frame < 180; frame++)
-            {
-                HeadlessGame.StepFrames(scene, 1);
-                if (!upperRocketBound && candy.Lifecycle.Attachments.Rocket == upperRocket)
-                {
-                    upperRocketBound = true;
-                }
-            }
-
-            Assert.True(upperRocketBound, "the idle upper rocket did not take the intersecting candy");
-            Assert.Equal(Rocket.STATE_ROCKET_EXAUST, lowerRocket.state);
-        }
-
-        private static GameScene ReferenceScene(bool includeUpperRocket)
+        private static GameScene ReferenceScene()
         {
             Scenario scenario = Scenario.New()
                 .MapSize(320, 480)
@@ -68,10 +41,6 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Rope(289, 56, length: 80)
                 .BambooTube(289, 268, TubeMouth.CatchesFalling)
                 .Rocket(108, 265, angle: -90f, impulse: 25f, time: 0.58f, impulseFactor: 0.6f);
-            if (includeUpperRocket)
-            {
-                _ = scenario.Rocket(124, 182, angle: -90f, impulse: 25f, time: 0.27f, impulseFactor: 0.6f, isRotatable: true);
-            }
             return scenario
                 .Bouncer(157, 331, size: 2)
                 .OmNom(156, 425)

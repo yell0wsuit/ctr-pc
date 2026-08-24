@@ -1047,6 +1047,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether time is currently stopped.</summary>
         private bool timeFrozen;
 
+        /// <summary>Whether the loaded map uses Cut the Rope: Time Travel's rocket simulation.</summary>
+        private bool usesTimeTravelRocketPhysics;
+
         /// <summary>Pointer held on a time-freeze button, or -1 when none is held.</summary>
         private int pauseSwitcherTouchIndex = -1;
 

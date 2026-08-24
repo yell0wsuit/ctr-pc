@@ -289,6 +289,43 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void ExperimentsRocketDoesNotOwnTimeTravelsForceSlot()
+        {
+            GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Candy(160, 200)
+                .OmNom(160, 440)
+                .Rocket(160, 200, time: 2f)
+                .Build();
+            _ = Act.BindRocket(scene, scene.Candy());
+            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            Vector unrelatedForce = new(10f, 20f);
+            candyPoint.SetForcewithID(unrelatedForce, 0);
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Equal(unrelatedForce, candyPoint.GetForce(0));
+        }
+
+        [Fact]
+        public void ExperimentsRocketUsesRecoveredVelocityDampingDivisors()
+        {
+            bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
+            try
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = false;
+                Assert.Equal(14f, ActivePhysicsConstants.ExperimentsRocketVelocityDamping);
+
+                ActivePhysicsConstants.UseMobilePhysicsModel = true;
+                Assert.Equal(14f, ActivePhysicsConstants.ExperimentsRocketVelocityDamping);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
+        }
+
+        [Fact]
         public void MovingRocketContinuesItsAuthoredPathWhileFrozen()
         {
             GameScene scene = Scenario.New()

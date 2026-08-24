@@ -1263,6 +1263,7 @@ namespace CutTheRopeDX.GameMain
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
+            float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
             if (waterLayer != null && waterLevel > 0f)
             {
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Water))
@@ -1369,19 +1370,40 @@ namespace CutTheRopeDX.GameMain
                     Vect((0f - body.Point.v.X) / bubbleDamping, ((0f - body.Point.v.Y) / bubbleDamping) + lift),
                     delta);
             }
-            // Rocket drag owns force slot zero. Refresh or clear it for every body so detaching a
-            // rocket cannot leave a stale opposing force behind.
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
                 ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
-                if (ctx.Lifecycle.Attachments.Rocket != null)
+                if (usesTimeTravelRocketPhysics)
                 {
-                    rocketPoint.SetForcewithID(Vect(-rocketPoint.v.X, -rocketPoint.v.Y), 0);
+                    if (ctx.Lifecycle.Attachments.Rocket != null)
+                    {
+                        // Time Travel owns force slot zero while a rocket is attached.
+                        rocketPoint.SetForcewithID(Vect(-rocketPoint.v.X, -rocketPoint.v.Y), 0);
+                    }
+                    else
+                    {
+                        rocketPoint.DeleteForce(0);
+                    }
                 }
-                else
+                else if (ctx.Lifecycle.Attachments.Rocket != null)
                 {
-                    rocketPoint.DeleteForce(0);
+                    // Experiments applies velocity damping as an impulse each frame instead.
+                    bool inWater = waterLayer != null
+                        && waterLevel > 0f
+                        && WaterSubmersion.IsSubmerged(
+                            rocketPoint.pos.X,
+                            rocketPoint.pos.Y,
+                            waterLayer.x,
+                            waterLayer.y,
+                            waterLayer.width,
+                            candyRadius);
+                    float damping = inWater
+                        ? waterRocketDamping
+                        : ActivePhysicsConstants.ExperimentsRocketVelocityDamping;
+                    rocketPoint.ApplyImpulseDelta(
+                        Vect(-rocketPoint.v.X / damping, -rocketPoint.v.Y / damping),
+                        delta);
                 }
             }
             ApplyAntCarryToCandyPosition();

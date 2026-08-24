@@ -126,6 +126,9 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.RocketPointWeight" />
         public const float RocketPointWeight = 0.5f;
 
+        /// <inheritdoc cref="ActivePhysicsConstants.ExperimentsRocketVelocityDamping" />
+        public const float ExperimentsRocketVelocityDamping = 14f; // Base iPad divisor before Retina-only adjustment
+
         /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeDamping" />
         public const float SteamTubeDamping = 5f;
 

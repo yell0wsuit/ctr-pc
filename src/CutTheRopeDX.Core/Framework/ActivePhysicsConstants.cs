@@ -256,6 +256,13 @@ namespace CutTheRopeDX.Framework
         public static float RocketPointWeight => SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
 
         /// <summary>
+        /// Velocity damping applied by the Cut the Rope: Experiments rocket implementation.
+        /// </summary>
+        public static float ExperimentsRocketVelocityDamping => SelectRaw(
+            PhysicsConstants.ExperimentsRocketVelocityDamping,
+            MobilePhysicsConstants.ExperimentsRocketVelocityDamping);
+
+        /// <summary>
         /// Impulse scale applied to rocket thrust.
         /// </summary>
         public static float RocketImpulseScale => Wp7ToWorldScale;
@@ -392,22 +399,42 @@ namespace CutTheRopeDX.Framework
         /// Width of the rocket's catch-slat bounding box (0.65 x the rocket body quad width),
         /// pinned from the original XML quads rather than the live atlas.
         /// </summary>
-        public static float RocketCatchBoxWidth => SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);
+        public static float RocketCatchBoxWidth(bool usesTimeTravelPhysics)
+        {
+            return usesTimeTravelPhysics
+                ? PhysicsConstants.TimeTravelRocketCatchBoxWidth
+                : SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);
+        }
 
         /// <summary>
         /// Height of the rocket's catch-slat bounding box (0.05 x the rocket body quad height).
         /// </summary>
-        public static float RocketCatchBoxHeight => SelectScaled(PhysicsConstants.RocketCatchBoxHeight, MobilePhysicsConstants.RocketCatchBoxHeight);
+        public static float RocketCatchBoxHeight(bool usesTimeTravelPhysics)
+        {
+            return usesTimeTravelPhysics
+                ? PhysicsConstants.TimeTravelRocketCatchBoxHeight
+                : SelectScaled(PhysicsConstants.RocketCatchBoxHeight, MobilePhysicsConstants.RocketCatchBoxHeight);
+        }
 
         /// <summary>
         /// X offset of the catch-slat box center from the rocket object's center.
         /// </summary>
-        public static float RocketCatchBoxCenterOffsetX => SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetX, MobilePhysicsConstants.RocketCatchBoxCenterOffsetX);
+        public static float RocketCatchBoxCenterOffsetX(bool usesTimeTravelPhysics)
+        {
+            return usesTimeTravelPhysics
+                ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetX
+                : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetX, MobilePhysicsConstants.RocketCatchBoxCenterOffsetX);
+        }
 
         /// <summary>
         /// Y offset of the catch-slat box center from the rocket object's center.
         /// </summary>
-        public static float RocketCatchBoxCenterOffsetY => SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetY, MobilePhysicsConstants.RocketCatchBoxCenterOffsetY);
+        public static float RocketCatchBoxCenterOffsetY(bool usesTimeTravelPhysics)
+        {
+            return usesTimeTravelPhysics
+                ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetY
+                : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetY, MobilePhysicsConstants.RocketCatchBoxCenterOffsetY);
+        }
 
         /// <summary>
         /// Number of sample points drawn for each bungee segment.
