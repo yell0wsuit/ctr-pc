@@ -22,6 +22,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Resource name of the atlas the effect parts and stage root draw from.</summary>
         private readonly string _textureResourceName;
 
+        /// <summary>Whether spawned roots use the Flash stage center as their scene-graph anchor.</summary>
+        private readonly bool _centerOnStage;
+
         /// <summary>Stage-local position that should land on the spawn point.</summary>
         private readonly float _anchorX;
 
@@ -33,14 +36,18 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="animationXmlFileName">Flash XML file name under the animations directory.</param>
         /// <param name="textureResourceName">Atlas resource name shared by the parts and stage root.</param>
-        public FlashXmlOneShotEffect(string animationXmlFileName, string textureResourceName)
+        /// <param name="centerOnStage">
+        /// Whether the root uses centered element anchors instead of the first part's authored position.
+        /// </param>
+        public FlashXmlOneShotEffect(string animationXmlFileName, string textureResourceName, bool centerOnStage = false)
         {
             _definition = FlashXmlImporter.ParseFile(
                 ContentPaths.GetAnimationXmlAbsolutePath(animationXmlFileName));
             _textureResourceName = textureResourceName;
+            _centerOnStage = centerOnStage;
 
-            // Center the effect on the spawn point by anchoring the stage at the first part's
-            // first keyframe position, falling back to the stage center when unavailable.
+            // Effects without centered scene-graph anchors use the first part's authored pivot.
+            // The fallback keeps malformed exports centered on their stage.
             (_anchorX, _anchorY) = ResolveStageAnchor(_definition);
         }
 
@@ -60,9 +67,17 @@ namespace CutTheRopeDX.GameMain
             root.SetDrawQuad(0);
             root.color = RGBAColor.transparentRGBA;
             root.passColorToChilds = false;
-            root.useCustomAnchor = true;
-            root.customAnchorX = _anchorX;
-            root.customAnchorY = _anchorY;
+            if (_centerOnStage)
+            {
+                root.anchor = 18;
+                root.parentAnchor = 9;
+            }
+            else
+            {
+                root.useCustomAnchor = true;
+                root.customAnchorX = _anchorX;
+                root.customAnchorY = _anchorY;
+            }
             root.width = (int)MathF.Round(_definition.StageWidth);
             root.height = (int)MathF.Round(_definition.StageHeight);
             root.x = x;

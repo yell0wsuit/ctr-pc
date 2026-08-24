@@ -14,13 +14,15 @@ namespace CutTheRopeDX.GameMain
         private const float ChildTimeScale = 0.8f;
         private const int VerticalWavesPerEdge = 5;
         private const int HorizontalWavesPerEdge = 8;
+        private const float AtlasTransparentInsetPerSide = 1f;
         private const int FadeInTimeline = 0;
         private const int FadeOutTimeline = 1;
 
         private readonly AnimationsPool wavePool = new();
         private Image plate;
+        private Image innerPlate;
         private readonly FlashXmlOneShotEffect waveEffect =
-            new("fx_pause.xml", Resources.Img.FxPause);
+            new("fx_pause.xml", Resources.Img.FxPause, centerOnStage: true);
         private readonly Random random = new();
         private float sinceLastBurst;
 
@@ -41,10 +43,10 @@ namespace CutTheRopeDX.GameMain
             };
 
             overlay.plate.anchor = overlay.plate.parentAnchor = 18;
-            Image innerPlate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 3);
-            innerPlate.anchor = innerPlate.parentAnchor = 18;
-            innerPlate.blendingMode = 2;
-            _ = overlay.plate.AddChild(innerPlate);
+            overlay.innerPlate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 3);
+            overlay.innerPlate.anchor = overlay.innerPlate.parentAnchor = 18;
+            overlay.innerPlate.blendingMode = 2;
+            _ = overlay.plate.AddChild(overlay.innerPlate);
             _ = overlay.AddChild(overlay.plate);
             _ = overlay.AddChild(overlay.wavePool);
             overlay.AddFadeTimelines();
@@ -61,8 +63,18 @@ namespace CutTheRopeDX.GameMain
             height = (int)MathF.Round(coverHeight);
             if (plate != null && plate.width > 0 && plate.height > 0)
             {
-                plate.scaleX = coverWidth / plate.width;
-                plate.scaleY = coverHeight / plate.height;
+                float visiblePlateWidth = plate.width - (AtlasTransparentInsetPerSide * 2f);
+                float visiblePlateHeight = plate.height - (AtlasTransparentInsetPerSide * 2f);
+                plate.scaleX = coverWidth / visiblePlateWidth;
+                plate.scaleY = coverHeight / visiblePlateHeight;
+
+                if (innerPlate != null)
+                {
+                    float visibleInnerWidth = innerPlate.width - (AtlasTransparentInsetPerSide * 2f);
+                    float visibleInnerHeight = innerPlate.height - (AtlasTransparentInsetPerSide * 2f);
+                    innerPlate.scaleX = visiblePlateWidth / visibleInnerWidth;
+                    innerPlate.scaleY = visiblePlateHeight / visibleInnerHeight;
+                }
             }
         }
 
@@ -143,11 +155,11 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < VerticalWavesPerEdge; i++)
             {
-                waveEffect.SpawnInto(wavePool, RandomUpTo(width), 0f, 0, 180f);
+                waveEffect.SpawnInto(wavePool, RandomUpTo(width), 0f, 0, 90f);
             }
             for (int i = 0; i < HorizontalWavesPerEdge; i++)
             {
-                waveEffect.SpawnInto(wavePool, 0f, RandomUpTo(height), 0, 90f);
+                waveEffect.SpawnInto(wavePool, 0f, RandomUpTo(height), 0, 180f);
             }
             for (int i = 0; i < HorizontalWavesPerEdge; i++)
             {

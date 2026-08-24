@@ -1,3 +1,5 @@
+using System.Linq;
+
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
@@ -47,14 +49,40 @@ namespace CutTheRopeDX.Tests
             _ = HeadlessGame.Boot();
             PauseSwitcherWaves waves = PauseSwitcherWaves.Create(800f, 600f);
             BaseElement plate = waves.GetChild(0);
+            BaseElement innerPlate = plate.GetChild(0);
 
-            Assert.Equal(800f / plate.width, plate.scaleX, 3);
-            Assert.Equal(600f / plate.height, plate.scaleY, 3);
+            Assert.Equal(800f, (plate.width - 2f) * plate.scaleX, 3);
+            Assert.Equal(600f, (plate.height - 2f) * plate.scaleY, 3);
+            Assert.Equal(800f, (innerPlate.width - 2f) * innerPlate.scaleX * plate.scaleX, 3);
+            Assert.Equal(600f, (innerPlate.height - 2f) * innerPlate.scaleY * plate.scaleY, 3);
 
             waves.Resize(1000f, 500f);
 
-            Assert.Equal(1000f / plate.width, plate.scaleX, 3);
-            Assert.Equal(500f / plate.height, plate.scaleY, 3);
+            Assert.Equal(1000f, (plate.width - 2f) * plate.scaleX, 3);
+            Assert.Equal(500f, (plate.height - 2f) * plate.scaleY, 3);
+            Assert.Equal(1000f, (innerPlate.width - 2f) * innerPlate.scaleX * plate.scaleX, 3);
+            Assert.Equal(500f, (innerPlate.height - 2f) * innerPlate.scaleY * plate.scaleY, 3);
+        }
+
+        [Fact]
+        public void WaveBurstsUseTheIosRotationForEachScreenEdge()
+        {
+            _ = HeadlessGame.Boot();
+            PauseSwitcherWaves waves = PauseSwitcherWaves.Create(800f, 600f);
+
+            waves.Update(0.9f);
+
+            BaseElement pool = waves.GetChild(1);
+            BaseElement[] effects = [.. pool.GetChilds().Values];
+            Assert.All(effects, effect =>
+            {
+                Assert.Equal(18, effect.anchor);
+                Assert.Equal(9, effect.parentAnchor);
+            });
+            Assert.Equal(5, effects.Count(effect => effect.y == 600f && effect.rotation == 0f));
+            Assert.Equal(5, effects.Count(effect => effect.y == 0f && effect.rotation == 90f));
+            Assert.Equal(8, effects.Count(effect => effect.x == 0f && effect.rotation == 180f));
+            Assert.Equal(8, effects.Count(effect => effect.x == 800f && effect.rotation == -90f));
         }
 
         [Fact]
