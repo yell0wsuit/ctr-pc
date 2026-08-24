@@ -426,13 +426,13 @@ namespace CutTheRopeDX.Tests
             Bungee rope = Assert.Single(scene.RegisteredRopes()).Rope;
             Assert.Equal(-1, rope.cut);
             int segment = rope.parts.Count / 2;
-            segment = System.Math.Min(segment, rope.parts.Count - 2);
+            segment = Math.Min(segment, rope.parts.Count - 2);
             Vector from = rope.parts[segment].pos;
             Vector to = rope.parts[segment + 1].pos;
             Vector midpoint = new((from.X + to.X) / 2f, (from.Y + to.Y) / 2f);
             float dx = to.X - from.X;
             float dy = to.Y - from.Y;
-            float length = System.MathF.Sqrt((dx * dx) + (dy * dy));
+            float length = MathF.Sqrt((dx * dx) + (dy * dy));
             Assert.True(length > 0f);
             const float reach = 40f;
             Vector start = scene.ScreenPositionOf(new Vector(

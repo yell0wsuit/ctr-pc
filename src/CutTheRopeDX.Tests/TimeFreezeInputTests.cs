@@ -1,6 +1,6 @@
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
-using CutTheRopeDX.Framework.Core;
 
 using Xunit;
 
