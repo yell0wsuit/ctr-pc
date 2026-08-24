@@ -115,6 +115,25 @@ namespace CutTheRopeDX.GameMain
             sndElectric = CTRSoundMgr.PlaySoundLooped(Resources.Snd.Electric);
         }
 
+        /// <summary>Stops the electric loop without changing the electrified cycle state.</summary>
+        public void SuspendElectricLoop()
+        {
+            CTRSoundMgr.StopLoopedSound(sndElectric);
+            sndElectric = null;
+        }
+
+        /// <summary>Restarts the electric loop when the spikes are still electrified.</summary>
+        public void ResumeElectricLoop()
+        {
+            if (electro && electroOn && sndElectric == null)
+            {
+                sndElectric = CTRSoundMgr.PlaySoundLooped(Resources.Snd.Electric);
+            }
+        }
+
+        /// <summary>Whether the electric loop currently has a playing sound instance.</summary>
+        public bool ElectricLoopPlaying => sndElectric != null;
+
         /// <summary>
         /// Toggles rotatable spikes between their original and perpendicular rotations.
         /// </summary>

@@ -438,6 +438,29 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(spikes);
         }
 
+        /// <summary>Adds electrified spikes with a repeating on/off cycle.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="initialDelay">Delay before the first electrified period.</param>
+        /// <param name="onTime">Duration of each electrified period.</param>
+        /// <param name="offTime">Duration of each quiet period.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario ElectroSpikes(
+            int x,
+            int y,
+            float initialDelay = 0f,
+            float onTime = 5f,
+            float offTime = 0f)
+        {
+            XElement spikes = Node("electro", x, y);
+            spikes.SetAttributeValue("angle", Num(0f));
+            spikes.SetAttributeValue("size", Num(4));
+            spikes.SetAttributeValue("initialDelay", Num(initialDelay));
+            spikes.SetAttributeValue("onTime", Num(onTime));
+            spikes.SetAttributeValue("offTime", Num(offTime));
+            return Add(spikes);
+        }
+
         /// <summary>Adds a time-freeze button.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>

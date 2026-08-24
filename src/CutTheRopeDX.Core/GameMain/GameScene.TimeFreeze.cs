@@ -39,10 +39,63 @@ namespace CutTheRopeDX.GameMain
             if (timeFrozen)
             {
                 switcher.ShowFrozen();
+                StopLoopingMoverSounds();
+                CTRSoundMgr.PlaySound(Resources.Snd.PauseDown);
             }
             else
             {
                 switcher.ShowRunning();
+                RestartLoopingMoverSounds();
+                CTRSoundMgr.PlaySound(Resources.Snd.PauseUp);
+            }
+        }
+
+        /// <summary>Silences looping sounds whose gameplay sources stop when time is frozen.</summary>
+        private void StopLoopingMoverSounds()
+        {
+            foreach (Spikes spike in spikes)
+            {
+                spike.SuspendElectricLoop();
+            }
+
+            if (rockets == null)
+            {
+                return;
+            }
+
+            foreach (Rocket rocket in rockets)
+            {
+                if (rocket?.flyLoopSound == null)
+                {
+                    continue;
+                }
+
+                CTRSoundMgr.StopLoopedSound(rocket.flyLoopSound);
+                rocket.flyLoopSound = null;
+            }
+        }
+
+        /// <summary>Restarts looping sounds for sources that remain active when time resumes.</summary>
+        private void RestartLoopingMoverSounds()
+        {
+            foreach (Spikes spike in spikes)
+            {
+                spike.ResumeElectricLoop();
+            }
+
+            if (rockets == null)
+            {
+                return;
+            }
+
+            foreach (Rocket rocket in rockets)
+            {
+                if (rocket != null
+                    && rocket.flyLoopSound == null
+                    && RocketBoundCandy(rocket) != null)
+                {
+                    rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                }
             }
         }
 

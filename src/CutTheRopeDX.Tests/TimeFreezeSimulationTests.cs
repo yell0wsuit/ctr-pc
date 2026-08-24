@@ -1,4 +1,7 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
 
@@ -182,6 +185,132 @@ namespace CutTheRopeDX.Tests
             _ = scene.TouchUpXYIndex(end.X, end.Y, 0);
 
             Assert.NotEqual(-1, rope.cut);
+        }
+
+        [Fact]
+        public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
+        {
+            _ = HeadlessGame.Boot();
+            SoundMgr manager = Application.SharedSoundMgr();
+            RecordingAudioBackend backend = new();
+            bool originalSoundPreference = Preferences.GetBooleanForKey("SOUND_ON");
+            SoundMgr.SetBackend(backend);
+            manager.StopAllSounds();
+            Preferences.SetBooleanForKey(true, "SOUND_ON");
+
+            try
+            {
+                GameScene scene = Scenario.New()
+                    .Candy(160, 200)
+                    .OmNom(160, 440)
+                    .Rocket(160, 200, time: 2f)
+                    .ElectroSpikes(260, 300)
+                    .PauseSwitcher(60, 440)
+                    .Build();
+                Rocket rocket = Act.BindRocket(scene, scene.Candy());
+                Spikes electro = scene.SpikeStrips()[0];
+                Assert.True(Interaction.StepUntil(scene, () => electro.ElectricLoopPlaying));
+                ISoundInstance originalRocketLoop = rocket.flyLoopSound;
+                Assert.NotNull(originalRocketLoop);
+
+                Freeze(scene);
+
+                Assert.False(electro.ElectricLoopPlaying);
+                Assert.Null(rocket.flyLoopSound);
+
+                Freeze(scene);
+
+                Assert.True(electro.ElectricLoopPlaying);
+                Assert.NotNull(rocket.flyLoopSound);
+                Assert.NotSame(originalRocketLoop, rocket.flyLoopSound);
+            }
+            finally
+            {
+                manager.StopAllSounds();
+                SoundMgr.SetBackend(null);
+                Preferences.SetBooleanForKey(originalSoundPreference, "SOUND_ON");
+            }
+        }
+
+        private sealed class RecordingAudioBackend : IAudioBackend
+        {
+            public AudioPlaybackState MusicState => AudioPlaybackState.Stopped;
+
+            public ISoundEffect LoadSound(string contentPath)
+            {
+                return new RecordingSoundEffect();
+            }
+
+            public IMusicTrack LoadMusic(string contentPath)
+            {
+                throw new NotSupportedException();
+            }
+
+            public void PlayMusic(IMusicTrack track, bool repeating)
+            {
+            }
+
+            public void StopMusic()
+            {
+            }
+
+            public void PauseMusic()
+            {
+            }
+
+            public void ResumeMusic()
+            {
+            }
+
+            public bool TryInstallSongCompletionCallback(IMusicTrack track, EventHandler<EventArgs> onDecoderFinished)
+            {
+                return false;
+            }
+        }
+
+        private sealed class RecordingSoundEffect : ISoundEffect
+        {
+            public ISoundInstance CreateInstance()
+            {
+                return new RecordingSoundInstance();
+            }
+
+            public void Dispose()
+            {
+            }
+        }
+
+        private sealed class RecordingSoundInstance : ISoundInstance
+        {
+            public bool IsLooped { get; set; }
+
+            public float Volume { get; set; }
+
+            public AudioPlaybackState State { get; private set; } = AudioPlaybackState.Stopped;
+
+            public void Play()
+            {
+                State = AudioPlaybackState.Playing;
+            }
+
+            public void Stop()
+            {
+                State = AudioPlaybackState.Stopped;
+            }
+
+            public void Pause()
+            {
+                State = AudioPlaybackState.Paused;
+            }
+
+            public void Resume()
+            {
+                State = AudioPlaybackState.Playing;
+            }
+
+            public void Dispose()
+            {
+            }
         }
     }
 }
