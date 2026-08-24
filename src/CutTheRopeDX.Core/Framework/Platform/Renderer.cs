@@ -14,6 +14,9 @@ namespace CutTheRopeDX.Framework.Platform
     /// </summary>
     internal static class Renderer
     {
+        private static BlendingFactor currentBlendSource = BlendingFactor.GLONE;
+        private static BlendingFactor currentBlendDestination = BlendingFactor.GLONEMINUSSRCALPHA;
+
         #region OpenGL State Constants
         /// <summary>
         /// Enables/disables 2D texture mapping. When enabled, textures are applied to primitives.
@@ -296,11 +299,22 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public static void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
+            currentBlendSource = sfactor;
+            currentBlendDestination = dfactor;
             if (PlatformServices.Render is not { } r)
             {
                 return;
             }
             r.SetBlendFunc(sfactor, dfactor);
+        }
+
+        /// <summary>
+        /// Gets the blend factors most recently applied through the renderer facade.
+        /// </summary>
+        public static void GetBlendFunc(out BlendingFactor sfactor, out BlendingFactor dfactor)
+        {
+            sfactor = currentBlendSource;
+            dfactor = currentBlendDestination;
         }
 
         #endregion

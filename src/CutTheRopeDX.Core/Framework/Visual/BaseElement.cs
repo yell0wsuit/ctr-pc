@@ -226,6 +226,8 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (blendingMode != -1)
             {
+                Renderer.GetBlendFunc(out previousBlendSource, out previousBlendDestination);
+                restoreBlendState = true;
                 switch (blendingMode)
                 {
                     case 0:
@@ -286,6 +288,11 @@ namespace CutTheRopeDX.Framework.Visual
             if (passColorToChilds)
             {
                 RestoreColor(this);
+            }
+            if (restoreBlendState)
+            {
+                Renderer.SetBlendFunc(previousBlendSource, previousBlendDestination);
+                restoreBlendState = false;
             }
         }
 
@@ -893,6 +900,12 @@ namespace CutTheRopeDX.Framework.Visual
         /// Whether a matrix push is pending and needs to be popped.
         /// </summary>
         private bool pushM;
+
+        private bool restoreBlendState;
+
+        private BlendingFactor previousBlendSource;
+
+        private BlendingFactor previousBlendDestination;
 
         /// <summary>
         /// Whether this element is drawn.
