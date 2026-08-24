@@ -454,6 +454,10 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
+            int capturedSwitcherTouchIndex = pauseSwitcherTouchIndex;
+            PauseSwitcher capturedSwitcher = pauseSwitcherTouchTarget;
+            pauseSwitcherTouchIndex = -1;
+            pauseSwitcherTouchTarget = null;
             // Outcome input ends the visual trace without reaching any gameplay object.
             if (AcceptsVisualOnlyPointerInput)
             {
@@ -465,10 +469,6 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             gesture.End();
-            int capturedSwitcherTouchIndex = pauseSwitcherTouchIndex;
-            PauseSwitcher capturedSwitcher = pauseSwitcherTouchTarget;
-            pauseSwitcherTouchIndex = -1;
-            pauseSwitcherTouchTarget = null;
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)

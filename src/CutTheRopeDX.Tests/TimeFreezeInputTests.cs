@@ -88,5 +88,34 @@ namespace CutTheRopeDX.Tests
 
             Assert.False(scene.IsTimeFrozen());
         }
+
+        [Fact]
+        public void OutcomeReleaseClearsTheCapturedSwitcherBeforeReturningEarly()
+        {
+            GameScene scene = SceneWithSwitcher(out float bx, out float by);
+
+            _ = scene.TouchDownXYIndex(bx, by, 0);
+            Assert.True(scene.gameplayFlow.TryBeginWin());
+            _ = scene.TouchUpXYIndex(bx, by, 0);
+            scene.gameplayFlow.ResetOutcome();
+
+            _ = scene.TouchUpXYIndex(bx, by, 0);
+
+            Assert.False(scene.IsTimeFrozen());
+        }
+
+        [Fact]
+        public void SceneUpdateAdvancesThePauseSwitcherBurstAnimation()
+        {
+            GameScene scene = SceneWithSwitcher(out float bx, out float by);
+            PauseSwitcher switcher = scene.PauseSwitchers()[0];
+            _ = scene.TouchDownXYIndex(bx, by, 0);
+            _ = scene.TouchUpXYIndex(bx, by, 0);
+            float before = switcher.GetChild(0).GetCurrentTimeline().time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.NotEqual(before, switcher.GetChild(0).GetCurrentTimeline().time);
+        }
     }
 }

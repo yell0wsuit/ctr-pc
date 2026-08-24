@@ -18,6 +18,10 @@ namespace CutTheRopeDX.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
+            foreach (PauseSwitcher switcher in pauseSwitchers)
+            {
+                switcher?.Update(delta);
+            }
             pauseSwitcherWaves?.Update(delta);
             for (int ti = 0; ti < targets.Count; ti++)
             {
