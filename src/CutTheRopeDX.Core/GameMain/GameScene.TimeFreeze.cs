@@ -35,6 +35,7 @@ namespace CutTheRopeDX.GameMain
         private void ToggleTimeFreeze(PauseSwitcher switcher)
         {
             timeFrozen = !timeFrozen;
+            SetMoversHeld(timeFrozen);
             if (timeFrozen)
             {
                 switcher.ShowFrozen();
@@ -42,6 +43,29 @@ namespace CutTheRopeDX.GameMain
             else
             {
                 switcher.ShowRunning();
+            }
+        }
+
+        /// <summary>
+        /// Suspends or resumes path travel for objects whose iOS updates receive the shared mover
+        /// gate. The original gate also checks for clock elements, which this port does not have.
+        /// </summary>
+        /// <param name="held">Whether path travel is suspended.</param>
+        private void SetMoversHeld(bool held)
+        {
+            foreach (Spikes spike in spikes)
+            {
+                spike.moverHeld = held;
+            }
+
+            foreach (Bouncer bouncer in bouncers)
+            {
+                bouncer.moverHeld = held;
+            }
+
+            foreach (Sock sock in socks)
+            {
+                sock.moverHeld = held;
             }
         }
 

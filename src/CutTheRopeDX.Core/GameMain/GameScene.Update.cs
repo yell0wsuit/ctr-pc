@@ -542,7 +542,7 @@ namespace CutTheRopeDX.GameMain
                         for (int ti = 0; ti < targets.Count; ti++)
                         {
                             TargetAnimationController controller = targets[ti].controller;
-                            if (controller?.IsIdleLoopPlaying() == true)
+                            if (!timeFrozen && controller?.IsIdleLoopPlaying() == true)
                             {
                                 controller.PlayExcited();
                                 CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, controller.SkinDefinition);
@@ -834,6 +834,10 @@ namespace CutTheRopeDX.GameMain
             {
                 Sock sock3 = (Sock)obj11;
                 sock3.Update(delta);
+                if (timeFrozen)
+                {
+                    continue;
+                }
                 if (Mover.MoveVariableToTarget(ref sock3.idleTimeout, 0, 1, delta))
                 {
                     sock3.state = Sock.SOCK_IDLE;
@@ -960,8 +964,16 @@ namespace CutTheRopeDX.GameMain
                         rocket.point.pos = rocketStar.pos;
                         rocket.point.prevPos = rocketStar.pos;
                     }
-                    rocket.Update(delta);
+                    rocket.Update(delta, timeFrozen);
                     rocket.UpdateRotation();
+                    if (timeFrozen)
+                    {
+                        if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_FLY)
+                        {
+                            rocket.point.pos = rocketStar.pos;
+                        }
+                        continue;
+                    }
                     // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
                     // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
                     // candy) is healed here every frame while the rocket is bound — mirrors the
@@ -1207,6 +1219,11 @@ namespace CutTheRopeDX.GameMain
                     {
                         anyCandyHit = true;
 
+                        if (timeFrozen)
+                        {
+                            continue;
+                        }
+
                         // A hand that just caught this candy keeps it for a moment, otherwise the
                         // bouncer takes it straight back and the two fight over it every frame. The
                         // window belongs to the individual hold, so a candy held past its own grace
@@ -1366,43 +1383,46 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            for (int ti = 0; ti < targets.Count; ti++)
+            if (!timeFrozen)
             {
-                TargetContext t = targets[ti];
-                // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
-                // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
+                for (int ti = 0; ti < targets.Count; ti++)
                 {
-                    continue;
-                }
-                Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
-                bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
-
-                if (t.Feeding.Phase == TargetFeedingPhase.Idle && canInteractWithTarget)
-                {
-                    if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
+                    TargetContext t = targets[ti];
+                    // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
+                    // not react to a remaining candy during the loss reaction.
+                    if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
                     {
-                        if (t.Feeding.TryOpenMouth(closeDelay: 1f))
+                        continue;
+                    }
+                    Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
+                    bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
+
+                    if (t.Feeding.Phase == TargetFeedingPhase.Idle && canInteractWithTarget)
+                    {
+                        if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
                         {
-                            t.controller?.PlayMouthOpening();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                            if (t.Feeding.TryOpenMouth(closeDelay: 1f))
+                            {
+                                t.controller?.PlayMouthOpening();
+                                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                            }
                         }
                     }
-                }
-                else if (t.Feeding.Phase == TargetFeedingPhase.MouthOpen && canInteractWithTarget)
-                {
-                    bool candyNearby = CandyDecisions.ShouldOpenMouth(
-                        targetPos,
-                        candyViews,
-                        ActivePhysicsConstants.MouthOpenDistance);
-                    if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
+                    else if (t.Feeding.Phase == TargetFeedingPhase.MouthOpen && canInteractWithTarget)
                     {
-                        t.controller?.PlayMouthClosing();
-                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
-                        tummyTeasers++;
-                        if (tummyTeasers >= 10)
+                        bool candyNearby = CandyDecisions.ShouldOpenMouth(
+                            targetPos,
+                            candyViews,
+                            ActivePhysicsConstants.MouthOpenDistance);
+                        if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
                         {
-                            CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                            t.controller?.PlayMouthClosing();
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
+                            tummyTeasers++;
+                            if (tummyTeasers >= 10)
+                            {
+                                CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                            }
                         }
                     }
                 }
@@ -1410,7 +1430,7 @@ namespace CutTheRopeDX.GameMain
             // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
             // Once a win/loss transition is active, no further candy may be eaten so a sad Om Nom
             // does not consume a remaining candy during the loss transition.
-            if (gameplayFlow.CanTriggerOutcome && gameplayFlow.CanReactToCandy())
+            if (!timeFrozen && gameplayFlow.CanTriggerOutcome && gameplayFlow.CanReactToCandy())
             {
                 for (int ti = 0; ti < targets.Count; ti++)
                 {

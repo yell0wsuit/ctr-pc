@@ -63,7 +63,7 @@ namespace CutTheRopeDX.Framework.Helpers
                 CalculateTopLeft(this);
                 topLeftCalculated = true;
             }
-            if (mover != null)
+            if (mover != null && !moverHeld)
             {
                 mover.Update(delta);
                 x = mover.pos.X;
@@ -294,6 +294,12 @@ namespace CutTheRopeDX.Framework.Helpers
         /// Mover controlling this object's position and rotation, or <see langword="null"/>.
         /// </summary>
         public Mover mover;
+
+        /// <summary>
+        /// Whether this object's travel is suspended. A held mover keeps its position and angle,
+        /// while the object's own visuals and timelines carry on.
+        /// </summary>
+        public bool moverHeld;
 
         /// <summary>
         /// Axis-aligned bounding box relative to the element origin.
