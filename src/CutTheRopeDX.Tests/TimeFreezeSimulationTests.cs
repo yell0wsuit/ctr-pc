@@ -204,6 +204,57 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void OmNomAnimationHoldsItsCurrentFrameUntilTimeResumes()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 100)
+                .OmNom(160, 400)
+                .PauseSwitcher(60, 440)
+                .Build();
+            Timeline timeline = Assert.IsType<Timeline>(scene.Targets()[0].targetObject.GetCurrentTimeline());
+            HeadlessGame.StepFrames(scene, 4);
+            Freeze(scene);
+            float frozenAt = timeline.time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(frozenAt, timeline.time);
+
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.True(timeline.time > frozenAt);
+        }
+
+        [Fact]
+        public void BothTimeTravelOmNomsHoldTheirCurrentFramesWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 100)
+                .OmNom(100, 400)
+                .OmNom(220, 400)
+                .PauseSwitcher(60, 440)
+                .Build();
+            Timeline first = Assert.IsType<Timeline>(scene.Targets()[0].targetObject.GetCurrentTimeline());
+            Timeline second = Assert.IsType<Timeline>(scene.Targets()[1].targetObject.GetCurrentTimeline());
+            HeadlessGame.StepFrames(scene, 4);
+            Freeze(scene);
+            float firstFrozenAt = first.time;
+            float secondFrozenAt = second.time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(firstFrozenAt, first.time);
+            Assert.Equal(secondFrozenAt, second.time);
+
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.True(first.time > firstFrozenAt);
+            Assert.True(second.time > secondFrozenAt);
+        }
+
+        [Fact]
         public void IdleRocketDoesNotBindCandyWhileFrozen()
         {
             GameScene scene = Scenario.New()

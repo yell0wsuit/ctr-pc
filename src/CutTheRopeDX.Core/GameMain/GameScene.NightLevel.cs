@@ -115,11 +115,10 @@ namespace CutTheRopeDX.GameMain
         ///   <item><description>Transitioning between awake and sleeping states</description></item>
         ///   <item><description>Sleep breathing animation (pulse effect)</description></item>
         ///   <item><description>Playing sleep sounds at regular intervals</description></item>
-        ///   <item><description>Updating star lit states based on light bulb proximity</description></item>
         ///   <item><description>Positioning zzz animations on Om Nom</description></item>
         /// </list>
         /// </remarks>
-        private void UpdateNightLevel(float delta)
+        private void UpdateNightTargetPresentation(float delta)
         {
             if (!nightLevel)
             {
@@ -196,8 +195,17 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+        }
 
-            // Update star lit states based on proximity to light bulbs
+        /// <summary>Updates night-star illumination independently of Om Nom's animation clock.</summary>
+        private void UpdateNightStarLighting()
+        {
+            if (!nightLevel)
+            {
+                return;
+            }
+
+            // Update star lit states based on proximity to light bulbs.
             foreach (Star star in stars)
             {
                 if (star == null)
@@ -215,7 +223,6 @@ namespace CutTheRopeDX.GameMain
                 }
                 star.SetLitState(lit);
             }
-
         }
 
         /// <summary>

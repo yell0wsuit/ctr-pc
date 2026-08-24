@@ -28,7 +28,10 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 if (t.targetObject != null)
                 {
-                    t.controller?.UpdateAdditionalOverlays(delta);
+                    if (!timeFrozen)
+                    {
+                        t.controller?.UpdateAdditionalOverlays(delta);
+                    }
                     t.controller?.SyncAdditionalOverlayPosition(t.targetObject.x, t.targetObject.y);
                 }
             }
@@ -479,15 +482,19 @@ namespace CutTheRopeDX.GameMain
                     rightPoint.AddConstraintwithRestLengthofType(leftPoint, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
-            targetObject?.Update(delta);
-            // Update additional Om Noms' animations (targets[0] handled above via targetObject).
-            for (int ti = 1; ti < targets.Count; ti++)
+            if (!timeFrozen)
             {
-                targets[ti].targetObject?.Update(delta);
+                targetObject?.Update(delta);
+                // Update additional Om Noms' animations (targets[0] handled above via targetObject).
+                for (int ti = 1; ti < targets.Count; ti++)
+                {
+                    targets[ti].targetObject?.Update(delta);
+                }
+                UpdateNightTargetPresentation(delta);
+                UpdatePostEatSleep(delta);
             }
             UpdateLightEmitterPhysics();
-            UpdateNightLevel(delta);
-            UpdatePostEatSleep(delta);
+            UpdateNightStarLighting();
             conveyors.Update(delta);
 
             UpdateAntConveyor(delta);
