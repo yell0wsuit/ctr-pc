@@ -60,8 +60,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="coverHeight">Height swept by the waves.</param>
         public void Resize(float coverWidth, float coverHeight)
         {
+            int previousWidth = width;
+            int previousHeight = height;
             width = (int)MathF.Round(coverWidth);
             height = (int)MathF.Round(coverHeight);
+            ReflowActiveWaves(previousWidth, previousHeight);
             if (plate != null && plate.width > 0 && plate.height > 0)
             {
                 // Keep the atlas's transparent border and faint antialias ramp outside the
@@ -78,6 +81,45 @@ namespace CutTheRopeDX.GameMain
                     float visibleInnerHeight = innerPlate.height - (AtlasEdgeBleedPerSide * 2f);
                     innerPlate.scaleX = visiblePlateWidth / visibleInnerWidth;
                     innerPlate.scaleY = visiblePlateHeight / visibleInnerHeight;
+                }
+            }
+        }
+
+        /// <summary>Keeps already-playing waves attached to their viewport edge after a resize.</summary>
+        /// <param name="previousWidth">Overlay width used when the waves were positioned.</param>
+        /// <param name="previousHeight">Overlay height used when the waves were positioned.</param>
+        private void ReflowActiveWaves(int previousWidth, int previousHeight)
+        {
+            if (previousWidth <= 0 || previousHeight <= 0
+                || (previousWidth == width && previousHeight == height))
+            {
+                return;
+            }
+
+            float horizontalScale = width / (float)previousWidth;
+            float verticalScale = height / (float)previousHeight;
+            foreach (BaseElement wave in wavePool.GetChilds().Values)
+            {
+                switch (wave.rotation)
+                {
+                    case 0f:
+                        wave.x *= horizontalScale;
+                        wave.y = height;
+                        break;
+                    case 180f:
+                        wave.x *= horizontalScale;
+                        wave.y = 0f;
+                        break;
+                    case 90f:
+                        wave.x = 0f;
+                        wave.y *= verticalScale;
+                        break;
+                    case -90f:
+                        wave.x = width;
+                        wave.y *= verticalScale;
+                        break;
+                    default:
+                        break;
                 }
             }
         }

@@ -87,6 +87,60 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void ActiveWaveBurstsReflowWithTheViewportWithoutWaitingForRespawn()
+        {
+            _ = HeadlessGame.Boot();
+            PauseSwitcherWaves waves = PauseSwitcherWaves.Create(800f, 600f);
+            waves.Update(0.9f);
+            waves.Update(0.1f);
+            BaseElement pool = waves.GetChild(1);
+            (BaseElement Effect, float X, float Y, float Rotation, Timeline Timeline,
+                int TimelineIndex, float TimelineTime, Timeline.TimelineState TimelineState)[] original =
+                [.. pool.GetChilds().Values.Select(effect =>
+                {
+                    Timeline timeline = effect.GetCurrentTimeline();
+                    return (effect, effect.x, effect.y, effect.rotation, timeline,
+                        effect.GetCurrentTimelineIndex(), timeline.time, timeline.state);
+                })];
+
+            waves.Resize(1200f, 450f);
+
+            foreach ((BaseElement effect, float oldX, float oldY, float oldRotation,
+                Timeline timeline, int timelineIndex, float timelineTime,
+                Timeline.TimelineState timelineState) in original)
+            {
+                Assert.Equal(oldRotation, effect.rotation);
+                Assert.Same(timeline, effect.GetCurrentTimeline());
+                Assert.Equal(timelineIndex, effect.GetCurrentTimelineIndex());
+                Assert.Equal(timelineTime, timeline.time);
+                Assert.Equal(timelineState, timeline.state);
+
+                switch (oldRotation)
+                {
+                    case 0f:
+                        Assert.Equal(oldX * 1.5f, effect.x, 3);
+                        Assert.Equal(450f, effect.y);
+                        break;
+                    case 180f:
+                        Assert.Equal(oldX * 1.5f, effect.x, 3);
+                        Assert.Equal(0f, effect.y);
+                        break;
+                    case 90f:
+                        Assert.Equal(0f, effect.x);
+                        Assert.Equal(oldY * 0.75f, effect.y, 3);
+                        break;
+                    case -90f:
+                        Assert.Equal(1200f, effect.x);
+                        Assert.Equal(oldY * 0.75f, effect.y, 3);
+                        break;
+                    default:
+                        Assert.Fail($"Unexpected wave rotation {effect.rotation}.");
+                        break;
+                }
+            }
+        }
+
+        [Fact]
         public void PauseOverlayUsesTheIosAdditiveBlendMode()
         {
             _ = HeadlessGame.Boot();
