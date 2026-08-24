@@ -18,6 +18,7 @@ namespace CutTheRopeDX.GameMain
         private const int FadeOutTimeline = 1;
 
         private readonly AnimationsPool wavePool = new();
+        private Image plate;
         private readonly FlashXmlOneShotEffect waveEffect =
             new("fx_pause.xml", Resources.Img.FxPause);
         private readonly Random random = new();
@@ -35,21 +36,19 @@ namespace CutTheRopeDX.GameMain
             PauseSwitcherWaves overlay = new()
             {
                 visible = false,
-                color = RGBAColor.transparentRGBA
+                color = RGBAColor.transparentRGBA,
+                plate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 2)
             };
-            overlay.Resize(coverWidth, coverHeight);
 
-            Image plate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 2);
-            plate.anchor = 18;
-            plate.parentAnchor = 18;
+            overlay.plate.anchor = overlay.plate.parentAnchor = 18;
             Image innerPlate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 3);
-            innerPlate.anchor = 18;
-            innerPlate.parentAnchor = 18;
+            innerPlate.anchor = innerPlate.parentAnchor = 18;
             innerPlate.blendingMode = 2;
-            _ = plate.AddChild(innerPlate);
-            _ = overlay.AddChild(plate);
+            _ = overlay.plate.AddChild(innerPlate);
+            _ = overlay.AddChild(overlay.plate);
             _ = overlay.AddChild(overlay.wavePool);
             overlay.AddFadeTimelines();
+            overlay.Resize(coverWidth, coverHeight);
             return overlay;
         }
 
@@ -60,6 +59,11 @@ namespace CutTheRopeDX.GameMain
         {
             width = (int)MathF.Round(coverWidth);
             height = (int)MathF.Round(coverHeight);
+            if (plate != null && plate.width > 0 && plate.height > 0)
+            {
+                plate.scaleX = coverWidth / plate.width;
+                plate.scaleY = coverHeight / plate.height;
+            }
         }
 
         /// <inheritdoc />

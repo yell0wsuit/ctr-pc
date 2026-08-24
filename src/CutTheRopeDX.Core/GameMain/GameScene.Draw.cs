@@ -332,11 +332,12 @@ namespace CutTheRopeDX.GameMain
             DrawCuts();
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
+            staticAniPool.Draw();
             if (pauseSwitcherWaves?.visible == true)
             {
                 pauseSwitcherWaves.Draw();
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
-            staticAniPool.Draw();
             PostDraw();
         }
 
