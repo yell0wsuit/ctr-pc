@@ -455,7 +455,12 @@ namespace CutTheRopeDX.GameMain
             }
 
             CTRRectangle viewport = snapshot.VisibleBounds;
-            pauseSwitcherWaves?.Resize(viewport.w / camera.Scale, viewport.h / camera.Scale);
+            if (pauseSwitcherWaves != null)
+            {
+                pauseSwitcherWaves.x = viewport.x;
+                pauseSwitcherWaves.y = viewport.y;
+                pauseSwitcherWaves.Resize(viewport.w, viewport.h);
+            }
             if (waterLayer == null)
             {
                 return;

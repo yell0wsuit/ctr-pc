@@ -138,6 +138,10 @@ namespace CutTheRopeDX.GameMain
             {
                 ((Spikes)spike).Draw();
             }
+            foreach (PauseSwitcher switcher in pauseSwitchers)
+            {
+                switcher?.Draw();
+            }
             foreach (object bouncer in bouncers)
             {
                 ((Bouncer)bouncer).Draw();
@@ -236,7 +240,10 @@ namespace CutTheRopeDX.GameMain
             {
                 ((GameObject)starObj).Draw();
             }
-            particlesAniPool.Draw();
+            if (particlesAniPool.visible)
+            {
+                particlesAniPool.Draw();
+            }
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
@@ -328,6 +335,10 @@ namespace CutTheRopeDX.GameMain
             DrawCuts();
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
+            if (pauseSwitcherWaves?.visible == true)
+            {
+                pauseSwitcherWaves.Draw();
+            }
             staticAniPool.Draw();
             PostDraw();
         }

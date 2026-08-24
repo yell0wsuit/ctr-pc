@@ -36,6 +36,7 @@ namespace CutTheRopeDX.GameMain
         {
             timeFrozen = !timeFrozen;
             SetMoversHeld(timeFrozen);
+            particlesAniPool.visible = !timeFrozen;
             if (timeFrozen)
             {
                 switcher.ShowFrozen();
