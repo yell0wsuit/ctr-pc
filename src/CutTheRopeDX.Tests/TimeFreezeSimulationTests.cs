@@ -146,5 +146,42 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(before, rocket.time);
         }
+
+        [Fact]
+        public void RopesStillCutWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200, "first")
+                .Rope(160, 120, 110, "first")
+                .OmNom(160, 440)
+                .PauseSwitcher(60, 440)
+                .Build();
+            HeadlessGame.StepFrames(scene, 5);
+            Freeze(scene);
+            Bungee rope = Assert.Single(scene.RegisteredRopes()).Rope;
+            Assert.Equal(-1, rope.cut);
+            int segment = rope.parts.Count / 2;
+            segment = System.Math.Min(segment, rope.parts.Count - 2);
+            Vector from = rope.parts[segment].pos;
+            Vector to = rope.parts[segment + 1].pos;
+            Vector midpoint = new((from.X + to.X) / 2f, (from.Y + to.Y) / 2f);
+            float dx = to.X - from.X;
+            float dy = to.Y - from.Y;
+            float length = System.MathF.Sqrt((dx * dx) + (dy * dy));
+            Assert.True(length > 0f);
+            const float reach = 40f;
+            Vector start = scene.ScreenPositionOf(new Vector(
+                midpoint.X + (dy / length * reach),
+                midpoint.Y - (dx / length * reach)));
+            Vector end = scene.ScreenPositionOf(new Vector(
+                midpoint.X - (dy / length * reach),
+                midpoint.Y + (dx / length * reach)));
+
+            _ = scene.TouchDownXYIndex(start.X, start.Y, 0);
+            _ = scene.TouchMoveXYIndex(end.X, end.Y, 0);
+            _ = scene.TouchUpXYIndex(end.X, end.Y, 0);
+
+            Assert.NotEqual(-1, rope.cut);
+        }
     }
 }

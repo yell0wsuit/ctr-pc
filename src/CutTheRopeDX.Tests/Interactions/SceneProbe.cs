@@ -85,10 +85,19 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <returns>The object's position in screen space.</returns>
         public static Vector ScreenPositionOf(this GameScene scene, GameObject gameObject)
         {
+            return scene.ScreenPositionOf(new Vector(gameObject.x, gameObject.y));
+        }
+
+        /// <summary>Converts a world position to the input API's screen coordinates.</summary>
+        /// <param name="scene">Scene whose camera performs the conversion.</param>
+        /// <param name="world">Position in world space.</param>
+        /// <returns>The position in screen space.</returns>
+        public static Vector ScreenPositionOf(this GameScene scene, Vector world)
+        {
             Camera2D camera = Field<Camera2D>(scene, "camera");
             return new Vector(
-                (gameObject.x - camera.RenderPos.X) * camera.Scale,
-                (gameObject.y - camera.RenderPos.Y) * camera.Scale);
+                (world.X - camera.RenderPos.X) * camera.Scale,
+                (world.Y - camera.RenderPos.Y) * camera.Scale);
         }
 
         /// <summary>All ghosts.</summary>
