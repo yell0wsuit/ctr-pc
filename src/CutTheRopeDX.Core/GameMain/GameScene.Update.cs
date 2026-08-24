@@ -18,6 +18,7 @@ namespace CutTheRopeDX.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
+            pauseSwitcherWaves?.Update(delta);
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];

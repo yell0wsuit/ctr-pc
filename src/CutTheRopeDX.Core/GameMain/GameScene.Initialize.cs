@@ -50,6 +50,7 @@ namespace CutTheRopeDX.GameMain
             rotatedCircles = [];
             rockets = [];
             pauseSwitchers = [];
+            pauseSwitcherWaves = null;
             timeFrozen = false;
             pauseSwitcherTouchIndex = -1;
             pauseSwitcherTouchTarget = null;

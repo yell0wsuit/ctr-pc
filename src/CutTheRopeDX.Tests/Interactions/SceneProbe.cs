@@ -71,6 +71,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<PauseSwitcher>>(scene, "pauseSwitchers");
         }
 
+        /// <summary>The screen-covering time-freeze wave overlay.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The wave overlay.</returns>
+        public static PauseSwitcherWaves WavesOverlay(this GameScene scene)
+        {
+            return Field<PauseSwitcherWaves>(scene, "pauseSwitcherWaves");
+        }
+
         /// <summary>Whether the scene currently has time stopped.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns><see langword="true"/> when time is frozen.</returns>

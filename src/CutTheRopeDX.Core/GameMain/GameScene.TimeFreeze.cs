@@ -39,12 +39,14 @@ namespace CutTheRopeDX.GameMain
             if (timeFrozen)
             {
                 switcher.ShowFrozen();
+                pauseSwitcherWaves?.PlayFadeIn();
                 StopLoopingMoverSounds();
                 CTRSoundMgr.PlaySound(Resources.Snd.PauseDown);
             }
             else
             {
                 switcher.ShowRunning();
+                pauseSwitcherWaves?.PlayFadeOut();
                 RestartLoopingMoverSounds();
                 CTRSoundMgr.PlaySound(Resources.Snd.PauseUp);
             }

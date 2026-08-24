@@ -52,7 +52,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="x">World-space X position for the effect.</param>
         /// <param name="y">World-space Y position for the effect.</param>
         /// <param name="timelineId">Flash XML timeline ID to play.</param>
-        public void SpawnInto(AnimationsPool pool, float x, float y, int timelineId)
+        /// <param name="rotation">Rotation applied to the spawned root, in degrees.</param>
+        public void SpawnInto(AnimationsPool pool, float x, float y, int timelineId, float rotation = 0f)
         {
             FlashXmlStageRoot root = new();
             _ = root.InitWithTexture(Application.GetTexture(_textureResourceName));
@@ -66,6 +67,7 @@ namespace CutTheRopeDX.GameMain
             root.height = (int)MathF.Round(_definition.StageHeight);
             root.x = x;
             root.y = y;
+            root.rotation = rotation;
 
             List<Image> parts = [];
             FlashXmlTargetAnimationBackend.BuildParts(_definition, root, parts, -1, -1);

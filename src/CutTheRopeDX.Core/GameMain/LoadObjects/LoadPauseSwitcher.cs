@@ -20,6 +20,7 @@ namespace CutTheRopeDX.GameMain
             switcher.y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             switcher.Update(0f);
             pauseSwitchers.Add(switcher);
+            pauseSwitcherWaves = PauseSwitcherWaves.Create(SCREEN_WIDTH, SCREEN_HEIGHT);
         }
     }
 }

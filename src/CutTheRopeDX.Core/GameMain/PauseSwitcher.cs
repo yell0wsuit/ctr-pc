@@ -1,5 +1,11 @@
+using System;
+using System.Collections.Generic;
+
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.Helpers;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -21,6 +27,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Burst animation timeline played when time restarts.</summary>
         private const int UnfreezeTimeline = 1;
 
+        private readonly List<Image> animationParts = [];
+        private FlashXmlStageRoot animationRoot;
+
         /// <summary>Builds a switcher showing its running face.</summary>
         /// <returns>The new switcher.</returns>
         public static PauseSwitcher Create()
@@ -29,6 +38,7 @@ namespace CutTheRopeDX.GameMain
             _ = switcher.InitWithTexture(Application.GetTexture(Resources.Img.ObjPause));
             switcher.SetDrawQuad(RunningQuad);
             switcher.anchor = 18;
+            switcher.AttachAnimation();
             return switcher;
         }
 
@@ -36,14 +46,44 @@ namespace CutTheRopeDX.GameMain
         public void ShowFrozen()
         {
             SetDrawQuad(FrozenQuad);
-            PlayTimeline(FreezeTimeline);
+            PlayAnimation(FreezeTimeline);
         }
 
         /// <summary>Switches the face to running and plays the restarting burst.</summary>
         public void ShowRunning()
         {
             SetDrawQuad(RunningQuad);
-            PlayTimeline(UnfreezeTimeline);
+            PlayAnimation(UnfreezeTimeline);
+        }
+
+        /// <summary>Builds the centered Flash XML burst child used by both button states.</summary>
+        private void AttachAnimation()
+        {
+            FlashXmlAnimationDefinition definition = FlashXmlImporter.ParseFile(
+                ContentPaths.GetAnimationXmlAbsolutePath("obj_pause_ani.xml"));
+            animationRoot = new FlashXmlStageRoot();
+            _ = animationRoot.InitWithTexture(Application.GetTexture(Resources.Img.ObjPause));
+            animationRoot.SetDrawQuad(0);
+            animationRoot.color = RGBAColor.transparentRGBA;
+            animationRoot.passColorToChilds = false;
+            animationRoot.width = (int)MathF.Round(definition.StageWidth);
+            animationRoot.height = (int)MathF.Round(definition.StageHeight);
+            animationRoot.anchor = 9;
+            animationRoot.parentAnchor = 18;
+            animationRoot.blendingMode = 2;
+            animationRoot.visible = false;
+            FlashXmlTargetAnimationBackend.BuildParts(definition, animationRoot, animationParts, -1, -1);
+            FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, animationRoot, -1, -1);
+            _ = AddChildwithID(animationRoot, 0);
+        }
+
+        /// <summary>Plays one exported button burst timeline.</summary>
+        /// <param name="timelineId">Timeline to play.</param>
+        private void PlayAnimation(int timelineId)
+        {
+            animationRoot.visible = true;
+            FlashXmlTargetAnimationBackend.PlayTimeline(animationParts, timelineId);
+            FlashXmlTargetAnimationBackend.PlayRootTimeline(animationRoot, timelineId);
         }
     }
 }

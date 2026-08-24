@@ -449,12 +449,18 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Extends water through any world exposed beyond the authored level frame.</summary>
         private void RelayoutWaterCoverage(ViewportLayoutSnapshot snapshot)
         {
-            if (waterLayer == null || camera.Scale <= 0f)
+            if (camera.Scale <= 0f)
             {
                 return;
             }
 
             CTRRectangle viewport = snapshot.VisibleBounds;
+            pauseSwitcherWaves?.Resize(viewport.w / camera.Scale, viewport.h / camera.Scale);
+            if (waterLayer == null)
+            {
+                return;
+            }
+
             float visibleLeft = camera.RenderPos.X;
             float visibleRight = visibleLeft + (viewport.w / camera.Scale);
             float visibleBottom = camera.RenderPos.Y + (viewport.h / camera.Scale);
@@ -1029,6 +1035,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Buttons that stop and restart time.</summary>
         private List<PauseSwitcher> pauseSwitchers;
+
+        /// <summary>Screen-covering effect shown while time is stopped.</summary>
+        private PauseSwitcherWaves pauseSwitcherWaves;
 
         /// <summary>Whether time is currently stopped.</summary>
         private bool timeFrozen;
