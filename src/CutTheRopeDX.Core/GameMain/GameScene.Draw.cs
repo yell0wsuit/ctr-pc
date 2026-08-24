@@ -240,10 +240,7 @@ namespace CutTheRopeDX.GameMain
             {
                 ((GameObject)starObj).Draw();
             }
-            if (particlesAniPool.visible)
-            {
-                particlesAniPool.Draw();
-            }
+            particlesAniPool.Draw();
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)

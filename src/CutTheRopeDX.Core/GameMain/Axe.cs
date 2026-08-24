@@ -86,9 +86,22 @@ namespace CutTheRopeDX.GameMain
 
         public override void Update(float delta)
         {
+            Update(delta, true);
+        }
+
+        /// <summary>
+        /// Advances the axe's child animations and, when allowed, its blade spin.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
+        /// <param name="canMove">Whether axe physics-driven presentation may advance.</param>
+        public void Update(float delta, bool canMove)
+        {
             base.Update(delta);
 
-            bladeSprite.rotation -= AxeSpin.RotationStepForVelocity(constraint.v);
+            if (canMove)
+            {
+                bladeSprite.rotation -= AxeSpin.RotationStepForVelocity(constraint.v);
+            }
 
             SyncToConstraint();
         }

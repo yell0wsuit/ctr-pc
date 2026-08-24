@@ -324,10 +324,20 @@ namespace CutTheRopeDX.GameMain
                 {
                     body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
                 }
-                body.Point.Update(delta * ropePhysicsSpeed);
+                if (!timeFrozen)
+                {
+                    body.Point.Update(delta * ropePhysicsSpeed);
+                }
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
-                body.Visual.Update(delta);
+                if (body.Visual is Axe axe)
+                {
+                    axe.Update(delta, !timeFrozen);
+                }
+                else
+                {
+                    body.Visual.Update(delta);
+                }
                 CalculateTopLeft(body.Visual);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).

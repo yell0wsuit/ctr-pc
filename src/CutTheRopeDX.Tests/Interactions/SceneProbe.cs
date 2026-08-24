@@ -87,6 +87,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<bool>(scene, "timeFrozen");
         }
 
+        /// <summary>The gameplay particle animation pool.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The scene-owned particle pool.</returns>
+        public static AnimationsPool ParticleAnimations(this GameScene scene)
+        {
+            return Field<AnimationsPool>(scene, "particlesAniPool");
+        }
+
         /// <summary>Converts an object's world position to the input API's screen coordinates.</summary>
         /// <param name="scene">Scene whose camera performs the conversion.</param>
         /// <param name="gameObject">Object whose position is converted.</param>

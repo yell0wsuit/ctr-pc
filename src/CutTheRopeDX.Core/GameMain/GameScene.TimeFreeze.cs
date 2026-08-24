@@ -36,7 +36,7 @@ namespace CutTheRopeDX.GameMain
         {
             timeFrozen = !timeFrozen;
             SetMoversHeld(timeFrozen);
-            particlesAniPool.visible = !timeFrozen;
+            particlesAniPool.updateable = !timeFrozen;
             if (timeFrozen)
             {
                 switcher.ShowFrozen();
@@ -126,9 +126,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Rewinds every candy point to where it started the step and clears its motion, so a
-        /// stopped world stays exactly where it was. Integration still runs; this undoes it,
-        /// which keeps forces and constraints consistent when time restarts.
+        /// Rewinds every candy point to its previous position and clears motion accumulated by
+        /// constraints and other frozen-step interactions. Normal point integration is skipped
+        /// earlier in the step; this final hold mirrors the iOS cleanup pass.
         /// </summary>
         private void HoldFrozenPoints()
         {

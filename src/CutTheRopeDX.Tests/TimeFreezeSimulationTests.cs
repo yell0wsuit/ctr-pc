@@ -2,6 +2,8 @@ using System;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
+using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
 
@@ -17,6 +19,7 @@ namespace CutTheRopeDX.Tests
             GameScene scene = scenario.Build();
             HeadlessGame.StepFrames(scene, 5);
             Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
             return scene;
         }
 
@@ -38,6 +41,111 @@ namespace CutTheRopeDX.Tests
             Vector after = scene.Candy().WholeBody.Point.pos;
             Assert.Equal(before.X, after.X, 3);
             Assert.Equal(before.Y, after.Y, 3);
+        }
+
+        [Fact]
+        public void FrozenCandySkipsNormalPointIntegrationBeforeTheFinalHold()
+        {
+            GameScene scene = FrozenSceneWithFallingCandy();
+            ConstraintedPoint point = scene.Candy().WholeBody.Point;
+            point.totalForce = new Vector(123f, 456f);
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Equal(new Vector(123f, 456f), point.totalForce);
+            Assert.Equal(default, point.a);
+            Assert.Equal(default, point.v);
+            Assert.Equal(default, point.posDelta);
+        }
+
+        [Fact]
+        public void RopeSegmentsKeepSimulatingWhileFrozenCandyStaysPinned()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 240, "first")
+                .Rope(160, 100, 170, "first")
+                .OmNom(160, 440)
+                .PauseSwitcher(60, 440)
+                .Build();
+            HeadlessGame.StepFrames(scene, 5);
+            Freeze(scene);
+            Bungee rope = Assert.Single(scene.RegisteredRopes()).Rope;
+            HeadlessGame.StepFrames(scene, 1);
+            ConstraintedPoint middle = rope.parts[rope.parts.Count / 2];
+            middle.prevPos = middle.pos;
+            middle.pos = new Vector(middle.pos.X + 30f, middle.pos.Y);
+            Vector displaced = middle.pos;
+            Vector candyAt = scene.Candy().WholeBody.Point.pos;
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.NotEqual(displaced, middle.pos);
+            Assert.Equal(candyAt.X, scene.Candy().WholeBody.Point.pos.X, 3);
+            Assert.Equal(candyAt.Y, scene.Candy().WholeBody.Point.pos.Y, 3);
+        }
+
+        [Fact]
+        public void FrozenAxeStopsPhysicsAndBladeSpinButKeepsBubbleAnimationAdvancing()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(60, 100)
+                .Axe(200, 180)
+                .OmNom(160, 440)
+                .PauseSwitcher(60, 440)
+                .Build();
+            CandyContext axeContext = Assert.Single(scene.Candies(), context => context.Capabilities == CandyCapabilities.Axe);
+            Axe axe = Assert.IsType<Axe>(axeContext.WholeBody.Visual);
+            axe.constraint.v = new Vector(100f, 0f);
+            Freeze(scene);
+            float rotation = axe.GetChild(1).rotation;
+            float bubbleTime = axe.bubbleAnimation.GetTimeline(0).time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(rotation, axe.GetChild(1).rotation);
+            Assert.NotEqual(bubbleTime, axe.bubbleAnimation.GetTimeline(0).time);
+        }
+
+        [Fact]
+        public void FrozenCandyBubbleAnimationKeepsAdvancing()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .Bubble(160, 200)
+                .OmNom(160, 440)
+                .PauseSwitcher(60, 440)
+                .Build();
+            CandyContext candy = scene.Candy();
+            _ = Act.CaptureInBubble(scene, candy);
+            Freeze(scene);
+            Timeline timeline = candy.WholeBody.BubbleAnimation.GetTimeline(0);
+            float before = timeline.time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.NotEqual(before, timeline.time);
+        }
+
+        [Fact]
+        public void FreezeStopsParticleUpdatesWithoutChangingDrawVisibility()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 100)
+                .OmNom(160, 400)
+                .PauseSwitcher(60, 440)
+                .Build();
+            AnimationsPool pool = scene.ParticleAnimations();
+            bool authoredVisibility = pool.visible;
+
+            Freeze(scene);
+
+            Assert.False(pool.updateable);
+            Assert.Equal(authoredVisibility, pool.visible);
+
+            Freeze(scene);
+
+            Assert.True(pool.updateable);
+            Assert.Equal(authoredVisibility, pool.visible);
         }
 
         [Fact]

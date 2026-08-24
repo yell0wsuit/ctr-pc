@@ -268,6 +268,18 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(Node("bubble", x, y));
         }
 
+        /// <summary>Adds a Time Travel axe body.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="axeNumber">Optional authored axe identifier.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Axe(int x, int y, string axeNumber = "first")
+        {
+            XElement axe = Node("axe", x, y);
+            axe.SetAttributeValue("axeNumber", axeNumber);
+            return Add(axe);
+        }
+
         /// <summary>Adds a bouncer.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
