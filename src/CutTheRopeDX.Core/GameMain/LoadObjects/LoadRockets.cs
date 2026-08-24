@@ -25,7 +25,7 @@ namespace CutTheRopeDX.GameMain
             rocket.DoRestoreCutTransparency();
             rocket.delegateRocketDelegate = this;
 
-            // Catch-slat bb (0.6 x quad width, 0.05 x quad height of the rocket body quad),
+            // Catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
             // pinned from original XML quad data and center-relative so atlas repacks can't move it.
             float catchWidth = ActivePhysicsConstants.RocketCatchBoxWidth;
             float catchHeight = ActivePhysicsConstants.RocketCatchBoxHeight;

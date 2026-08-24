@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Framework
         public const float GrabWheelRotateDeltaMin = 1f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketReelSpeed" />
-        public const float RocketReelSpeed = 200f;
+        public const float RocketReelSpeed = 600f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.CandyPartsMergeSpeed" />
         public const float CandyPartsMergeSpeed = 200f;
@@ -120,10 +120,7 @@ namespace CutTheRopeDX.Framework
         public const float BouncerMinImpulse = 840f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketPointWeight" />
-        public const float RocketPointWeight = 2.5f;
-
-        /// <inheritdoc cref="ActivePhysicsConstants.RocketActiveVelocityDamping" />
-        public const float RocketActiveVelocityDamping = 40f;
+        public const float RocketPointWeight = 0.5f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeDamping" />
         public const float SteamTubeDamping = 5f;
@@ -197,21 +194,17 @@ namespace CutTheRopeDX.Framework
         /// <remarks>obj_bouncer_02 quad 0.</remarks>
         public const float BouncerLargeCollisionWidth = 302f;
 
-        /// <summary>
-        /// Rocket catch-slat box frozen from the JSON atlas: quad 10 is 358x179 centered at
-        /// (288, 208.5) on the 619x418 obj_rocket sheet; the engine takes 0.6 x width and
-        /// 0.05 x height of that quad.
-        /// </summary>
-        public const float RocketCatchBoxWidth = 214.8f; // 358 * 0.6
+        /// <summary>iOS rocket catch-slat width transformed into DX world coordinates.</summary>
+        public const float RocketCatchBoxWidth = 226.2f; // 116 * 0.65 * 3
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxHeight" />
-        public const float RocketCatchBoxHeight = 8.95f; // 179 * 0.05
+        public const float RocketCatchBoxHeight = 8.7f; // 58 * 0.05 * 3
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetX" />
-        public const float RocketCatchBoxCenterOffsetX = -21.5f; // 288 - 619/2
+        public const float RocketCatchBoxCenterOffsetX = -25.5f; // (91 - 199/2) * 3
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
-        public const float RocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
+        public const float RocketCatchBoxCenterOffsetY = 0f; // (67 - 134/2) * 3
 
         /// <summary>
         /// Maximum rope length used to size rope drawing buffers.

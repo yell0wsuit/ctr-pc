@@ -117,7 +117,7 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(expected, result, precision: 3);
         }
 
-        // Rocket catch-slat bb (0.6 x quad width, 0.05 x quad height of the rocket body quad),
+        // Rocket catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
         // pinned from XML quads and expressed center-relative to the rocket object.
         // Mobile: Experiments base quad 10 = 116x58 centered at (91,67) on the 199x134 sheet, x3.
         [Fact]
@@ -128,14 +128,14 @@ namespace CutTheRopeDX.Tests
                 ActivePhysicsConstants.RocketCatchBoxHeight,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(208.8f, w, precision: 3);  // 116 * 0.6 * 3
+            Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
             Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
             Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
             Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
         }
 
-        // Desktop: dx atlas quad 10 = 358x179 centered at (288, 208.5) on the 619x418 sheet,
-        // frozen as constants so atlas repacks cannot move the hitbox.
+        // Desktop uses the same iOS logical hitbox transformed into DX world coordinates; the
+        // repacked atlas does not own gameplay collision.
         [Fact]
         public void RocketCatchBoxDesktopUsesFrozenDxAtlasQuad()
         {
@@ -144,10 +144,10 @@ namespace CutTheRopeDX.Tests
                 ActivePhysicsConstants.RocketCatchBoxHeight,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(214.8f, w, precision: 3);  // 358 * 0.6
-            Assert.Equal(8.95f, h, precision: 3);   // 179 * 0.05
-            Assert.Equal(-21.5f, ox, precision: 3); // 288 - 309.5
-            Assert.Equal(-0.5f, oy, precision: 3);  // 208.5 - 209
+            Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
+            Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
+            Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
+            Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
         }
     }
 }

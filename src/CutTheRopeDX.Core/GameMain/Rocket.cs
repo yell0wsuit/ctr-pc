@@ -74,14 +74,6 @@ namespace CutTheRopeDX.GameMain
                     disableGravity = true
                 };
 
-                // Why 2.5 weight instead of 0.5?
-                // In the decompiled Windows Phone version, the rocket's weight
-                // is 0.5 (invWeight = 1 / 0.5 = 2). However, on PC the lower
-                // weight makes the rocket too susceptible to constraint forces,
-                // causing it to drift from its intended position. A weight of
-                // 2.5 (invWeight = 0.4) keeps the rocket stable by reducing
-                // how much it moves in response to forces from connected rope
-                // points.
                 point.SetWeight(ActivePhysicsConstants.RocketPointWeight);
 
                 container = new BaseElement

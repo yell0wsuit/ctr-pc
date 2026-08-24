@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
@@ -220,6 +221,71 @@ namespace CutTheRopeDX.Tests
             HeadlessGame.StepFrames(scene, 2);
 
             Assert.False(candy.Lifecycle.Attachments.HasActiveRocket);
+        }
+
+        [Fact]
+        public void RocketControlPointUsesTheIosWeightInTheDefaultPhysicsModel()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .PauseSwitcher(60, 440)
+                .Build();
+
+            Rocket rocket = Assert.Single(scene.Rockets());
+
+            Assert.Equal(0.5f, rocket.point.weight);
+        }
+
+        [Fact]
+        public void DefaultRocketRatesScaleIosPhysicsIntoDxWorldCoordinates()
+        {
+            _ = Scenario.New()
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .PauseSwitcher(60, 440)
+                .Build();
+
+            Assert.False(ActivePhysicsConstants.UseMobilePhysicsModel);
+            Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.Equal(Scenario.Scale, ActivePhysicsConstants.RocketImpulseScale);
+        }
+
+        [Fact]
+        public void ActiveRocketStoresTheIosVelocityOpposingForceOnItsCandy()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(160, 440)
+                .Rocket(160, 200, time: 2f)
+                .PauseSwitcher(60, 440)
+                .Build();
+            _ = Act.BindRocket(scene, scene.Candy());
+            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            candyPoint.v = new Vector(30f, -12f);
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Equal(new Vector(-candyPoint.v.X, -candyPoint.v.Y), candyPoint.GetForce(0));
+        }
+
+        [Fact]
+        public void CandyWithoutARocketClearsTheRocketForceSlot()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(160, 440)
+                .Rocket(260, 200)
+                .PauseSwitcher(60, 440)
+                .Build();
+            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            candyPoint.SetForcewithID(new Vector(10f, 20f), 0);
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Equal(default, candyPoint.GetForce(0));
         }
 
         [Fact]

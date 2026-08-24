@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void CandyCarriedByLowerRocketDoesNotBindUpperRocket()
+        public void IdleUpperRocketTakesCandyCarriedIntoItsCatchSlat()
         {
             GameScene scene = ReferenceScene(includeUpperRocket: true);
             CandyContext candy = scene.Candy();
@@ -46,21 +46,17 @@ namespace CutTheRopeDX.Tests.Interactions
                 "the candy never bound the lower rocket");
 
             bool upperRocketBound = false;
-            string upperBind = null;
             for (int frame = 0; frame < 180; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
                 if (!upperRocketBound && candy.Lifecycle.Attachments.Rocket == upperRocket)
                 {
                     upperRocketBound = true;
-                    upperBind = $"frame={frame}, candy=({candy.WholeBody.Point.pos.X},{candy.WholeBody.Point.pos.Y}), "
-                        + $"visual=({candy.WholeBody.Visual.x},{candy.WholeBody.Visual.y}), "
-                        + $"upper=({upperRocket.point.pos.X},{upperRocket.point.pos.Y}), "
-                        + $"lower=({lowerRocket.point.pos.X},{lowerRocket.point.pos.Y})";
                 }
             }
 
-            Assert.False(upperRocketBound, $"the upper rocket caught the candy carried past it: {upperBind}");
+            Assert.True(upperRocketBound, "the idle upper rocket did not take the intersecting candy");
+            Assert.Equal(Rocket.STATE_ROCKET_EXAUST, lowerRocket.state);
         }
 
         private static GameScene ReferenceScene(bool includeUpperRocket)

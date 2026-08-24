@@ -256,14 +256,9 @@ namespace CutTheRopeDX.Framework
         public static float RocketPointWeight => SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
 
         /// <summary>
-        /// Velocity damping applied while a rocket is active.
-        /// </summary>
-        public static float RocketActiveVelocityDamping => SelectRaw(PhysicsConstants.RocketActiveVelocityDamping, MobilePhysicsConstants.RocketActiveVelocityDamping);
-
-        /// <summary>
         /// Impulse scale applied to rocket thrust.
         /// </summary>
-        public static float RocketImpulseScale => UseMobilePhysicsModel ? Wp7ToWorldScale : 1f;
+        public static float RocketImpulseScale => Wp7ToWorldScale;
 
         /// <summary>
         /// Scale applied to mover path coordinates.
@@ -394,7 +389,7 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Width of the rocket's catch-slat bounding box (0.6 x the rocket body quad width),
+        /// Width of the rocket's catch-slat bounding box (0.65 x the rocket body quad width),
         /// pinned from the original XML quads rather than the live atlas.
         /// </summary>
         public static float RocketCatchBoxWidth => SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);

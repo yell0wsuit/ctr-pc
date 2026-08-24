@@ -1263,7 +1263,6 @@ namespace CutTheRopeDX.GameMain
                 waterLayer.height = waterLevel > 0f ? (int)waterLevel : 0;
             }
             float candyRadius = ActivePhysicsConstants.WaterCandyCollisionRadius;
-            float waterRocketDamping = ActivePhysicsConstants.WaterDamping * ActivePhysicsConstants.WaterRocketDampingMultiplier;
             if (waterLayer != null && waterLevel > 0f)
             {
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Water))
@@ -1370,20 +1369,20 @@ namespace CutTheRopeDX.GameMain
                     Vect((0f - body.Point.v.X) / bubbleDamping, ((0f - body.Point.v.Y) / bubbleDamping) + lift),
                     delta);
             }
+            // Rocket drag owns force slot zero. Refresh or clear it for every body so detaching a
+            // rocket cannot leave a stale opposing force behind.
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (ctx.Lifecycle.Attachments.Rocket == null)
-                {
-                    continue;
-                }
-                // A rocket only ever binds a whole body, so damping has one point to act on.
                 ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
-                bool inWater = waterLayer != null
-                    && waterLevel > 0f
-                    && WaterSubmersion.IsSubmerged(rocketPoint.pos.X, rocketPoint.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius);
-                float rocketDamping = inWater ? waterRocketDamping : ActivePhysicsConstants.RocketActiveVelocityDamping;
-                rocketPoint.ApplyImpulseDelta(Vect(-rocketPoint.v.X / rocketDamping, -rocketPoint.v.Y / rocketDamping), delta);
+                if (ctx.Lifecycle.Attachments.Rocket != null)
+                {
+                    rocketPoint.SetForcewithID(Vect(-rocketPoint.v.X, -rocketPoint.v.Y), 0);
+                }
+                else
+                {
+                    rocketPoint.DeleteForce(0);
+                }
             }
             ApplyAntCarryToCandyPosition();
 
