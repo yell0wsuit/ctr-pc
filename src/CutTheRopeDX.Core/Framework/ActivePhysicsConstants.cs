@@ -12,6 +12,13 @@ namespace CutTheRopeDX.Framework
         public static bool UseMobilePhysicsModel { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the loaded map uses Cut the Rope: Time Travel's
+        /// rocket, rather than the Experiments rocket the rest of the port descends from. Set once
+        /// per level load, alongside <see cref="UseMobilePhysicsModel"/>.
+        /// </summary>
+        public static bool UseTimeTravelRocketModel { get; set; }
+
+        /// <summary>
         /// Scale factor between Windows Phone coordinate units and desktop world units.
         /// </summary>
         public const float Wp7ToWorldScale = 3f;
@@ -399,42 +406,37 @@ namespace CutTheRopeDX.Framework
         /// Width of the rocket's catch-slat bounding box (0.65 x the rocket body quad width),
         /// pinned from the original XML quads rather than the live atlas.
         /// </summary>
-        public static float RocketCatchBoxWidth(bool usesTimeTravelPhysics)
-        {
-            return usesTimeTravelPhysics
-                ? PhysicsConstants.TimeTravelRocketCatchBoxWidth
-                : SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);
-        }
+        public static float RocketCatchBoxWidth => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketCatchBoxWidth
+            : SelectScaled(PhysicsConstants.RocketCatchBoxWidth, MobilePhysicsConstants.RocketCatchBoxWidth);
 
         /// <summary>
         /// Height of the rocket's catch-slat bounding box (0.05 x the rocket body quad height).
         /// </summary>
-        public static float RocketCatchBoxHeight(bool usesTimeTravelPhysics)
-        {
-            return usesTimeTravelPhysics
-                ? PhysicsConstants.TimeTravelRocketCatchBoxHeight
-                : SelectScaled(PhysicsConstants.RocketCatchBoxHeight, MobilePhysicsConstants.RocketCatchBoxHeight);
-        }
+        public static float RocketCatchBoxHeight => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketCatchBoxHeight
+            : SelectScaled(PhysicsConstants.RocketCatchBoxHeight, MobilePhysicsConstants.RocketCatchBoxHeight);
 
         /// <summary>
         /// X offset of the catch-slat box center from the rocket object's center.
         /// </summary>
-        public static float RocketCatchBoxCenterOffsetX(bool usesTimeTravelPhysics)
-        {
-            return usesTimeTravelPhysics
-                ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetX
-                : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetX, MobilePhysicsConstants.RocketCatchBoxCenterOffsetX);
-        }
+        public static float RocketCatchBoxCenterOffsetX => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetX
+            : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetX, MobilePhysicsConstants.RocketCatchBoxCenterOffsetX);
 
         /// <summary>
         /// Y offset of the catch-slat box center from the rocket object's center.
         /// </summary>
-        public static float RocketCatchBoxCenterOffsetY(bool usesTimeTravelPhysics)
-        {
-            return usesTimeTravelPhysics
-                ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetY
-                : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetY, MobilePhysicsConstants.RocketCatchBoxCenterOffsetY);
-        }
+        public static float RocketCatchBoxCenterOffsetY => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketCatchBoxCenterOffsetY
+            : SelectScaled(PhysicsConstants.RocketCatchBoxCenterOffsetY, MobilePhysicsConstants.RocketCatchBoxCenterOffsetY);
+
+        /// <summary>
+        /// Draw scale applied to the rocket body, matching the sheet each game's quad came from.
+        /// </summary>
+        public static float RocketBodyScale => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketBodyScale
+            : PhysicsConstants.RocketBodyScale;
 
         /// <summary>
         /// Number of sample points drawn for each bungee segment.

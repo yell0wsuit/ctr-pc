@@ -28,6 +28,20 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        private static T WithRocketModel<T>(bool mobile, bool timeTravel, Func<T> body)
+        {
+            bool previous = ActivePhysicsConstants.UseTimeTravelRocketModel;
+            try
+            {
+                ActivePhysicsConstants.UseTimeTravelRocketModel = timeTravel;
+                return WithMobilePhysics(mobile, body);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseTimeTravelRocketModel = previous;
+            }
+        }
+
         [Theory]
         [InlineData(1, 204f)] // 68 * 3
         [InlineData(2, 318f)] // 106 * 3
@@ -127,11 +141,11 @@ namespace CutTheRopeDX.Tests
         [InlineData(true)]
         public void RocketCatchBoxExperimentsUsesBaseQuad(bool mobilePhysics)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(mobilePhysics, () => (
-                ActivePhysicsConstants.RocketCatchBoxWidth(usesTimeTravelPhysics: false),
-                ActivePhysicsConstants.RocketCatchBoxHeight(usesTimeTravelPhysics: false),
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX(usesTimeTravelPhysics: false),
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY(usesTimeTravelPhysics: false)));
+            (float w, float h, float ox, float oy) = WithRocketModel(mobilePhysics, timeTravel: false, () => (
+                ActivePhysicsConstants.RocketCatchBoxWidth,
+                ActivePhysicsConstants.RocketCatchBoxHeight,
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
             Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
             Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
             Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
@@ -145,11 +159,11 @@ namespace CutTheRopeDX.Tests
         [InlineData(true)]
         public void RocketCatchBoxTimeTravelUsesItsOwnQuad(bool mobilePhysics)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(mobilePhysics, () => (
-                ActivePhysicsConstants.RocketCatchBoxWidth(usesTimeTravelPhysics: true),
-                ActivePhysicsConstants.RocketCatchBoxHeight(usesTimeTravelPhysics: true),
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX(usesTimeTravelPhysics: true),
-                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY(usesTimeTravelPhysics: true)));
+            (float w, float h, float ox, float oy) = WithRocketModel(mobilePhysics, timeTravel: true, () => (
+                ActivePhysicsConstants.RocketCatchBoxWidth,
+                ActivePhysicsConstants.RocketCatchBoxHeight,
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
+                ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
             Assert.Equal(232.7f, w, precision: 3);  // 358 * 0.65
             Assert.Equal(8.95f, h, precision: 3);   // 179 * 0.05
             Assert.Equal(-21.5f, ox, precision: 3); // 288 - 619/2
@@ -165,7 +179,7 @@ namespace CutTheRopeDX.Tests
                 .Rocket(220, 200)
                 .Build();
             GameScene timeTravel = Scenario.New()
-                .Design("background", "Medieval")
+                .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(60, 100)
                 .OmNom(160, 440)
                 .Rocket(220, 200)

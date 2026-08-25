@@ -58,23 +58,60 @@ namespace CutTheRopeDX.Framework.Helpers
         public override void Update(float delta)
         {
             base.Update(delta);
+            EnsureTopLeftCalculated();
+            if (!moverHeld)
+            {
+                AdvanceMover(delta);
+            }
+        }
+
+        /// <summary>
+        /// Advances this object for one frame, suspending its path travel while gameplay time is
+        /// stopped. A held mover keeps its position and angle, while the object's own visuals and
+        /// timelines carry on.
+        /// </summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
+        /// <param name="timeFrozen">Whether gameplay time is stopped.</param>
+        /// <remarks>
+        /// This is the only place the hold is set, so the caller's flag is the single authority on
+        /// whether time is stopped. A subclass that needs its own frozen behavior overrides this
+        /// method; its <see cref="Update(float)"/> must stay the running-time path, since this
+        /// default calls into it.
+        /// </remarks>
+        public virtual void Update(float delta, bool timeFrozen)
+        {
+            moverHeld = timeFrozen;
+            Update(delta);
+        }
+
+        /// <summary>Computes the top-left corner once, on the first update.</summary>
+        protected void EnsureTopLeftCalculated()
+        {
             if (!topLeftCalculated)
             {
                 CalculateTopLeft(this);
                 topLeftCalculated = true;
             }
-            if (mover != null && !moverHeld)
+        }
+
+        /// <summary>Advances the path mover, if any, onto this object's position and angle.</summary>
+        /// <param name="delta">Elapsed time in seconds.</param>
+        protected void AdvanceMover(float delta)
+        {
+            if (mover == null)
             {
-                mover.Update(delta);
-                x = mover.pos.X;
-                y = mover.pos.Y;
-                if (rotatedBB)
-                {
-                    RotateWithBB(mover.angle_);
-                    return;
-                }
-                rotation = mover.angle_;
+                return;
             }
+
+            mover.Update(delta);
+            x = mover.pos.X;
+            y = mover.pos.Y;
+            if (rotatedBB)
+            {
+                RotateWithBB(mover.angle_);
+                return;
+            }
+            rotation = mover.angle_;
         }
 
         /// <inheritdoc />
@@ -296,10 +333,10 @@ namespace CutTheRopeDX.Framework.Helpers
         public Mover mover;
 
         /// <summary>
-        /// Whether this object's travel is suspended. A held mover keeps its position and angle,
-        /// while the object's own visuals and timelines carry on.
+        /// Whether this object's travel is suspended, mirrored from the caller's frozen flag by
+        /// <see cref="Update(float, bool)"/> and readable nowhere else.
         /// </summary>
-        public bool moverHeld;
+        private bool moverHeld;
 
         /// <summary>
         /// Axis-aligned bounding box relative to the element origin.

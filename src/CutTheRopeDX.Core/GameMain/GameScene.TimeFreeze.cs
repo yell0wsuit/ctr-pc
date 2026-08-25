@@ -6,6 +6,11 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>One pointer's hold on a time-freeze button, from press to release.</summary>
+        /// <param name="PointerIndex">Pointer that pressed the button.</param>
+        /// <param name="Switcher">Button the pointer pressed.</param>
+        private readonly record struct PauseSwitcherTouch(int PointerIndex, PauseSwitcher Switcher);
+
         /// <summary>Finds the switcher under a world point.</summary>
         /// <param name="worldX">World-space X.</param>
         /// <param name="worldY">World-space Y.</param>
@@ -35,7 +40,6 @@ namespace CutTheRopeDX.GameMain
         private void ToggleTimeFreeze(PauseSwitcher switcher)
         {
             timeFrozen = !timeFrozen;
-            SetMoversHeld(timeFrozen);
             particlesAniPool.updateable = !timeFrozen;
             if (timeFrozen)
             {
@@ -99,29 +103,6 @@ namespace CutTheRopeDX.GameMain
                 {
                     rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Suspends or resumes path travel for objects whose iOS updates receive the shared mover
-        /// gate. The original gate also checks for clock elements, which this port does not have.
-        /// </summary>
-        /// <param name="held">Whether path travel is suspended.</param>
-        private void SetMoversHeld(bool held)
-        {
-            foreach (Spikes spike in spikes)
-            {
-                spike.moverHeld = held;
-            }
-
-            foreach (Bouncer bouncer in bouncers)
-            {
-                bouncer.moverHeld = held;
-            }
-
-            foreach (Sock sock in socks)
-            {
-                sock.moverHeld = held;
             }
         }
 

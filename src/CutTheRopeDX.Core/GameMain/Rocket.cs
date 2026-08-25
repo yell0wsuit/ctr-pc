@@ -100,43 +100,9 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
-            Update(delta, timeFrozen: false);
-        }
-
-        /// <summary>
-        /// Advances the rocket while allowing its authored path to keep moving when gameplay time
-        /// is stopped.
-        /// </summary>
-        /// <param name="delta">Elapsed time in seconds.</param>
-        /// <param name="timeFrozen">Whether physics and active rocket animation are stopped.</param>
-        public void Update(float delta, bool timeFrozen)
-        {
-            if (!timeFrozen || state == STATE_ROCKET_EXAUST)
-            {
-                base.Update(delta);
-            }
-            else
-            {
-                UpdateMoverWhileFrozen(delta);
-            }
-            if (!timeFrozen)
-            {
-                point.Update(delta);
-            }
-            if (mover != null && !mover.IsPaused)
-            {
-                point.pos.X = x;
-                point.pos.Y = y;
-            }
-            else
-            {
-                x = point.pos.X;
-                y = point.pos.Y;
-            }
-            if (timeFrozen)
-            {
-                return;
-            }
+            base.Update(delta);
+            point.Update(delta);
+            SyncPointToMover();
             container.Update(delta);
             container.rotation = rotation;
             container.x = x;
@@ -165,30 +131,44 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
-        /// <summary>Advances only the path mover, without ticking the rocket's timelines.</summary>
-        /// <param name="delta">Elapsed time in seconds.</param>
-        private void UpdateMoverWhileFrozen(float delta)
+        /// <inheritdoc />
+        /// <remarks>
+        /// A frozen rocket still travels its authored path, but neither its physics point nor its
+        /// timelines and exhaust presentation advance. Exhausted rockets keep their full update so
+        /// the burnt-out animation plays out.
+        /// </remarks>
+        public override void Update(float delta, bool timeFrozen)
         {
-            if (!topLeftCalculated)
+            if (!timeFrozen)
             {
-                CalculateTopLeft(this);
-                topLeftCalculated = true;
-            }
-            if (mover == null)
-            {
+                Update(delta);
                 return;
             }
 
-            mover.Update(delta);
-            x = mover.pos.X;
-            y = mover.pos.Y;
-            if (rotatedBB)
+            if (state == STATE_ROCKET_EXAUST)
             {
-                RotateWithBB(mover.angle_);
+                base.Update(delta);
             }
             else
             {
-                rotation = mover.angle_;
+                EnsureTopLeftCalculated();
+                AdvanceMover(delta);
+            }
+            SyncPointToMover();
+        }
+
+        /// <summary>Keeps the physics point and the object position on whichever one leads.</summary>
+        private void SyncPointToMover()
+        {
+            if (mover != null && !mover.IsPaused)
+            {
+                point.pos.X = x;
+                point.pos.Y = y;
+            }
+            else
+            {
+                x = point.pos.X;
+                y = point.pos.Y;
             }
         }
 

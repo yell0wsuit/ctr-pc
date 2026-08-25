@@ -21,16 +21,16 @@ namespace CutTheRopeDX.GameMain
         private void LoadRocket(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             Rocket rocket = Rocket.Rocket_createWithResIDQuad(Resources.Img.ObjRocket, 10);
-            rocket.scaleX = rocket.scaleY = usesTimeTravelRocketPhysics ? 0.71f : 0.7f;
+            rocket.scaleX = rocket.scaleY = ActivePhysicsConstants.RocketBodyScale;
             rocket.DoRestoreCutTransparency();
             rocket.delegateRocketDelegate = this;
 
             // Catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
             // pinned from original XML quad data and center-relative so atlas repacks can't move it.
-            float catchWidth = ActivePhysicsConstants.RocketCatchBoxWidth(usesTimeTravelRocketPhysics);
-            float catchHeight = ActivePhysicsConstants.RocketCatchBoxHeight(usesTimeTravelRocketPhysics);
-            float catchCenterX = (rocket.width / 2f) + ActivePhysicsConstants.RocketCatchBoxCenterOffsetX(usesTimeTravelRocketPhysics);
-            float catchCenterY = (rocket.height / 2f) + ActivePhysicsConstants.RocketCatchBoxCenterOffsetY(usesTimeTravelRocketPhysics);
+            float catchWidth = ActivePhysicsConstants.RocketCatchBoxWidth;
+            float catchHeight = ActivePhysicsConstants.RocketCatchBoxHeight;
+            float catchCenterX = (rocket.width / 2f) + ActivePhysicsConstants.RocketCatchBoxCenterOffsetX;
+            float catchCenterY = (rocket.height / 2f) + ActivePhysicsConstants.RocketCatchBoxCenterOffsetY;
             rocket.bb = MakeRectangle(catchCenterX - (catchWidth / 2f), catchCenterY - (catchHeight / 2f), catchWidth, catchHeight);
 
             rocket.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

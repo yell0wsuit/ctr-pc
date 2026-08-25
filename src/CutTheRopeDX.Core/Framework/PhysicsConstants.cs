@@ -209,6 +209,12 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
         public const float RocketCatchBoxCenterOffsetY = 0f; // (67 - 134/2) * 3
 
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketBodyScale" />
+        public const float RocketBodyScale = 0.7f;
+
+        /// <summary>Draw scale of the Time Travel rocket body on its own sheet.</summary>
+        public const float TimeTravelRocketBodyScale = 0.71f;
+
         /// <summary>Time Travel rocket catch-slat width from resource 0x8A, quad 10.</summary>
         public const float TimeTravelRocketCatchBoxWidth = 232.7f; // 358 * 0.65
 

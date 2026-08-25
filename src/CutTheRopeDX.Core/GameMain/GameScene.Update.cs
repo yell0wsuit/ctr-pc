@@ -339,7 +339,7 @@ namespace CutTheRopeDX.GameMain
                 body.Visual.y = body.Point.pos.Y;
                 if (body.Visual is Axe axe)
                 {
-                    axe.Update(delta, !timeFrozen);
+                    axe.Update(delta, timeFrozen);
                 }
                 else
                 {
@@ -855,7 +855,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;
-                sock3.Update(delta);
+                sock3.Update(delta, timeFrozen);
                 if (timeFrozen)
                 {
                     continue;
@@ -1197,7 +1197,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
-                spike.Update(delta);
+                spike.Update(delta, timeFrozen);
                 float spikeCollisionRadius = 15f;
                 // Break the first body that touches the spike, in one pass over whole candies and
                 // split halves alike. Decision routed through BarrierCollision.Hits.
@@ -1227,7 +1227,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj15 in bouncers)
             {
                 Bouncer bouncer = (Bouncer)obj15;
-                bouncer.Update(delta);
+                bouncer.Update(delta, timeFrozen);
                 float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
                 bool anyCandyHit = false;
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bouncer))
@@ -1381,7 +1381,7 @@ namespace CutTheRopeDX.GameMain
             {
                 CandyContext ctx = candies[ci];
                 ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
-                if (usesTimeTravelRocketPhysics)
+                if (ActivePhysicsConstants.UseTimeTravelRocketModel)
                 {
                     if (ctx.Lifecycle.Attachments.Rocket != null)
                     {

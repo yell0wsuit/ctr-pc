@@ -308,6 +308,7 @@ namespace CutTheRopeDX.Tests
         public void ActiveRocketStoresTheIosVelocityOpposingForceOnItsCandy()
         {
             GameScene scene = Scenario.New()
+                .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
                 .OmNom(160, 440)
                 .Rocket(160, 200, time: 2f)
@@ -326,6 +327,7 @@ namespace CutTheRopeDX.Tests
         public void CandyWithoutARocketClearsTheRocketForceSlot()
         {
             GameScene scene = Scenario.New()
+                .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
                 .OmNom(160, 440)
                 .Rocket(260, 200)

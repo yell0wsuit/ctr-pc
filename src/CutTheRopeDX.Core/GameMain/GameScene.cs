@@ -1044,17 +1044,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Screen-covering effect shown while time is stopped.</summary>
         private PauseSwitcherWaves pauseSwitcherWaves;
 
-        /// <summary>Whether time is currently stopped.</summary>
+        /// <summary>
+        /// Whether time is currently stopped. Objects that stop with it are told at their update
+        /// call instead of keeping their own copy. The iOS mover gate also checks for clock
+        /// elements, which this port does not have.
+        /// </summary>
         private bool timeFrozen;
 
-        /// <summary>Whether the loaded map uses Cut the Rope: Time Travel's rocket simulation.</summary>
-        private bool usesTimeTravelRocketPhysics;
-
-        /// <summary>Pointer held on a time-freeze button, or -1 when none is held.</summary>
-        private int pauseSwitcherTouchIndex = -1;
-
-        /// <summary>The time-freeze button captured by the active pointer.</summary>
-        private PauseSwitcher pauseSwitcherTouchTarget;
+        /// <summary>The time-freeze button a pointer is holding, or <see langword="null"/>.</summary>
+        private PauseSwitcherTouch? pauseSwitcherTouch;
 
         /// <summary>
         /// All active mechanical hand objects in the loaded level.
