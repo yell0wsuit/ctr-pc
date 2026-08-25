@@ -290,17 +290,49 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void DefaultRocketRatesScaleIosPhysicsIntoDxWorldCoordinates()
+        public void ExperimentsRocketKeepsItsAuthoredImpulseInDx()
         {
             _ = Scenario.New()
                 .Candy(60, 100)
                 .OmNom(160, 440)
-                .Rocket(220, 200)
-                .PauseSwitcher(60, 440)
+                .Rocket(220, 200, impulse: 20f)
                 .Build();
 
             Assert.False(ActivePhysicsConstants.UseMobilePhysicsModel);
             Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.False(ActivePhysicsConstants.UseTimeTravelRocketModel);
+            Assert.Equal(1f, ActivePhysicsConstants.RocketImpulseScale);
+        }
+
+        [Fact]
+        public void MobileExperimentsRocketScalesItsAuthoredImpulseIntoDxWorldCoordinates()
+        {
+            _ = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200, impulse: 20f)
+                .Build();
+
+            Assert.True(ActivePhysicsConstants.UseMobilePhysicsModel);
+            Assert.False(ActivePhysicsConstants.UseTimeTravelRocketModel);
+            Assert.Equal(Scenario.Scale, ActivePhysicsConstants.RocketImpulseScale);
+        }
+
+        [Fact]
+        public void TimeTravelRocketScalesItsAuthoredImpulseIntoDxWorldCoordinates()
+        {
+            GameScene scene = Scenario.New()
+                .Design("useTimeTravelRocketPhysics", "true")
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200, impulse: 5f, impulseFactor: 0.6f)
+                .Build();
+
+            Rocket rocket = Assert.Single(scene.Rockets());
+            Assert.True(ActivePhysicsConstants.UseTimeTravelRocketModel);
+            Assert.Equal(5f, rocket.impulse);
+            Assert.Equal(0.6f, rocket.impulseFactor);
             Assert.Equal(Scenario.Scale, ActivePhysicsConstants.RocketImpulseScale);
         }
 

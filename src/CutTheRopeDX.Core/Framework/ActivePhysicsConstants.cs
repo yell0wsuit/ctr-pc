@@ -270,9 +270,12 @@ namespace CutTheRopeDX.Framework
             MobilePhysicsConstants.ExperimentsRocketVelocityDamping);
 
         /// <summary>
-        /// Impulse scale applied to rocket thrust.
+        /// Impulse scale applied to rocket thrust. Time Travel and mobile Experiments author their
+        /// impulse values in level coordinates; desktop Experiments values are already world-tuned.
         /// </summary>
-        public static float RocketImpulseScale => Wp7ToWorldScale;
+        public static float RocketImpulseScale => UseTimeTravelRocketModel || UseMobilePhysicsModel
+            ? Wp7ToWorldScale
+            : 1f;
 
         /// <summary>
         /// Scale applied to mover path coordinates.
