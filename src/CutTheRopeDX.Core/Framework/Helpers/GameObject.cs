@@ -59,16 +59,16 @@ namespace CutTheRopeDX.Framework.Helpers
         {
             base.Update(delta);
             EnsureTopLeftCalculated();
-            if (!moverHeld)
-            {
-                AdvanceMover(delta);
-            }
+            // A held mover is stepped by zero rather than skipped: it makes no progress, but the
+            // object is still pinned to the mover's position and angle, so anything else that
+            // moved it this frame (a belt, a disc) does not get to keep it there.
+            AdvanceMover(moverHeld ? 0f : delta);
         }
 
         /// <summary>
         /// Advances this object for one frame, suspending its path travel while gameplay time is
-        /// stopped. A held mover keeps its position and angle, while the object's own visuals and
-        /// timelines carry on.
+        /// stopped. A held mover makes no progress along its path, while the object's own visuals
+        /// and timelines carry on.
         /// </summary>
         /// <param name="delta">Elapsed time in seconds.</param>
         /// <param name="timeFrozen">Whether gameplay time is stopped.</param>
@@ -333,8 +333,8 @@ namespace CutTheRopeDX.Framework.Helpers
         public Mover mover;
 
         /// <summary>
-        /// Whether this object's travel is suspended, mirrored from the caller's frozen flag by
-        /// <see cref="Update(float, bool)"/> and readable nowhere else.
+        /// Whether this object's path travel is suspended, mirrored from the caller's frozen flag
+        /// by <see cref="Update(float, bool)"/> and readable nowhere else.
         /// </summary>
         private bool moverHeld;
 
