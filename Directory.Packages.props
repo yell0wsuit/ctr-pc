@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <MonoGameVersion>3.8.5</MonoGameVersion>
+    <MonoGameVersion>3.8.5.1</MonoGameVersion>
   </PropertyGroup>
 
   <!-- Game -->
