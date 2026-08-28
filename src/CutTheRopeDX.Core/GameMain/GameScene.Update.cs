@@ -335,6 +335,12 @@ namespace CutTheRopeDX.GameMain
                 {
                     body.Point.Update(delta * ropePhysicsSpeed);
                 }
+                if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration)
+                {
+                    // Time Travel relaxes each candy point the moment it has moved - and does so
+                    // whether or not time is frozen, unlike the integration above.
+                    ConstraintedPoint.SatisfyConstraints(body.Point);
+                }
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
                 if (body.Visual is Axe axe)
@@ -346,6 +352,13 @@ namespace CutTheRopeDX.GameMain
                     body.Visual.Update(delta);
                 }
                 CalculateTopLeft(body.Visual);
+            }
+            if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration && candyConnector != null)
+            {
+                // ...then corrects the connector's own ends, which the candy integration has just
+                // pulled off their rest length. Unconditional in Time Travel - a cut connector too.
+                ConstraintedPoint.SatisfyConstraints(candyConnector.bungeeAnchor);
+                ConstraintedPoint.SatisfyConstraints(candyConnector.tail);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
             ResolveCandyCollisions(delta);
@@ -1007,7 +1020,11 @@ namespace CutTheRopeDX.GameMain
                     float dist = carriesCandy ? VectLength(VectSub(rocketStar.pos, rocket.point.pos)) : 0f;
                     if (carriesCandy)
                     {
-                        if (!parkedOnMouse)
+                        // Time Travel relaxes the pair only through the reel-in; once the rocket is
+                        // flying the rest length is fixed and it leaves the points alone.
+                        if (!parkedOnMouse
+                            && (rocket.state == Rocket.STATE_ROCKET_DIST
+                                || ActivePhysicsConstants.RocketRelaxDuringFlight))
                         {
                             for (int i = 0; i < 30; i++)
                             {
@@ -1031,7 +1048,9 @@ namespace CutTheRopeDX.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.Rope;
-                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.Lifecycle.Attachments.Hand == null)
+                                    bool candyIsFree = !ActivePhysicsConstants.RocketRopeAlignRequiresFreeCandy
+                                        || rocketCandy?.Lifecycle.Attachments.Hand == null;
+                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && candyIsFree)
                                     {
                                         ropeRelaxed = true;
                                         AlignRocketAngleToRope(rocket, rope, delta);
@@ -1083,9 +1102,21 @@ namespace CutTheRopeDX.GameMain
                     if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
                         // Per-candy: only a hand holding THIS rocket's candy skips the reel-in.
-                        if (rocketCandy?.Lifecycle.Attachments.Hand != null || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
+                        // Time Travel has no such shortcut - it reels in from whoever holds it.
+                        bool heldSkipsReelIn = ActivePhysicsConstants.RocketBindsDirectlyToFlightWhenHeld
+                            && rocketCandy?.Lifecycle.Attachments.Hand != null;
+                        if (heldSkipsReelIn || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
+                            if (ActivePhysicsConstants.RocketBindClearsCandyVelocity)
+                            {
+                                // Time Travel hands the thrust a candy at rest: whatever the reel-in
+                                // built up is dropped as the flight starts.
+                                rocketStar.v = vectZero;
+                                rocketStar.a = vectZero;
+                                rocketStar.gravity = vectZero;
+                                rocketStar.prevPos = rocketStar.pos;
+                            }
                         }
                         else
                         {
@@ -1113,12 +1144,18 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
 
+                            if (ActivePhysicsConstants.RocketBindPopsCandyBubble)
+                            {
+                                // Time Travel bursts the bubble before it takes the candy.
+                                PopCandyBubble(body);
+                            }
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
                             // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
                             // The rocket steals from nobody — it coexists with hand or mouse and
                             // launches when the holder releases.
-                            if (RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
+                            if (ActivePhysicsConstants.RocketBindsDirectlyToFlightWhenHeld
+                                && RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
                             {
                                 rocket.point.pos = body.Point.pos;
                                 rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
@@ -1132,8 +1169,23 @@ namespace CutTheRopeDX.GameMain
                             }
                             // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
                             body.ResidualRotation = 0f;
-                            Vector deltaPos = VectSub(body.Point.pos, body.Point.prevPos);
-                            body.Point.prevPos = VectAdd(body.Point.prevPos, VectDiv(deltaPos, body.Point.disableGravity ? 2f : 1.25f));
+                            if (ActivePhysicsConstants.RocketBindClearsCandyVelocity)
+                            {
+                                // Time Travel kills the candy's velocity outright on capture, and
+                                // additionally clears the accumulators when it was still falling.
+                                if (!body.Point.disableGravity)
+                                {
+                                    body.Point.v = vectZero;
+                                    body.Point.a = vectZero;
+                                    body.Point.gravity = vectZero;
+                                }
+                                body.Point.prevPos = body.Point.pos;
+                            }
+                            else
+                            {
+                                Vector deltaPos = VectSub(body.Point.pos, body.Point.prevPos);
+                                body.Point.prevPos = VectAdd(body.Point.prevPos, VectDiv(deltaPos, body.Point.disableGravity ? 2f : 1.25f));
+                            }
                             body.Point.disableGravity = true;
 
                             // Exhaust any rocket already bound to this candy before re-binding (one-time-use safety).
@@ -1142,7 +1194,7 @@ namespace CutTheRopeDX.GameMain
                                 ExhaustRocketForCandy(ctx);
                             }
 
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
+                            rocket.startSound = CTRSoundMgr.PlaySoundTracked(Resources.Snd.ExpRocketStart);
                             rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             _ = ctx.Lifecycle.Attachments.BindRocket(rocket);
                             rocket.isOperating = -1;
@@ -1377,23 +1429,14 @@ namespace CutTheRopeDX.GameMain
                     Vect((0f - body.Point.v.X) / bubbleDamping, ((0f - body.Point.v.Y) / bubbleDamping) + lift),
                     delta);
             }
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Time Travel never damps a rocket-bound candy: it populates no force slot on any point
+            // (setForcewithID has no call site in the binary), so thrust builds unopposed. Only the
+            // Experiments rocket bleeds velocity off.
+            for (int ci = 0; ActivePhysicsConstants.RocketDampsCandyVelocity && ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
                 ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
-                if (ActivePhysicsConstants.UseTimeTravelRocketModel)
-                {
-                    if (ctx.Lifecycle.Attachments.Rocket != null)
-                    {
-                        // Time Travel owns force slot zero while a rocket is attached.
-                        rocketPoint.SetForcewithID(Vect(-rocketPoint.v.X, -rocketPoint.v.Y), 0);
-                    }
-                    else
-                    {
-                        rocketPoint.DeleteForce(0);
-                    }
-                }
-                else if (ctx.Lifecycle.Attachments.Rocket != null)
+                if (ctx.Lifecycle.Attachments.Rocket != null)
                 {
                     // Experiments applies velocity damping as an impulse each frame instead.
                     bool inWater = waterLayer != null

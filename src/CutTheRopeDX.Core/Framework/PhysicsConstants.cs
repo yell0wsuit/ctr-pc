@@ -228,6 +228,18 @@ namespace CutTheRopeDX.Framework
         public const float TimeTravelRocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
 
         /// <summary>
+        /// Distance from the Time Travel rocket's center to its exhaust emission point. Time Travel
+        /// bakes this in rather than deriving it from the body quad.
+        /// </summary>
+        public const float TimeTravelRocketExhaustOffset = 75f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketExhaustSpeedFloor" />
+        public const float RocketExhaustSpeedFloor = 1f;
+
+        /// <summary>Floor applied to the Time Travel rocket's exhaust particle speed.</summary>
+        public const float TimeTravelRocketExhaustSpeedFloor = 2f;
+
+        /// <summary>
         /// Maximum rope length used to size rope drawing buffers.
         /// </summary>
         public const float MaxRopeLength = 2000f;

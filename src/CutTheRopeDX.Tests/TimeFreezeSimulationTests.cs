@@ -10,6 +10,8 @@ using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
+using static CutTheRopeDX.Framework.Helpers.CTRMathHelper;
+
 namespace CutTheRopeDX.Tests
 {
     public class TimeFreezeSimulationTests
@@ -337,8 +339,11 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ActiveRocketStoresTheIosVelocityOpposingForceOnItsCandy()
+        public void ActiveRocketLeavesItsCandysForceSlotsEmpty()
         {
+            // Time Travel never writes a force slot on any point - setForcewithID has no call site
+            // in the binary - so a rocket's thrust builds unopposed rather than settling at the
+            // terminal speed a velocity-opposing force would impose.
             GameScene scene = Scenario.New()
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
@@ -352,25 +357,33 @@ namespace CutTheRopeDX.Tests
 
             HeadlessGame.StepFrames(scene, 1);
 
-            Assert.Equal(new Vector(-candyPoint.v.X, -candyPoint.v.Y), candyPoint.GetForce(0));
+            Assert.Equal(default, candyPoint.GetForce(0));
         }
 
         [Fact]
-        public void CandyWithoutARocketClearsTheRocketForceSlot()
+        public void TimeTravelThrustKeepsAccelerating()
         {
             GameScene scene = Scenario.New()
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
                 .OmNom(160, 440)
-                .Rocket(260, 200)
+                .Rocket(160, 200, angle: 90f, impulse: 5f, time: -1f)
                 .PauseSwitcher(60, 440)
                 .Build();
+            _ = Act.BindRocket(scene, scene.Candy());
             ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
-            candyPoint.SetForcewithID(new Vector(10f, 20f), 0);
 
-            HeadlessGame.StepFrames(scene, 1);
+            HeadlessGame.StepFrames(scene, 15);
+            float earlyStep = VectLength(candyPoint.posDelta);
+            HeadlessGame.StepFrames(scene, 25);
+            float lateStep = VectLength(candyPoint.posDelta);
 
-            Assert.Equal(default, candyPoint.GetForce(0));
+            // Undamped thrust adds exactly one impulse-step of displacement per frame, forever.
+            // A velocity-opposing force would bend that into a curve flattening at a terminal
+            // speed, so the late gain would fall short of the early one.
+            float gainPerFrame = (lateStep - earlyStep) / 25f;
+            float impulseStep = 5f * ActivePhysicsConstants.RocketImpulseScale * 0.016f;
+            Assert.Equal(impulseStep, gainPerFrame, 2);
         }
 
         [Fact]

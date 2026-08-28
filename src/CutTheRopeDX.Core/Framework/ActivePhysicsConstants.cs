@@ -188,7 +188,10 @@ namespace CutTheRopeDX.Framework
         public static float GrabWheelRotateDeltaMin => SelectScaled(PhysicsConstants.GrabWheelRotateDeltaMin, MobilePhysicsConstants.GrabWheelRotateDeltaMin);
 
         /// <summary>
-        /// Speed at which a rocket reels the candy in before flying.
+        /// Speed at which a rocket reels the candy in before flying. Time Travel's own literal is
+        /// 400, but it is a world distance per second and its world is 960 tall to this one's
+        /// 1440, so 600 is the same reel measured in screen fractions - the same conversion
+        /// <see cref="RocketImpulseScale"/> applies to thrust.
         /// </summary>
         public static float RocketReelSpeed => SelectScaled(PhysicsConstants.RocketReelSpeed, MobilePhysicsConstants.RocketReelSpeed);
 
@@ -440,6 +443,59 @@ namespace CutTheRopeDX.Framework
         public static float RocketBodyScale => UseTimeTravelRocketModel
             ? PhysicsConstants.TimeTravelRocketBodyScale
             : PhysicsConstants.RocketBodyScale;
+
+        /// <summary>
+        /// Floor applied to the per-frame rocket travel distance that drives exhaust particle speed.
+        /// </summary>
+        public static float RocketExhaustSpeedFloor => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketExhaustSpeedFloor
+            : PhysicsConstants.RocketExhaustSpeedFloor;
+
+        /// <summary>
+        /// Gets a value indicating whether the rocket and candy points are relaxed while the rocket
+        /// is already flying. Time Travel relaxes them only during the reel-in
+        /// (<c>STATE_ROCKET_DIST</c>) phase.
+        /// </summary>
+        public static bool RocketRelaxDuringFlight => !UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether a held candy suppresses rope-perpendicular steering.
+        /// Time Travel steers off any uncut, relaxed rope regardless of who holds the candy.
+        /// </summary>
+        public static bool RocketRopeAlignRequiresFreeCandy => !UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether catching a candy in a bubble pops it. Time Travel's
+        /// bind bursts the bubble before it takes the candy.
+        /// </summary>
+        public static bool RocketBindPopsCandyBubble => UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether a rocket binds straight into flight when something is
+        /// already holding the candy. Time Travel always reels in from wherever the rocket caught
+        /// it, no matter who is holding it.
+        /// </summary>
+        public static bool RocketBindsDirectlyToFlightWhenHeld => !UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether binding a rocket cancels the candy's velocity outright.
+        /// Time Travel snaps <c>prevPos</c> onto <c>pos</c>; Experiments bleeds off a fraction.
+        /// </summary>
+        public static bool RocketBindClearsCandyVelocity => UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether a rocket-bound candy has its velocity damped every frame.
+        /// Time Travel populates no force slot on any point, so its thrust builds unopposed.
+        /// </summary>
+        public static bool RocketDampsCandyVelocity => !UseTimeTravelRocketModel;
+
+        /// <summary>
+        /// Gets a value indicating whether each candy point is relaxed immediately after it is
+        /// integrated, and the candy connector's own endpoints once every candy has moved. Time
+        /// Travel does both in its simulation step; the Experiments path leaves that to the
+        /// bungee's own relaxation pass.
+        /// </summary>
+        public static bool RelaxCandyPointsAfterIntegration => UseTimeTravelRocketModel;
 
         /// <summary>
         /// Number of sample points drawn for each bungee segment.

@@ -55,6 +55,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<RopeRegistry>(scene, "ropes").All;
         }
 
+        /// <summary>The elastic joining the two candies, or <see langword="null"/> when unconnected.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The candy connector.</returns>
+        public static Bungee Connector(this GameScene scene)
+        {
+            return Field<Bungee>(scene, "candyConnector");
+        }
+
         /// <summary>All free bubbles loaded into the scene.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The bubble list.</returns>

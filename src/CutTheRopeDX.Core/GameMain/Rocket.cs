@@ -108,7 +108,7 @@ namespace CutTheRopeDX.GameMain
             container.x = x;
             container.y = y;
             float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
-            movementSpeed = MAX(movementSpeed, 1f);
+            movementSpeed = MAX(movementSpeed, ActivePhysicsConstants.RocketExhaustSpeedFloor);
             float exhaustAngle = angle - MathF.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
@@ -133,9 +133,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <inheritdoc />
         /// <remarks>
-        /// A frozen rocket still travels its authored path, but neither its physics point nor its
-        /// timelines and exhaust presentation advance. Exhausted rockets keep their full update so
-        /// the burnt-out animation plays out.
+        /// A frozen rocket still travels its authored path, but its physics point stops
+        /// integrating and its timelines, container and exhaust hold. Exhausted rockets keep their
+        /// full update so the burnt-out animation plays out. Because this override never delegates
+        /// to the base overload, the rocket's mover is never the held kind - route it through the
+        /// base and a frozen rocket would stop on its path. The position sync runs either way, so
+        /// a mover still drags the point along with it.
         /// </remarks>
         public override void Update(float delta, bool timeFrozen)
         {
@@ -173,18 +176,18 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Unlike every other object, the rocket keeps the rotation the loader gave it instead of
+        /// re-reading the <c>angle</c> attribute: its launch heading is the authored angle turned
+        /// half a circle, which the loader has already applied.
+        /// </remarks>
         public override void ParseMover(XElement xml)
         {
             string path = xml.Attribute("path")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(path))
             {
-                int pathPoints = 100;
-                if (path[0] == 'R')
-                {
-                    int pathRadius = ParseIntOrZero(path[2..]);
-                    pathPoints = MAX(11, (pathRadius / 2) + 1);
-                }
-                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
+                int pathPoints = CTRMover.PathPointCapacity(path);
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * ActivePhysicsConstants.MoverSpeedScale;
                 float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
@@ -263,6 +266,14 @@ namespace CutTheRopeDX.GameMain
         /// from the initial touch, then applies incremental rotation based on the angle change
         /// around the rocket's center.
         /// </summary>
+        /// <remarks>
+        /// The dead zone is a deliberate deviation from Time Travel, which has none and turns the
+        /// rocket from the first move event. It is kept here for mouse players: a click carries a
+        /// pixel or two of drift, and because the pointer starts near the rocket's centre even that
+        /// much swings the bearing wildly - measured at 26 degrees for a 2px drift. Without the
+        /// zone every click reads as a drag, and the tap-to-turn path that both Time Travel and
+        /// Experiments provide on release becomes unreachable.
+        /// </remarks>
         /// <param name="v">The current touch position.</param>
         public void HandleRotate(Vector v)
         {
@@ -280,17 +291,19 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Finalizes a rotation gesture by snapping the rocket's rotation to the nearest 45-degree
-        /// increment via an animated timeline.
+        /// increment via an animated timeline. Time Travel tweens from the exact angle rather than
+        /// its integer truncation.
         /// </summary>
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
             float snappedStep = Round(rotation / DEG_45);
             float snappedRotation = DEG_45 * snappedStep;
+            float startRotationAngle = ActivePhysicsConstants.UseTimeTravelRocketModel ? rotation : (int)rotation;
             RemoveTimeline(1);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)rotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation((int)snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(startRotationAngle, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            timeline.AddKeyFrame(KeyFrame.MakeRotation(snappedRotation, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.delegateTimelineDelegate = this;
             AddTimelinewithID(timeline, 1);
             PlayTimeline(1);
@@ -308,7 +321,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Stops the rocket animation by playing the scale-down timeline, stopping the spark
         /// animation, stopping and releasing both particle systems, and silencing this rocket's
-        /// own fly loop.
+        /// own launch and fly sounds.
         /// </summary>
         public void StopAnimation()
         {
@@ -323,6 +336,8 @@ namespace CutTheRopeDX.GameMain
             cloudParticles?.StopSystem();
             particles = null;
             cloudParticles = null;
+            CTRSoundMgr.StopSound(startSound);
+            startSound = null;
             CTRSoundMgr.StopLoopedSound(flyLoopSound);
             flyLoopSound = null;
         }
@@ -341,12 +356,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Calculates the offset from the rocket's center to the exhaust emission point,
-        /// based on the rocket quad's half-length and current scale.
+        /// based on the rocket quad's half-length and current scale. Time Travel bakes the
+        /// distance in instead of deriving it.
         /// </summary>
         /// <returns>The exhaust offset distance.</returns>
         private float GetExhaustOffset()
         {
-            return GetRocketQuadHalfLength() * MathF.Abs(scaleX);
+            return ActivePhysicsConstants.UseTimeTravelRocketModel
+                ? PhysicsConstants.TimeTravelRocketExhaustOffset
+                : GetRocketQuadHalfLength() * MathF.Abs(scaleX);
         }
 
         /// <summary>
@@ -442,6 +460,13 @@ namespace CutTheRopeDX.GameMain
         /// the sound failed to start.
         /// </summary>
         public ISoundInstance flyLoopSound;
+
+        /// <summary>
+        /// This rocket's own launch sound instance. Held so <see cref="StopAnimation"/> can cut it
+        /// short when the rocket burns out mid-effect, without silencing unrelated audio.
+        /// <see langword="null"/> when sound is off or the effect failed to start.
+        /// </summary>
+        public ISoundInstance startSound;
 
         /// <summary>Delegate that receives rocket lifecycle callbacks (e.g., exhaustion).</summary>
         public IRocketDelegate delegateRocketDelegate;
