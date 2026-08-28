@@ -113,8 +113,19 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="soundResourceName">Logical sound resource name to play once.</param>
         public void PlaySound(string soundResourceName)
         {
+            _ = PlaySoundTracked(soundResourceName);
+        }
+
+        /// <summary>
+        /// Plays a one-shot sound effect and hands back its instance, for callers that may need to
+        /// cut it short before it ends via <see cref="StopSound(ISoundInstance)"/>.
+        /// </summary>
+        /// <param name="soundResourceName">Logical sound resource name to play once.</param>
+        /// <returns>The sound effect instance, or <see langword="null" /> on failure.</returns>
+        public ISoundInstance PlaySoundTracked(string soundResourceName)
+        {
             ClearStopped(activeSounds);
-            _ = TryPlay(soundResourceName, loop: false, activeSounds);
+            return TryPlay(soundResourceName, loop: false, activeSounds);
         }
 
         /// <summary>
@@ -227,6 +238,27 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="instance">The looped instance to stop; ignored when <see langword="null"/>.</param>
         public void StopLoopedSound(ISoundInstance instance)
         {
+            StopTrackedSound(activeLoopedSounds, instance);
+        }
+
+        /// <summary>
+        /// Stops a single active one-shot sound <paramref name="instance"/> and drops its tracking
+        /// entry, leaving every other sound playing. Used by callers that own an individual effect
+        /// (e.g. a rocket's launch sound) and need to cut it short.
+        /// </summary>
+        /// <param name="instance">The one-shot instance to stop; ignored when <see langword="null"/>.</param>
+        public void StopSound(ISoundInstance instance)
+        {
+            StopTrackedSound(activeSounds, instance);
+        }
+
+        /// <summary>
+        /// Stops <paramref name="instance"/> and removes its entry from <paramref name="list"/>.
+        /// </summary>
+        /// <param name="list">The tracking list holding the instance.</param>
+        /// <param name="instance">The instance to stop; ignored when <see langword="null"/>.</param>
+        private static void StopTrackedSound(List<ActiveSound> list, ISoundInstance instance)
+        {
             if (instance == null)
             {
                 return;
@@ -243,7 +275,7 @@ namespace CutTheRopeDX.Framework.Media
             {
             }
 
-            _ = activeLoopedSounds.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
+            _ = list.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
         }
 
         /// <summary>
