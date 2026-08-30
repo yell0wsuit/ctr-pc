@@ -65,8 +65,14 @@ namespace CutTheRopeDX.Browser
         public string LevelEditorUrl => "https://yell0wsuit.github.io/ctrdx-editor/";
 
         /// <inheritdoc />
+        /// <remarks>
+        /// A tab cannot close itself - except one that was script-opened, which a playtest window
+        /// always is, because the editor opened it. So quitting a playtest ends it the way quitting
+        /// on desktop does, while quitting the normal game stays the no-op it has to be.
+        /// </remarks>
         public void Exit()
         {
+            PlaytestSession.Close();
         }
 
         /// <inheritdoc />
