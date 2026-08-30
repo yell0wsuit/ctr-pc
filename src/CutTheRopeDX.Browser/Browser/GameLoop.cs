@@ -28,6 +28,9 @@ namespace CutTheRopeDX.Browser
         [JSExport]
         internal static void Tick(double timestampMs)
         {
+            // Between frames, not during one: a level that arrives mid-step would be half-applied.
+            PlaytestSession.Pump();
+
             double elapsed = _lastTimestampMs == 0
                 ? StepSeconds
                 : (timestampMs - _lastTimestampMs) / 1000.0;

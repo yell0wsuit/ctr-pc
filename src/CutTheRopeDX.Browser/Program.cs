@@ -14,6 +14,11 @@ await StorageInterop.ImportAsync();
 await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
 
+// Announced before the content bundle starts downloading, so the level transfer overlaps a ~56 MB
+// load rather than following it. A normal launch returns immediately.
+bool playtest = await PlaytestSession.BeginAsync();
+Console.WriteLine($"playtest: {(playtest ? "active" : "inactive")}");
+
 int fbo = GLContextInterop.CreateContext("game");
 // Installed before the first measurement so the loop never has to measure again: from here on
 // the canvas reports its own changes.
