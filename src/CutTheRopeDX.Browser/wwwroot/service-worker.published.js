@@ -39,6 +39,10 @@ const shellExclude = [
     /^content\//,
     /^service-worker(-assets)?\.js$/,
     /^manifest\.webmanifest$/,
+    // Install-dialog artwork. The browser fetches these when offering to install the game; the
+    // game itself never asks for them, so caching most of a megabyte of them offline buys
+    // nothing.
+    /^screenshots\//,
     /\.pdb$/,
     /\.map$/,
 ];
