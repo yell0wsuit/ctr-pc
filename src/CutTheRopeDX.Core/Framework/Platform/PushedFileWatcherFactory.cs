@@ -2,21 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using CutTheRopeDX.Framework.Platform;
-
-namespace CutTheRopeDX.Browser
+namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
-    /// Reports level file changes in the browser, where <see cref="FileSystemWatcher"/> throws
-    /// <see cref="PlatformNotSupportedException"/>.
+    /// Reports file changes that are explicitly pushed by a writer, rather than observed by an OS watcher.
     /// </summary>
     /// <remarks>
-    /// The WASM filesystem is real enough for Core to read and write, but nothing observes it. So
-    /// the writer reports its own change: <c>PlaytestSession</c> (Task 3) writes the level and then
-    /// calls <see cref="NotifyChanged"/>. Core cannot tell this apart from a desktop file event,
-    /// which is the point - it keeps the same debounce and the same reload decision on both heads.
+    /// This factory is used in environments where <see cref="FileSystemWatcher"/> is unavailable or
+    /// impractical (such as browser WASM). Rather than observe file system events, the writer reports its own
+    /// changes: the writer modifies the file and then calls <see cref="NotifyChanged"/>. Core cannot tell this
+    /// apart from a desktop file event, which is the point — it keeps the same debounce and the same reload
+    /// decision on both heads.
     /// </remarks>
-    internal sealed class BrowserFileWatcherFactory : IFileWatcherFactory
+    internal sealed class PushedFileWatcherFactory : IFileWatcherFactory
     {
         /// <summary>Registered callbacks, keyed by the full path being watched.</summary>
         private readonly Dictionary<string, List<Action>> _watches = new(StringComparer.Ordinal);
@@ -60,7 +58,7 @@ namespace CutTheRopeDX.Browser
         /// <param name="owner">The factory holding the registry.</param>
         /// <param name="key">Full path being watched.</param>
         /// <param name="callback">The callback to remove.</param>
-        private sealed class Registration(BrowserFileWatcherFactory owner, string key, Action callback) : IDisposable
+        private sealed class Registration(PushedFileWatcherFactory owner, string key, Action callback) : IDisposable
         {
             /// <inheritdoc />
             public void Dispose()
