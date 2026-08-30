@@ -178,7 +178,9 @@ namespace CutTheRopeDX.GameMain
                 Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_SELECT"), GameControllerButtonId.LevelSelect, this);
                 _ = vBox.AddChild(c3);
             }
-            string exitLabel = CustomLevelSession.IsActive ? "QUIT_BUTTON" : "MAIN_MENU";
+            string exitLabel = CustomLevelSession.IsActive
+                ? PlatformServices.Host?.CustomLevelExitLabelKey ?? "QUIT_BUTTON"
+                : "MAIN_MENU";
             Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(exitLabel), GameControllerButtonId.MainMenu, this);
             _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;

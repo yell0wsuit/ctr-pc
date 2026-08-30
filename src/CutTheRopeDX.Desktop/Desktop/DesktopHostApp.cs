@@ -17,6 +17,9 @@ namespace CutTheRopeDX.Desktop
         public string LevelEditorUrl => null;
 
         /// <inheritdoc />
+        public string CustomLevelExitLabelKey => "QUIT_BUTTON";
+
+        /// <inheritdoc />
         public void Exit()
         {
             Global.XnaGame.Exit();

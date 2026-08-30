@@ -18,6 +18,12 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         string LevelEditorUrl { get; }
 
+        /// <summary>
+        /// Localization key for the action that leaves a custom-level session in this host.
+        /// Desktop quits the application; a script-opened browser playtest closes its tab.
+        /// </summary>
+        string CustomLevelExitLabelKey { get; }
+
         void Exit();
 
         /// <summary>Returns whether <paramref name="key"/> transitioned from up to down this frame.</summary>

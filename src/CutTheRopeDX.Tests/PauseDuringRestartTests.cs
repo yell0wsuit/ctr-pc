@@ -22,6 +22,38 @@ namespace CutTheRopeDX.Tests
             return (Text)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).GetChildWithName("mapNameLabel");
         }
 
+        private static Text PauseExitLabel(GameController controller)
+        {
+            BaseElement buttonsGroup = controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
+            BaseElement buttons = buttonsGroup.GetChild(0);
+            Button exit = (Button)buttons.GetChild(1);
+            return (Text)exit.GetChild(0).GetChild(0);
+        }
+
+        [Theory]
+        [InlineData("CLOSE_TAB_BUTTON", "Close tab")]
+        [InlineData("QUIT_BUTTON", "Quit")]
+        public void CustomLevelExitUsesTheHostLabel(string labelKey, string expected)
+        {
+            _ = HeadlessGame.Boot();
+            IHostApp previousHost = PlatformServices.Host;
+
+            try
+            {
+                PlatformServices.Host = new LabelHost(labelKey);
+                CustomLevelSession.Activate("pause-exit-label-test.xml");
+
+                GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
+
+                Assert.Equal(expected, PauseExitLabel(controller).GetString());
+            }
+            finally
+            {
+                CustomLevelSession.Clear();
+                PlatformServices.Host = previousHost;
+            }
+        }
+
         [Fact]
         public void PausingNamedCustomLevelShowsResolvedLevelName()
         {
@@ -262,6 +294,32 @@ namespace CutTheRopeDX.Tests
                     $"{name}: label right edge {rightEdge} ran past the viewport width {visible.w}");
                 Assert.True(label.scaleX > 1f, $"{name}: label did not pick up the narrow-viewport boost");
             });
+        }
+
+        private sealed class LabelHost(string customLevelExitLabelKey) : IHostApp
+        {
+            public bool CanExit => false;
+
+            public string LevelEditorUrl => null;
+
+            public string CustomLevelExitLabelKey { get; } = customLevelExitLabelKey;
+
+            public void Exit()
+            {
+            }
+
+            public bool IsKeyPressed(KeyCode key)
+            {
+                return false;
+            }
+
+            public void DrawMovie()
+            {
+            }
+
+            public void OpenUrl(string url)
+            {
+            }
         }
     }
 }
