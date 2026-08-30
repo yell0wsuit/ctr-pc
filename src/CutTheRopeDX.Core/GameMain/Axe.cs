@@ -93,6 +93,20 @@ namespace CutTheRopeDX.GameMain
             SyncToConstraint();
         }
 
+        /// <inheritdoc />
+        /// <remarks>The blade stops spinning while time is frozen; its children keep animating.</remarks>
+        public override void Update(float delta, bool timeFrozen)
+        {
+            if (!timeFrozen)
+            {
+                Update(delta);
+                return;
+            }
+
+            base.Update(delta);
+            SyncToConstraint();
+        }
+
         public override void Draw()
         {
             if (!visible)

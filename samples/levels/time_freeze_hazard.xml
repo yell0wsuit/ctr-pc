@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<map>
+    <layer name="settings">
+        <map width="320" height="480" gridSize="32" />
+        <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" useTimeTravelRocketPhysics="true" />
+    </layer>
+    <layer name="Objects">
+        <target x="160" y="430" targetType="basic" />
+        <grab x="160" y="120" length="110" wheel="false" gun="false" kickable="false" kicked="false" radius="-1" invisible="false" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" bombed="false" axed="false" bombsHighPriority="false" breakable="true" />
+        <candy x="160" y="230" isDriven="false" />
+        <spike1 x="60" y="330" angle="0" size="4" path="200,0" moveSpeed="90" toggled="false" />
+        <pauseSwitcher x="270" y="80" />
+        <star x="160" y="285" timeout="-1" index="0" />
+    </layer>
+</map>

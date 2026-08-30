@@ -21,11 +21,11 @@ namespace CutTheRopeDX.GameMain
         private void LoadRocket(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             Rocket rocket = Rocket.Rocket_createWithResIDQuad(Resources.Img.ObjRocket, 10);
-            rocket.scaleX = rocket.scaleY = 0.7f;
+            rocket.scaleX = rocket.scaleY = ActivePhysicsConstants.RocketBodyScale;
             rocket.DoRestoreCutTransparency();
             rocket.delegateRocketDelegate = this;
 
-            // Catch-slat bb (0.6 x quad width, 0.05 x quad height of the rocket body quad),
+            // Catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
             // pinned from original XML quad data and center-relative so atlas repacks can't move it.
             float catchWidth = ActivePhysicsConstants.RocketCatchBoxWidth;
             float catchHeight = ActivePhysicsConstants.RocketCatchBoxHeight;

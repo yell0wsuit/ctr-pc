@@ -231,6 +231,8 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <c>0.6</c> when a map leaves it at zero, so that is the default here too.
         /// </param>
         /// <param name="isRotatable">Whether the player can spin the rocket before it fires.</param>
+        /// <param name="path">Optional mover path string.</param>
+        /// <param name="moveSpeed">Mover speed for <paramref name="path"/>.</param>
         /// <returns>This scenario.</returns>
         public Scenario Rocket(
             int x,
@@ -239,7 +241,9 @@ namespace CutTheRopeDX.Tests.Interactions
             float impulse = 200f,
             float time = -1f,
             float impulseFactor = 0.6f,
-            bool isRotatable = false)
+            bool isRotatable = false,
+            string path = null,
+            float moveSpeed = 0f)
         {
             XElement rocket = Node("rocket", x, y);
             rocket.SetAttributeValue("angle", Num(angle));
@@ -247,6 +251,11 @@ namespace CutTheRopeDX.Tests.Interactions
             rocket.SetAttributeValue("time", Num(time));
             rocket.SetAttributeValue("impulseFactor", Num(impulseFactor));
             rocket.SetAttributeValue("isRotatable", Flag(isRotatable));
+            if (path != null)
+            {
+                rocket.SetAttributeValue("path", path);
+                rocket.SetAttributeValue("moveSpeed", Num(moveSpeed));
+            }
             return Add(rocket);
         }
 
@@ -257,6 +266,18 @@ namespace CutTheRopeDX.Tests.Interactions
         public Scenario Bubble(int x, int y)
         {
             return Add(Node("bubble", x, y));
+        }
+
+        /// <summary>Adds a Time Travel axe body.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="axeNumber">Optional authored axe identifier.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Axe(int x, int y, string axeNumber = "first")
+        {
+            XElement axe = Node("axe", x, y);
+            axe.SetAttributeValue("axeNumber", axeNumber);
+            return Add(axe);
         }
 
         /// <summary>Adds a bouncer.</summary>
@@ -409,6 +430,56 @@ namespace CutTheRopeDX.Tests.Interactions
             spike.SetAttributeValue("angle", Num(angle));
             spike.SetAttributeValue("size", Num(size));
             return Add(spike);
+        }
+
+        /// <summary>Adds spikes that travel along a path.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="path">Mover path, in the shipping maps' format.</param>
+        /// <param name="moveSpeed">Travel speed along the path.</param>
+        /// <param name="size">Spike bar size.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario MovingSpikes(int x, int y, string path = "0,-200", float moveSpeed = 30f, int size = 4)
+        {
+            XElement spikes = Node("spike4", x, y);
+            spikes.SetAttributeValue("angle", Num(0f));
+            spikes.SetAttributeValue("size", Num(size));
+            spikes.SetAttributeValue("path", path);
+            spikes.SetAttributeValue("moveSpeed", Num(moveSpeed));
+            spikes.SetAttributeValue("toggled", "false");
+            return Add(spikes);
+        }
+
+        /// <summary>Adds electrified spikes with a repeating on/off cycle.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="initialDelay">Delay before the first electrified period.</param>
+        /// <param name="onTime">Duration of each electrified period.</param>
+        /// <param name="offTime">Duration of each quiet period.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario ElectroSpikes(
+            int x,
+            int y,
+            float initialDelay = 0f,
+            float onTime = 5f,
+            float offTime = 0f)
+        {
+            XElement spikes = Node("electro", x, y);
+            spikes.SetAttributeValue("angle", Num(0f));
+            spikes.SetAttributeValue("size", Num(4));
+            spikes.SetAttributeValue("initialDelay", Num(initialDelay));
+            spikes.SetAttributeValue("onTime", Num(onTime));
+            spikes.SetAttributeValue("offTime", Num(offTime));
+            return Add(spikes);
+        }
+
+        /// <summary>Adds a time-freeze button.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario PauseSwitcher(int x, int y)
+        {
+            return Add(Node("pauseSwitcher", x, y));
         }
 
         /// <summary>Adds a conveyor belt.</summary>

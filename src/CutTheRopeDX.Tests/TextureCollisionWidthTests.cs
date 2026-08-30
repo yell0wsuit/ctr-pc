@@ -1,6 +1,8 @@
 using System;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -23,6 +25,20 @@ namespace CutTheRopeDX.Tests
             finally
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
+        }
+
+        private static T WithRocketModel<T>(bool mobile, bool timeTravel, Func<T> body)
+        {
+            bool previous = ActivePhysicsConstants.UseTimeTravelRocketModel;
+            try
+            {
+                ActivePhysicsConstants.UseTimeTravelRocketModel = timeTravel;
+                return WithMobilePhysics(mobile, body);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseTimeTravelRocketModel = previous;
             }
         }
 
@@ -117,37 +133,68 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(expected, result, precision: 3);
         }
 
-        // Rocket catch-slat bb (0.6 x quad width, 0.05 x quad height of the rocket body quad),
-        // pinned from XML quads and expressed center-relative to the rocket object.
-        // Mobile: Experiments base quad 10 = 116x58 centered at (91,67) on the 199x134 sheet, x3.
-        [Fact]
-        public void RocketCatchBoxMobileUsesExperimentsBaseQuad()
+        // Rocket catch-slat bb, expressed center-relative to the rocket object. Outside Time
+        // Travel these are the boxes the port has always shipped, and desktop and mobile do not
+        // agree: desktop's is derived from the 619x418 rocket sheet (358x179 quad centred at
+        // 288,208.5) while mobile's comes from the Experiments base quad (116x58 centred at 91,67
+        // on a 199x134 sheet, x3). That mismatch predates the Time Travel work and is deliberately
+        // left alone - only the Time Travel rocket is split onto its own box.
+        [Theory]
+        [InlineData(false, 214.8f, 8.95f, -21.5f, -0.5f)]
+        [InlineData(true, 208.8f, 8.7f, -25.5f, 0f)]
+        public void RocketCatchBoxOutsideTimeTravelKeepsTheShippedBox(
+            bool mobilePhysics,
+            float expectedWidth,
+            float expectedHeight,
+            float expectedOffsetX,
+            float expectedOffsetY)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(true, () => (
+            (float w, float h, float ox, float oy) = WithRocketModel(mobilePhysics, timeTravel: false, () => (
                 ActivePhysicsConstants.RocketCatchBoxWidth,
                 ActivePhysicsConstants.RocketCatchBoxHeight,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(208.8f, w, precision: 3);  // 116 * 0.6 * 3
-            Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
-            Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
-            Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
+            Assert.Equal(expectedWidth, w, precision: 3);
+            Assert.Equal(expectedHeight, h, precision: 3);
+            Assert.Equal(expectedOffsetX, ox, precision: 3);
+            Assert.Equal(expectedOffsetY, oy, precision: 3);
         }
 
-        // Desktop: dx atlas quad 10 = 358x179 centered at (288, 208.5) on the 619x418 sheet,
-        // frozen as constants so atlas repacks cannot move the hitbox.
-        [Fact]
-        public void RocketCatchBoxDesktopUsesFrozenDxAtlasQuad()
+        // Time Travel resource 0x8A quad 10 is 358x179 in the DX sheet, centered at
+        // (288,208.5) in its restored 619x418 source frame.
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RocketCatchBoxTimeTravelUsesItsOwnQuad(bool mobilePhysics)
         {
-            (float w, float h, float ox, float oy) = WithMobilePhysics(false, () => (
+            (float w, float h, float ox, float oy) = WithRocketModel(mobilePhysics, timeTravel: true, () => (
                 ActivePhysicsConstants.RocketCatchBoxWidth,
                 ActivePhysicsConstants.RocketCatchBoxHeight,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(214.8f, w, precision: 3);  // 358 * 0.6
+            Assert.Equal(232.7f, w, precision: 3);  // 358 * 0.65
             Assert.Equal(8.95f, h, precision: 3);   // 179 * 0.05
-            Assert.Equal(-21.5f, ox, precision: 3); // 288 - 309.5
-            Assert.Equal(-0.5f, oy, precision: 3);  // 208.5 - 209
+            Assert.Equal(-21.5f, ox, precision: 3); // 288 - 619/2
+            Assert.Equal(-0.5f, oy, precision: 3);  // 208.5 - 418/2
+        }
+
+        [Fact]
+        public void RocketVariantsUseTheirNativeScale()
+        {
+            GameScene experiments = Scenario.New()
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .Build();
+            GameScene timeTravel = Scenario.New()
+                .Design("useTimeTravelRocketPhysics", "true")
+                .Candy(60, 100)
+                .OmNom(160, 440)
+                .Rocket(220, 200)
+                .Build();
+
+            Assert.Equal(0.7f, Assert.Single(experiments.Rockets()).scaleX);
+            Assert.Equal(0.71f, Assert.Single(timeTravel.Rockets()).scaleX);
         }
     }
 }

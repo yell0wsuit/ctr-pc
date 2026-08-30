@@ -18,12 +18,20 @@ namespace CutTheRopeDX.GameMain
         {
             delta = 0.016f;
             base.Update(delta);
+            foreach (PauseSwitcher switcher in pauseSwitchers)
+            {
+                switcher?.Update(delta);
+            }
+            pauseSwitcherWaves?.Update(delta);
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
                 if (t.targetObject != null)
                 {
-                    t.controller?.UpdateAdditionalOverlays(delta);
+                    if (!timeFrozen)
+                    {
+                        t.controller?.UpdateAdditionalOverlays(delta);
+                    }
                     t.controller?.SyncAdditionalOverlayPosition(t.targetObject.x, t.targetObject.y);
                 }
             }
@@ -323,11 +331,34 @@ namespace CutTheRopeDX.GameMain
                 {
                     body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
                 }
-                body.Point.Update(delta * ropePhysicsSpeed);
+                if (!timeFrozen)
+                {
+                    body.Point.Update(delta * ropePhysicsSpeed);
+                }
+                if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration)
+                {
+                    // Time Travel relaxes each candy point the moment it has moved - and does so
+                    // whether or not time is frozen, unlike the integration above.
+                    ConstraintedPoint.SatisfyConstraints(body.Point);
+                }
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
-                body.Visual.Update(delta);
+                if (body.Visual is Axe axe)
+                {
+                    axe.Update(delta, timeFrozen);
+                }
+                else
+                {
+                    body.Visual.Update(delta);
+                }
                 CalculateTopLeft(body.Visual);
+            }
+            if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration && candyConnector != null)
+            {
+                // ...then corrects the connector's own ends, which the candy integration has just
+                // pulled off their rest length. Unconditional in Time Travel - a cut connector too.
+                ConstraintedPoint.SatisfyConstraints(candyConnector.bungeeAnchor);
+                ConstraintedPoint.SatisfyConstraints(candyConnector.tail);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
             ResolveCandyCollisions(delta);
@@ -464,15 +495,19 @@ namespace CutTheRopeDX.GameMain
                     rightPoint.AddConstraintwithRestLengthofType(leftPoint, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
-            targetObject?.Update(delta);
-            // Update additional Om Noms' animations (targets[0] handled above via targetObject).
-            for (int ti = 1; ti < targets.Count; ti++)
+            if (!timeFrozen)
             {
-                targets[ti].targetObject?.Update(delta);
+                targetObject?.Update(delta);
+                // Update additional Om Noms' animations (targets[0] handled above via targetObject).
+                for (int ti = 1; ti < targets.Count; ti++)
+                {
+                    targets[ti].targetObject?.Update(delta);
+                }
+                UpdateNightTargetPresentation(delta);
+                UpdatePostEatSleep(delta);
             }
             UpdateLightEmitterPhysics();
-            UpdateNightLevel(delta);
-            UpdatePostEatSleep(delta);
+            UpdateNightStarLighting();
             conveyors.Update(delta);
 
             UpdateAntConveyor(delta);
@@ -542,7 +577,7 @@ namespace CutTheRopeDX.GameMain
                         for (int ti = 0; ti < targets.Count; ti++)
                         {
                             TargetAnimationController controller = targets[ti].controller;
-                            if (controller?.IsIdleLoopPlaying() == true)
+                            if (!timeFrozen && controller?.IsIdleLoopPlaying() == true)
                             {
                                 controller.PlayExcited();
                                 CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, controller.SkinDefinition);
@@ -833,7 +868,11 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj11 in socks)
             {
                 Sock sock3 = (Sock)obj11;
-                sock3.Update(delta);
+                sock3.Update(delta, timeFrozen);
+                if (timeFrozen)
+                {
+                    continue;
+                }
                 if (Mover.MoveVariableToTarget(ref sock3.idleTimeout, 0, 1, delta))
                 {
                     sock3.state = Sock.SOCK_IDLE;
@@ -960,8 +999,16 @@ namespace CutTheRopeDX.GameMain
                         rocket.point.pos = rocketStar.pos;
                         rocket.point.prevPos = rocketStar.pos;
                     }
-                    rocket.Update(delta);
+                    rocket.Update(delta, timeFrozen);
                     rocket.UpdateRotation();
+                    if (timeFrozen)
+                    {
+                        if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_FLY)
+                        {
+                            rocket.point.pos = rocketStar.pos;
+                        }
+                        continue;
+                    }
                     // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.
                     // Mouse.DropCandy re-enabling gravity when the mouse lets go of a rocket-bound
                     // candy) is healed here every frame while the rocket is bound — mirrors the
@@ -973,7 +1020,11 @@ namespace CutTheRopeDX.GameMain
                     float dist = carriesCandy ? VectLength(VectSub(rocketStar.pos, rocket.point.pos)) : 0f;
                     if (carriesCandy)
                     {
-                        if (!parkedOnMouse)
+                        // Time Travel relaxes the pair only through the reel-in; once the rocket is
+                        // flying the rest length is fixed and it leaves the points alone.
+                        if (!parkedOnMouse
+                            && (rocket.state == Rocket.STATE_ROCKET_DIST
+                                || ActivePhysicsConstants.RocketRelaxDuringFlight))
                         {
                             for (int i = 0; i < 30; i++)
                             {
@@ -997,7 +1048,9 @@ namespace CutTheRopeDX.GameMain
                                 if (bungee != null)
                                 {
                                     Bungee rope = bungee.Rope;
-                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && rocketCandy?.Lifecycle.Attachments.Hand == null)
+                                    bool candyIsFree = !ActivePhysicsConstants.RocketRopeAlignRequiresFreeCandy
+                                        || rocketCandy?.Lifecycle.Attachments.Hand == null;
+                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && candyIsFree)
                                     {
                                         ropeRelaxed = true;
                                         AlignRocketAngleToRope(rocket, rope, delta);
@@ -1049,9 +1102,21 @@ namespace CutTheRopeDX.GameMain
                     if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_DIST)
                     {
                         // Per-candy: only a hand holding THIS rocket's candy skips the reel-in.
-                        if (rocketCandy?.Lifecycle.Attachments.Hand != null || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
+                        // Time Travel has no such shortcut - it reels in from whoever holds it.
+                        bool heldSkipsReelIn = ActivePhysicsConstants.RocketBindsDirectlyToFlightWhenHeld
+                            && rocketCandy?.Lifecycle.Attachments.Hand != null;
+                        if (heldSkipsReelIn || Mover.MoveVariableToTarget(ref dist, 0f, ActivePhysicsConstants.RocketReelSpeed, delta))
                         {
                             rocket.state = Rocket.STATE_ROCKET_FLY;
+                            if (ActivePhysicsConstants.RocketBindClearsCandyVelocity)
+                            {
+                                // Time Travel hands the thrust a candy at rest: whatever the reel-in
+                                // built up is dropped as the flight starts.
+                                rocketStar.v = vectZero;
+                                rocketStar.a = vectZero;
+                                rocketStar.gravity = vectZero;
+                                rocketStar.prevPos = rocketStar.pos;
+                            }
                         }
                         else
                         {
@@ -1079,12 +1144,18 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
 
+                            if (ActivePhysicsConstants.RocketBindPopsCandyBubble)
+                            {
+                                // Time Travel bursts the bubble before it takes the candy.
+                                PopCandyBubble(body);
+                            }
                             rocket.mover?.Pause();
                             rocket.startRotation = rocket.rotation;
                             // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
                             // The rocket steals from nobody — it coexists with hand or mouse and
                             // launches when the holder releases.
-                            if (RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
+                            if (ActivePhysicsConstants.RocketBindsDirectlyToFlightWhenHeld
+                                && RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
                             {
                                 rocket.point.pos = body.Point.pos;
                                 rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
@@ -1098,8 +1169,23 @@ namespace CutTheRopeDX.GameMain
                             }
                             // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
                             body.ResidualRotation = 0f;
-                            Vector deltaPos = VectSub(body.Point.pos, body.Point.prevPos);
-                            body.Point.prevPos = VectAdd(body.Point.prevPos, VectDiv(deltaPos, body.Point.disableGravity ? 2f : 1.25f));
+                            if (ActivePhysicsConstants.RocketBindClearsCandyVelocity)
+                            {
+                                // Time Travel kills the candy's velocity outright on capture, and
+                                // additionally clears the accumulators when it was still falling.
+                                if (!body.Point.disableGravity)
+                                {
+                                    body.Point.v = vectZero;
+                                    body.Point.a = vectZero;
+                                    body.Point.gravity = vectZero;
+                                }
+                                body.Point.prevPos = body.Point.pos;
+                            }
+                            else
+                            {
+                                Vector deltaPos = VectSub(body.Point.pos, body.Point.prevPos);
+                                body.Point.prevPos = VectAdd(body.Point.prevPos, VectDiv(deltaPos, body.Point.disableGravity ? 2f : 1.25f));
+                            }
                             body.Point.disableGravity = true;
 
                             // Exhaust any rocket already bound to this candy before re-binding (one-time-use safety).
@@ -1108,7 +1194,7 @@ namespace CutTheRopeDX.GameMain
                                 ExhaustRocketForCandy(ctx);
                             }
 
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketStart);
+                            rocket.startSound = CTRSoundMgr.PlaySoundTracked(Resources.Snd.ExpRocketStart);
                             rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             _ = ctx.Lifecycle.Attachments.BindRocket(rocket);
                             rocket.isOperating = -1;
@@ -1163,7 +1249,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
-                spike.Update(delta);
+                spike.Update(delta, timeFrozen);
                 float spikeCollisionRadius = 15f;
                 // Break the first body that touches the spike, in one pass over whole candies and
                 // split halves alike. Decision routed through BarrierCollision.Hits.
@@ -1193,7 +1279,7 @@ namespace CutTheRopeDX.GameMain
             foreach (object obj15 in bouncers)
             {
                 Bouncer bouncer = (Bouncer)obj15;
-                bouncer.Update(delta);
+                bouncer.Update(delta, timeFrozen);
                 float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
                 bool anyCandyHit = false;
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bouncer))
@@ -1206,6 +1292,11 @@ namespace CutTheRopeDX.GameMain
                         includeSweep: !ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
                         anyCandyHit = true;
+
+                        if (timeFrozen)
+                        {
+                            continue;
+                        }
 
                         // A hand that just caught this candy keeps it for a moment, otherwise the
                         // bouncer takes it straight back and the two fight over it every frame. The
@@ -1338,20 +1429,32 @@ namespace CutTheRopeDX.GameMain
                     Vect((0f - body.Point.v.X) / bubbleDamping, ((0f - body.Point.v.Y) / bubbleDamping) + lift),
                     delta);
             }
-            for (int ci = 0; ci < candies.Count; ci++)
+            // Time Travel never damps a rocket-bound candy: it populates no force slot on any point
+            // (setForcewithID has no call site in the binary), so thrust builds unopposed. Only the
+            // Experiments rocket bleeds velocity off.
+            for (int ci = 0; ActivePhysicsConstants.RocketDampsCandyVelocity && ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                if (ctx.Lifecycle.Attachments.Rocket == null)
-                {
-                    continue;
-                }
-                // A rocket only ever binds a whole body, so damping has one point to act on.
                 ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
-                bool inWater = waterLayer != null
-                    && waterLevel > 0f
-                    && WaterSubmersion.IsSubmerged(rocketPoint.pos.X, rocketPoint.pos.Y, waterLayer.x, waterLayer.y, waterLayer.width, candyRadius);
-                float rocketDamping = inWater ? waterRocketDamping : ActivePhysicsConstants.RocketActiveVelocityDamping;
-                rocketPoint.ApplyImpulseDelta(Vect(-rocketPoint.v.X / rocketDamping, -rocketPoint.v.Y / rocketDamping), delta);
+                if (ctx.Lifecycle.Attachments.Rocket != null)
+                {
+                    // Experiments applies velocity damping as an impulse each frame instead.
+                    bool inWater = waterLayer != null
+                        && waterLevel > 0f
+                        && WaterSubmersion.IsSubmerged(
+                            rocketPoint.pos.X,
+                            rocketPoint.pos.Y,
+                            waterLayer.x,
+                            waterLayer.y,
+                            waterLayer.width,
+                            candyRadius);
+                    float damping = inWater
+                        ? waterRocketDamping
+                        : ActivePhysicsConstants.RocketActiveVelocityDamping;
+                    rocketPoint.ApplyImpulseDelta(
+                        Vect(-rocketPoint.v.X / damping, -rocketPoint.v.Y / damping),
+                        delta);
+                }
             }
             ApplyAntCarryToCandyPosition();
 
@@ -1366,43 +1469,46 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            for (int ti = 0; ti < targets.Count; ti++)
+            if (!timeFrozen)
             {
-                TargetContext t = targets[ti];
-                // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
-                // not react to a remaining candy during the loss reaction.
-                if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
+                for (int ti = 0; ti < targets.Count; ti++)
                 {
-                    continue;
-                }
-                Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
-                bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
-
-                if (t.Feeding.Phase == TargetFeedingPhase.Idle && canInteractWithTarget)
-                {
-                    if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
+                    TargetContext t = targets[ti];
+                    // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
+                    // not react to a remaining candy during the loss reaction.
+                    if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
                     {
-                        if (t.Feeding.TryOpenMouth(closeDelay: 1f))
+                        continue;
+                    }
+                    Vector targetPos = Vect(t.targetObject.x, t.targetObject.y);
+                    bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
+
+                    if (t.Feeding.Phase == TargetFeedingPhase.Idle && canInteractWithTarget)
+                    {
+                        if (CandyDecisions.ShouldOpenMouth(targetPos, candyViews, ActivePhysicsConstants.MouthOpenDistance))
                         {
-                            t.controller?.PlayMouthOpening();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                            if (t.Feeding.TryOpenMouth(closeDelay: 1f))
+                            {
+                                t.controller?.PlayMouthOpening();
+                                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                            }
                         }
                     }
-                }
-                else if (t.Feeding.Phase == TargetFeedingPhase.MouthOpen && canInteractWithTarget)
-                {
-                    bool candyNearby = CandyDecisions.ShouldOpenMouth(
-                        targetPos,
-                        candyViews,
-                        ActivePhysicsConstants.MouthOpenDistance);
-                    if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
+                    else if (t.Feeding.Phase == TargetFeedingPhase.MouthOpen && canInteractWithTarget)
                     {
-                        t.controller?.PlayMouthClosing();
-                        CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
-                        tummyTeasers++;
-                        if (tummyTeasers >= 10)
+                        bool candyNearby = CandyDecisions.ShouldOpenMouth(
+                            targetPos,
+                            candyViews,
+                            ActivePhysicsConstants.MouthOpenDistance);
+                        if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
                         {
-                            CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                            t.controller?.PlayMouthClosing();
+                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
+                            tummyTeasers++;
+                            if (tummyTeasers >= 10)
+                            {
+                                CTRRootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                            }
                         }
                     }
                 }
@@ -1410,7 +1516,7 @@ namespace CutTheRopeDX.GameMain
             // Eat: an uneaten candy entering an open mouth is consumed; that Om Nom sleeps.
             // Once a win/loss transition is active, no further candy may be eaten so a sad Om Nom
             // does not consume a remaining candy during the loss transition.
-            if (gameplayFlow.CanTriggerOutcome && gameplayFlow.CanReactToCandy())
+            if (!timeFrozen && gameplayFlow.CanTriggerOutcome && gameplayFlow.CanReactToCandy())
             {
                 for (int ti = 0; ti < targets.Count; ti++)
                 {
@@ -1591,6 +1697,10 @@ namespace CutTheRopeDX.GameMain
                     Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, camera.ScreenToWorldX(slastTouch.X), camera.ScreenToWorldY(slastTouch.Y), ref grab2);
                     _ = (nearestBungeeSegmentByBeziersPointsatXYgrab?.highlighted = true);
                 }
+            }
+            if (timeFrozen)
+            {
+                HoldFrozenPoints();
             }
             switch (gameplayFlow.Advance(delta))
             {

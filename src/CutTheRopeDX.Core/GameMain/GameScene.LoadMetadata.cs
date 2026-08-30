@@ -66,6 +66,7 @@ namespace CutTheRopeDX.GameMain
             mapOffsetX = 0;
             mapOffsetY = 0;
             ActivePhysicsConstants.UseMobilePhysicsModel = false;
+            ActivePhysicsConstants.UseTimeTravelRocketModel = false;
             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
             CTRRootController rc = (CTRRootController)Application.SharedRootController();
@@ -116,6 +117,8 @@ namespace CutTheRopeDX.GameMain
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
                             _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
                             ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;
+                            _ = bool.TryParse(item2.Attribute("useTimeTravelRocketPhysics")?.Value, out bool useTimeTravelRocketPhysics);
+                            ActivePhysicsConstants.UseTimeTravelRocketModel = useTimeTravelRocketPhysics;
                             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);

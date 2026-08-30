@@ -16,11 +16,21 @@ namespace CutTheRopeDX.GameMain
         /// <param name="soundResourceName">The sound resource name to play.</param>
         public static void PlaySound(string soundResourceName)
         {
-            if (!string.IsNullOrWhiteSpace(soundResourceName)
-                && Preferences.GetBooleanForKey("SOUND_ON"))
-            {
-                Application.SharedSoundMgr().PlaySound(soundResourceName);
-            }
+            _ = PlaySoundTracked(soundResourceName);
+        }
+
+        /// <summary>
+        /// Plays a sound effect and hands back its instance, for callers that own an individual
+        /// effect and may need to stop it via <see cref="StopSound(ISoundInstance)"/>.
+        /// </summary>
+        /// <param name="soundResourceName">The sound resource name to play.</param>
+        /// <returns>The playing <see cref="ISoundInstance"/>, or <see langword="null"/> when sound
+        /// is off or the effect failed to start.</returns>
+        public static ISoundInstance PlaySoundTracked(string soundResourceName)
+        {
+            return string.IsNullOrWhiteSpace(soundResourceName) || !Preferences.GetBooleanForKey("SOUND_ON")
+                ? null
+                : Application.SharedSoundMgr().PlaySoundTracked(soundResourceName);
         }
 
         /// <summary>
@@ -208,6 +218,16 @@ namespace CutTheRopeDX.GameMain
         public static void StopLoopedSound(ISoundInstance instance)
         {
             Application.SharedSoundMgr().StopLoopedSound(instance);
+        }
+
+        /// <summary>
+        /// Stops a single one-shot sound instance previously returned by
+        /// <see cref="PlaySound(string)"/>, leaving other sounds playing.
+        /// </summary>
+        /// <param name="instance">The one-shot instance to stop; ignored when <see langword="null"/>.</param>
+        public static void StopSound(ISoundInstance instance)
+        {
+            Application.SharedSoundMgr().StopSound(instance);
         }
 
         /// <summary>

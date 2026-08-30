@@ -17,14 +17,36 @@ namespace CutTheRopeDX.GameMain
     /// <param name="r_">Rotation speed in degrees per second.</param>
     internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
+        /// <summary>
+        /// Returns the number of path points <see cref="SetPathFromStringandStart"/> will emit for
+        /// <paramref name="p"/>. Callers size the mover from this: <see cref="Mover.AddPathPoint"/>
+        /// indexes its array unguarded, so a capacity derived from the unscaled radius overruns.
+        /// </summary>
+        /// <param name="p">The path string from level data.</param>
+        /// <returns>The path point capacity required for <paramref name="p"/>.</returns>
+        public static int PathPointCapacity(string p)
+        {
+            return string.IsNullOrEmpty(p) || p[0] != 'R'
+                ? 100
+                : MAX(1, CirclePathRadius(p) / 2) + 1;
+        }
+
+        /// <summary>Scales the radius of a circular ("R…") path into world units.</summary>
+        /// <param name="p">The path string from level data.</param>
+        /// <returns>The scaled circle radius.</returns>
+        private static int CirclePathRadius(string p)
+        {
+            int radius = (int)RTD(ParseIntOrZero(p[2..]));
+            return (int)RTD(radius * ActivePhysicsConstants.MoverPathScale);
+        }
+
         /// <inheritdoc />
         public override void SetPathFromStringandStart(string p, Vector s)
         {
             if (p[0] == 'R')
             {
                 bool flag = p[1] == 'C';
-                int radius = (int)RTD(ParseIntOrZero(p[2..]));
-                radius = (int)RTD(radius * ActivePhysicsConstants.MoverPathScale);
+                int radius = CirclePathRadius(p);
                 int pointCount = radius / 2;
                 if (pointCount <= 0)
                 {

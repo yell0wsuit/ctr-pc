@@ -7,6 +7,9 @@ namespace CutTheRopeDX.Framework.Visual
     /// </summary>
     internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
+        /// <summary>Number of animations the pool currently holds.</summary>
+        public int ChildCount => childs.Count;
+
         /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {

@@ -208,7 +208,7 @@ namespace CutTheRopeDX.Framework
 
         /// <summary>
         /// Rocket catch-slat box from the Experiments base assets: quad 10 is 116x58 centered
-        /// at (91,67) on the 199x134 obj_rocket sheet; the engine takes 0.6 x width and
+        /// at (91,67) on the 199x134 obj_rocket sheet; the engine takes 0.65 x width and
         /// 0.05 x height of that quad.
         /// </summary>
         public const float RocketCatchBoxWidth = 69.6f; // 116 * 0.6

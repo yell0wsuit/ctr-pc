@@ -80,6 +80,13 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.RocketReelSpeed" />
         public const float RocketReelSpeed = 200f;
 
+        /// <summary>
+        /// Speed at which the Time Travel rocket reels the candy in. Time Travel's own literal is
+        /// 400, but it is a world distance per second and its world is 960 tall to this one's
+        /// 1440, so 600 is the same reel measured in screen fractions.
+        /// </summary>
+        public const float TimeTravelRocketReelSpeed = 600f;
+
         /// <inheritdoc cref="ActivePhysicsConstants.CandyPartsMergeSpeed" />
         public const float CandyPartsMergeSpeed = 200f;
 
@@ -119,8 +126,15 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.BouncerMinImpulse" />
         public const float BouncerMinImpulse = 840f;
 
-        /// <inheritdoc cref="ActivePhysicsConstants.RocketPointWeight" />
+        /// <summary>
+        /// Weight of the rocket's physics point. The originals use 0.5, but on desktop that low a
+        /// weight leaves the rocket too susceptible to constraint forces from connected rope
+        /// points, drifting it off its mount - so desktop deliberately runs heavier.
+        /// </summary>
         public const float RocketPointWeight = 2.5f;
+
+        /// <summary>Weight of the Time Travel rocket's physics point (its ctor sets 0.5).</summary>
+        public const float TimeTravelRocketPointWeight = 0.5f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketActiveVelocityDamping" />
         public const float RocketActiveVelocityDamping = 40f;
@@ -197,11 +211,7 @@ namespace CutTheRopeDX.Framework
         /// <remarks>obj_bouncer_02 quad 0.</remarks>
         public const float BouncerLargeCollisionWidth = 302f;
 
-        /// <summary>
-        /// Rocket catch-slat box frozen from the JSON atlas: quad 10 is 358x179 centered at
-        /// (288, 208.5) on the 619x418 obj_rocket sheet; the engine takes 0.6 x width and
-        /// 0.05 x height of that quad.
-        /// </summary>
+        /// <summary>iOS rocket catch-slat width transformed into DX world coordinates.</summary>
         public const float RocketCatchBoxWidth = 214.8f; // 358 * 0.6
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxHeight" />
@@ -212,6 +222,36 @@ namespace CutTheRopeDX.Framework
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxCenterOffsetY" />
         public const float RocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketBodyScale" />
+        public const float RocketBodyScale = 0.7f;
+
+        /// <summary>Draw scale of the Time Travel rocket body on its own sheet.</summary>
+        public const float TimeTravelRocketBodyScale = 0.71f;
+
+        /// <summary>Time Travel rocket catch-slat width from resource 0x8A, quad 10.</summary>
+        public const float TimeTravelRocketCatchBoxWidth = 232.7f; // 358 * 0.65
+
+        /// <summary>Time Travel rocket catch-slat height from resource 0x8A, quad 10.</summary>
+        public const float TimeTravelRocketCatchBoxHeight = 8.95f; // 179 * 0.05
+
+        /// <summary>Time Travel rocket quad center relative to its restored source center.</summary>
+        public const float TimeTravelRocketCatchBoxCenterOffsetX = -21.5f; // 288 - 619/2
+
+        /// <summary>Time Travel rocket quad center relative to its restored source center.</summary>
+        public const float TimeTravelRocketCatchBoxCenterOffsetY = -0.5f; // 208.5 - 418/2
+
+        /// <summary>
+        /// Distance from the Time Travel rocket's center to its exhaust emission point. Time Travel
+        /// bakes this in rather than deriving it from the body quad.
+        /// </summary>
+        public const float TimeTravelRocketExhaustOffset = 75f;
+
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketExhaustSpeedFloor" />
+        public const float RocketExhaustSpeedFloor = 1f;
+
+        /// <summary>Floor applied to the Time Travel rocket's exhaust particle speed.</summary>
+        public const float TimeTravelRocketExhaustSpeedFloor = 2f;
 
         /// <summary>
         /// Maximum rope length used to size rope drawing buffers.

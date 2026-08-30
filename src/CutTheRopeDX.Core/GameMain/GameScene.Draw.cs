@@ -138,6 +138,10 @@ namespace CutTheRopeDX.GameMain
             {
                 ((Spikes)spike).Draw();
             }
+            foreach (PauseSwitcher switcher in pauseSwitchers)
+            {
+                switcher?.Draw();
+            }
             foreach (object bouncer in bouncers)
             {
                 ((Bouncer)bouncer).Draw();
@@ -328,6 +332,12 @@ namespace CutTheRopeDX.GameMain
             DrawCuts();
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.CancelCameraTransformation();
+            if (pauseSwitcherWaves?.visible == true)
+            {
+                pauseSwitcherWaves.Draw();
+                Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            }
+            // Screen-space gameplay UI stays readable while the world is frozen.
             staticAniPool.Draw();
             PostDraw();
         }

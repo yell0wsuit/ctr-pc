@@ -55,12 +55,81 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<RopeRegistry>(scene, "ropes").All;
         }
 
+        /// <summary>The elastic joining the two candies, or <see langword="null"/> when unconnected.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The candy connector.</returns>
+        public static Bungee Connector(this GameScene scene)
+        {
+            return Field<Bungee>(scene, "candyConnector");
+        }
+
         /// <summary>All free bubbles loaded into the scene.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The bubble list.</returns>
         public static List<Bubble> Bubbles(this GameScene scene)
         {
             return Field<List<Bubble>>(scene, "bubbles");
+        }
+
+        /// <summary>All time-freeze buttons loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The switcher list.</returns>
+        public static List<PauseSwitcher> PauseSwitchers(this GameScene scene)
+        {
+            return Field<List<PauseSwitcher>>(scene, "pauseSwitchers");
+        }
+
+        /// <summary>The screen-covering time-freeze wave overlay.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The wave overlay.</returns>
+        public static PauseSwitcherWaves WavesOverlay(this GameScene scene)
+        {
+            return Field<PauseSwitcherWaves>(scene, "pauseSwitcherWaves");
+        }
+
+        /// <summary>Whether the scene currently has time stopped.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns><see langword="true"/> when time is frozen.</returns>
+        public static bool IsTimeFrozen(this GameScene scene)
+        {
+            return Field<bool>(scene, "timeFrozen");
+        }
+
+        /// <summary>The gameplay particle animation pool.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The scene-owned particle pool.</returns>
+        public static AnimationsPool ParticleAnimations(this GameScene scene)
+        {
+            return Field<AnimationsPool>(scene, "particlesAniPool");
+        }
+
+        /// <summary>The screen-space animation pool containing the level label.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The scene's static animation pool.</returns>
+        public static AnimationsPool StaticAnimations(this GameScene scene)
+        {
+            return Field<AnimationsPool>(scene, "staticAniPool");
+        }
+
+        /// <summary>Converts an object's world position to the input API's screen coordinates.</summary>
+        /// <param name="scene">Scene whose camera performs the conversion.</param>
+        /// <param name="gameObject">Object whose position is converted.</param>
+        /// <returns>The object's position in screen space.</returns>
+        public static Vector ScreenPositionOf(this GameScene scene, GameObject gameObject)
+        {
+            return scene.ScreenPositionOf(new Vector(gameObject.x, gameObject.y));
+        }
+
+        /// <summary>Converts a world position to the input API's screen coordinates.</summary>
+        /// <param name="scene">Scene whose camera performs the conversion.</param>
+        /// <param name="world">Position in world space.</param>
+        /// <returns>The position in screen space.</returns>
+        public static Vector ScreenPositionOf(this GameScene scene, Vector world)
+        {
+            Camera2D camera = Field<Camera2D>(scene, "camera");
+            return new Vector(
+                (world.X - camera.RenderPos.X) * camera.Scale,
+                (world.Y - camera.RenderPos.Y) * camera.Scale);
         }
 
         /// <summary>All ghosts.</summary>

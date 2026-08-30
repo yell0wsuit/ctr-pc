@@ -449,12 +449,23 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Extends water through any world exposed beyond the authored level frame.</summary>
         private void RelayoutWaterCoverage(ViewportLayoutSnapshot snapshot)
         {
-            if (waterLayer == null || camera.Scale <= 0f)
+            if (camera.Scale <= 0f)
             {
                 return;
             }
 
             CTRRectangle viewport = snapshot.VisibleBounds;
+            if (pauseSwitcherWaves != null)
+            {
+                pauseSwitcherWaves.x = viewport.x;
+                pauseSwitcherWaves.y = viewport.y;
+                pauseSwitcherWaves.Resize(viewport.w, viewport.h);
+            }
+            if (waterLayer == null)
+            {
+                return;
+            }
+
             float visibleLeft = camera.RenderPos.X;
             float visibleRight = visibleLeft + (viewport.w / camera.Scale);
             float visibleBottom = camera.RenderPos.Y + (viewport.h / camera.Scale);
@@ -1026,6 +1037,22 @@ namespace CutTheRopeDX.GameMain
         /// All active rocket objects in the loaded level.
         /// </summary>
         private List<Rocket> rockets;
+
+        /// <summary>Buttons that stop and restart time.</summary>
+        private List<PauseSwitcher> pauseSwitchers;
+
+        /// <summary>Screen-covering effect shown while time is stopped.</summary>
+        private PauseSwitcherWaves pauseSwitcherWaves;
+
+        /// <summary>
+        /// Whether time is currently stopped. Objects that stop with it are told at their update
+        /// call instead of keeping their own copy. The iOS mover gate also checks for clock
+        /// elements, which this port does not have.
+        /// </summary>
+        private bool timeFrozen;
+
+        /// <summary>The time-freeze button a pointer is holding, or <see langword="null"/>.</summary>
+        private PauseSwitcherTouch? pauseSwitcherTouch;
 
         /// <summary>
         /// All active mechanical hand objects in the loaded level.

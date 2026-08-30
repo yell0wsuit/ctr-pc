@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -303,9 +304,14 @@ namespace CutTheRopeDX.GameMain
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int ropesCutCount = 0;
-            // One pass over every rope in the level: a hook's rope and the candy connector are cut
-            // by the same test, they only differ in whether an owning hook reacts afterwards.
-            foreach (RopeEntry entry in ropes.All)
+            // Two passes over the level's ropes, hooks before the connector. The same test cuts
+            // both - they only differ in whether an owning hook reacts afterwards - but the
+            // connector registers during LoadMetadata, ahead of every hook, and this routine stops
+            // at the first rope it severs. Testing it in registration order let a stroke that
+            // crossed a hook's rope and the connector alike cut the link instead of the rope the
+            // player aimed at. The original runs its hook loop to completion and only then tests
+            // the connector.
+            foreach (RopeEntry entry in OrderedForCutting())
             {
                 Bungee rope = entry.Rope;
                 if (rope.cut != -1 || rope.cutOnlyByAxe)
@@ -371,6 +377,29 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             return ropesCutCount;
+        }
+
+        /// <summary>
+        /// Enumerates every registered rope with the hooks' ropes first and the candy connector
+        /// last, matching the order the original tests them in when cutting.
+        /// </summary>
+        /// <returns>The registered ropes, connector last.</returns>
+        private IEnumerable<RopeEntry> OrderedForCutting()
+        {
+            foreach (RopeEntry entry in ropes.All)
+            {
+                if (!entry.IsConnector)
+                {
+                    yield return entry;
+                }
+            }
+            foreach (RopeEntry entry in ropes.All)
+            {
+                if (entry.IsConnector)
+                {
+                    yield return entry;
+                }
+            }
         }
 
         /// <summary>

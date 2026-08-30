@@ -102,6 +102,11 @@ namespace CutTheRopeDX.GameMain
             Vector world = camera.ScreenToWorld(tx, ty);
             float worldX = world.X;
             float worldY = world.Y;
+            PauseSwitcher pressedSwitcher = PauseSwitcherAt(worldX, worldY);
+            if (pressedSwitcher != null)
+            {
+                pauseSwitcherTouch = new PauseSwitcherTouch(ti, pressedSwitcher);
+            }
             waterLayer?.AddParticlesAtXY(worldX, worldY);
             if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
             {
@@ -448,6 +453,9 @@ namespace CutTheRopeDX.GameMain
             {
                 return true;
             }
+            // Any release ends the capture, so a second pointer letting go cancels the press.
+            PauseSwitcherTouch? capturedTouch = pauseSwitcherTouch;
+            pauseSwitcherTouch = null;
             // Outcome input ends the visual trace without reaching any gameplay object.
             if (AcceptsVisualOnlyPointerInput)
             {
@@ -492,6 +500,15 @@ namespace CutTheRopeDX.GameMain
                 if (gravityState.IsInToggleTouchZone(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     OnButtonPressed(0);
+                }
+            }
+
+            if (capturedTouch is { } switcherTouch && switcherTouch.PointerIndex == ti)
+            {
+                PauseSwitcher releasedSwitcher = PauseSwitcherAt(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty));
+                if (ReferenceEquals(switcherTouch.Switcher, releasedSwitcher))
+                {
+                    ToggleTimeFreeze(switcherTouch.Switcher);
                 }
             }
 
