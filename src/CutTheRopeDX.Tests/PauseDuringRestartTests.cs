@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
-        [InlineData("CLOSE_TAB_BUTTON", "Close Tab")]
+        [InlineData("CLOSE_TAB_BUTTON", "Close tab")]
         [InlineData("QUIT_BUTTON", "Quit")]
         public void CustomLevelExitUsesTheHostLabel(string labelKey, string expected)
         {
