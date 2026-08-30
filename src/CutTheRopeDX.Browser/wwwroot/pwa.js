@@ -1,10 +1,12 @@
-// Service worker registration and the update prompt.
+// Service worker registration, the update prompt, and the request for persistent storage.
 //
 // A worker that finds new assets installs alongside the running one and then waits, so a
 // version never swaps in underneath a session in progress. The dialog is how the player asks
 // for it: the waiting worker takes over and the page reloads onto the new build.
 
 const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
+
+requestPersistentStorage();
 
 if ("serviceWorker" in navigator) {
     // updateViaCache: "none" keeps the HTTP cache away from the worker script itself. It is
@@ -85,4 +87,37 @@ function promptForUpdate(waiting) {
     };
 
     dialog.showModal();
+}
+
+/**
+ * Asks the browser not to evict this origin's storage.
+ *
+ * The offline caches and the player's save share one evictable pool, which a browser is free
+ * to clear when the device runs short of room. Losing it costs the player their progress and
+ * costs the next visit a fresh download of the content. Chromium grants persistence silently
+ * to an app that has been installed or used enough; the browsers that ask instead raise a
+ * permission prompt on the call, so this waits for the first gesture rather than firing at
+ * page load, where such a prompt would arrive out of nowhere.
+ */
+function requestPersistentStorage() {
+    if (typeof navigator.storage?.persist !== "function") {
+        return;
+    }
+
+    const ask = async () => {
+        globalThis.removeEventListener("pointerdown", ask);
+        globalThis.removeEventListener("keydown", ask);
+        try {
+            if (!(await navigator.storage.persisted())) {
+                await navigator.storage.persist();
+            }
+        } catch (error) {
+            // A refusal is the expected outcome on a browser that declines, and eviction is a
+            // risk rather than a failure there is anything to recover from here.
+            console.warn("persistent storage request failed:", error);
+        }
+    };
+
+    globalThis.addEventListener("pointerdown", ask, { passive: true });
+    globalThis.addEventListener("keydown", ask);
 }
