@@ -39,9 +39,10 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Protocol version stamped on, and required of, every message.</summary>
         public const int Version = 1;
 
-        // Relaxed escaping keeps a level from tripling in size: the default encoder escapes '<', '>'
-        // and '"' as \uXXXX, and level XML is mostly those three characters. It is safe here because
-        // these strings are never interpolated into HTML - they go to postMessage and back through
+        // Relaxed escaping keeps a level from ballooning: the default encoder escapes '<' and '>' as
+        // \u003C and \u003E, and level XML is mostly those two characters. (The double quote is not a
+        // reason to relax - JSON escapes it as \" under either encoder.) Relaxing is safe here because
+        // these strings are never interpolated into HTML: they go to postMessage and back through
         // JSON.parse.
         private static readonly JsonWriterOptions WriterOptions = new()
         {
