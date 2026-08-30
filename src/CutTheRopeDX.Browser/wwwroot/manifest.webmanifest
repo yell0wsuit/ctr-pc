@@ -1,18 +1,78 @@
 {
+    "id": "./",
     "name": "Cut the Rope: DX",
     "short_name": "Cut the Rope DX",
     "description": "A fan-made enhancement of the PC version of Cut the Rope.",
     "start_url": "./",
     "scope": "./",
     "display": "fullscreen",
-    "orientation": "landscape",
     "background_color": "#202329",
     "theme_color": "#202329",
+    "categories": ["games", "entertainment"],
     "icons": [
         {
             "src": "./icon-512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "./screenshots/landscape_ss_01.webp",
+            "sizes": "2940x1846",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "The title screen, with Play, Options, and the level editor"
+        },
+        {
+            "src": "./screenshots/landscape_ss_02.webp",
+            "sizes": "2940x1846",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "A level in play in Cheese Box"
+        },
+        {
+            "src": "./screenshots/landscape_ss_03.webp",
+            "sizes": "2940x1846",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "A level in play in Pillow Box"
+        },
+        {
+            "src": "./screenshots/landscape_ss_04.webp",
+            "sizes": "2940x1846",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "The customization screen, for choosing how the candy, ropes, Om Nom, and cut traces look"
+        },
+        {
+            "src": "./screenshots/portrait_ss_01.webp",
+            "sizes": "750x1334",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "The title screen on a phone"
+        },
+        {
+            "src": "./screenshots/portrait_ss_02.webp",
+            "sizes": "750x1334",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "A level in play in Cheese Box on a phone"
+        },
+        {
+            "src": "./screenshots/portrait_ss_03.webp",
+            "sizes": "750x1334",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "A level in play in Pillow Box on a phone"
+        },
+        {
+            "src": "./screenshots/portrait_ss_04.webp",
+            "sizes": "750x1334",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "The customization screen on a phone"
         }
     ]
 }
