@@ -37,4 +37,4 @@ jobs:
               run: dotnet build --no-restore -c Release
 
             - name: Test
-              run: dotnet test CutTheRopeDX.slnx --no-build -c Release
+              run: dotnet test --solution CutTheRopeDX.slnx --no-build -c Release

@@ -149,7 +149,7 @@ The build writes the site to the `dist/wwwroot` directory. The [Deploy Browser t
 4. Run the unit tests:
 
     ```bash
-    dotnet test CutTheRopeDX.slnx -p:ExcludeMacOSTarget=true
+    dotnet test --solution CutTheRopeDX.slnx -p:ExcludeMacOSTarget=true
     ```
 
 ## Running a custom level
