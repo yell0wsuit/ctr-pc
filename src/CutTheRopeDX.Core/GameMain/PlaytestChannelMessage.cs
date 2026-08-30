@@ -68,18 +68,20 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Builds the message reporting a level the game could not load.</summary>
+        /// <param name="nonce">Session nonce, so only the editor that opened this window reacts.</param>
         /// <param name="message">Human-readable failure reason.</param>
         /// <returns>JSON to post on the channel.</returns>
-        public static string FormatError(string message)
+        public static string FormatError(string nonce, string message)
         {
-            return Write("error", null, "message", message);
+            return Write("error", nonce, "message", message);
         }
 
         /// <summary>Builds the message announcing that a playtest window is going away.</summary>
+        /// <param name="nonce">Session nonce, so only the editor that opened this window reacts.</param>
         /// <returns>JSON to post on the channel.</returns>
-        public static string FormatBye()
+        public static string FormatBye(string nonce)
         {
-            return Write("bye", null, null, null);
+            return Write("bye", nonce, null, null);
         }
 
         /// <summary>Decodes one channel message.</summary>
