@@ -62,23 +62,25 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ErrorRoundTrips()
         {
-            string json = PlaytestChannelMessage.FormatError("Level file contains no root element.");
+            string json = PlaytestChannelMessage.FormatError("abc", "Level file contains no root element.");
 
-            bool ok = PlaytestChannelMessage.TryParse(json, out PlaytestMessageKind kind, out _, out string payload);
+            bool ok = PlaytestChannelMessage.TryParse(json, out PlaytestMessageKind kind, out string nonce, out string payload);
 
             Assert.True(ok);
             Assert.Equal(PlaytestMessageKind.Error, kind);
+            Assert.Equal("abc", nonce);
             Assert.Equal("Level file contains no root element.", payload);
         }
 
         [Fact]
         public void ByeRoundTrips()
         {
-            bool ok = PlaytestChannelMessage.TryParse(PlaytestChannelMessage.FormatBye(),
-                out PlaytestMessageKind kind, out _, out _);
+            bool ok = PlaytestChannelMessage.TryParse(PlaytestChannelMessage.FormatBye("abc"),
+                out PlaytestMessageKind kind, out string nonce, out _);
 
             Assert.True(ok);
             Assert.Equal(PlaytestMessageKind.Bye, kind);
+            Assert.Equal("abc", nonce);
         }
 
         [Theory]
@@ -117,13 +119,13 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void WireFormatIsStable()
         {
-            Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"bye\"}", PlaytestChannelMessage.FormatBye());
+            Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"bye\",\"nonce\":\"abc\"}", PlaytestChannelMessage.FormatBye("abc"));
             Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"ready\",\"nonce\":\"abc\",\"line\":\"ctrdx-playtest 1 9.9.9\"}",
                 PlaytestChannelMessage.FormatReady("abc", "ctrdx-playtest 1 9.9.9"));
             Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"level\",\"nonce\":\"abc\",\"xml\":\"<map/>\"}",
                 PlaytestChannelMessage.FormatLevel("abc", "<map/>"));
-            Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"error\",\"message\":\"boom\"}",
-                PlaytestChannelMessage.FormatError("boom"));
+            Assert.Equal(/*lang=json,strict*/ "{\"v\":1,\"type\":\"error\",\"nonce\":\"abc\",\"message\":\"boom\"}",
+                PlaytestChannelMessage.FormatError("abc", "boom"));
         }
     }
 }

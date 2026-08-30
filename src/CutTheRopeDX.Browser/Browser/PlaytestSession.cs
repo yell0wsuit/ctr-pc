@@ -119,7 +119,7 @@ namespace CutTheRopeDX.Browser
         {
             if (IsActive)
             {
-                PlaytestInterop.Post(PlaytestChannelMessage.FormatError(message));
+                PlaytestInterop.Post(PlaytestChannelMessage.FormatError(_nonce, message));
             }
         }
 
@@ -131,7 +131,7 @@ namespace CutTheRopeDX.Browser
                 return;
             }
 
-            PlaytestInterop.Post(PlaytestChannelMessage.FormatBye());
+            PlaytestInterop.Post(PlaytestChannelMessage.FormatBye(_nonce));
             PlaytestInterop.CloseWindow();
         }
 
