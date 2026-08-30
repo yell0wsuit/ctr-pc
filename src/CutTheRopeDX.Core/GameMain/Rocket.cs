@@ -187,7 +187,7 @@ namespace CutTheRopeDX.GameMain
             if (!string.IsNullOrEmpty(path))
             {
                 int pathPoints = CTRMover.PathPointCapacity(path);
-                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * ActivePhysicsConstants.MoverSpeedScale;
+                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
                 float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
                 CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {

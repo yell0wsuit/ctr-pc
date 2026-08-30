@@ -1450,7 +1450,7 @@ namespace CutTheRopeDX.GameMain
                             candyRadius);
                     float damping = inWater
                         ? waterRocketDamping
-                        : ActivePhysicsConstants.ExperimentsRocketVelocityDamping;
+                        : ActivePhysicsConstants.RocketActiveVelocityDamping;
                     rocketPoint.ApplyImpulseDelta(
                         Vect(-rocketPoint.v.X / damping, -rocketPoint.v.Y / damping),
                         delta);

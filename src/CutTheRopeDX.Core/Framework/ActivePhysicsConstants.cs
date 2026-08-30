@@ -188,12 +188,11 @@ namespace CutTheRopeDX.Framework
         public static float GrabWheelRotateDeltaMin => SelectScaled(PhysicsConstants.GrabWheelRotateDeltaMin, MobilePhysicsConstants.GrabWheelRotateDeltaMin);
 
         /// <summary>
-        /// Speed at which a rocket reels the candy in before flying. Time Travel's own literal is
-        /// 400, but it is a world distance per second and its world is 960 tall to this one's
-        /// 1440, so 600 is the same reel measured in screen fractions - the same conversion
-        /// <see cref="RocketImpulseScale"/> applies to thrust.
+        /// Speed at which a rocket reels the candy in before flying.
         /// </summary>
-        public static float RocketReelSpeed => SelectScaled(PhysicsConstants.RocketReelSpeed, MobilePhysicsConstants.RocketReelSpeed);
+        public static float RocketReelSpeed => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketReelSpeed
+            : SelectScaled(PhysicsConstants.RocketReelSpeed, MobilePhysicsConstants.RocketReelSpeed);
 
         /// <summary>
         /// Speed at which two candy halves converge while merging.
@@ -263,14 +262,17 @@ namespace CutTheRopeDX.Framework
         /// <summary>
         /// Physics weight assigned to rocket control points.
         /// </summary>
-        public static float RocketPointWeight => SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
+        public static float RocketPointWeight => UseTimeTravelRocketModel
+            ? PhysicsConstants.TimeTravelRocketPointWeight
+            : SelectRaw(PhysicsConstants.RocketPointWeight, MobilePhysicsConstants.RocketPointWeight);
 
         /// <summary>
-        /// Velocity damping applied by the Cut the Rope: Experiments rocket implementation.
+        /// Velocity damping applied while a rocket is active. Time Travel populates no force slot
+        /// on any point, so it damps nothing - see <see cref="RocketDampsCandyVelocity"/>.
         /// </summary>
-        public static float ExperimentsRocketVelocityDamping => SelectRaw(
-            PhysicsConstants.ExperimentsRocketVelocityDamping,
-            MobilePhysicsConstants.ExperimentsRocketVelocityDamping);
+        public static float RocketActiveVelocityDamping => SelectRaw(
+            PhysicsConstants.RocketActiveVelocityDamping,
+            MobilePhysicsConstants.RocketActiveVelocityDamping);
 
         /// <summary>
         /// Impulse scale applied to rocket thrust. Time Travel and mobile Experiments author their

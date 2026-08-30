@@ -277,8 +277,11 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void RocketControlPointUsesTheIosWeightInTheDefaultPhysicsModel()
+        public void RocketControlPointKeepsTheDesktopWeightWithoutTheTimeTravelFlag()
         {
+            // The originals use 0.5, but desktop deliberately runs the point heavier so constraint
+            // forces from connected rope points cannot drift the rocket off its mount. A map only
+            // gets the original weight by asking for it through useTimeTravelRocketPhysics.
             GameScene scene = Scenario.New()
                 .Candy(60, 100)
                 .OmNom(160, 440)
@@ -288,7 +291,7 @@ namespace CutTheRopeDX.Tests
 
             Rocket rocket = Assert.Single(scene.Rockets());
 
-            Assert.Equal(0.5f, rocket.point.weight);
+            Assert.Equal(2.5f, rocket.point.weight);
         }
 
         [Fact]
@@ -301,7 +304,7 @@ namespace CutTheRopeDX.Tests
                 .Build();
 
             Assert.False(ActivePhysicsConstants.UseMobilePhysicsModel);
-            Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.Equal(200f, ActivePhysicsConstants.RocketReelSpeed);
             Assert.False(ActivePhysicsConstants.UseTimeTravelRocketModel);
             Assert.Equal(1f, ActivePhysicsConstants.RocketImpulseScale);
         }
@@ -406,16 +409,16 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ExperimentsRocketUsesRecoveredVelocityDampingDivisors()
+        public void ExperimentsRocketKeepsItsOwnVelocityDampingDivisors()
         {
             bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
             try
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = false;
-                Assert.Equal(14f, ActivePhysicsConstants.ExperimentsRocketVelocityDamping);
+                Assert.Equal(40f, ActivePhysicsConstants.RocketActiveVelocityDamping);
 
                 ActivePhysicsConstants.UseMobilePhysicsModel = true;
-                Assert.Equal(14f, ActivePhysicsConstants.ExperimentsRocketVelocityDamping);
+                Assert.Equal(20f, ActivePhysicsConstants.RocketActiveVelocityDamping);
             }
             finally
             {

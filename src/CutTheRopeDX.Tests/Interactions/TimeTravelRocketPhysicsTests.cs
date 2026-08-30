@@ -16,16 +16,47 @@ namespace CutTheRopeDX.Tests.Interactions
     public sealed class TimeTravelRocketPhysicsTests
     {
         [Fact]
-        public void TheReelSpeedIsNotModelBranched()
+        public void TimeTravelReelsTheCandyInAtItsOwnSpeed()
         {
             // Time Travel's literal is 400, but it is a world distance per second and its world is
-            // 960 tall to this one's 1440. 600 is the same reel in screen fractions, so branching
-            // the constant on the flag would reel a Time Travel level in 1.5x too slowly.
+            // 960 tall to this one's 1440, so 600 is the same reel in screen fractions. The
+            // Experiments rocket keeps the 200 it has always used.
             _ = BuildScene(timeTravel: true);
             Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
 
             _ = BuildScene(timeTravel: false);
+            Assert.Equal(200f, ActivePhysicsConstants.RocketReelSpeed);
+        }
+
+        [Fact]
+        public void TimeTravelTuningStaysOffTheOtherModels()
+        {
+            // Every Time Travel rocket constant is reachable only through the map's
+            // useTimeTravelRocketPhysics flag. Desktop and mobile keep the values they had before
+            // the Time Travel work landed - this pins them so the flag cannot leak again.
+            _ = BuildScene(timeTravel: true);
+            Assert.Equal(0.5f, ActivePhysicsConstants.RocketPointWeight);
             Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.False(ActivePhysicsConstants.RocketDampsCandyVelocity);
+
+            _ = BuildScene(timeTravel: false);
+            Assert.Equal(2.5f, ActivePhysicsConstants.RocketPointWeight);
+            Assert.Equal(200f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.Equal(40f, ActivePhysicsConstants.RocketActiveVelocityDamping);
+            Assert.True(ActivePhysicsConstants.RocketDampsCandyVelocity);
+
+            bool previous = ActivePhysicsConstants.UseMobilePhysicsModel;
+            try
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = true;
+                Assert.Equal(0.5f, ActivePhysicsConstants.RocketPointWeight);
+                Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+                Assert.Equal(20f, ActivePhysicsConstants.RocketActiveVelocityDamping);
+            }
+            finally
+            {
+                ActivePhysicsConstants.UseMobilePhysicsModel = previous;
+            }
         }
 
         [Fact]

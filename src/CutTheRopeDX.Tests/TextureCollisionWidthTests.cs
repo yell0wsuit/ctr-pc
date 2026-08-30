@@ -133,23 +133,31 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(expected, result, precision: 3);
         }
 
-        // Rocket catch-slat bb (0.65 x quad width, 0.05 x quad height of the rocket body quad),
-        // pinned from XML quads and expressed center-relative to the rocket object.
-        // Experiments base quad 10 = 116x58 centered at (91,67) on the 199x134 sheet, x3.
+        // Rocket catch-slat bb, expressed center-relative to the rocket object. Outside Time
+        // Travel these are the boxes the port has always shipped, and desktop and mobile do not
+        // agree: desktop's is derived from the 619x418 rocket sheet (358x179 quad centred at
+        // 288,208.5) while mobile's comes from the Experiments base quad (116x58 centred at 91,67
+        // on a 199x134 sheet, x3). That mismatch predates the Time Travel work and is deliberately
+        // left alone - only the Time Travel rocket is split onto its own box.
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public void RocketCatchBoxExperimentsUsesBaseQuad(bool mobilePhysics)
+        [InlineData(false, 214.8f, 8.95f, -21.5f, -0.5f)]
+        [InlineData(true, 208.8f, 8.7f, -25.5f, 0f)]
+        public void RocketCatchBoxOutsideTimeTravelKeepsTheShippedBox(
+            bool mobilePhysics,
+            float expectedWidth,
+            float expectedHeight,
+            float expectedOffsetX,
+            float expectedOffsetY)
         {
             (float w, float h, float ox, float oy) = WithRocketModel(mobilePhysics, timeTravel: false, () => (
                 ActivePhysicsConstants.RocketCatchBoxWidth,
                 ActivePhysicsConstants.RocketCatchBoxHeight,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetX,
                 ActivePhysicsConstants.RocketCatchBoxCenterOffsetY));
-            Assert.Equal(226.2f, w, precision: 3);  // 116 * 0.65 * 3
-            Assert.Equal(8.7f, h, precision: 3);    // 58 * 0.05 * 3
-            Assert.Equal(-25.5f, ox, precision: 3); // (91 - 99.5) * 3
-            Assert.Equal(0f, oy, precision: 3);     // (67 - 67) * 3
+            Assert.Equal(expectedWidth, w, precision: 3);
+            Assert.Equal(expectedHeight, h, precision: 3);
+            Assert.Equal(expectedOffsetX, ox, precision: 3);
+            Assert.Equal(expectedOffsetY, oy, precision: 3);
         }
 
         // Time Travel resource 0x8A quad 10 is 358x179 in the DX sheet, centered at

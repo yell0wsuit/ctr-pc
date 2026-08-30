@@ -126,8 +126,8 @@ namespace CutTheRopeDX.Framework
         /// <inheritdoc cref="ActivePhysicsConstants.RocketPointWeight" />
         public const float RocketPointWeight = 0.5f;
 
-        /// <inheritdoc cref="ActivePhysicsConstants.ExperimentsRocketVelocityDamping" />
-        public const float ExperimentsRocketVelocityDamping = 14f; // Base iPad divisor before Retina-only adjustment
+        /// <inheritdoc cref="ActivePhysicsConstants.RocketActiveVelocityDamping" />
+        public const float RocketActiveVelocityDamping = 20f;
 
         /// <inheritdoc cref="ActivePhysicsConstants.SteamTubeDamping" />
         public const float SteamTubeDamping = 5f;
@@ -211,7 +211,7 @@ namespace CutTheRopeDX.Framework
         /// at (91,67) on the 199x134 obj_rocket sheet; the engine takes 0.65 x width and
         /// 0.05 x height of that quad.
         /// </summary>
-        public const float RocketCatchBoxWidth = 75.4f; // 116 * 0.65
+        public const float RocketCatchBoxWidth = 69.6f; // 116 * 0.6
 
         /// <inheritdoc cref="ActivePhysicsConstants.RocketCatchBoxHeight" />
         public const float RocketCatchBoxHeight = 2.9f; // 58 * 0.05
