@@ -131,12 +131,8 @@ async function onFetch(event) {
         return fetch(request);
     }
 
-    // A navigation to any in-scope URL is this single page.
-    if (request.mode === "navigate") {
-        const cached = await caches.match(new URL("index.html", scopeUrl));
-        return cached ?? fetch(request);
-    }
-
+    // Assets answer for themselves even when they are what the address bar was pointed at, so
+    // opening one directly still shows that file rather than the page.
     const contentHash = contentHashes.get(request.url);
     if (contentHash !== undefined) {
         return serveContent(request, contentHash);
@@ -145,6 +141,19 @@ async function onFetch(event) {
     const shellHash = shellHashes.get(request.url);
     if (shellHash !== undefined) {
         return serveShell(request, shellHash);
+    }
+
+    if (request.mode === "navigate") {
+        // index.html carries <base href="./">, which resolves against the URL it was navigated
+        // to rather than the one it is stored at. Serving it under a deeper path would point
+        // every relative asset at a directory that does not exist, so anything below the scope
+        // root goes back to the start URL instead of being answered with a shell that cannot
+        // load. There are no routes here for such a URL to have meant.
+        if (new URL(request.url).pathname !== scopeUrl.pathname) {
+            return Response.redirect(scopeUrl.href, 302);
+        }
+        const cached = await caches.match(new URL("index.html", scopeUrl));
+        return cached ?? fetch(request);
     }
 
     return fetch(request);
