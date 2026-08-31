@@ -45,5 +45,40 @@ namespace CutTheRopeDX.Tests
                 Assert.Equal(2560f, BackgroundTiling.ResolveP2Y(1120f, 1440f, seamIndex: 1));
             });
         }
+
+        [Theory]
+        // A window no wider than one section, aligned with it, needs that section alone.
+        [InlineData(0f, 2559f, 0f, 2559f, 0, 0)]
+        // The design window overhangs the one-pixel-narrow art, so its neighbour shows too.
+        [InlineData(0f, 2559f, 0f, 2560f, 0, 1)]
+        // A camera parked on the second section needs only that one.
+        [InlineData(0f, 2559f, 2559f, 2559f, 1, 1)]
+        // A camera straddling the seam needs the sections on both sides of it.
+        [InlineData(0f, 2559f, 1280f, 2560f, 0, 1)]
+        // Sections repeat in both directions, so a camera left of the origin sees negative ones.
+        [InlineData(0f, 2559f, -100f, 2560f, -1, 0)]
+        public void SectionRangeCoversEverySectionTheWindowTouches(
+            float sectionOrigin,
+            float sectionSize,
+            float windowStart,
+            float windowSize,
+            int expectedFirst,
+            int expectedLast)
+        {
+            (int first, int last) = BackgroundTiling.GetSectionRange(
+                sectionOrigin,
+                sectionSize,
+                windowStart,
+                windowSize);
+
+            Assert.Equal(expectedFirst, first);
+            Assert.Equal(expectedLast, last);
+        }
+
+        [Fact]
+        public void SectionRangeIsTheAuthoredSectionAloneWhenTheSizeIsUnusable()
+        {
+            Assert.Equal((0, 0), BackgroundTiling.GetSectionRange(0f, 0f, 0f, 2560f));
+        }
     }
 }

@@ -39,6 +39,14 @@ namespace CutTheRopeDX.GameMain
             Renderer.PushMatrix();
             Renderer.Scale(back.scaleX, back.scaleY, 1f);
             back.Draw();
+            // The tile map repeats P1 in both directions over a design-sized window around the
+            // camera, so every piece anchored to the authored P1 section has to be repeated over
+            // the same sections. Otherwise only the section the camera started on is dressed.
+            (int firstColumn, int lastColumn) = BackgroundTiling.GetSectionRange(
+                back.x,
+                backTexture?._realWidth ?? 0,
+                pos.X,
+                SCREEN_WIDTH);
             int p2Count = BackgroundTiling.GetP2Count(mapHeight, SCREEN_HEIGHT);
             if (p2Count > 0)
             {
@@ -67,11 +75,14 @@ namespace CutTheRopeDX.GameMain
                                 p2Y,
                                 backTexture._realHeight,
                                 seamIndex);
-                            DrawHelper.DrawImagePart(
-                                p2Texture,
-                                p2Rect,
-                                back.x,
-                                back.y + adjustedP2Y);
+                            for (int column = firstColumn; column <= lastColumn; column++)
+                            {
+                                DrawHelper.DrawImagePart(
+                                    p2Texture,
+                                    p2Rect,
+                                    back.x + (column * backTexture._realWidth),
+                                    back.y + adjustedP2Y);
+                            }
                         }
                         Renderer.Disable(Renderer.GL_BLEND);
                     }
@@ -79,7 +90,29 @@ namespace CutTheRopeDX.GameMain
             }
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            gravityState.DrawEarthAnimations();
+            if (gravityState.HasEarthAnimations)
+            {
+                // The earth belongs to the P1 section it was authored on, so it repeats with the
+                // tile map on both axes rather than leaving every other section's sky empty.
+                (int firstRow, int lastRow) = BackgroundTiling.GetSectionRange(
+                    back.y,
+                    backTexture?._realHeight ?? 0,
+                    pos.Y,
+                    SCREEN_HEIGHT);
+                for (int column = firstColumn; column <= lastColumn; column++)
+                {
+                    for (int row = firstRow; row <= lastRow; row++)
+                    {
+                        Renderer.PushMatrix();
+                        Renderer.Translate(
+                            column * (backTexture?._realWidth ?? 0),
+                            row * (backTexture?._realHeight ?? 0),
+                            0f);
+                        gravityState.DrawEarthAnimations();
+                        Renderer.PopMatrix();
+                    }
+                }
+            }
             Renderer.PopMatrix();
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
