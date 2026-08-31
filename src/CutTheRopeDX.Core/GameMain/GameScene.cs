@@ -1317,6 +1317,18 @@ namespace CutTheRopeDX.GameMain
         public bool ignoreTouches;
 
         /// <summary>
+        /// Whether the opening camera pan is still travelling toward the level and swallowing
+        /// input on the way.
+        /// </summary>
+        /// <remarks>
+        /// This is the predicate the port already suppressed spiders and star timers with, so the
+        /// pan is treated as over at the same moment it hands input back - the last hundred pixels
+        /// are a settle the player is already free to act through, not part of the preview.
+        /// </remarks>
+        private bool IntroPanIsRunning =>
+            camera.type == CAMERATYPE.CAMERASPEEDPIXELS && ignoreTouches;
+
+        /// <summary>
         /// Whether the loaded level uses night-specific behavior.
         /// </summary>
         public bool nightLevel;
