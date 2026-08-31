@@ -13,6 +13,11 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Discovers gameplay resource dependencies from parsed level XML.
     /// </summary>
+    /// <remarks>
+    /// The scan covers sound effects as well as textures. Both are loaded on demand by the
+    /// resource manager, so anything a level's objects can reach but the scan misses is read
+    /// off disk on the game thread at the moment the object first acts.
+    /// </remarks>
     internal static class LevelResourceScanner
     {
         /// <summary>
@@ -34,7 +39,10 @@ namespace CutTheRopeDX.GameMain
             bool nightLevel = false;
             bool waterLevel = false;
             bool sawTarget = false;
-            bool hasClassicTarget = false;
+
+            // Null entries stand for classic targets, so the post-loop passes can tell the
+            // skins apart without depending on where gameDesign sits in document order.
+            List<OmNomSkinDefinition> targetSkins = [];
 
             foreach (XElement node in map.Descendants())
             {
@@ -43,6 +51,11 @@ namespace CutTheRopeDX.GameMain
                     case "gameDesign":
                         nightLevel = ParseBool(node.Attribute("nightLevel")?.Value);
                         waterLevel = ParseFloatOrZero(node.Attribute("water")?.Value) > 0f;
+                        if (ParseBool(node.Attribute("candiesConnected")?.Value))
+                        {
+                            _ = resources.Add(Resources.Snd.CandyLink);
+                        }
+
                         break;
                     case "star":
                         if (nightLevel)
@@ -50,59 +63,95 @@ namespace CutTheRopeDX.GameMain
                             _ = resources.Add(Resources.Img.ObjStarNight);
                         }
                         break;
+                    case "candyL":
+                    case "candyR":
+                        _ = resources.Add(Resources.Snd.CandyLink);
+                        break;
                     case "grab":
                         AddGrabResources(resources, node);
                         break;
                     case "bubble":
+                        _ = resources.Add(Resources.Snd.Bubble);
+                        _ = resources.Add(Resources.Snd.BubbleBreak);
                         break;
                     case "spike1":
                     case "spike2":
                     case "spike3":
                     case "spike4":
                         _ = resources.Add(Resources.Img.ObjSpikes);
+                        AddSpikeRotationSounds(resources);
                         break;
                     case "electro":
                         _ = resources.Add(Resources.Img.ObjElectrodes);
+                        _ = resources.Add(Resources.Snd.Electric);
+                        AddSpikeRotationSounds(resources);
                         break;
                     case "bouncer1":
                     case "bouncer2":
                         _ = resources.Add(Resources.Img.ObjBouncer);
+                        _ = resources.Add(Resources.Snd.Bouncer);
                         break;
                     case "pump":
                         _ = resources.Add(Resources.Img.ObjPump);
+                        _ = resources.Add(Resources.Snd.Pump1);
+                        _ = resources.Add(Resources.Snd.Pump2);
+                        _ = resources.Add(Resources.Snd.Pump3);
+                        _ = resources.Add(Resources.Snd.Pump4);
                         break;
                     case "sock":
                         _ = resources.Add(SpecialEvents.IsXmas ? Resources.Img.ObjSock : Resources.Img.ObjHat);
+                        _ = resources.Add(SpecialEvents.IsXmas ? Resources.Snd.TeleportXmas : Resources.Snd.Teleport);
                         break;
                     case "ghost":
                         _ = resources.Add(Resources.Img.ObjGhost);
+                        _ = resources.Add(Resources.Snd.GhostPuff);
                         break;
                     case "rocket":
                         _ = resources.Add(Resources.Img.ObjRocket);
+                        _ = resources.Add(Resources.Snd.ExpRocketStart);
+                        _ = resources.Add(Resources.Snd.ExpRocketFlyLooped);
+                        _ = resources.Add(Resources.Snd.ExpRocketInWater);
                         break;
                     case "axe":
                         _ = resources.Add(Resources.Img.ObjAxe);
                         _ = resources.Add(Resources.Img.FxCutChain);
+                        _ = resources.Add(Resources.Snd.ChainCut);
                         break;
                     case "load":
                         _ = resources.Add(Resources.Img.ObjSnail);
+                        _ = resources.Add(Resources.Snd.ExpSnailIn);
+                        _ = resources.Add(Resources.Snd.ExpSnailOut);
                         break;
                     case "pipe":
                         _ = resources.Add(Resources.Img.ObjBambooTube);
+                        _ = resources.Add(Resources.Snd.ExpBambooChute);
                         break;
                     case "ants":
                         _ = resources.Add(Resources.Img.ObjAnt);
+                        _ = resources.Add(Resources.Snd.ExpAntsTakeCandy);
+                        _ = resources.Add(Resources.Snd.ExpAntsDropCandy);
                         break;
                     case "lantern":
                         _ = resources.Add(Resources.Img.ObjLantern);
+                        _ = resources.Add(Resources.Snd.LanternTeleportIn);
+                        _ = resources.Add(Resources.Snd.LanternTeleportOut);
                         break;
                     case "gap":
                     case "mouse":
                         _ = resources.Add(Resources.Img.ObjMouse);
+                        _ = resources.Add(Resources.Snd.MouseIdle);
+                        _ = resources.Add(Resources.Snd.MouseRustle);
+                        _ = resources.Add(Resources.Snd.MouseTap);
                         break;
                     case "conveyorBelt":
                     case "transporter":
                         _ = resources.Add(Resources.Img.ObjConveyor);
+                        _ = resources.Add(Resources.Snd.TransporterMove);
+                        _ = resources.Add(Resources.Snd.TransporterDrop);
+                        _ = resources.Add(Resources.Snd.Conv01);
+                        _ = resources.Add(Resources.Snd.Conv02);
+                        _ = resources.Add(Resources.Snd.Conv03);
+                        _ = resources.Add(Resources.Snd.Conv04);
                         break;
                     case "tutorialText":
                         _ = resources.Add(Resources.Fnt.SmallFont);
@@ -127,23 +176,48 @@ namespace CutTheRopeDX.GameMain
                         break;
                     case "hand":
                         _ = resources.Add(Resources.Img.ObjRoboHand);
+                        _ = resources.Add(Resources.Snd.ExpHandCatch);
+                        _ = resources.Add(Resources.Snd.ExpHandDrop);
+                        _ = resources.Add(Resources.Snd.ExpHandRotate);
+                        _ = resources.Add(Resources.Snd.ExpHandClap);
+                        break;
+                    case "gravitySwitch":
+                        _ = resources.Add(Resources.Snd.GravityOn);
+                        _ = resources.Add(Resources.Snd.GravityOff);
+                        break;
+                    case "pauseSwitcher":
+                        _ = resources.Add(Resources.Img.ObjPause);
+                        _ = resources.Add(Resources.Img.FxPause);
+                        _ = resources.Add(Resources.Snd.PauseDown);
+                        _ = resources.Add(Resources.Snd.PauseUp);
                         break;
                     case "target":
                         sawTarget = true;
-                        if (AddTargetResources(resources, node))
-                        {
-                            hasClassicTarget = true;
-                        }
-
+                        targetSkins.Add(AddTargetResources(resources, node));
                         break;
                     case "steamTube":
                         _ = resources.Add(Resources.Img.ObjPipe);
+                        _ = resources.Add(Resources.Snd.SteamStart);
+                        _ = resources.Add(Resources.Snd.SteamStart2);
+                        _ = resources.Add(Resources.Snd.SteamEnd);
                         break;
                     case "rotatedCircle":
                         _ = resources.Add(Resources.Img.ObjVinil);
+                        _ = resources.Add(Resources.Snd.ScratchIn);
+                        _ = resources.Add(Resources.Snd.ScratchOut);
                         break;
                     default:
                         break;
+                }
+            }
+
+            // A classic target sleeps only on night levels; a themed one also sleeps after
+            // being fed on a day level, so its sleep set is needed either way.
+            foreach (OmNomSkinDefinition skin in targetSkins)
+            {
+                if (nightLevel || skin != null)
+                {
+                    AddOmNomSleepSounds(resources, skin);
                 }
             }
 
@@ -155,7 +229,7 @@ namespace CutTheRopeDX.GameMain
                 // present. Use per-target resolution; if a night level has no target node,
                 // fall back to the player's selected skin to preserve prior behavior.
                 bool needsClassicSleeping = sawTarget
-                    ? hasClassicTarget
+                    ? targetSkins.Contains(null)
                     : OmNomSkinRegistry.IsClassicSkin(OmNomSkinRegistry.GetSelectedSkinIndex());
                 if (needsClassicSleeping)
                 {
@@ -163,16 +237,21 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 _ = resources.Add(Resources.Img.FxSleep);
+                _ = resources.Add(Resources.Snd.StarLight1);
+                _ = resources.Add(Resources.Snd.StarLight2);
             }
             if (waterLevel)
             {
                 _ = resources.Add(Resources.Img.WaterTile);
+                _ = resources.Add(Resources.Snd.ExpWaterSplash);
             }
             if (SpecialEvents.IsXmas)
             {
                 _ = resources.Add(Resources.Img.CharGreetingXmas);
                 _ = resources.Add(Resources.Img.CharIdleXmas);
                 _ = resources.Add(Resources.Img.XmasLights);
+                _ = resources.Add(Resources.Img.Snowflakes);
+                _ = resources.Add(Resources.Snd.XmasBell);
             }
 
             return [.. resources.Where(static resourceName => !string.IsNullOrWhiteSpace(resourceName))];
@@ -215,6 +294,33 @@ namespace CutTheRopeDX.GameMain
             _ = resources.Add(Resources.Img.ObjStarIdle);
             _ = resources.Add(Resources.Img.ObjStarDisappear);
             _ = resources.Add(Resources.Img.ObjBubble);
+
+            // Every trace skin draws from these two, and nothing touches them until the
+            // player's first swipe, which is exactly when a load must not happen.
+            _ = resources.Add(Resources.Img.FingerTraces);
+            _ = resources.Add(Resources.Img.FingerTraceGlow);
+
+            _ = resources.Add(Resources.Snd.Tap);
+            _ = resources.Add(Resources.Snd.CandyBreak);
+            _ = resources.Add(Resources.Snd.RopeBleak1);
+            _ = resources.Add(Resources.Snd.RopeBleak2);
+            _ = resources.Add(Resources.Snd.RopeBleak3);
+            _ = resources.Add(Resources.Snd.RopeBleak4);
+            _ = resources.Add(Resources.Snd.RopeGet);
+            _ = resources.Add(Resources.Snd.Star1);
+            _ = resources.Add(Resources.Snd.Star2);
+            _ = resources.Add(Resources.Snd.Star3);
+            _ = resources.Add(Resources.Snd.Win);
+        }
+
+        /// <summary>
+        /// Adds the sounds a spike button press plays, shared by plain and electrified spikes.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        private static void AddSpikeRotationSounds(HashSet<string> resources)
+        {
+            _ = resources.Add(Resources.Snd.SpikeRotateIn);
+            _ = resources.Add(Resources.Snd.SpikeRotateOut);
         }
 
         /// <summary>
@@ -229,6 +335,8 @@ namespace CutTheRopeDX.GameMain
             bool bee = ParseBool(node.Attribute("bee")?.Value) || node.Attribute("path") != null;
             bool chain = node.Attribute("breakable") is XAttribute breakableAttr && !ParseBool(breakableAttr.Value);
             bool autoHook = node.Attribute("radius")?.Value is string radius && radius != "-1" && !gun;
+            bool spider = ParseBool(node.Attribute("spider")?.Value);
+            bool wheel = ParseBool(node.Attribute("wheel")?.Value);
 
             _ = resources.Add(chain
                 ? autoHook ? Resources.Img.ObjHookAutoChain : Resources.Img.ObjHookChain
@@ -237,28 +345,43 @@ namespace CutTheRopeDX.GameMain
             if (bee)
             {
                 _ = resources.Add(Resources.Img.ObjBee);
+                _ = resources.Add(Resources.Snd.Buzz);
             }
             if (gun)
             {
                 _ = resources.Add(Resources.Img.ObjGun);
+                _ = resources.Add(Resources.Snd.ExpGun);
             }
             if (kickable)
             {
                 _ = resources.Add(Resources.Img.ObjSticker);
+                _ = resources.Add(Resources.Snd.ExpSuckerDrop);
+                _ = resources.Add(Resources.Snd.ExpSuckerLand);
             }
             if (chain)
             {
                 _ = resources.Add(Resources.Img.ObjExpChain);
             }
+            if (spider)
+            {
+                _ = resources.Add(Resources.Img.ObjSpider);
+                _ = resources.Add(Resources.Snd.SpiderActivate);
+                _ = resources.Add(Resources.Snd.SpiderFall);
+                _ = resources.Add(Resources.Snd.SpiderWin);
+            }
+            if (wheel)
+            {
+                _ = resources.Add(Resources.Snd.Wheel);
+            }
         }
 
         /// <summary>
-        /// Adds Om Nom animation resources for a single target, using its resolved skin.
+        /// Adds Om Nom animation and voice resources for a single target, using its resolved skin.
         /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
         /// <param name="node">The target XML node, whose <c>targetType</c> selects the skin.</param>
-        /// <returns><see langword="true"/> when the target resolved to the classic skin; otherwise, <see langword="false"/>.</returns>
-        private static bool AddTargetResources(HashSet<string> resources, XElement node)
+        /// <returns>The target's themed skin definition, or <see langword="null"/> for the classic skin.</returns>
+        private static OmNomSkinDefinition AddTargetResources(HashSet<string> resources, XElement node)
         {
             int targetType = ParseIntOrZero(node.Attribute("targetType")?.Value ?? string.Empty);
             int skinIndex = OmNomSkinRegistry.ResolveTargetSkinIndex(
@@ -267,6 +390,7 @@ namespace CutTheRopeDX.GameMain
                 OmNomSkinRegistry.TotalSkinCount);
 
             bool isClassic = OmNomSkinRegistry.IsClassicSkin(skinIndex);
+            OmNomSkinDefinition skin = null;
             if (isClassic)
             {
                 _ = resources.Add(Resources.Img.CharAnimations);
@@ -275,7 +399,7 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                OmNomSkinDefinition skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
+                skin = OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex);
                 _ = string.Equals(skin.Id, "OM_NOM_PREHISTORIC", StringComparison.Ordinal)
                     ? resources.Add(Resources.Img.CharAnimationsPrehistoric)
                     : resources.Add(Resources.Img.CharAnimationsSmooth);
@@ -283,7 +407,40 @@ namespace CutTheRopeDX.GameMain
 
             _ = resources.Add(Resources.Img.FxBubbles);
             _ = resources.Add(Resources.Img.CharSupports);
-            return isClassic;
+
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterChewing);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterClose);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterOpen);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterSad);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterExcited);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterGreeting);
+
+            return skin;
+        }
+
+        /// <summary>
+        /// Adds the three sleep voice clips a target can play, resolved against its skin.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        /// <param name="skin">The target's themed skin, or <see langword="null"/> for the classic skin.</param>
+        private static void AddOmNomSleepSounds(HashSet<string> resources, OmNomSkinDefinition skin)
+        {
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterSleep1);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterSleep2);
+            AddOmNomSound(resources, skin, Resources.Snd.MonsterSleep3);
+        }
+
+        /// <summary>
+        /// Adds the sound a target actually plays for a classic clip, following the same skin
+        /// resolution that playback uses so themed skins warm their own recordings.
+        /// </summary>
+        /// <param name="resources">The destination set being accumulated.</param>
+        /// <param name="skin">The target's themed skin, or <see langword="null"/> for the classic skin.</param>
+        /// <param name="classicSoundResourceName">The classic clip the target would ask for.</param>
+        private static void AddOmNomSound(HashSet<string> resources, OmNomSkinDefinition skin, string classicSoundResourceName)
+        {
+            // Resolves to null for clips a skin opts out of, which the final filter drops.
+            _ = resources.Add(OmNomSoundResolver.ResolveSoundResource(skin, classicSoundResourceName));
         }
 
         /// <summary>
