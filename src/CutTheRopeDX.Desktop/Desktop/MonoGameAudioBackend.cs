@@ -17,8 +17,17 @@ namespace CutTheRopeDX.Desktop
     /// </summary>
     internal sealed class MonoGameAudioBackend(ContentManager contentManager) : IAudioBackend
     {
-        /// <summary>Wraps a MonoGame <see cref="SoundEffect"/> as the platform sound effect handle.</summary>
-        private sealed class XnaSoundEffect(SoundEffect effect) : ISoundEffect
+        /// <summary>
+        /// Wraps a MonoGame <see cref="SoundEffect"/> together with the content manager that owns it.
+        /// </summary>
+        /// <remarks>
+        /// A loaded asset belongs to its content manager's cache, so releasing one means unloading
+        /// that manager. Disposing the effect on its own would leave the dead object in the cache,
+        /// and every later load of the same asset would hand that corpse back: creating an instance
+        /// from it throws, and the sound is silent for the rest of the process. Each effect
+        /// therefore gets its own manager, exactly as <see cref="Images"/> does for textures.
+        /// </remarks>
+        private sealed class XnaSoundEffect(ContentManager owner, SoundEffect effect) : ISoundEffect
         {
             public SoundEffect Effect { get; } = effect;
 
@@ -29,7 +38,7 @@ namespace CutTheRopeDX.Desktop
 
             public void Dispose()
             {
-                Effect.Dispose();
+                owner.Unload();
             }
         }
 
@@ -96,7 +105,10 @@ namespace CutTheRopeDX.Desktop
 
         public ISoundEffect LoadSound(string contentPath)
         {
-            return new XnaSoundEffect(_contentManager.Load<SoundEffect>(contentPath));
+            // Sound effects are freed one at a time when a gameplay session ends, so each gets
+            // its own manager to unload. Music stays on the shared manager: it is never freed.
+            DesktopContentManager owner = new(_contentManager.ServiceProvider);
+            return new XnaSoundEffect(owner, owner.Load<SoundEffect>(contentPath));
         }
 
         public IMusicTrack LoadMusic(string contentPath)
