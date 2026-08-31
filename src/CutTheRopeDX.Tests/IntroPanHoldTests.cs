@@ -34,6 +34,45 @@ namespace CutTheRopeDX.Tests
             Assert.True(FallAfter(PannedHeight, frames: 240) > 1f);
         }
 
+        [Theory]
+        // Every map shape in the shipped campaign, at the aspect the game was authored for. The
+        // rule that stages a pan is measured against the viewport now rather than against the
+        // design box; at this aspect it has to land exactly where the design-box comparison did.
+        [InlineData(320, 480, false)]
+        [InlineData(640, 480, false)]
+        [InlineData(320, 700, true)]
+        [InlineData(320, 960, true)]
+        [InlineData(640, 960, true)]
+        public void TheDesignAspectStagesAPanForExactlyTheLevelsItAlwaysDid(
+            int mapWidth, int mapHeight, bool panned)
+        {
+            GameScene scene = Scenario.New()
+                .MapSize(mapWidth, mapHeight)
+                .Candy(mapWidth / 2, 60)
+                .OmNom(mapWidth / 2, mapHeight - 60)
+                .Build();
+
+            Assert.Equal(panned, scene.IsIntroPanRunning());
+        }
+
+        [Theory]
+        // 16:9 exposes one design box of a two-box-tall level, so there is a level to preview.
+        [InlineData(2560, 1440, false)]
+        // Taller, but still not enough to hold 2880 world units at once.
+        [InlineData(720, 1280, false)]
+        // Tall enough that the level is scaled down until all of it is on screen. A pan here could
+        // not move the picture, so staging one would only hold the player away from a level they
+        // can already see in full.
+        [InlineData(400, 1280, true)]
+        public void ThePanIsStagedOnlyWhenTheViewportCannotAlreadyHoldTheLevel(
+            int width, int height, bool skipped)
+        {
+            float fall = 0f;
+            LayoutSurfaces.WithSurface(width, height, () => fall = FallAfter(PannedHeight, frames: 30));
+
+            Assert.Equal(skipped, fall > 1f);
+        }
+
         [Fact]
         public void TheHoldLastsUntilThePanStopsRatherThanUntilInputComesBack()
         {

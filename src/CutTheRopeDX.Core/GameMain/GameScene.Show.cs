@@ -170,7 +170,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void StartCamera()
         {
-            if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
+            ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
+            if (CameraCanTravel(snapshot))
             {
                 ignoreTouches = true;
                 fastenCamera = false;
@@ -210,14 +211,22 @@ namespace CutTheRopeDX.GameMain
                 // Seat the tracked position at the authored start point and let the fit derive the
                 // rest from it, the way every later frame does.
                 camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
-                ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+                ApplyCameraFit(snapshot);
                 initialCameraToStarDistance = VectDistance(camera.pos, boundedCamera);
                 return;
             }
+
+            // Nothing to preview: this viewport already holds the level end to end, so a pan would
+            // sit the player in front of a picture that cannot move - and, since gameplay is held
+            // for the length of one, do it while the level they can already see waits. Seat the
+            // camera where the pan would have left it and hand them the level.
             ignoreTouches = false;
-            Vector resting = BoundedCameraPosition(0f, 0f);
+            ConstraintedPoint restingFocus = CameraFocusPoint();
+            Vector resting = BoundedCameraPosition(
+                restingFocus.pos.X - (SCREEN_WIDTH / 2f),
+                restingFocus.pos.Y - (SCREEN_HEIGHT / 2f));
             camera.MoveToXYImmediate(resting.X, resting.Y, true);
-            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+            ApplyCameraFit(snapshot);
         }
 
         /// <summary>

@@ -27,9 +27,21 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The anchor, 0 to 1, where 0.5 is centered.</returns>
         public static float Anchor(float tracked, float origin, float scrollable, float slack)
         {
-            return scrollable <= slack
-                ? 0.5f
-                : CTRMathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f);
+            return HasTravel(scrollable, slack)
+                ? CTRMathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f)
+                : 0.5f;
+        }
+
+        /// <summary>
+        /// Whether an axis has anywhere left to go: whether the level runs past what the viewport
+        /// already exposes on it.
+        /// </summary>
+        /// <param name="scrollable">How far the camera window can travel across the level.</param>
+        /// <param name="slack">World the viewport exposes beyond the camera window.</param>
+        /// <returns><see langword="true"/> when moving the camera would move the picture.</returns>
+        public static bool HasTravel(float scrollable, float slack)
+        {
+            return scrollable > slack;
         }
     }
 }
