@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
 
@@ -27,9 +29,42 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void GameplayResumesOnceTheIntroPanHandsInputBack()
+        public void GameplayResumesOnceTheIntroPanHasComeToRest()
         {
             Assert.True(FallAfter(PannedHeight, frames: 240) > 1f);
+        }
+
+        [Fact]
+        public void TheHoldLastsUntilThePanStopsRatherThanUntilInputComesBack()
+        {
+            GameScene scene = FreeCandyLevel(PannedHeight);
+            float start = scene.Candy().WholeBody.Point.pos.Y;
+
+            int inputBack = -1;
+            int panStopped = -1;
+            int firstMovement = -1;
+            for (int frame = 0; frame < 600 && firstMovement < 0; frame++)
+            {
+                HeadlessGame.StepFrames(scene, 1);
+                if (inputBack < 0 && !scene.ignoreTouches)
+                {
+                    inputBack = frame;
+                }
+                if (panStopped < 0 && !scene.IsIntroPanRunning())
+                {
+                    panStopped = frame;
+                }
+                if (MathF.Abs(scene.Candy().WholeBody.Point.pos.Y - start) > 0.001f)
+                {
+                    firstMovement = frame;
+                }
+            }
+
+            // Input is handed back a hundred pixels out, so there is a real stretch of pan left
+            // to run after it - and the candy stays put for all of it, moving on the first step
+            // after the picture comes to rest.
+            Assert.True(panStopped > inputBack + 1, $"pan stopped at {panStopped}, input back at {inputBack}");
+            Assert.Equal(panStopped + 1, firstMovement);
         }
 
         [Fact]

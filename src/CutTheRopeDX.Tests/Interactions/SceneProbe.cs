@@ -95,6 +95,16 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<bool>(scene, "timeFrozen");
         }
 
+        /// <summary>Whether the opening camera pan is still in flight.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns><see langword="true"/> while the pan is still travelling.</returns>
+        public static bool IsIntroPanRunning(this GameScene scene)
+        {
+            PropertyInfo property = typeof(GameScene).GetProperty("IntroPanIsRunning", Instance)
+                ?? throw new MissingMemberException(nameof(GameScene), "IntroPanIsRunning");
+            return (bool)property.GetValue(scene);
+        }
+
         /// <summary>The gameplay particle animation pool.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The scene-owned particle pool.</returns>

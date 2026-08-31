@@ -1317,16 +1317,17 @@ namespace CutTheRopeDX.GameMain
         public bool ignoreTouches;
 
         /// <summary>
-        /// Whether the opening camera pan is still travelling toward the level and swallowing
-        /// input on the way.
+        /// Whether the opening camera pan is still travelling toward the level.
         /// </summary>
         /// <remarks>
-        /// This is the predicate the port already suppressed spiders and star timers with, so the
-        /// pan is treated as over at the same moment it hands input back - the last hundred pixels
-        /// are a settle the player is already free to act through, not part of the preview.
+        /// The pan mode is entered once, by <see cref="StartCamera"/>, and left once, when the
+        /// camera lands within a pixel of the point it is chasing - so the mode alone is the whole
+        /// flight, and gameplay resumes only after the picture has actually come to rest. Reading
+        /// <c>ignoreTouches</c> here instead would end the hold a hundred pixels early, while the
+        /// camera is still visibly moving. The pan always terminates: the point it chases cannot
+        /// move while gameplay is held.
         /// </remarks>
-        private bool IntroPanIsRunning =>
-            camera.type == CAMERATYPE.CAMERASPEEDPIXELS && ignoreTouches;
+        private bool IntroPanIsRunning => camera.type == CAMERATYPE.CAMERASPEEDPIXELS;
 
         /// <summary>
         /// Whether the loaded level uses night-specific behavior.
