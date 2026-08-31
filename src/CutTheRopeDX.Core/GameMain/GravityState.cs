@@ -22,6 +22,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether gravity currently points opposite its authored vertical direction.</summary>
         public bool IsInverted { get; private set; }
 
+        /// <summary>Whether the loaded level supplied any earth art to draw.</summary>
+        public bool HasEarthAnimations => earthAnimations.Count > 0;
+
         /// <summary>Gravity vector derived from <see cref="BaseVector"/> and <see cref="IsInverted"/>.</summary>
         public Vector CurrentVector => new(BaseVector.X, IsInverted ? -BaseVector.Y : BaseVector.Y);
 
