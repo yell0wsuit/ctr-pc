@@ -12,6 +12,12 @@ namespace CutTheRopeDX.Tests.Interactions
     /// Pins the rocket behaviours that Cut the Rope: Time Travel does differently from the
     /// Experiments rocket the rest of the port descends from. Every one of them is gated on a
     /// map's <c>useTimeTravelRocketPhysics</c> flag, so each case checks both sides of the gate.
+    /// <para>
+    /// That flag is itself a mode of <c>useMobilePhysics</c>: a map has to ask for both, and asking
+    /// for the tuning alone is ignored. The cases below therefore contrast Time Travel against the
+    /// desktop rocket, which is the comparison they were written to make; the two tests at the end
+    /// pin the gate itself from each side.
+    /// </para>
     /// </summary>
     public sealed class TimeTravelRocketPhysicsTests
     {
@@ -57,6 +63,61 @@ namespace CutTheRopeDX.Tests.Interactions
             {
                 ActivePhysicsConstants.UseMobilePhysicsModel = previous;
             }
+        }
+
+        [Fact]
+        public void TimeTravelTuningNeedsMobilePhysicsToReachIt()
+        {
+            // The flag is a mode of the mobile model, not a peer of it: Time Travel is a mobile game,
+            // and it authors its values in the same level coordinates the mobile model works in. A map
+            // that asks for the tuning without the model it belongs to is ignored, rather than left
+            // half-applied with mobile values reading through desktop scale.
+            GameScene scene = Scenario.New()
+                .MapSize(320, 480)
+                .Design("useTimeTravelRocketPhysics", "true")
+                .Candy(160, 120)
+                .Rope(160, 60, length: 60)
+                .Rocket(160, 260, angle: 180f, impulse: 5f)
+                .OmNom(60, 420)
+                .Build();
+
+            Assert.NotNull(scene);
+            Assert.False(ActivePhysicsConstants.UseTimeTravelRocketModel);
+
+            // The constants the flag alone can move stay on their desktop values.
+            Assert.Equal(2.5f, ActivePhysicsConstants.RocketPointWeight);
+            Assert.Equal(200f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.Equal(1f, ActivePhysicsConstants.RocketExhaustSpeedFloor);
+            Assert.True(ActivePhysicsConstants.RocketDampsCandyVelocity);
+            Assert.False(ActivePhysicsConstants.RelaxCandyPointsAfterIntegration);
+        }
+
+        [Fact]
+        public void MobilePhysicsAloneDoesNotBringTheTimeTravelTuning()
+        {
+            // The other half of the gate. Mobile physics is the model Time Travel rides on, and it
+            // already shares some of its numbers - the reel speed and point weight below are the same
+            // either way - so what separates the two is the behaviour the flag alone turns on.
+            GameScene scene = Scenario.New()
+                .MapSize(320, 480)
+                .Design("useMobilePhysics", "true")
+                .Candy(160, 120)
+                .Rope(160, 60, length: 60)
+                .Rocket(160, 260, angle: 180f, impulse: 5f)
+                .OmNom(60, 420)
+                .Build();
+
+            Assert.NotNull(scene);
+            Assert.False(ActivePhysicsConstants.UseTimeTravelRocketModel);
+
+            Assert.Equal(600f, ActivePhysicsConstants.RocketReelSpeed);
+            Assert.Equal(0.5f, ActivePhysicsConstants.RocketPointWeight);
+
+            Assert.Equal(1f, ActivePhysicsConstants.RocketExhaustSpeedFloor);
+            Assert.True(ActivePhysicsConstants.RocketDampsCandyVelocity);
+            Assert.True(ActivePhysicsConstants.RocketRelaxDuringFlight);
+            Assert.False(ActivePhysicsConstants.RelaxCandyPointsAfterIntegration);
+            Assert.False(ActivePhysicsConstants.RocketBindPopsCandyBubble);
         }
 
         [Fact]
@@ -256,6 +317,8 @@ namespace CutTheRopeDX.Tests.Interactions
             }
             if (timeTravel)
             {
+                // Time Travel's tuning is a mode of the mobile model, so the map has to ask for both.
+                _ = scenario.Design("useMobilePhysics", "true");
                 _ = scenario.Design("useTimeTravelRocketPhysics", "true");
             }
             return scenario.Build();

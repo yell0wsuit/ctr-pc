@@ -187,6 +187,7 @@ namespace CutTheRopeDX.Tests
                 .Rocket(220, 200)
                 .Build();
             GameScene timeTravel = Scenario.New()
+                .Design("useMobilePhysics", "true")
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(60, 100)
                 .OmNom(160, 440)

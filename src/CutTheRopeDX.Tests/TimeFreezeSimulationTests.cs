@@ -328,6 +328,7 @@ namespace CutTheRopeDX.Tests
         public void TimeTravelRocketScalesItsAuthoredImpulseIntoDxWorldCoordinates()
         {
             GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(60, 100)
                 .OmNom(160, 440)
@@ -348,6 +349,7 @@ namespace CutTheRopeDX.Tests
             // in the binary - so a rocket's thrust builds unopposed rather than settling at the
             // terminal speed a velocity-opposing force would impose.
             GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
                 .OmNom(160, 440)
@@ -367,6 +369,7 @@ namespace CutTheRopeDX.Tests
         public void TimeTravelThrustKeepsAccelerating()
         {
             GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
                 .Design("useTimeTravelRocketPhysics", "true")
                 .Candy(160, 200)
                 .OmNom(160, 440)

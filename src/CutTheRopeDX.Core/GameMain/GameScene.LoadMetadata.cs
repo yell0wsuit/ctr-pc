@@ -117,8 +117,14 @@ namespace CutTheRopeDX.GameMain
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
                             _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
                             ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;
+                            // Time Travel's rocket tuning is a mode of the mobile model, not a peer of
+                            // it: the game it comes from is a mobile one, and its authored values are in
+                            // the same level coordinates the mobile model works in. A map that asks for
+                            // it without mobile physics is ignored rather than half-honoured. Everything
+                            // downstream keeps reading UseTimeTravelRocketModel on its own, so the
+                            // per-constant gates are unchanged.
                             _ = bool.TryParse(item2.Attribute("useTimeTravelRocketPhysics")?.Value, out bool useTimeTravelRocketPhysics);
-                            ActivePhysicsConstants.UseTimeTravelRocketModel = useTimeTravelRocketPhysics;
+                            ActivePhysicsConstants.UseTimeTravelRocketModel = useMobilePhysics && useTimeTravelRocketPhysics;
                             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
                             _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
                             _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
