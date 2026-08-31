@@ -221,17 +221,18 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
+            // Spritesheets owned by the classic animation backend are only needed when a classic
+            // Om Nom is present. Use per-target resolution; if a level has no target node, fall
+            // back to the player's selected skin to preserve prior behavior.
+            bool hasClassicTarget = sawTarget
+                ? targetSkins.Contains(null)
+                : OmNomSkinRegistry.IsClassicSkin(OmNomSkinRegistry.GetSelectedSkinIndex());
+
             if (nightLevel)
             {
                 _ = resources.Add(Resources.Img.ObjStarNight);
 
-                // The classic sleeping spritesheet is only needed when a classic Om Nom is
-                // present. Use per-target resolution; if a night level has no target node,
-                // fall back to the player's selected skin to preserve prior behavior.
-                bool needsClassicSleeping = sawTarget
-                    ? targetSkins.Contains(null)
-                    : OmNomSkinRegistry.IsClassicSkin(OmNomSkinRegistry.GetSelectedSkinIndex());
-                if (needsClassicSleeping)
+                if (hasClassicTarget)
                 {
                     _ = resources.Add(Resources.Img.CharAnimationsSleeping);
                 }
@@ -247,8 +248,14 @@ namespace CutTheRopeDX.GameMain
             }
             if (SpecialEvents.IsXmas)
             {
-                _ = resources.Add(Resources.Img.CharGreetingXmas);
-                _ = resources.Add(Resources.Img.CharIdleXmas);
+                // Both Xmas character sheets belong to the classic animation backend; a themed
+                // skin animates from its own Flash XML and never asks for them.
+                if (hasClassicTarget)
+                {
+                    _ = resources.Add(Resources.Img.CharGreetingXmas);
+                    _ = resources.Add(Resources.Img.CharIdleXmas);
+                }
+
                 _ = resources.Add(Resources.Img.XmasLights);
                 _ = resources.Add(Resources.Img.Snowflakes);
                 _ = resources.Add(Resources.Snd.XmasBell);
