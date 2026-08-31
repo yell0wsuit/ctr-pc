@@ -30,29 +30,45 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CameraStartsAtTheOriginForANonScrollingLevel()
+        public void CameraStartsAtTheLevelOriginForANonScrollingLevel()
         {
             _ = HeadlessGame.Boot();
             GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
             Camera2D camera = ReadCamera(scene);
 
-            Assert.Equal(0f, camera.pos.X, 0.01);
+            // The tracked position is a world coordinate, so a level narrower than the design box
+            // starts it at the level's own left edge rather than at world zero. The region that
+            // ends up drawn is unaffected: the fit spends the horizontal slack about that edge,
+            // which is what CameraStaysAtTheDesignOriginForANonScrollingLevel pins.
+            Assert.Equal(800f, camera.pos.X, 0.01);
             Assert.Equal(0f, camera.pos.Y, 0.01);
-            Assert.Equal(0f, camera.target.X, 0.01);
+            Assert.Equal(800f, camera.target.X, 0.01);
             Assert.Equal(0f, camera.target.Y, 0.01);
         }
 
         [Fact]
-        public void ScreenToWorldAddsTheCameraPositionToday()
+        public void CameraStaysAtTheDesignOriginForANonScrollingLevel()
         {
             _ = HeadlessGame.Boot();
             GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
             Camera2D camera = ReadCamera(scene);
 
-            Assert.Equal(640f, 640f + camera.pos.X, 0.01);
-            Assert.Equal(360f, 360f + camera.pos.Y, 0.01);
+            Assert.Equal(0f, camera.RenderPos.X, 0.01);
+            Assert.Equal(0f, camera.RenderPos.Y, 0.01);
+        }
+
+        [Fact]
+        public void ScreenToWorldIsTheIdentityForANonScrollingLevel()
+        {
+            _ = HeadlessGame.Boot();
+            GameScene scene = HeadlessGame.LoadLevel(0, 0);
+
+            Camera2D camera = ReadCamera(scene);
+
+            Assert.Equal(640f, camera.ScreenToWorldX(640f), 0.01);
+            Assert.Equal(360f, camera.ScreenToWorldY(360f), 0.01);
         }
 
         [Theory]
@@ -78,9 +94,11 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
-        [InlineData(0, 0, 0f, 0f, 0f, 0f)]
+        // X is the level's own left edge, not world zero: these maps are narrower than the design
+        // box and sit centered on it, and the tracked position is a world coordinate.
+        [InlineData(0, 0, 800f, 0f, 800f, 0f)]
         // The tall level is still moving toward the bottom of its 2880-unit map at frame 60.
-        [InlineData(0, 14, 0f, 381.6959f, 0f, 1440f)]
+        [InlineData(0, 14, 800f, 381.6959f, 800f, 1440f)]
         public void CameraPositionAfterSixtyFramesIsPinned(
             int pack,
             int level,

@@ -403,6 +403,40 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// The range the tracking may drive the camera through: the positions of the design-box
+        /// window's top-left corner that keep the window inside the level.
+        /// </summary>
+        /// <remarks>
+        /// Measured from <see cref="cameraBounds"/>'s own origin rather than from world zero. A
+        /// level wider than the design box is laid out centered on it, so its left edge sits at a
+        /// negative world X; a range starting at zero would strand that half outside what the
+        /// camera can reach and pin it against the right edge for everything past the level's
+        /// midpoint. An axis the level does not exceed contributes no extent, leaving the one
+        /// position that shows the whole level on that axis.
+        /// </remarks>
+        /// <returns>The origin of the range and its extent on each axis.</returns>
+        private CTRRectangle CameraTrackingRange()
+        {
+            return new CTRRectangle(
+                cameraBounds.x,
+                cameraBounds.y,
+                MathF.Max(0f, mapWidth - SCREEN_WIDTH),
+                MathF.Max(0f, mapHeight - SCREEN_HEIGHT));
+        }
+
+        /// <summary>Clamps a desired camera position into <see cref="CameraTrackingRange"/>.</summary>
+        /// <param name="x">Desired camera X, in world units.</param>
+        /// <param name="y">Desired camera Y, in world units.</param>
+        /// <returns>The clamped position.</returns>
+        private Vector BoundedCameraPosition(float x, float y)
+        {
+            CTRRectangle range = CameraTrackingRange();
+            return Vect(
+                FIT_TO_BOUNDARIES(x, range.x, range.x + range.w),
+                FIT_TO_BOUNDARIES(y, range.y, range.y + range.h));
+        }
+
+        /// <summary>
         /// Fits the camera to the level for the current viewport, holding it centered when the
         /// whole level is already visible.
         /// </summary>
@@ -415,8 +449,13 @@ namespace CutTheRopeDX.GameMain
             }
 
             CTRRectangle viewport = snapshot.VisibleBounds;
-            bool locked = GameplayCamera.ScrollIsLocked(
-                cameraBounds.w, cameraBounds.h, viewport.w, viewport.h);
+
+            // The fit scales cameraWindow, never the whole map, so the scale - and with it how
+            // much world beyond the window the viewport exposes - is settled before any anchor is
+            // chosen. Computing it here lets the anchor be made against that exposed slack.
+            float scale = MathF.Min(viewport.w / cameraWindow.w, viewport.h / cameraWindow.h);
+            float slackX = (viewport.w / scale) - cameraWindow.w;
+            float slackY = (viewport.h / scale) - cameraWindow.h;
 
             // On an axis the level exceeds, cameraWindow is capped to the design size rather than
             // the full map, so it is the window - not the whole map - that fits the viewport; the
@@ -429,12 +468,8 @@ namespace CutTheRopeDX.GameMain
             // The anchor is read from where the tracking has driven the camera, which nothing here
             // writes back to. A fit that took its anchor from its own previous result would
             // subtract the viewport's slack afresh on every pass and walk the camera off the level.
-            float anchorX = locked || scrollableX <= 0f
-                ? 0.5f
-                : FIT_TO_BOUNDARIES((camera.pos.X - cameraBounds.x) / scrollableX, 0f, 1f);
-            float anchorY = locked || scrollableY <= 0f
-                ? 0.5f
-                : FIT_TO_BOUNDARIES((camera.pos.Y - cameraBounds.y) / scrollableY, 0f, 1f);
+            float anchorX = GameplayCamera.Anchor(camera.pos.X, cameraBounds.x, scrollableX, slackX);
+            float anchorY = GameplayCamera.Anchor(camera.pos.Y, cameraBounds.y, scrollableY, slackY);
 
             CTRRectangle window = new(
                 cameraBounds.x + (scrollableX * anchorX),

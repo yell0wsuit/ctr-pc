@@ -98,8 +98,9 @@ namespace CutTheRopeDX.GameMain
             ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
             float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
             float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
-            float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
-            float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+            Vector boundedCamera = BoundedCameraPosition(targetCameraX, targetCameraY);
+            float boundedCameraX = boundedCamera.X;
+            float boundedCameraY = boundedCamera.Y;
             camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);
             if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {
