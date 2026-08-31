@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain;
@@ -55,10 +57,21 @@ namespace CutTheRopeDX.Tests.Interactions
             // The control is the mobile model without the Time Travel flag, not the desktop one. Time
             // Travel is a mode of mobile physics, so a desktop control would differ by the whole model -
             // rope rest length included - and would say nothing about the relaxation pass on its own.
-            Assert.Equal(
-                SettledConnectorSpan(timeTravel: false, mobilePhysics: true),
-                SettledConnectorSpan(timeTravel: true),
-                1);
+            // With that gate in place the relaxation is the only thing left between the two scenes,
+            // so the difference below is its whole contribution and nothing else's.
+            float control = SettledConnectorSpan(timeTravel: false, mobilePhysics: true);
+            float relaxed = SettledConnectorSpan(timeTravel: true);
+            float contribution = Math.Abs(relaxed - control);
+
+            // Non-zero, or the relaxation pass is not running at all and the rest of this says nothing.
+            Assert.NotEqual(control, relaxed);
+
+            // ...and small enough to be a correction rather than a tuning change. Measured at ~0.04
+            // world units on a ~302-unit span; the bound is a ceiling, not the expected value.
+            Assert.True(
+                contribution < 0.1f,
+                $"Relaxing the endpoints moved the settled span by {contribution} world units, "
+                    + $"from {control} to {relaxed} - too far to be the correction it should be.");
         }
 
         /// <summary>Runs a connected pair for two seconds and reports the gap between the candies.</summary>
