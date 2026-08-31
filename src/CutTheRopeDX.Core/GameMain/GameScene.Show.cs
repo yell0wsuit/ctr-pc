@@ -170,7 +170,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void StartCamera()
         {
-            if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
+            ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
+            if (CameraCanTravel(snapshot))
             {
                 ignoreTouches = true;
                 fastenCamera = false;
@@ -178,46 +179,54 @@ namespace CutTheRopeDX.GameMain
                 camera.speed = 20f;
                 cameraMoveMode = 0;
                 ConstraintedPoint constraintedPoint = CameraFocusPoint();
+
+                // The pan starts at whichever end of the tracking range is away from the focus
+                // point. Both ends and the midpoint they are chosen by are the level's own: a
+                // level wider than the design box is centered on it, so its near end is a negative
+                // world X and neither end is at the origin.
+                CTRRectangle range = CameraTrackingRange();
                 float cameraStartX;
                 float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)
                 {
-                    if (constraintedPoint.pos.X > mapWidth / 2)
-                    {
-                        cameraStartX = 0f;
-                        cameraStartY = 0f;
-                    }
-                    else
-                    {
-                        cameraStartX = mapWidth - SCREEN_WIDTH;
-                        cameraStartY = 0f;
-                    }
+                    cameraStartX = constraintedPoint.pos.X > range.x + (mapWidth / 2f)
+                        ? range.x
+                        : range.x + range.w;
+                    cameraStartY = range.y;
                 }
-                else if (constraintedPoint.pos.Y > mapHeight / 2)
+                else if (constraintedPoint.pos.Y > range.y + (mapHeight / 2f))
                 {
-                    cameraStartX = 0f;
-                    cameraStartY = 0f;
+                    cameraStartX = range.x;
+                    cameraStartY = range.y;
                 }
                 else
                 {
-                    cameraStartX = 0f;
-                    cameraStartY = mapHeight - SCREEN_HEIGHT;
+                    cameraStartX = range.x;
+                    cameraStartY = range.y + range.h;
                 }
-                float targetCameraX = constraintedPoint.pos.X - (SCREEN_WIDTH / 2f);
-                float targetCameraY = constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f);
-                float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
-                float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
+                Vector boundedCamera = BoundedCameraPosition(
+                    constraintedPoint.pos.X - (SCREEN_WIDTH / 2f),
+                    constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f));
 
                 // Seat the tracked position at the authored start point and let the fit derive the
                 // rest from it, the way every later frame does.
                 camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
-                ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
-                initialCameraToStarDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
+                ApplyCameraFit(snapshot);
+                initialCameraToStarDistance = VectDistance(camera.pos, boundedCamera);
                 return;
             }
+
+            // Nothing to preview: this viewport already holds the level end to end, so a pan would
+            // sit the player in front of a picture that cannot move - and, since gameplay is held
+            // for the length of one, do it while the level they can already see waits. Seat the
+            // camera where the pan would have left it and hand them the level.
             ignoreTouches = false;
-            camera.MoveToXYImmediate(0f, 0f, true);
-            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+            ConstraintedPoint restingFocus = CameraFocusPoint();
+            Vector resting = BoundedCameraPosition(
+                restingFocus.pos.X - (SCREEN_WIDTH / 2f),
+                restingFocus.pos.Y - (SCREEN_HEIGHT / 2f));
+            camera.MoveToXYImmediate(resting.X, resting.Y, true);
+            ApplyCameraFit(snapshot);
         }
 
         /// <summary>

@@ -40,13 +40,27 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
-        [InlineData(1920f, 1440f, 3413f, 1440f, true)]   // level 1.33 wide, viewport 2.37: fits
-        [InlineData(1920f, 1440f, 1440f, 2560f, false)]  // portrait viewport: does not fit
-        [InlineData(960f, 2880f, 2560f, 1440f, false)]   // tall level: does not fit
-        public void ScrollLocksWhenTheViewportAlreadyContainsTheLevel(
-            float levelW, float levelH, float viewW, float viewH, bool expected)
+        // Nothing to scroll, or the viewport already exposes everything there was: hold centered.
+        [InlineData(0f, 0f, 0.5f)]
+        [InlineData(1040f, 1040f, 0.5f)]
+        [InlineData(1040f, 2000f, 0.5f)]
+        // Travel left to do, so the anchor follows the tracked position through it.
+        [InlineData(1040f, 0f, 0.25f)]
+        [InlineData(1040f, 520f, 0.25f)]
+        public void TheAnchorFollowsTheTrackedPositionOnlyWhileTheLevelStillHasTravel(
+            float scrollable, float slack, float expected)
         {
-            Assert.Equal(expected, GameplayCamera.ScrollIsLocked(levelW, levelH, viewW, viewH));
+            // Tracked a quarter of the way through a level whose near edge is at -520.
+            Assert.Equal(expected, GameplayCamera.Anchor(-260f, -520f, scrollable, slack), 0.001);
+        }
+
+        [Theory]
+        [InlineData(-2000f, 0f)]
+        [InlineData(2000f, 1f)]
+        public void TheAnchorStaysInsideTheLevelWhenTheTrackedPositionLeavesIt(
+            float tracked, float expected)
+        {
+            Assert.Equal(expected, GameplayCamera.Anchor(tracked, -520f, 1040f, 0f), 0.001);
         }
     }
 }

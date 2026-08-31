@@ -17,6 +17,19 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float delta)
         {
             delta = 0.016f;
+
+            // The opening pan flies the camera across the level with input switched off. Nothing
+            // else advances until it hands input back, so a candy cannot fall - or be eaten, or
+            // drift out of a claw - before the player has seen where it is. On a level the design
+            // box already covered there is no pan and this never fires; the levels that grew one
+            // are the ones whose pan is long enough to lose the level on the way.
+            if (IntroPanIsRunning)
+            {
+                UpdateCameraTracking(delta);
+                _ = AdvanceRestartFlow(delta);
+                return;
+            }
+
             base.Update(delta);
             foreach (PauseSwitcher switcher in pauseSwitchers)
             {
@@ -95,59 +108,7 @@ namespace CutTheRopeDX.GameMain
             }
             _ = Mover.MoveVariableToTarget(ref ropeAtOnceTimer, 0, 1, delta);
 
-            ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
-            float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
-            float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
-            float boundedCameraX = FIT_TO_BOUNDARIES(targetCameraX, 0f, mapWidth - SCREEN_WIDTH);
-            float boundedCameraY = FIT_TO_BOUNDARIES(targetCameraY, 0f, mapHeight - SCREEN_HEIGHT);
-            camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);
-            if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
-            {
-                camera.Update(delta);
-            }
-            if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
-            {
-                float touchEnableDistance = 100f;
-                float cameraAcceleration = 800f;
-                float cameraDeceleration = 400f;
-                float maxCameraSpeed = 1000f;
-                float minCameraSpeed = 300f;
-                float cameraTargetDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
-                if (cameraTargetDistance < touchEnableDistance)
-                {
-                    ignoreTouches = false;
-                }
-                if (fastenCamera)
-                {
-                    if (camera.speed < 5500f)
-                    {
-                        camera.speed *= 1.5f;
-                    }
-                }
-                else if (cameraTargetDistance > initialCameraToStarDistance / 2)
-                {
-                    camera.speed += delta * cameraAcceleration;
-                    camera.speed = MIN(maxCameraSpeed, camera.speed);
-                }
-                else
-                {
-                    camera.speed -= delta * cameraDeceleration;
-                    camera.speed = MAX(minCameraSpeed, camera.speed);
-                }
-                if (MathF.Abs(camera.pos.X - boundedCameraX) < 1 && MathF.Abs(camera.pos.Y - boundedCameraY) < 1)
-                {
-                    camera.type = CAMERATYPE.CAMERASPEEDDELAY;
-                    camera.speed = 14f;
-                }
-            }
-            else
-            {
-                time += delta;
-            }
-
-            // Project where the tracking just left the camera onto the current viewport. Last,
-            // because this reads the tracked position and writes only what gets drawn.
-            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
+            UpdateCameraTracking(delta);
 
             if (bungees.Count > 0)
             {
@@ -1702,18 +1663,100 @@ namespace CutTheRopeDX.GameMain
             {
                 HoldFrozenPoints();
             }
+            _ = AdvanceRestartFlow(delta);
+        }
+
+        /// <summary>
+        /// Advances the restart dim by one frame and carries out whatever step it reports.
+        /// </summary>
+        /// <remarks>
+        /// Runs during the opening pan as well as during play. The dim is presentation, not
+        /// gameplay: a restart hands the reloaded level straight to the pan, and the fade back in
+        /// has to finish over it rather than waiting for it - otherwise the level the player just
+        /// restarted sits behind a full-strength dim for as long as the pan lasts.
+        /// </remarks>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
+        /// <returns>
+        /// <see langword="true"/> when the scene was reloaded, so the caller must not touch it
+        /// further this step.
+        /// </returns>
+        private bool AdvanceRestartFlow(float delta)
+        {
             switch (gameplayFlow.Advance(delta))
             {
                 case RestartStep.SwapScene:
                     dd.CancelAllDispatches();
                     Hide();
                     Show();
-                    return;
+                    return true;
                 case RestartStep.Completed:
                 case RestartStep.None:
                 default:
-                    break;
+                    return false;
             }
+        }
+
+        /// <summary>
+        /// Drives the camera toward the point it follows and projects where that leaves it
+        /// onto the current viewport.
+        /// </summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
+        private void UpdateCameraTracking(float delta)
+        {
+            ConstraintedPoint constraintedPoint4 = CameraFocusPoint();
+            float targetCameraX = constraintedPoint4.pos.X - (SCREEN_WIDTH / 2f);
+            float targetCameraY = constraintedPoint4.pos.Y - (SCREEN_HEIGHT / 2f);
+            Vector boundedCamera = BoundedCameraPosition(targetCameraX, targetCameraY);
+            float boundedCameraX = boundedCamera.X;
+            float boundedCameraY = boundedCamera.Y;
+            camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);
+            if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
+            {
+                camera.Update(delta);
+            }
+            if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
+            {
+                float touchEnableDistance = 100f;
+                float cameraAcceleration = 800f;
+                float cameraDeceleration = 400f;
+                float maxCameraSpeed = 1000f;
+                float minCameraSpeed = 300f;
+                float cameraTargetDistance = VectDistance(camera.pos, Vect(boundedCameraX, boundedCameraY));
+                if (cameraTargetDistance < touchEnableDistance)
+                {
+                    ignoreTouches = false;
+                }
+                if (fastenCamera)
+                {
+                    if (camera.speed < 5500f)
+                    {
+                        camera.speed *= 1.5f;
+                    }
+                }
+                else if (cameraTargetDistance > initialCameraToStarDistance / 2)
+                {
+                    camera.speed += delta * cameraAcceleration;
+                    camera.speed = MIN(maxCameraSpeed, camera.speed);
+                }
+                else
+                {
+                    camera.speed -= delta * cameraDeceleration;
+                    camera.speed = MAX(minCameraSpeed, camera.speed);
+                }
+                if (MathF.Abs(camera.pos.X - boundedCameraX) < 1 && MathF.Abs(camera.pos.Y - boundedCameraY) < 1)
+                {
+                    camera.type = CAMERATYPE.CAMERASPEEDDELAY;
+                    camera.speed = 14f;
+                }
+            }
+            else
+            {
+                time += delta;
+            }
+
+            // Project where the tracking just left the camera onto the current viewport. Last,
+            // because this reads the tracked position and writes only what gets drawn.
+            ApplyCameraFit(ScreenPresentation.Instance.Snapshot);
         }
 
         /// <summary>Advances pointer visuals even when outcome presentation freezes gameplay simulation.</summary>
