@@ -13,10 +13,18 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
+        /// <summary>
+        /// The step the last simulated frame ran with. Cutting runs from input handlers as well as
+        /// from the update, so the bomb blast they trigger scales its impulse by this rather than by
+        /// a delta it has no access to.
+        /// </summary>
+        private float lastSimulationDelta = 0.016f;
+
         /// <inheritdoc />
         public override void Update(float delta)
         {
             delta = 0.016f;
+            lastSimulationDelta = delta;
 
             // The opening pan flies the camera across the level with input switched off. Nothing
             // else advances until it hands input back, so a candy cannot fall - or be eaten, or
@@ -200,7 +208,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             // One pass over every hookable body: whole candies and split halves alike
                             // attach to a radius hook the moment they come inside it.
-                            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Rope))
+                            foreach (CandyBody body in AutoAttachCandidates(grab))
                             {
                                 if (TryAutoAttachGrabToBody(grab, body))
                                 {
@@ -1207,6 +1215,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
+            DetonateBombsOnContact(delta);
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
@@ -1766,6 +1775,21 @@ namespace CutTheRopeDX.GameMain
             {
                 gesture.UpdateVisuals(delta);
             }
+        }
+
+        /// <summary>
+        /// The bodies a radius grab considers, in the order it considers them. A
+        /// <c>bombsHighPriority</c> grab sees bombs and axes before candy, so a bomb drifting
+        /// through the radius alongside candy is the one it hooks.
+        /// </summary>
+        /// <param name="grab">The radius grab looking for a body.</param>
+        /// <returns>The eligible bodies in attachment-priority order.</returns>
+        private IEnumerable<CandyBody> AutoAttachCandidates(Grab grab)
+        {
+            return grab.BombsHighPriority
+                ? ActiveCandyBodies(CandyInteraction.Rope)
+                    .OrderByDescending(body => body.Owner.bomb != null || body.Owner.axe != null)
+                : ActiveCandyBodies(CandyInteraction.Rope);
         }
 
         /// <summary>

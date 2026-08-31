@@ -4,11 +4,14 @@ namespace CutTheRopeDX.GameMain
 {
     internal static class AxeDefinition
     {
+        private const float TimeTravelToWorldScale = 1.5f;
+
         public static CandyCapabilities Capabilities => CandyCapabilities.Axe;
 
         public static bool EmitsLight => false;
 
-        public const float ChainCutRadius = 64f;
+        /// <summary>Blade-to-chain reach (Time Travel: 64 in its 2x world).</summary>
+        public const float ChainCutRadius = 64f * TimeTravelToWorldScale;
 
         public const float HazardCollisionDistance = 1.35f * GameScene.STAR_RADIUS;
     }

@@ -69,6 +69,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Blade visual root for Time Travel axe bodies.</summary>
         public Axe axe;
 
+        /// <summary>Optional bomb identifier from XML.</summary>
+        public string bombNumber;
+
+        /// <summary>Bomb visual root for Time Travel bomb bodies.</summary>
+        public Bomb bomb;
+
         /// <summary>Light radius when this context emits light.</summary>
         public float lightRadius;
 

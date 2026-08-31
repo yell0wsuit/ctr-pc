@@ -44,12 +44,20 @@ namespace CutTheRopeDX.GameMain
             // the attribute is not "true").
             bool breakable = GetBoolAttribute(xmlNode, "breakable", defaultValue: true);
             bool axed = HasTrueAttribute(xmlNode, "axed");
+            bool bombed = HasTrueAttribute(xmlNode, "bombed");
             string grabCandyNumber = xmlNode.Attribute("candyNumber")?.Value;
             string grabAxeNumber = AxeGrabBinding.ResolveAxeNumber(
                 grabCandyNumber,
                 xmlNode.Attribute("axeNumber")?.Value,
                 axed);
-            Grab grab = new();
+            string grabBombNumber = BombGrabBinding.ResolveBombNumber(
+                grabCandyNumber,
+                xmlNode.Attribute("bombNumber")?.Value,
+                bombed);
+            Grab grab = new()
+            {
+                BombsHighPriority = HasTrueAttribute(xmlNode, "bombsHighPriority"),
+            };
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;
@@ -116,8 +124,9 @@ namespace CutTheRopeDX.GameMain
             if (grab.Source is PreAttachedSource)
             {
                 ConstraintedPoint constraintedPoint;
-                CandyContext targetAxe = grabAxeNumber != null ? FindAxeByNumber(grabAxeNumber) : null;
-                CandyContext targetCandy = targetAxe == null && grabCandyNumber != null ? FindCandyByNumber(grabCandyNumber) : null;
+                CandyContext targetBomb = bombed && grabBombNumber != null ? FindBombByNumber(grabBombNumber) : null;
+                CandyContext targetAxe = targetBomb == null && grabAxeNumber != null ? FindAxeByNumber(grabAxeNumber) : null;
+                CandyContext targetCandy = targetBomb == null && targetAxe == null && grabCandyNumber != null ? FindCandyByNumber(grabCandyNumber) : null;
                 // Single-candy / split-candy behavior: the primary candy's split state, built
                 // from the same metadata pass, says which half a part="L"/"R" grab binds to.
                 SplitCandyState split = candies[0].Lifecycle.Split;
@@ -127,6 +136,10 @@ namespace CutTheRopeDX.GameMain
                 {
                     CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
                     constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? star;
+                }
+                else if (targetBomb != null)
+                {
+                    constraintedPoint = targetBomb.WholeBody.Point;
                 }
                 else if (targetAxe != null)
                 {
@@ -183,6 +196,19 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < candies.Count; i++)
             {
                 if (CandyMatch.Matches(candies[i].candyNumber, number))
+                {
+                    return candies[i];
+                }
+            }
+            return null;
+        }
+
+        /// <summary>Finds the bomb whose <c>bombNumber</c> matches, or null. See <see cref="CandyMatch"/>.</summary>
+        private CandyContext FindBombByNumber(string number)
+        {
+            for (int i = 0; i < candies.Count; i++)
+            {
+                if (CandyMatch.Matches(candies[i].bombNumber, number))
                 {
                     return candies[i];
                 }

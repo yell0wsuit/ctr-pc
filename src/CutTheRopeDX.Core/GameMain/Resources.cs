@@ -384,6 +384,8 @@ namespace CutTheRopeDX.GameMain
             public const string ObjConveyor = "obj_conveyor";
             public const string ObjRocket = "obj_rocket";
             public const string ObjAxe = "obj_axe";
+            public const string ObjBomb = "obj_bomb";
+            public const string FxExplosion = "fx_explosion";
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";
             public const string ObjRoboHand = "obj_robohand";
@@ -579,6 +581,7 @@ namespace CutTheRopeDX.GameMain
             public const string RopeBleak3 = "rope_bleak_3";
             public const string RopeBleak4 = "rope_bleak_4";
             public const string ChainCut = "chain_cut";
+            public const string Explosion = "explosion";
             public const string RopeGet = "rope_get";
             public const string Star1 = "star_1";
             public const string Star2 = "star_2";
