@@ -188,34 +188,5 @@ namespace CutTheRopeDX.Tests.Tutorials
         private sealed record LoadResult(
             IReadOnlyList<TutorialPrompt> Prompts,
             FakeVisualFactory Factory);
-
-        private sealed class FakeVisualFactory : ITutorialVisualFactory
-        {
-            internal List<XElement> CreatedNodes { get; } = [];
-
-            public BaseElement CreateText(XElement node, float x, float y, float width)
-            {
-                CreatedNodes.Add(node);
-                return new BaseElement { x = x, y = y, width = (int)width };
-            }
-
-            public BaseElement CreateSign(XElement node, int quad, float x, float y)
-            {
-                CreatedNodes.Add(node);
-                return new CTRGameObject { x = x, y = y };
-            }
-        }
-
-        private sealed class EmptyWorld : ITutorialWorld
-        {
-            public IReadOnlyList<CandyBody> ActiveBodies => [];
-
-            public IReadOnlyList<TutorialRocketState> Rockets => [];
-
-            public bool Holds(TutorialEvent tutorialEvent, CandyBody body)
-            {
-                return false;
-            }
-        }
     }
 }

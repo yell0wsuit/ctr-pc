@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="320" height="480" />
-        <gameDesign special="1" ropePhysicsSpeed="1.0" mapOffsetY="-20" />
+        <gameDesign ropePhysicsSpeed="1.0" mapOffsetY="-20" />
     </layer>
     <layer name="Objects">
         <target x="157" y="436" />

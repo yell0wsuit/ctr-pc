@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map width="320" height="480" gridSize="32" />
-        <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" useTimeTravelRocketPhysics="true" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" useTimeTravelRocketPhysics="true" />
     </layer>
     <layer name="Objects">
         <target x="160" y="86" targetType="basic" />
@@ -13,7 +13,7 @@
         <star x="141" y="443" timeout="-1" index="0" />
     </layer>
     <layer name="En">
-        <tutorialText x="199" y="315" locale="en" text="Tap the button to freeze time" width="120" special="0" />
-        <tutorialText x="17" y="139" locale="en" text="You can still cut the ropes while time is frozen" width="110" special="0" />
+        <tutorialText x="199" y="315" locale="en" text="Tap the button to freeze time" width="120" />
+        <tutorialText x="17" y="139" locale="en" text="You can still cut the ropes while time is frozen" width="110" />
     </layer>
 </map>

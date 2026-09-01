@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="320" height="480" />
-        <gameDesign ropePhysicsSpeed="1" special="1" twoParts="true" />
+        <gameDesign ropePhysicsSpeed="1" twoParts="true" />
     </layer>
     <layer name="Objects">
         <grab x="287" y="319" length="90" wheel="false" gun="false" radius="-1" moveLength="-1" moveVertical="false" moveOffset="0" spider="false" part="L" path="-240,0" hidePath="false" moveSpeed="40" />

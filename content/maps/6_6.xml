@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="640" height="480" />
-        <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="false" />
+        <gameDesign ropePhysicsSpeed="1.0" twoParts="false" />
     </layer>
     <layer name="Objects">
         <bouncer2 x="246" y="240" angle="0" size="2" path="0,0" moveSpeed="50" rotateSpeed="-100" />

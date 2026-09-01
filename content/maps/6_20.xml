@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="640" height="480" />
-        <gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" mapOffsetX="-70" />
+        <gameDesign ropePhysicsSpeed="1" twoParts="false" mapOffsetX="-70" />
     </layer>
     <layer name="Objects">
         <candy x="566" y="103" />
