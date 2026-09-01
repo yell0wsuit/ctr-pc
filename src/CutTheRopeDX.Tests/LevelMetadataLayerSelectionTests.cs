@@ -16,14 +16,12 @@ namespace CutTheRopeDX.Tests
                 <map>
                   <layer name="settings">
                     <map width="320" height="480" />
-                    <gameDesign special="1" />
                   </layer>
                   <layer name="Objects">
                     <candy x="10" y="20" />
                   </layer>
                   <layer name="settings">
                     <map width="999" height="999" />
-                    <gameDesign special="9" />
                     <candy x="90" y="90" />
                   </layer>
                   <layer name="Settings">
