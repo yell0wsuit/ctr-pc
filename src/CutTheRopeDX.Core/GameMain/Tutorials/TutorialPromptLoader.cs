@@ -256,6 +256,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 source,
                 "opacity");
             RGBAColor? color = TutorialValues.ParseColor(node.Attribute("color")?.Value, source, "color");
+            float angle = TutorialValues.ParseOptionalFiniteFloat(
+                node.Attribute("angle")?.Value,
+                0f,
+                source,
+                "angle");
             float sizeScale = TutorialValues.ParsePositiveFloat(
                 node.Attribute("size")?.Value,
                 1f,
@@ -295,7 +300,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 opacity,
                 color,
                 sizeScale,
-                lineHeightScale);
+                lineHeightScale,
+                angle);
         }
 
         private void RejectTextOnlyAttribute(XElement node, string attribute)
@@ -334,6 +340,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
             {
                 gameObject.ParseMover(node);
             }
+
+            // Applied after the mover so the strictly parsed angle wins over its lenient read, and
+            // so a text prompt rotates the same way a sign does.
+            visual.rotation = parsed.Angle;
 
             if (visual is Text text)
             {
@@ -421,6 +431,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float Opacity,
             RGBAColor? Color,
             float SizeScale,
-            float LineHeightScale);
+            float LineHeightScale,
+            float Angle);
     }
 }

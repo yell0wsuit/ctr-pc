@@ -232,6 +232,22 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     : throw Invalid(source, attribute, value);
         }
 
+        /// <summary>Parses an optional finite value that may be negative, such as an angle.</summary>
+        /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
+        /// <param name="defaultValue">Value returned when no attribute is authored.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed or default value.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the authored value is malformed or non-finite.</exception>
+        internal static float ParseOptionalFiniteFloat(
+            string value,
+            float defaultValue,
+            string source,
+            string attribute)
+        {
+            return value is null ? defaultValue : ParseFiniteFloat(value, source, attribute);
+        }
+
         /// <summary>Parses an opacity in the closed range 0 to 1.</summary>
         /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
         /// <param name="defaultValue">Opacity used when no attribute is authored.</param>

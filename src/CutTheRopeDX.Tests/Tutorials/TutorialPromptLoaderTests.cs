@@ -112,6 +112,33 @@ namespace CutTheRopeDX.Tests.Tutorials
             Assert.Contains(attribute, exception.Message);
         }
 
+        [Theory]
+        [InlineData("tutorialText")]
+        [InlineData("tutorial04")]
+        public void AnAuthoredAngleRotatesEitherKindOfPrompt(string element)
+        {
+            LoadResult result = Load($"<{element} locale=\"en\" angle=\"15\" />");
+
+            Assert.Equal(15f, Assert.Single(result.Prompts).Visual.rotation);
+        }
+
+        [Fact]
+        public void APromptWithNoAngleIsUnrotated()
+        {
+            LoadResult result = Load("<tutorialText locale=\"en\" />");
+
+            Assert.Equal(0f, Assert.Single(result.Prompts).Visual.rotation);
+        }
+
+        [Fact]
+        public void RejectsAMalformedAngle()
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load("<tutorialText locale=\"en\" angle=\"sideways\" />"));
+
+            Assert.Contains("angle", exception.Message);
+        }
+
         [Fact]
         public void ConvertsAreaFromMapCoordinatesUsingBaseAndMapOffsets()
         {
