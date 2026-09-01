@@ -4,6 +4,7 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.GameMain.Tutorials;
 using CutTheRopeDX.Tests.Interactions;
@@ -143,6 +144,59 @@ namespace CutTheRopeDX.Tests.Tutorials
             IReadOnlyList<TutorialPrompt> prompts = scene.TutorialPrompts();
             Assert.Equal(TutorialPromptState.Armed, prompts[0].State);
             Assert.Equal(TutorialPromptState.Playing, prompts[1].State);
+        }
+
+        [Fact]
+        public void APlainPathMovesTextTheSameWayItMovesASign()
+        {
+            // Identical XML has to travel identically whichever visual carries it, which means text
+            // needs the same CTRMover and its speed scale, not a mover of its own.
+            (float text, float sign) = TravelOfTextAndSign(
+                new XAttribute("path", "90,0"),
+                new XAttribute("moveSpeed", "100"));
+
+            Assert.NotEqual(0f, text);
+            Assert.Equal(sign, text, 3);
+        }
+
+        [Fact]
+        public void ATimelineAttributeSwitchesTextOffTheMover()
+        {
+            // With timeline motion the mover must not also drive the text, or the two compound and
+            // it overshoots the sign given the same XML.
+            (float text, float sign) = TravelOfTextAndSign(
+                new XAttribute("path", "90,0"),
+                new XAttribute("moveSpeed", "100"),
+                new XAttribute("ease", "in"));
+
+            Assert.NotEqual(0f, text);
+            Assert.Equal(sign, text, 3);
+        }
+
+        /// <summary>
+        /// Loads one text prompt and one sign prompt carrying the same authored travel, steps them
+        /// together, and reports how far each moved.
+        /// </summary>
+        /// <param name="motion">Attributes describing the travel.</param>
+        /// <returns>The distance the text and the sign each covered.</returns>
+        private static (float Text, float Sign) TravelOfTextAndSign(params XAttribute[] motion)
+        {
+            GameScene scene = Scenario.New()
+                .Candy(100, 100)
+                .OmNom(160, 300)
+                .TutorialText(40, 60, attributes: motion)
+                .TutorialImage(4, 40, 100, attributes: motion)
+                .Build();
+
+            IReadOnlyList<TutorialPrompt> prompts = scene.TutorialPrompts();
+            BaseElement text = prompts[0].Visual;
+            BaseElement sign = prompts[1].Visual;
+            float textStart = text.x;
+            float signStart = sign.x;
+
+            HeadlessGame.StepFrames(scene, 10);
+
+            return (text.x - textStart, sign.x - signStart);
         }
 
         private static void AssertSampledCandyState(

@@ -317,9 +317,21 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     parsed.Opacity);
 
             visual.color = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
-            if (!parsed.IsText && parsed.Motion is null && visual is GameObject gameObject)
+            // A path with no timeline attribute travels on the shared mover, whichever visual
+            // carries it, so identical XML moves text and signs identically.
+            if (parsed.Motion is null)
             {
-                gameObject.ParseMover(node);
+                switch (visual)
+                {
+                    case GameObject gameObject when !parsed.IsText:
+                        gameObject.ParseMover(node);
+                        break;
+                    case TutorialText movingText:
+                        movingText.ParseMover(node);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             // Applied after the mover so the strictly parsed angle wins over its lenient read, and

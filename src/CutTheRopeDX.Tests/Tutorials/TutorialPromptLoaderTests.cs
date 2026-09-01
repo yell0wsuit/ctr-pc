@@ -261,6 +261,15 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void APlainPathOnTextUsesTheMoverRatherThanTheTimeline()
+        {
+            LoadResult result = Load("<tutorialText locale=\"en\" path=\"90,0\" moveSpeed=\"100\" />");
+            TutorialPrompt prompt = Assert.Single(result.Prompts);
+
+            Assert.Null(prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_POSITION));
+        }
+
+        [Fact]
         public void AForeverRepeatLoopsOnePassInsteadOfDuplicatingIt()
         {
             LoadResult result = Load(

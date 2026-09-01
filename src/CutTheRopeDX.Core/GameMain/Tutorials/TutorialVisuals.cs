@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -26,6 +27,34 @@ namespace CutTheRopeDX.GameMain.Tutorials
             text.SetStringandWidth(LocalizationManager.GetString(textKey), width);
             return text;
         }
+
+        /// <summary>
+        /// Gives this prompt the same authored travel a sign gets. <see cref="Text"/> descends from
+        /// <see cref="BaseElement"/> rather than the game-object branch that owns movers, so the
+        /// mover is held here and stepped from <see cref="Update"/>.
+        /// </summary>
+        /// <param name="node">Element carrying <c>path</c>, <c>moveSpeed</c> and <c>rotateSpeed</c>.</param>
+        internal void ParseMover(XElement node)
+        {
+            mover = CTRMover.FromXml(node, Vect(x, y), rotation);
+        }
+
+        /// <inheritdoc />
+        public override void Update(float delta)
+        {
+            base.Update(delta);
+            if (mover is null)
+            {
+                return;
+            }
+
+            mover.Update(delta);
+            x = mover.pos.X;
+            y = mover.pos.Y;
+            rotation = mover.angle_;
+        }
+
+        private CTRMover mover;
     }
 
     /// <summary>Image visual for an XML-authored tutorial prompt.</summary>
