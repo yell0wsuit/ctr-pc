@@ -354,10 +354,11 @@ namespace CutTheRopeDX.GameMain
         /// or head/tail draw calls), while the alpha is always the current fade value.
         /// </summary>
         /// <param name="spriteCount">Number of chain sprites.</param>
+        /// <param name="pointSpriteCount">Number of leading point sprites, which shade their last corner.</param>
         /// <param name="alpha">Alpha to apply to each vertex.</param>
         /// <param name="seed">Per-bungee seed selecting which links are masked.</param>
         /// <returns>Four colors per sprite.</returns>
-        internal static RGBAColor[] BuildChainSpriteColors(int spriteCount, float alpha, int seed)
+        internal static RGBAColor[] BuildChainSpriteColors(int spriteCount, int pointSpriteCount, float alpha, int seed)
         {
             RGBAColor[] colors = new RGBAColor[spriteCount * 4];
             for (int i = 0; i < spriteCount; i++)
@@ -369,7 +370,12 @@ namespace CutTheRopeDX.GameMain
                 colors[baseIndex] = color;
                 colors[baseIndex + 1] = color;
                 colors[baseIndex + 2] = color;
-                colors[baseIndex + 3] = color;
+
+                // Point sprites leave their fourth corner opaque white, so a masked link shades
+                // across the quad instead of being flat; midpoint sprites tint all four corners.
+                RGBAColor lastCorner = i < pointSpriteCount ? RGBAColor.whiteRGBA : color;
+                lastCorner.AlphaChannel = alpha;
+                colors[baseIndex + 3] = lastCorner;
             }
             return colors;
         }
@@ -378,18 +384,15 @@ namespace CutTheRopeDX.GameMain
         /// Returns the per-link tint applied to the masked half of the chain sprites.
         /// </summary>
         /// <remarks>
-        /// In the original the unmasked half stays opaque white (<c>solidOpaqueRGBA</c>) and the rest
-        /// are tinted by <c>Bungee::getChainMaskColor</c>. That function's body did not survive
-        /// decompilation (it reduced to a bare <c>rand()</c> and took the fade alpha), so the tint is
-        /// reconstructed here as a random grey shade, which matches the "mask" semantics of varied
-        /// link shading. Adjust the range if the captured asset behavior differs.
+        /// The unmasked half of the links stays opaque white (<c>solidOpaqueRGBA</c>); the rest pick
+        /// one of the three shades <c>Bungee::getChainMaskColor</c> indexes with <c>rand() % 3</c>.
         /// </remarks>
-        /// <param name="hash">Stable per-link hash supplying the random grey value.</param>
-        /// <returns>An opaque grey color; alpha is overwritten by the caller.</returns>
+        /// <param name="hash">Stable per-link hash selecting the shade.</param>
+        /// <returns>An opaque shade; alpha is overwritten by the caller.</returns>
         private static RGBAColor GetChainMaskColor(uint hash)
         {
-            float grey = 0.5f + (((hash >> 8) & 0xFF) / 255f * 0.5f);
-            return RGBAColor.MakeRGBA(grey, grey, grey, 1f);
+            int index = (int)((hash >> 1) % (uint)ChainMaskRed.Length);
+            return RGBAColor.MakeRGBA(ChainMaskRed[index], ChainMaskGreen[index], ChainMaskBlue[index], 1f);
         }
 
         /// <summary>
@@ -481,16 +484,21 @@ namespace CutTheRopeDX.GameMain
 
             Quad3D[] vertices = new Quad3D[sprites.Length];
             Quad2D[] texCoordinates = new Quad2D[sprites.Length];
+            int pointSpriteCount = 0;
             for (int i = 0; i < sprites.Length; i++)
             {
                 ChainSprite sprite = sprites[i];
                 vertices[i] = sprite.VertexQuad;
                 texCoordinates[i] = texture.quads[sprite.QuadIndex];
+                if (sprite.QuadIndex == ChainPointQuad)
+                {
+                    pointSpriteCount++;
+                }
             }
 
             VertexPositionColorTexture[] vertexBuffer = new VertexPositionColorTexture[sprites.Length * 4];
             short[] indices = BuildQuadIndices(sprites.Length);
-            RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, GetCutFadeAlpha(b), b.ChainColorSeed);
+            RGBAColor[] colors = BuildChainSpriteColors(sprites.Length, pointSpriteCount, GetCutFadeAlpha(b), b.ChainColorSeed);
             Renderer.FillTexturedColoredVertices(vertices, texCoordinates, colors, vertexBuffer, sprites.Length);
 
             Renderer.SetColor(RGBAColor.whiteRGBA.ToColor());
@@ -1186,6 +1194,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether this chain can only be cut by an axe blade, not a finger trace or razor.</summary>
         public bool cutOnlyByAxe;
+
+        /// <summary>Red channels of the three shades a masked chain link can take.</summary>
+        private static readonly float[] ChainMaskRed = [0.78f, 0.85f, 0.88f];
+
+        /// <summary>Green channels of the three shades a masked chain link can take.</summary>
+        private static readonly float[] ChainMaskGreen = [0.71f, 0.83f, 0.85f];
+
+        /// <summary>Blue channels of the three shades a masked chain link can take.</summary>
+        private static readonly float[] ChainMaskBlue = [0.795f, 0.9f, 0.91f];
 
         /// <summary>Texture quad used at each sampled chain point.</summary>
         private const int ChainPointQuad = 0;

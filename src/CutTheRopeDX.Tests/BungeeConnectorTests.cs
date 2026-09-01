@@ -225,16 +225,32 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void BuildChainSpriteColorsAppliesFadeAlphaAndPerLinkMasking()
         {
-            RGBAColor[] colors = Bungee.BuildChainSpriteColors(2, 0.5f, seed: 12345);
+            // Two point sprites followed by two midpoint sprites.
+            RGBAColor[] colors = Bungee.BuildChainSpriteColors(4, 2, 0.5f, seed: 12345);
 
-            Assert.Equal(8, colors.Length);
+            Assert.Equal(16, colors.Length);
 
-            // Alpha is always the fade value, and each link's four vertices share one color.
+            // Alpha is always the fade value.
             Assert.All(colors, color => Assert.Equal(0.5f, color.AlphaChannel));
-            for (int link = 0; link < 2; link++)
+
+            (float Red, float Green, float Blue)[] maskShades =
+            [
+                (0.78f, 0.71f, 0.795f),
+                (0.85f, 0.83f, 0.9f),
+                (0.88f, 0.85f, 0.91f),
+                (1f, 1f, 1f)
+            ];
+
+            for (int link = 0; link < 4; link++)
             {
                 RGBAColor first = colors[link * 4];
-                for (int v = 1; v < 4; v++)
+
+                // Every link is either opaque white or one of the three chain mask shades.
+                Assert.Contains(maskShades, shade =>
+                    shade.Red == first.RedColor && shade.Green == first.GreenColor && shade.Blue == first.BlueColor);
+
+                // The first three corners always share the link color.
+                for (int v = 1; v < 3; v++)
                 {
                     RGBAColor vertex = colors[(link * 4) + v];
                     Assert.Equal(first.RedColor, vertex.RedColor);
@@ -242,18 +258,20 @@ namespace CutTheRopeDX.Tests
                     Assert.Equal(first.BlueColor, vertex.BlueColor);
                 }
 
-                // Each link is either opaque white or a grey mask shade (r == g == b, <= 1).
-                Assert.Equal(first.RedColor, first.GreenColor);
-                Assert.Equal(first.GreenColor, first.BlueColor);
-                Assert.InRange(first.RedColor, 0f, 1f);
+                // Point sprites shade toward white at the fourth corner; midpoints stay flat.
+                RGBAColor lastCorner = colors[(link * 4) + 3];
+                RGBAColor expectedLast = link < 2 ? RGBAColor.whiteRGBA : first;
+                Assert.Equal(expectedLast.RedColor, lastCorner.RedColor);
+                Assert.Equal(expectedLast.GreenColor, lastCorner.GreenColor);
+                Assert.Equal(expectedLast.BlueColor, lastCorner.BlueColor);
             }
         }
 
         [Fact]
         public void BuildChainSpriteColorsIsStableForSameSeed()
         {
-            RGBAColor[] first = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);
-            RGBAColor[] second = Bungee.BuildChainSpriteColors(6, 1f, seed: 999);
+            RGBAColor[] first = Bungee.BuildChainSpriteColors(6, 3, 1f, seed: 999);
+            RGBAColor[] second = Bungee.BuildChainSpriteColors(6, 3, 1f, seed: 999);
 
             for (int i = 0; i < first.Length; i++)
             {
