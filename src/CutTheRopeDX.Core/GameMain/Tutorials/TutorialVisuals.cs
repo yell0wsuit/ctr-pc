@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
