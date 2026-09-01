@@ -173,6 +173,25 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// </summary>
         internal const float ForeverHold = -1f;
 
+        /// <summary>Authored pass count meaning "repeat until the level ends".</summary>
+        internal const int ForeverRepeat = -1;
+
+        /// <summary>Parses a pass count: a positive integer, or <see cref="ForeverRepeat"/>.</summary>
+        /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed or default pass count.</returns>
+        /// <exception cref="InvalidDataException">Thrown for zero, a negative other than -1, or a malformed value.</exception>
+        internal static int ParseRepeat(string value, string source, string attribute)
+        {
+            return value is null
+                ? 1
+                : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed)
+                    && (parsed > 0 || parsed == ForeverRepeat)
+                        ? parsed
+                        : throw Invalid(source, attribute, value);
+        }
+
         /// <summary>
         /// Parses a prompt's hold: any finite, non-negative number of seconds, or
         /// <see cref="ForeverHold"/> for a prompt that never fades out.

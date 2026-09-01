@@ -19,10 +19,10 @@
         <tutorial01 x="161" y="119" locale="en" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="213" y="119" locale="en" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="265" y="119" locale="en" moveSpeed="100" rotateSpeed="100" duration="10" />
-        <tutorial10 x="93" y="149" locale="en" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="93" y="149" locale="en" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
     </layer>
     <layer name="Ru">
-        <tutorial10 x="93" y="156" locale="ru" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="93" y="156" locale="ru" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="ru" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="ru" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="ru" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -33,7 +33,7 @@
         <tutorialText x="196" y="314" locale="ru" text="TUTORIAL_LVL_1_1_02" width="80" duration="10" />
     </layer>
     <layer name="Fr">
-        <tutorial10 x="92" y="149" locale="fr" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="92" y="149" locale="fr" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="124" locale="fr" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="124" locale="fr" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="124" locale="fr" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -44,7 +44,7 @@
         <tutorialText x="196" y="311" locale="fr" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="De">
-        <tutorial10 x="93" y="156" locale="de" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="93" y="156" locale="de" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="129" locale="de" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="129" locale="de" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="129" locale="de" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -55,7 +55,7 @@
         <tutorialText x="200" y="317" locale="de" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="It">
-        <tutorial10 x="61" y="187" locale="it" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="it" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="it" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="it" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="it" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -66,7 +66,7 @@
         <tutorialText x="204" y="314" locale="it" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Ja">
-        <tutorial10 x="61" y="187" locale="ja" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="ja" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="ja" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="ja" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="ja" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -77,7 +77,7 @@
         <tutorialText x="196" y="314" locale="ja" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Es">
-        <tutorial10 x="61" y="187" locale="es" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="es" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="es" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="es" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="es" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -88,7 +88,7 @@
         <tutorialText x="203" y="296" locale="es" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Zh">
-        <tutorial10 x="61" y="187" locale="zh" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="zh" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="zh" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="zh" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="zh" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -99,7 +99,7 @@
         <tutorialText x="196" y="323" locale="zh" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Ko">
-        <tutorial10 x="61" y="187" locale="ko" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="ko" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="ko" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="ko" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="ko" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -110,7 +110,7 @@
         <tutorialText x="196" y="314" locale="ko" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Br">
-        <tutorial10 x="61" y="187" locale="pt_br" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="pt_br" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="pt_br" moveSpeed="100" rotateSpeed="100" duration="10" />
@@ -121,7 +121,7 @@
         <tutorialText x="196" y="314" locale="pt_br" text="TUTORIAL_LVL_1_1_02" width="100" duration="10" />
     </layer>
     <layer name="Nl">
-        <tutorial10 x="61" y="187" locale="nl" moveSpeed="100" rotateSpeed="100" anim="swipe" duration="10" />
+        <tutorial10 x="61" y="187" locale="nl" angle="10" path="230,0,440,0" moveSpeed="440" ease="in,out" moveDelay="1.5" repeat="2" fadeIn="0.5" duration="2.1" fadeOut="0.5" />
         <tutorial01 x="109" y="126" locale="nl" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="57" y="126" locale="nl" moveSpeed="100" rotateSpeed="100" duration="10" />
         <tutorial01 x="161" y="126" locale="nl" moveSpeed="100" rotateSpeed="100" duration="10" />

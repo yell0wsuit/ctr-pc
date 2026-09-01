@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -206,29 +208,134 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
-        public void SwipeUsesTimelineOneWithTwoLegacyPassesAndNoEnvelopePlayback()
+        public void AuthoredMotionBuildsEasedLegsAfterItsDelay()
         {
-            LoadResult result = Load("<tutorial04 locale=\"en\" x=\"100\" y=\"50\" anim=\"swipe\" />");
+            // 1_1's swipe, authored: two legs of 230 then 210 world units at 440/s, so travel
+            // splits 0.523 / 0.477 and finishes 0.6s before the 3.1s pass ends.
+            LoadResult result = Load(
+                "<tutorial04 locale=\"en\" x=\"100\" y=\"50\" path=\"230,0,440,0\" moveSpeed=\"440\""
+                + " ease=\"in,out\" moveDelay=\"1.5\" repeat=\"2\""
+                + " fadeIn=\"0.5\" duration=\"2.1\" fadeOut=\"0.5\" />");
             TutorialPrompt prompt = Assert.Single(result.Prompts);
-            Timeline swipe = prompt.Visual.GetTimeline(1);
-            Track colors = swipe.GetTrack(Track.TrackType.TRACK_COLOR);
-            Track positions = swipe.GetTrack(Track.TrackType.TRACK_POSITION);
+            Timeline timeline = prompt.Visual.GetTimeline(0);
+            Track positions = timeline.GetTrack(Track.TrackType.TRACK_POSITION);
+            Track colors = timeline.GetTrack(Track.TrackType.TRACK_COLOR);
 
-            Assert.Equal(TutorialPromptState.Playing, prompt.State);
-            Assert.Same(swipe, prompt.Visual.GetCurrentTimeline());
-            Assert.Equal(1, prompt.TimelineIndex);
-            Assert.Equal(10f, prompt.Visual.rotation);
-            Assert.Equal(10, colors.keyFramesCount);
-            Assert.Equal(12, positions.keyFramesCount);
-            Assert.Equal(530f, positions.keyFrames[3].value.pos.x);
-            Assert.Equal(740f, positions.keyFrames[4].value.pos.x);
-            Assert.Equal(530f, positions.keyFrames[9].value.pos.x);
-            Assert.Equal(740f, positions.keyFrames[10].value.pos.x);
-            Assert.Equal(Timeline.TimelineState.TIMELINE_STOPPED, prompt.Visual.GetTimeline(0).state);
+            Assert.Equal(0, prompt.TimelineIndex);
+            Assert.Equal(8, colors.keyFramesCount);
+            Assert.Equal(10, positions.keyFramesCount);
+
+            float x = prompt.Visual.x;
+            Assert.Equal([x, x, x + 230f, x + 440f, x + 440f], PositionsOfFirstPass(positions));
+            Assert.Equal(
+                [0f, 1.5f, 230f / 440f, 210f / 440f, 0.6f],
+                TimesOfFirstPass(positions),
+                new FloatComparer());
+            Assert.Equal(
+                KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN,
+                positions.keyFrames[2].transitionType);
+            Assert.Equal(
+                KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT,
+                positions.keyFrames[3].transitionType);
+        }
+
+        [Fact]
+        public void AuthoredMotionReplacesTheMoverRatherThanCompoundingWithIt()
+        {
+            // Both driving one sign is what made 1_1's swipe race away from its start position.
+            LoadResult result = Load(
+                "<tutorial04 locale=\"en\" path=\"230,0\" moveSpeed=\"440\" ease=\"in\" />");
+            GameObject sign = Assert.IsAssignableFrom<GameObject>(Assert.Single(result.Prompts).Visual);
+
+            Assert.Null(sign.mover);
+        }
+
+        [Fact]
+        public void APathWithoutTimelineAttributesStaysOnTheMover()
+        {
+            LoadResult result = Load("<tutorial04 locale=\"en\" path=\"-95,49,\" moveSpeed=\"100\" />");
+            GameObject sign = Assert.IsAssignableFrom<GameObject>(Assert.Single(result.Prompts).Visual);
+
+            Assert.NotNull(sign.mover);
+            Assert.Null(sign.GetTimeline(0).GetTrack(Track.TrackType.TRACK_POSITION));
+        }
+
+        [Fact]
+        public void AForeverRepeatLoopsOnePassInsteadOfDuplicatingIt()
+        {
+            LoadResult result = Load(
+                "<tutorial04 locale=\"en\" path=\"-95,49,0,0\" moveSpeed=\"100\" repeat=\"-1\" />");
+            Timeline timeline = Assert.Single(result.Prompts).Visual.GetTimeline(0);
+
+            Assert.Equal(4, timeline.GetTrack(Track.TrackType.TRACK_COLOR).keyFramesCount);
+            Assert.Equal(4, timeline.GetTrack(Track.TrackType.TRACK_POSITION).keyFramesCount);
+
+            // One pass is 1 + 5 + 0.5 = 6.5s of envelope; a looping timeline is still running well
+            // past that, where a single-pass one would have stopped.
+            BaseElement visual = Assert.Single(result.Prompts).Visual;
+            visual.PlayTimeline(0);
+            visual.Update(20f);
+
+            Assert.Equal(Timeline.TimelineState.TIMELINE_PLAYING, timeline.state);
         }
 
         [Theory]
-        [InlineData("anim", "wave")]
+        [InlineData("repeat", "0")]
+        [InlineData("repeat", "-2")]
+        [InlineData("ease", "sideways")]
+        [InlineData("moveSpeed", "0")]
+        [InlineData("moveDelay", "-1")]
+        public void RejectsInvalidMotion(string attribute, string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load($"<tutorial04 locale=\"en\" path=\"10,0\" {attribute}=\"{value}\" />"));
+
+            Assert.Contains(attribute, exception.Message);
+        }
+
+        [Fact]
+        public void RejectsTravelThatOutlastsItsPass()
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load(
+                    "<tutorial04 locale=\"en\" path=\"1000,0\" moveSpeed=\"10\" ease=\"none\" duration=\"1\" />"));
+
+            Assert.Contains("path", exception.Message);
+        }
+
+        [Fact]
+        public void RejectsAStaleSwipePresetRatherThanDroppingItsAnimation()
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load("<tutorial04 locale=\"en\" anim=\"swipe\" />"));
+
+            Assert.Contains("anim", exception.Message);
+        }
+
+        private static float[] PositionsOfFirstPass(Track positions)
+        {
+            return [.. positions.keyFrames.Take(5).Select(keyFrame => keyFrame.value.pos.x)];
+        }
+
+        private static float[] TimesOfFirstPass(Track positions)
+        {
+            return [.. positions.keyFrames.Take(5).Select(keyFrame => keyFrame.timeOffset)];
+        }
+
+        private sealed class FloatComparer : IEqualityComparer<float>
+        {
+            public bool Equals(float left, float right)
+            {
+                return MathF.Abs(left - right) < 0.001f;
+            }
+
+            public int GetHashCode(float value)
+            {
+                return value.GetHashCode();
+            }
+        }
+
+        [Theory]
         [InlineData("delay", "NaN")]
         [InlineData("duration", "-2")]
         public void RejectsInvalidPresentationOrTiming(string attribute, string value)

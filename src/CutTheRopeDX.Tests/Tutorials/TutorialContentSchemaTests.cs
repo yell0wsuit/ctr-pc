@@ -79,15 +79,52 @@ namespace CutTheRopeDX.Tests.Tutorials
             }
         }
 
-        /// <summary>1_1 keeps one swipe per locale and the ten-second hold the loader hardcoded.</summary>
+        /// <summary>1_1 authors one travelling prompt per locale; the rest hold for ten seconds.</summary>
         [Fact]
-        public void SwipeLevelKeepsOneSwipePerLocaleAndItsAuthoredHold()
+        public void SwipeLevelAuthorsOneTravellingPromptPerLocale()
         {
             foreach (IGrouping<string, XElement> locale in NodesByLocale("1_1.xml"))
             {
-                _ = Assert.Single(locale, node => node.Attribute("anim")?.Value == "swipe");
-                Assert.All(locale, node => Assert.Equal("10", node.Attribute("duration")?.Value));
+                XElement swipe = Assert.Single(locale, node => node.Attribute("path") is not null);
+
+                Assert.Equal("230,0,440,0", swipe.Attribute("path")?.Value);
+                Assert.Equal("440", swipe.Attribute("moveSpeed")?.Value);
+                Assert.Equal("in,out", swipe.Attribute("ease")?.Value);
+                Assert.Equal("1.5", swipe.Attribute("moveDelay")?.Value);
+                Assert.Equal("2", swipe.Attribute("repeat")?.Value);
+                Assert.Equal("10", swipe.Attribute("angle")?.Value);
+                Assert.All(
+                    locale.Where(node => node != swipe),
+                    node => Assert.Equal("10", node.Attribute("duration")?.Value));
             }
+        }
+
+        /// <summary>17_1's travelling prompt stays on the mover, which loops it independently.</summary>
+        [Fact]
+        public void MoverLevelKeepsItsTravellingPromptOnTheMover()
+        {
+            foreach (IGrouping<string, XElement> locale in NodesByLocale("17_1.xml"))
+            {
+                XElement moving = Assert.Single(locale, node => node.Attribute("path") is not null);
+
+                // No ease/moveDelay/repeat, so this one still travels on the shared mover.
+                Assert.Equal("-95,49,", moving.Attribute("path")?.Value);
+                Assert.Null(moving.Attribute("repeat"));
+            }
+        }
+
+        /// <summary>No map keeps the retired swipe preset.</summary>
+        [Fact]
+        public void NoMapKeepsTheRetiredAnimPreset()
+        {
+            List<string> offenders =
+            [
+                .. from path in MapPaths()
+                   where XElement.Load(path).DescendantsAndSelf().Any(node => node.Attribute("anim") != null)
+                   select Path.GetFileName(path)
+            ];
+
+            Assert.Empty(offenders);
         }
 
         /// <summary>14_1 triggers its second prompt on lantern capture in every locale.</summary>

@@ -65,19 +65,23 @@ namespace CutTheRopeDX.Tests.Tutorials
                 prompt => Assert.Equal(TutorialPromptState.Playing, prompt.State));
         }
 
-        /// <summary>1_1: the swipe runs its own preset while the rest hold for the authored ten seconds.</summary>
+        /// <summary>1_1: the travelling prompt plays its authored legs; the rest hold ten seconds.</summary>
         [Fact]
-        public void SwipeLevelStartsItsSwipeAtOnceAndKeepsTheTenSecondEnvelope()
+        public void SwipeLevelPlaysItsAuthoredTravelAndKeepsTheTenSecondEnvelope()
         {
             GameScene scene = Load(SwipeLevelPack, SwipeLevelIndex);
             List<TutorialPrompt> prompts = [.. scene.TutorialPrompts()];
-            TutorialPrompt swipe = Assert.Single(prompts, prompt => prompt.TimelineIndex == 1);
+            TutorialPrompt swipe = Assert.Single(
+                prompts,
+                prompt => prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_POSITION) is not null);
 
             Assert.All(prompts, prompt => Assert.Equal(TutorialPromptState.Playing, prompt.State));
             Assert.Equal(10f, swipe.Visual.rotation);
-            Assert.Equal(
-                Timeline.TimelineState.TIMELINE_PLAYING,
-                swipe.Visual.GetTimeline(1).state);
+
+            Track positions = swipe.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_POSITION);
+            Assert.Equal(10, positions.keyFramesCount);
+            Assert.Equal(swipe.Visual.x + 230f, positions.keyFrames[2].value.pos.x, 3);
+            Assert.Equal(swipe.Visual.x + 440f, positions.keyFrames[3].value.pos.x, 3);
 
             foreach (TutorialPrompt prompt in prompts.Where(prompt => prompt != swipe))
             {
@@ -93,7 +97,8 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void SwipeLevelPromptsFadeUpOverTheirAuthoredFadeIn()
         {
             GameScene scene = Load(SwipeLevelPack, SwipeLevelIndex);
-            TutorialPrompt prompt = scene.TutorialPrompts().First(candidate => candidate.TimelineIndex == 0);
+            TutorialPrompt prompt = scene.TutorialPrompts().First(
+                candidate => candidate.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_POSITION) is null);
 
             Assert.Equal(0f, prompt.Alpha());
             HeadlessGame.StepFrames(scene, 30);

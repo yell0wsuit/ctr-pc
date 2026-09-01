@@ -110,112 +110,59 @@ namespace CutTheRopeDX.GameMain.Tutorials
             return loadedPrompts;
         }
 
-        /// <summary>Builds the shared four-keyframe tutorial fade envelope at timeline zero.</summary>
+        /// <summary>
+        /// Builds a prompt's whole timeline at index zero: a color envelope, plus position
+        /// keyframes when motion is authored, repeated for as many passes as the prompt asks for.
+        /// </summary>
         /// <param name="visual">Visual that owns the timeline.</param>
+        /// <param name="motion">Authored motion, or <see langword="null"/> for a stationary prompt.</param>
         /// <param name="fadeIn">Fade-in duration in seconds.</param>
-        /// <param name="hold">Full-opacity duration in seconds.</param>
+        /// <param name="hold">Full-opacity duration, or <see cref="TutorialValues.ForeverHold"/>.</param>
         /// <param name="fadeOut">Fade-out duration in seconds.</param>
         /// <param name="peakColor">Color and opacity held at full visibility, or null for solid white.</param>
+        /// <param name="repeat">Pass count, or <see cref="TutorialValues.ForeverRepeat"/> to loop.</param>
         /// <returns>The constructed timeline.</returns>
         internal static Timeline BuildEnvelope(
             BaseElement visual,
-            float fadeIn,
-            float hold,
-            float fadeOut,
-            RGBAColor? peakColor = null)
+            TutorialMotion motion = null,
+            float fadeIn = 1f,
+            float hold = 5f,
+            float fadeOut = 0.5f,
+            RGBAColor? peakColor = null,
+            int repeat = 1)
         {
             RGBAColor peak = peakColor ?? RGBAColor.solidOpaqueRGBA;
             RGBAColor clear = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
-            // A forever hold stops at full opacity: it fades up and keeps no fade-out keyframe, so
-            // the last frame the timeline reaches is the one it stays on.
             bool holdsForever = hold == TutorialValues.ForeverHold;
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(holdsForever ? 2 : 4);
-            timeline.AddKeyFrame(KeyFrame.MakeColor(
-                clear,
-                KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                0f));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(
-                peak,
-                KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                fadeIn));
-            if (!holdsForever)
+            bool loops = repeat == TutorialValues.ForeverRepeat;
+            int passes = loops ? 1 : repeat;
+
+            // The cap is per track, not per timeline, so it is the busier of the two.
+            int colorFrames = holdsForever ? 2 : 4;
+            int motionFrames = motion?.KeyFrameCount ?? 0;
+            Timeline timeline = new Timeline()
+                .InitWithMaxKeyFramesOnTrack(Math.Max(colorFrames, motionFrames) * passes);
+
+            for (int pass = 0; pass < passes; pass++)
             {
                 timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    peak,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    hold));
+                    clear, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    clear,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    fadeOut));
+                    peak, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeIn));
+                if (!holdsForever)
+                {
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(
+                        peak, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, hold));
+                    timeline.AddKeyFrame(KeyFrame.MakeColor(
+                        clear, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, fadeOut));
+                }
+
+                motion?.AddKeyFrames(timeline, visual);
             }
 
+            timeline.SetTimelineLoopType(
+                loops ? Timeline.LoopType.TIMELINE_REPLAY : Timeline.LoopType.TIMELINE_NO_LOOP);
             visual.AddTimelinewithID(timeline, 0);
-            return timeline;
-        }
-
-        /// <summary>Builds the two-pass legacy swipe preset at timeline one.</summary>
-        /// <param name="visual">Visual that owns the swipe timeline.</param>
-        /// <returns>The constructed swipe timeline.</returns>
-        internal static Timeline BuildSwipe(BaseElement visual)
-        {
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(12);
-            for (int pass = 0; pass < 2; pass++)
-            {
-                timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.transparentRGBA,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE,
-                    0f));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.solidOpaqueRGBA,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    0.5f));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.solidOpaqueRGBA,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    1f));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.solidOpaqueRGBA,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    1.1f));
-                timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.transparentRGBA,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    0.5f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE,
-                    0f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    0.5f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    1f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x + 230f,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN,
-                    0.5f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x + 440f,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT,
-                    0.5f));
-                timeline.AddKeyFrame(KeyFrame.MakePos(
-                    visual.x + 440f,
-                    visual.y,
-                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                    0.6f));
-            }
-            timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
-            visual.AddTimelinewithID(timeline, 1);
-            visual.rotation = 10f;
             return timeline;
         }
 
@@ -278,12 +225,45 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 RejectTextOnlyAttribute(node, "lineHeight");
             }
 
+            // Motion used to hide behind anim="swipe"; it is authored now, so a stale anim has to
+            // fail rather than silently drop the animation it used to name.
             string animationValue = node.Attribute("anim")?.Value;
-            string animation = animationValue switch
+            if (animationValue is not null)
             {
-                null or "swipe" => animationValue,
-                _ => throw TutorialValues.Invalid(source, "anim", animationValue),
-            };
+                throw TutorialValues.Invalid(source, "anim", animationValue);
+            }
+
+            int repeat = TutorialValues.ParseRepeat(node.Attribute("repeat")?.Value, source, "repeat");
+            if (hold == TutorialValues.ForeverHold && repeat != 1)
+            {
+                throw TutorialValues.Invalid(source, "repeat", node.Attribute("repeat")?.Value);
+            }
+
+            float moveDelay = TutorialValues.ParseNonNegativeFloat(
+                node.Attribute("moveDelay")?.Value,
+                0f,
+                source,
+                "moveDelay");
+            float moveSpeed = TutorialValues.ParsePositiveFloat(
+                node.Attribute("moveSpeed")?.Value,
+                100f,
+                source,
+                "moveSpeed");
+            // A path on its own still runs through the shared Mover, which loops it forever at a
+            // constant speed and independently of the fade - what 17_1 has always done. Timeline
+            // motion takes over only once an attribute the mover cannot express is authored, so the
+            // two never drive the same prompt at once.
+            bool timelineMotion = node.Attribute("path") is not null
+                && (node.Attribute("ease") is not null
+                    || node.Attribute("moveDelay") is not null
+                    || node.Attribute("repeat") is not null);
+            TutorialMotion motion = TutorialMotion.Parse(
+                timelineMotion ? node.Attribute("path")?.Value : null,
+                moveSpeed,
+                node.Attribute("ease")?.Value,
+                moveDelay,
+                hold == TutorialValues.ForeverHold ? float.MaxValue : fadeIn + hold + fadeOut,
+                source);
 
             return new ParsedTutorial(
                 node,
@@ -296,7 +276,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 fadeIn,
                 hold,
                 fadeOut,
-                animation,
+                motion,
+                repeat,
                 opacity,
                 color,
                 sizeScale,
@@ -336,7 +317,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     parsed.Opacity);
 
             visual.color = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
-            if (!parsed.IsText && visual is GameObject gameObject)
+            if (!parsed.IsText && parsed.Motion is null && visual is GameObject gameObject)
             {
                 gameObject.ParseMover(node);
             }
@@ -359,13 +340,14 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 }
             }
 
-            _ = BuildEnvelope(visual, parsed.FadeIn, parsed.Hold, parsed.FadeOut, peak);
-            int timelineIndex = 0;
-            if (parsed.Animation == "swipe")
-            {
-                _ = BuildSwipe(visual);
-                timelineIndex = 1;
-            }
+            _ = BuildEnvelope(
+                visual,
+                parsed.Motion,
+                parsed.FadeIn,
+                parsed.Hold,
+                parsed.FadeOut,
+                peak,
+                parsed.Repeat);
 
             TutorialTrigger worldTrigger = parsed.Trigger with
             {
@@ -380,7 +362,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 parsed.Hold,
                 parsed.FadeOut,
                 parsed.IsText,
-                timelineIndex,
+                0,
                 parsed.Opacity,
                 parsed.Color,
                 parsed.SizeScale,
@@ -427,7 +409,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float FadeIn,
             float Hold,
             float FadeOut,
-            string Animation,
+            TutorialMotion Motion,
+            int Repeat,
             float Opacity,
             RGBAColor? Color,
             float SizeScale,
