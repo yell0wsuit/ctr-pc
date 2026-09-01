@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -510,6 +511,7 @@ namespace CutTheRopeDX.GameMain
                     if (collectingBody != null)
                     {
                         collectingBody.BlinkAnimation?.PlayTimeline(1);
+                        tutorialDirector.Fire(TutorialEvent.StarCollected, collectingBody);
                         starsCollected++;
                         // Update RPC with new star count
                         PlatformServices.RichPresence?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
@@ -595,6 +597,7 @@ namespace CutTheRopeDX.GameMain
                     bubble3.RemoveChildWithID(0);
                     conveyors.Remove(bubble3);
                     captured = true;
+                    tutorialDirector.Fire(TutorialEvent.BubbleCapture, body);
                     break;
                 }
 
@@ -741,6 +744,7 @@ namespace CutTheRopeDX.GameMain
                         pendingLanternCapture,
                         0.05f);
 
+                    tutorialDirector.Fire(TutorialEvent.LanternCatch, body);
                     break;
                 }
             }
@@ -809,6 +813,10 @@ namespace CutTheRopeDX.GameMain
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), candyPresent: true, miceManager.IsActiveMouseInRange(body.Point)))
                         {
                             miceManager.GrabWithActiveMouse(body.Point, body.Visual);
+                            if (miceManager.CarriesCandy(body.Point))
+                            {
+                                tutorialDirector.Fire(TutorialEvent.MouseGrab, body);
+                            }
                             break;
                         }
                     }
@@ -876,6 +884,7 @@ namespace CutTheRopeDX.GameMain
                                 break;
                             }
 
+                            tutorialDirector.Fire(TutorialEvent.SockCatch, body);
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(body.Point);
@@ -1222,6 +1231,9 @@ namespace CutTheRopeDX.GameMain
                             continue;
                         }
 
+                        tutorialDirector.Fire(
+                            spike.electro ? TutorialEvent.ElectroHit : TutorialEvent.SpikeHit,
+                            body);
                         BreakCandyBody(body);
                         return;
                     }
@@ -1258,6 +1270,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             DetachHandsForPoint(body.Point);
                         }
+                        tutorialDirector.Fire(TutorialEvent.BouncerHit, body);
                         HandleBouncePtDelta(bouncer, body.Point, delta);
                     }
                 }
@@ -1496,6 +1509,7 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
 
+                            tutorialDirector.Fire(TutorialEvent.CandyEaten, body);
                             body.Visual.visible = false;
                             _ = t.Feeding.TryBeginChewing();
                             t.controller?.PlayChewing();
@@ -1897,7 +1911,10 @@ namespace CutTheRopeDX.GameMain
                     hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.GrabCandy();
                     selectedHandIndex = hands.IndexOf(hand);
-                    _ = ctx.Lifecycle.Attachments.CaptureByHand(hand);
+                    if (ctx.Lifecycle.Attachments.CaptureByHand(hand))
+                    {
+                        tutorialDirector.Fire(TutorialEvent.HandGrab, grabbedBody);
+                    }
 
                     // Take this candy off the ants (if it was riding them). Other candies keep
                     // their conveyor; ants won't re-grab this one while the hand holds it.

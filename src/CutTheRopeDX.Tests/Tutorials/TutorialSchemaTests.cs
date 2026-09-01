@@ -162,7 +162,6 @@ namespace CutTheRopeDX.Tests.Tutorials
                 { "ropeCut", TutorialEvent.RopeCut, TutorialEventKind.Edge, TutorialObservation.Push },
                 { "starCollected", TutorialEvent.StarCollected, TutorialEventKind.Edge, TutorialObservation.Push },
                 { "candyEaten", TutorialEvent.CandyEaten, TutorialEventKind.Edge, TutorialObservation.Push },
-                { "gapEnter", TutorialEvent.GapEnter, TutorialEventKind.Edge, TutorialObservation.Push },
                 { "pipeEnter", TutorialEvent.PipeEnter, TutorialEventKind.Edge, TutorialObservation.Push },
                 { "spikeHit", TutorialEvent.SpikeHit, TutorialEventKind.Edge, TutorialObservation.Push },
                 { "electroHit", TutorialEvent.ElectroHit, TutorialEventKind.Edge, TutorialObservation.Push },

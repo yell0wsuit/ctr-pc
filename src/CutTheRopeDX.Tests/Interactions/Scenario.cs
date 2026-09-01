@@ -267,6 +267,15 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(Node("bubble", x, y));
         }
 
+        /// <summary>Adds a collectable star.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Star(int x, int y)
+        {
+            return Add(Node("star", x, y));
+        }
+
         /// <summary>Adds a Time Travel axe body.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>

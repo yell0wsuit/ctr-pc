@@ -72,6 +72,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Bubble>>(scene, "bubbles");
         }
 
+        /// <summary>All uncollected stars loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The star list.</returns>
+        public static List<Star> Stars(this GameScene scene)
+        {
+            return Field<List<Star>>(scene, "stars");
+        }
+
         /// <summary>All time-freeze buttons loaded into the scene.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The switcher list.</returns>

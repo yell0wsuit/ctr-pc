@@ -688,6 +688,7 @@ namespace CutTheRopeDX.GameMain
                 bubble.capturedByBulb = false;
             }
 
+            tutorialDirector.Fire(TutorialEvent.BubblePop, body);
             body.Bubble = null;
             body.BubbleHasGhost = false;
             _ = (body.BubbleAnimation?.visible = false);

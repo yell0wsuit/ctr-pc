@@ -28,8 +28,6 @@ namespace CutTheRopeDX.GameMain.Tutorials
         StarCollected,
         /// <summary>A target has eaten a candy.</summary>
         CandyEaten,
-        /// <summary>A candy has entered a mouse gap.</summary>
-        GapEnter,
         /// <summary>A candy has entered a bamboo pipe.</summary>
         PipeEnter,
         /// <summary>A candy has hit ordinary spikes.</summary>
@@ -116,7 +114,6 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 "ropeCut" => TutorialEvent.RopeCut,
                 "starCollected" => TutorialEvent.StarCollected,
                 "candyEaten" => TutorialEvent.CandyEaten,
-                "gapEnter" => TutorialEvent.GapEnter,
                 "pipeEnter" => TutorialEvent.PipeEnter,
                 "spikeHit" => TutorialEvent.SpikeHit,
                 "electroHit" => TutorialEvent.ElectroHit,
