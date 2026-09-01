@@ -11,7 +11,7 @@ MenuView 0 0 5120 1440 1 1 0
       HBox 1422 0 14294 1440 1 1 0
         BaseElement 1422 341 782 759 1 1 0
         TouchBaseElement 2181 341 759 759 1 1 0
-          boxContainer 2181 341 759 759 0.991 1.009 0
+          boxContainer 2181 341 759 759 0.99 1.01 0
             MonsterSlot 2181 341 759 759 1 1 0
               Image 2230.5 390 660 660 1.15 1.15 0
             Image 2230 390 660 660 1.15 1.15 0
