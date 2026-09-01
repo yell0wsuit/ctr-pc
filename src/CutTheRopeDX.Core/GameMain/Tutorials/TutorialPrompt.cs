@@ -25,7 +25,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float fadeIn,
             float hold,
             float fadeOut,
-            bool isText)
+            bool isText,
+            int timelineIndex = 0)
         {
             Visual = visual ?? throw new ArgumentNullException(nameof(visual));
             Trigger = trigger ?? throw new ArgumentNullException(nameof(trigger));
@@ -35,6 +36,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             Hold = hold;
             FadeOut = fadeOut;
             IsText = isText;
+            TimelineIndex = timelineIndex;
             delayRemaining = delay;
         }
 
@@ -53,6 +55,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
         internal float FadeOut { get; }
 
         internal bool IsText { get; }
+
+        internal int TimelineIndex { get; }
 
         internal TutorialPromptState State { get; private set; } = TutorialPromptState.Armed;
 
@@ -129,7 +133,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
         private void BeginPlayback()
         {
             State = TutorialPromptState.Playing;
-            Visual.PlayTimeline(0);
+            Visual.PlayTimeline(TimelineIndex);
         }
     }
 }
