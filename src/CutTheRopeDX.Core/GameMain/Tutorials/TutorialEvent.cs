@@ -309,7 +309,45 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <exception cref="InvalidDataException">Thrown when the value is not exactly <c>#RRGGBB</c>.</exception>
         internal static RGBAColor? ParseColor(string value, string source, string attribute)
         {
-            return value is null ? null : ParseHex(value, source, attribute);
+            return value is null
+                ? null
+                : value.StartsWith('#')
+                    ? ParseHex(value, source, attribute)
+                    : ParseChannels(value, source, attribute);
+        }
+
+        /// <summary>
+        /// Parses a <c>R,G,B</c> triplet of 0-255 channels, the way pack configs already spell a
+        /// color (<c>boxHoleBgColor: [70, 37, 0]</c>). Spaces around a channel are allowed so a
+        /// value can be copied straight across.
+        /// </summary>
+        /// <param name="value">Authored triplet.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed color, fully opaque.</returns>
+        /// <exception cref="InvalidDataException">Thrown unless it is three channels of 0 to 255.</exception>
+        private static RGBAColor ParseChannels(string value, string source, string attribute)
+        {
+            string[] parts = value.Split(',');
+            return parts.Length == 3
+                ? RGBAColor.MakeRGBA(
+                    Channel(parts[0], value, source, attribute),
+                    Channel(parts[1], value, source, attribute),
+                    Channel(parts[2], value, source, attribute),
+                    1f)
+                : throw Invalid(source, attribute, value);
+        }
+
+        private static float Channel(string part, string value, string source, string attribute)
+        {
+            return int.TryParse(
+                part.Trim(),
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture,
+                out int channel)
+                && channel is >= 0 and <= 255
+                    ? channel / 255f
+                    : throw Invalid(source, attribute, value);
         }
 
         private static RGBAColor ParseHex(string value, string source, string attribute)

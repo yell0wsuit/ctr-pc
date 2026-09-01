@@ -128,12 +128,45 @@ namespace CutTheRopeDX.Tests.Tutorials
             Assert.Equal(1f, TutorialValues.ParsePositiveFloat(null, 1f, "scenario.xml", "size"));
         }
 
+        [Fact]
+        public void ParsesAnRgbTripletTheWayPackConfigWritesOne()
+        {
+            // Pack configs already spell a color as 0-255 channels, e.g. boxHoleBgColor [70, 37, 0].
+            RGBAColor parsed = TutorialValues.ParseColor("70,37,0", "scenario.xml", "color").Value;
+
+            Assert.Equal(70f / 255f, parsed.RedColor, 3);
+            Assert.Equal(37f / 255f, parsed.GreenColor, 3);
+            Assert.Equal(0f, parsed.BlueColor, 3);
+        }
+
+        [Fact]
+        public void ParsesAnRgbTripletCopiedWithItsSpaces()
+        {
+            RGBAColor parsed = TutorialValues.ParseColor("70, 37, 0", "scenario.xml", "color").Value;
+
+            Assert.Equal(70f / 255f, parsed.RedColor, 3);
+        }
+
+        [Theory]
+        [InlineData("70,37")]
+        [InlineData("70,37,0,1")]
+        [InlineData("256,0,0")]
+        [InlineData("-1,0,0")]
+        [InlineData("70.5,37,0")]
+        public void RejectsAnRgbTripletOutsideThreeByteChannels(string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => TutorialValues.ParseColor(value, "scenario.xml", "color"));
+
+            Assert.Contains("color", exception.Message);
+        }
+
         [Theory]
         [InlineData("ff8800")]
         [InlineData("#fff")]
         [InlineData("#gggggg")]
         [InlineData("#ff88000")]
-        public void RejectsAColorThatIsNotSixHexDigits(string value)
+        public void RejectsAColorThatIsNeitherHexNorATriplet(string value)
         {
             InvalidDataException exception = Assert.Throws<InvalidDataException>(
                 () => TutorialValues.ParseColor(value, "scenario.xml", "color"));
