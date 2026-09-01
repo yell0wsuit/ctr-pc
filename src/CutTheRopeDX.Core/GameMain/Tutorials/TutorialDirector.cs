@@ -3,17 +3,29 @@ using System.Collections.Generic;
 
 namespace CutTheRopeDX.GameMain.Tutorials
 {
+    /// <summary>Snapshot of one rocket, its owning candy body, and current operating state.</summary>
+    /// <param name="Rocket">Rocket identity used to key transition history.</param>
+    /// <param name="Body">Candy body carried by the rocket.</param>
+    /// <param name="State">Current <c>STATE_ROCKET_*</c> value.</param>
     internal readonly record struct TutorialRocketState(Rocket Rocket, CandyBody Body, int State);
 
+    /// <summary>Supplies authoritative candy and rocket state to the tutorial evaluator.</summary>
     internal interface ITutorialWorld
     {
+        /// <summary>Gets the active candy bodies in authored candy order.</summary>
         IReadOnlyList<CandyBody> ActiveBodies { get; }
 
+        /// <summary>Tests whether one sampled tutorial state holds for a candy body.</summary>
+        /// <param name="tutorialEvent">State event to evaluate.</param>
+        /// <param name="body">Active body to evaluate.</param>
+        /// <returns><see langword="true"/> when the authoritative state holds.</returns>
         bool Holds(TutorialEvent tutorialEvent, CandyBody body);
 
+        /// <summary>Gets one current snapshot for each tutorial-observable rocket.</summary>
         IReadOnlyList<TutorialRocketState> Rockets { get; }
     }
 
+    /// <summary>Owns tutorial prompt registration, firing, evaluation, playback, and draw order.</summary>
     internal sealed class TutorialDirector
     {
         private readonly ITutorialWorld world;
@@ -25,11 +37,18 @@ namespace CutTheRopeDX.GameMain.Tutorials
         private readonly Dictionary<Rocket, int> rocketHistory = [];
         private bool loadingComplete;
 
+        /// <summary>Initializes a director against an authoritative tutorial world.</summary>
+        /// <param name="world">World state boundary used for sampled conditions.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="world"/> is null.</exception>
         internal TutorialDirector(ITutorialWorld world)
         {
             this.world = world ?? throw new ArgumentNullException(nameof(world));
         }
 
+        /// <summary>Registers a prompt in XML order before loading completes.</summary>
+        /// <param name="prompt">Prompt to register.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="prompt"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown after loading has completed.</exception>
         public void Add(TutorialPrompt prompt)
         {
             ArgumentNullException.ThrowIfNull(prompt);
@@ -47,6 +66,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             }
         }
 
+        /// <summary>Seals registration and dispatches the start event once.</summary>
         public void CompleteLoading()
         {
             if (loadingComplete)
@@ -58,6 +78,9 @@ namespace CutTheRopeDX.GameMain.Tutorials
             Fire(TutorialEvent.Start);
         }
 
+        /// <summary>Dispatches an edge or sampled event to eligible armed prompts.</summary>
+        /// <param name="tutorialEvent">Event that occurred.</param>
+        /// <param name="actor">Causal candy body for a scoped event, or <see langword="null"/> for an actorless event.</param>
         public void Fire(TutorialEvent tutorialEvent, CandyBody actor = null)
         {
             if (tutorialEvent == TutorialEvent.Start && !loadingComplete)
@@ -83,6 +106,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
             }
         }
 
+        /// <summary>Samples required world state and advances prompt delay and playback.</summary>
+        /// <param name="delta">Elapsed frame time in seconds.</param>
         public void Update(float delta)
         {
             EvaluateSampledStates();
@@ -105,11 +130,13 @@ namespace CutTheRopeDX.GameMain.Tutorials
             }
         }
 
+        /// <summary>Draws tutorial text visuals in XML order.</summary>
         public void DrawTexts()
         {
             Draw(texts);
         }
 
+        /// <summary>Draws tutorial image visuals in XML order.</summary>
         public void DrawImages()
         {
             Draw(images);

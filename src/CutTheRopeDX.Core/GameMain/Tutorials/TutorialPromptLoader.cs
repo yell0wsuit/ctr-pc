@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
@@ -10,13 +11,27 @@ using static CutTheRopeDX.Helpers.ParsingHelpers;
 
 namespace CutTheRopeDX.GameMain.Tutorials
 {
+    /// <summary>Creates concrete text and image visuals for validated tutorial XML.</summary>
     internal interface ITutorialVisualFactory
     {
+        /// <summary>Creates a localized tutorial text visual.</summary>
+        /// <param name="node">Validated tutorial text XML.</param>
+        /// <param name="x">World-space X position.</param>
+        /// <param name="y">World-space Y position.</param>
+        /// <param name="width">Scaled text width.</param>
+        /// <returns>The created text visual.</returns>
         BaseElement CreateText(XElement node, float x, float y, float width);
 
+        /// <summary>Creates a tutorial sign visual.</summary>
+        /// <param name="node">Validated tutorial image XML.</param>
+        /// <param name="quad">Zero-based tutorial-sign quad.</param>
+        /// <param name="x">World-space X position.</param>
+        /// <param name="y">World-space Y position.</param>
+        /// <returns>The created sign visual.</returns>
         BaseElement CreateSign(XElement node, int quad, float x, float y);
     }
 
+    /// <summary>Validates tutorial XML, filters locale copies, and constructs registered prompts.</summary>
     internal sealed class TutorialPromptLoader
     {
         private readonly TutorialDirector director;
@@ -30,6 +45,18 @@ namespace CutTheRopeDX.GameMain.Tutorials
         private readonly int mapOffsetX;
         private readonly int mapOffsetY;
 
+        /// <summary>Initializes a loader for one map and coordinate transform.</summary>
+        /// <param name="director">Director that receives loaded prompts.</param>
+        /// <param name="visualFactory">Factory for concrete text and image visuals.</param>
+        /// <param name="source">Map name used in validation errors.</param>
+        /// <param name="locale">Requested locale code; unsupported codes fall back to English.</param>
+        /// <param name="twoParts">Whether split-candy subjects are legal.</param>
+        /// <param name="scale">Map-to-world coordinate scale.</param>
+        /// <param name="offsetX">Base world-space X offset.</param>
+        /// <param name="offsetY">Base world-space Y offset.</param>
+        /// <param name="mapOffsetX">Additional authored-map X offset.</param>
+        /// <param name="mapOffsetY">Additional authored-map Y offset.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the director or visual factory is null.</exception>
         internal TutorialPromptLoader(
             TutorialDirector director,
             ITutorialVisualFactory visualFactory,
@@ -54,6 +81,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
             this.mapOffsetY = mapOffsetY;
         }
 
+        /// <summary>Validates all nodes before instantiating the active locale and completing registration.</summary>
+        /// <param name="nodes">Tutorial elements in XML order.</param>
+        /// <returns>The locale-selected prompts in XML order.</returns>
+        /// <exception cref="InvalidDataException">Thrown when any active or inactive locale copy is invalid.</exception>
         internal IReadOnlyList<TutorialPrompt> LoadAll(IEnumerable<XElement> nodes)
         {
             List<ParsedTutorial> parsedTutorials = [];
@@ -79,6 +110,12 @@ namespace CutTheRopeDX.GameMain.Tutorials
             return loadedPrompts;
         }
 
+        /// <summary>Builds the shared four-keyframe tutorial fade envelope at timeline zero.</summary>
+        /// <param name="visual">Visual that owns the timeline.</param>
+        /// <param name="fadeIn">Fade-in duration in seconds.</param>
+        /// <param name="hold">Full-opacity duration in seconds.</param>
+        /// <param name="fadeOut">Fade-out duration in seconds.</param>
+        /// <returns>The constructed timeline.</returns>
         internal static Timeline BuildEnvelope(BaseElement visual, float fadeIn, float hold, float fadeOut)
         {
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
@@ -102,6 +139,9 @@ namespace CutTheRopeDX.GameMain.Tutorials
             return timeline;
         }
 
+        /// <summary>Builds the two-pass legacy swipe preset at timeline one.</summary>
+        /// <param name="visual">Visual that owns the swipe timeline.</param>
+        /// <returns>The constructed swipe timeline.</returns>
         internal static Timeline BuildSwipe(BaseElement visual)
         {
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(12);
