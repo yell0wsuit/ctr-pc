@@ -1,7 +1,7 @@
 using System.IO;
 
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.GameMain.Tutorials;
 
 using Xunit;
