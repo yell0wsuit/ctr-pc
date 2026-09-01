@@ -83,6 +83,14 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="actor">Causal candy body for a scoped event, or <see langword="null"/> for an actorless event.</param>
         public void Fire(TutorialEvent tutorialEvent, CandyBody actor = null)
         {
+            Fire(tutorialEvent, actor, null);
+        }
+
+        private void Fire(
+            TutorialEvent tutorialEvent,
+            CandyBody actor,
+            IReadOnlyList<CandyBody> sampledBodies)
+        {
             if (tutorialEvent == TutorialEvent.Start && !loadingComplete)
             {
                 return;
@@ -96,7 +104,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             TutorialPrompt[] snapshot = [.. indexedPrompts];
             foreach (TutorialPrompt prompt in snapshot)
             {
-                if (prompt.State != TutorialPromptState.Armed || !IsEligible(prompt, actor))
+                if (prompt.State != TutorialPromptState.Armed || !IsEligible(prompt, actor, sampledBodies))
                 {
                     continue;
                 }
@@ -180,12 +188,15 @@ namespace CutTheRopeDX.GameMain.Tutorials
             }
         }
 
-        private bool IsEligible(TutorialPrompt prompt, CandyBody actor)
+        private bool IsEligible(
+            TutorialPrompt prompt,
+            CandyBody actor,
+            IReadOnlyList<CandyBody> sampledBodies)
         {
             TutorialTrigger trigger = prompt.Trigger;
             if (actor is not null)
             {
-                return MatchesSubject(trigger.Subject, actor)
+                return MatchesSubject(trigger.Subject, actor, sampledBodies)
                     && (trigger.Area is null || trigger.Area.Value.Contains(actor.Point.pos));
             }
 
@@ -194,9 +205,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 return true;
             }
 
-            foreach (CandyBody body in world.ActiveBodies)
+            IReadOnlyList<CandyBody> activeBodies = sampledBodies ?? world.ActiveBodies;
+            foreach (CandyBody body in activeBodies)
             {
-                if (MatchesSubject(trigger.Subject, body) && trigger.Area.Value.Contains(body.Point.pos))
+                if (MatchesSubject(trigger.Subject, body, activeBodies)
+                    && trigger.Area.Value.Contains(body.Point.pos))
                 {
                     return true;
                 }
@@ -205,21 +218,24 @@ namespace CutTheRopeDX.GameMain.Tutorials
             return false;
         }
 
-        private bool MatchesSubject(TutorialSubject subject, CandyBody body)
+        private bool MatchesSubject(
+            TutorialSubject subject,
+            CandyBody body,
+            IReadOnlyList<CandyBody> sampledBodies)
         {
             return subject switch
             {
                 TutorialSubject.Any => true,
                 TutorialSubject.Left => body.Role == CandyBodyRole.LeftHalf,
                 TutorialSubject.Right => body.Role == CandyBodyRole.RightHalf,
-                TutorialSubject.Primary => IsPrimary(body),
+                TutorialSubject.Primary => IsPrimary(body, sampledBodies),
                 _ => false,
             };
         }
 
-        private bool IsPrimary(CandyBody body)
+        private bool IsPrimary(CandyBody body, IReadOnlyList<CandyBody> sampledBodies)
         {
-            IReadOnlyList<CandyBody> activeBodies = world.ActiveBodies;
+            IReadOnlyList<CandyBody> activeBodies = sampledBodies ?? world.ActiveBodies;
             if (activeBodies.Count == 0)
             {
                 return false;
@@ -255,7 +271,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 {
                     if (world.Holds(tutorialEvent, body))
                     {
-                        Fire(tutorialEvent, body);
+                        Fire(tutorialEvent, body, activeBodies);
                     }
                 }
             }

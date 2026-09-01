@@ -6,11 +6,44 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
+        IReadOnlyList<CandyBody> ITutorialWorld.ActiveBodies => [.. ActiveCandyBodies()];
+
+        /// <summary>
+        /// Samples one sustained tutorial state against a single candy body. Every answer reads the
+        /// lifecycle owner that already holds the state, so the director never caches candy state of
+        /// its own.
+        /// </summary>
+        /// <param name="tutorialEvent">Sampled state to test.</param>
+        /// <param name="body">Candy body to test it against.</param>
+        /// <returns><see langword="true"/> when the state currently holds for that body.</returns>
+        bool ITutorialWorld.Holds(TutorialEvent tutorialEvent, CandyBody body)
+        {
+#pragma warning disable IDE0072 // Only the sampled subset of the vocabulary is answerable here.
+            return tutorialEvent switch
+            {
+                TutorialEvent.Bubbled => body.Bubble != null,
+                TutorialEvent.InLantern => body.Owner?.Lifecycle.Attachments.InLantern == true,
+                TutorialEvent.CarriedByAnt => body.Owner?.Lifecycle.Attachments.AntSegment != null,
+                TutorialEvent.CarriedBySnail => ActiveSnailCountForPoint(body.Point) > 0,
+                TutorialEvent.TimeFrozen => timeFrozen,
+                TutorialEvent.GravityInverted => gravityState.IsInverted,
+
+                // Region-only: the director's authored area is the whole condition.
+                TutorialEvent.CandyMoved => true,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(tutorialEvent),
+                    tutorialEvent,
+                    "Only sampled tutorial states can be evaluated against a candy body."),
+            };
+#pragma warning restore IDE0072
+        }
+
         /// <summary>
         /// Every physical candy body the scene currently offers to its systems: one whole body per
         /// present candy and one per surviving half of a split candy. A candy that is removed or

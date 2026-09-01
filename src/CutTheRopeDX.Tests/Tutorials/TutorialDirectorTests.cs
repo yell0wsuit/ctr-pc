@@ -183,19 +183,21 @@ namespace CutTheRopeDX.Tests.Tutorials
         {
             CandyBody primary = Body(CandyBodyRole.Whole, 0f, 0f);
             CandyBody right = Body(CandyBodyRole.RightHalf, 0f, 0f);
+            right.AttachTo(new CandyContext(primary));
             FakeWorld world = new()
             {
                 Bodies = [primary, right],
                 HoldsResult = (_, body) => body == right,
             };
             TutorialDirector director = new(world);
-            (TutorialPrompt prompt, _) = MakePrompt(TutorialEvent.Bubbled, TutorialSubject.Right);
+            (TutorialPrompt prompt, _) = MakePrompt(TutorialEvent.Bubbled, TutorialSubject.Primary);
             director.Add(prompt);
             director.CompleteLoading();
 
             director.Update(0f);
 
             Assert.Equal(2, world.HoldsCalls);
+            Assert.Equal(1, world.ActiveBodyReads);
             Assert.Equal(TutorialPromptState.Playing, prompt.State);
         }
 
