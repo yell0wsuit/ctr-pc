@@ -2,6 +2,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -44,8 +45,7 @@ namespace CutTheRopeDX.GameMain
             tubes = [];
             bambooTubes = [];
             socks = [];
-            tutorialImages = [];
-            tutorials = [];
+            tutorialDirector = new TutorialDirector(this);
             bouncers = [];
             rotatedCircles = [];
             rockets = [];

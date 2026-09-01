@@ -9,13 +9,14 @@ using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
     /// Core gameplay scene that owns the loaded level state, interactive objects, and HUD.
     /// </summary>
-    internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation, IRocketDelegate
+    internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation, IRocketDelegate, ITutorialWorld
     {
         /// <summary>
         /// Returns the largest value from four candidates.
@@ -91,18 +92,6 @@ namespace CutTheRopeDX.GameMain
             return string.IsNullOrWhiteSpace(source) || source.Contains("://", StringComparison.Ordinal)
                 ? ((CTRRootController)Application.SharedRootController()).GetMapName()
                 : Path.GetFileName(source);
-        }
-
-        /// <summary>
-        /// Determines whether a tutorial element should be skipped for the active language.
-        /// </summary>
-        /// <param name="c">The tutorial XML element to inspect.</param>
-        /// <returns><see langword="true"/> when the element does not match the active locale; otherwise, <see langword="false"/>.</returns>
-        public static bool ShouldSkipTutorialElement(XElement c)
-        {
-            string currentLang = LanguageHelper.CurrentCode;
-            string locale = c.Attribute("locale")?.Value ?? string.Empty;
-            return LanguageHelper.IsUiLanguageCode(currentLang) ? locale != currentLang : locale != "en";
         }
 
         /// <summary>
@@ -1140,15 +1129,17 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private List<Snail> snailobjects;
 
-        /// <summary>
-        /// All tutorial image objects attached to the scene.
-        /// </summary>
-        private List<CTRGameObject> tutorialImages;
+        /// <summary>Owns all tutorial prompt state for the loaded scene.</summary>
+        private TutorialDirector tutorialDirector;
 
-        /// <summary>
-        /// All tutorial text labels attached to the scene.
-        /// </summary>
-        private List<Text> tutorials;
+        IReadOnlyList<CandyBody> ITutorialWorld.ActiveBodies => [.. ActiveCandyBodies()];
+
+        IReadOnlyList<TutorialRocketState> ITutorialWorld.Rockets => [];
+
+        bool ITutorialWorld.Holds(TutorialEvent tutorialEvent, CandyBody body)
+        {
+            return false;
+        }
 
         /// <summary>
         /// All active ghost objects in the loaded level.
@@ -1280,11 +1271,6 @@ namespace CutTheRopeDX.GameMain
         private CTRRectangle cameraWindow;
 
         // private bool spiderTookCandy;
-
-        /// <summary>
-        /// Special-case level behavior flag.
-        /// </summary>
-        private int special;
 
         /// <summary>
         /// Whether the camera should remain locked to its current target.
@@ -1441,51 +1427,5 @@ namespace CutTheRopeDX.GameMain
         // public float lastAngleChange;
         // }
 
-        /// <summary>
-        /// Specialized tutorial text element that stores a behavior flag.
-        /// </summary>
-        private sealed class TutorialText : Text
-        {
-            /// <summary>
-            /// Special-case behavior identifier for the tutorial text.
-            /// </summary>
-            public int special;
-        }
-
-        /// <summary>
-        /// Specialized gameplay object that carries a behavior flag.
-        /// </summary>
-        private sealed class GameObjectSpecial : CTRGameObject
-        {
-            /// <summary>
-            /// Creates a special game object from a texture.
-            /// </summary>
-            /// <param name="t">The texture assigned to the new object.</param>
-            /// <returns>A new special game object initialized with the provided texture.</returns>
-            private static GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
-            {
-                GameObjectSpecial gameObjectSpecial = new();
-                _ = gameObjectSpecial.InitWithTexture(t);
-                return gameObjectSpecial;
-            }
-
-            /// <summary>
-            /// Creates a special game object from a resource texture and draw quad.
-            /// </summary>
-            /// <param name="resourceName">The texture resource identifier.</param>
-            /// <param name="q">The draw quad index to use.</param>
-            /// <returns>A new special game object configured for the requested texture quad.</returns>
-            public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(string resourceName, int q)
-            {
-                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(resourceName));
-                gameObjectSpecial.SetDrawQuad(q);
-                return gameObjectSpecial;
-            }
-
-            /// <summary>
-            /// Special-case behavior identifier for this object.
-            /// </summary>
-            public int special;
-        }
     }
 }

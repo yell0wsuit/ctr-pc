@@ -113,7 +113,6 @@ namespace CutTheRopeDX.GameMain
                         case "gameDesign":
                             mapOffsetX = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetX")?.Value);
                             mapOffsetY = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetY")?.Value);
-                            special = ParseIntOrZero(item2.Attribute("special")?.Value);
                             ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
                             _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
                             ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;

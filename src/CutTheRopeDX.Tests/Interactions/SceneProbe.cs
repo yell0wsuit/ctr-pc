@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.GameMain.Tutorials;
 
 using Xunit;
 
@@ -252,6 +253,25 @@ namespace CutTheRopeDX.Tests.Interactions
         public static RecordingSceneDelegate Outcomes(this GameScene scene)
         {
             return (RecordingSceneDelegate)scene.gameSceneDelegate;
+        }
+
+        /// <summary>The scene's sole tutorial state owner.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The tutorial director.</returns>
+        public static TutorialDirector TutorialDirector(this GameScene scene)
+        {
+            return Field<TutorialDirector>(scene, "tutorialDirector");
+        }
+
+        /// <summary>All prompts registered with the scene's tutorial director in XML order.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The registered prompt list.</returns>
+        public static IReadOnlyList<TutorialPrompt> TutorialPrompts(this GameScene scene)
+        {
+            TutorialDirector director = scene.TutorialDirector();
+            FieldInfo field = typeof(TutorialDirector).GetField("prompts", Instance)
+                ?? throw new MissingFieldException(nameof(TutorialDirector), "prompts");
+            return (IReadOnlyList<TutorialPrompt>)field.GetValue(director);
         }
 
         /// <summary>Every physical candy body the scene currently offers to its systems.</summary>

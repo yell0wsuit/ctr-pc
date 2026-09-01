@@ -109,7 +109,6 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             GameScene scene = Scenario.New()
                 .MapSize(640, 480)
-                .Special(0)
                 .Design("nightLevel", "false")
                 .Design("useMobilePhysics", "true")
                 .Candy(82, 100, number: "0")

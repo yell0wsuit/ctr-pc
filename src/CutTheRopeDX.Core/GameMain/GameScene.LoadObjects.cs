@@ -18,6 +18,7 @@ namespace CutTheRopeDX.GameMain
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             List<XElement> list = [.. map.Elements()];
+            List<XElement> tutorialNodes = [];
             // Establish captured state before grabs are loaded so XML object order cannot attach a
             // fixed rope to candy that starts inside a lantern.
             if (NormalRopeLoad.CandyStartsInLantern(map))
@@ -61,7 +62,7 @@ namespace CutTheRopeDX.GameMain
                             LoadStar(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "tutorialText":
-                            LoadTutorialText(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            tutorialNodes.Add(item3);
                             break;
                         case "tutorial01":
                         case "tutorial02":
@@ -74,7 +75,7 @@ namespace CutTheRopeDX.GameMain
                         case "tutorial09":
                         case "tutorial10":
                         case "tutorial11":
-                            LoadTutorialImage(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            tutorialNodes.Add(item3);
                             break;
                         case "bubble":
                             LoadBubble(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
@@ -147,6 +148,7 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            LoadTutorials(tutorialNodes, scale, offsetX, offsetY, mapOffsetX, mapOffsetY);
         }
     }
 }
