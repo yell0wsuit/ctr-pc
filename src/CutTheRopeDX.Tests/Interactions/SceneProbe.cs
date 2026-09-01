@@ -207,6 +207,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Sock>>(scene, "socks");
         }
 
+        /// <summary>All steam tubes loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The steam tube list.</returns>
+        public static List<SteamTube> SteamTubes(this GameScene scene)
+        {
+            return Field<List<SteamTube>>(scene, "tubes");
+        }
+
         /// <summary>All DJ discs.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The disc list.</returns>

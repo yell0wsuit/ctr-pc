@@ -1132,8 +1132,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Owns all tutorial prompt state for the loaded scene.</summary>
         private TutorialDirector tutorialDirector;
 
-        IReadOnlyList<TutorialRocketState> ITutorialWorld.Rockets => [];
-
         /// <summary>
         /// All active ghost objects in the loaded level.
         /// </summary>

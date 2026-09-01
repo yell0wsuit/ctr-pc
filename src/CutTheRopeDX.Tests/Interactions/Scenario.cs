@@ -481,6 +481,18 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(spikes);
         }
 
+        /// <summary>Adds a steam tube.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="angle">Tube angle in degrees.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario SteamTube(int x, int y, float angle = 0f)
+        {
+            XElement steamTube = Node("steamTube", x, y);
+            steamTube.SetAttributeValue("angle", Num(angle));
+            return Add(steamTube);
+        }
+
         /// <summary>Adds a time-freeze button.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>

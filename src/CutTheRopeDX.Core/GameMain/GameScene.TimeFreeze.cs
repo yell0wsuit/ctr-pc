@@ -1,6 +1,7 @@
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -55,6 +56,8 @@ namespace CutTheRopeDX.GameMain
                 RestartLoopingMoverSounds();
                 CTRSoundMgr.PlaySound(Resources.Snd.PauseUp);
             }
+
+            tutorialDirector.Fire(timeFrozen ? TutorialEvent.TimeFreeze : TutorialEvent.TimeUnfreeze);
         }
 
         /// <summary>Silences looping sounds whose gameplay sources stop when time is frozen.</summary>

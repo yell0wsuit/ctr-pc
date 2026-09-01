@@ -207,6 +207,7 @@ namespace CutTheRopeDX.GameMain
         public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
+            tutorialDirector.Fire(TutorialEvent.PumpFire);
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
