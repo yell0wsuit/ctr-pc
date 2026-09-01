@@ -53,6 +53,40 @@ namespace CutTheRopeDX.Tests.Tutorials
             Assert.Contains("delay", exception.Message);
         }
 
+        [Theory]
+        [InlineData("oops")]
+        [InlineData("NaN")]
+        [InlineData("Infinity")]
+        [InlineData("-Infinity")]
+        [InlineData("-0.5")]
+        [InlineData("-2")]
+        public void RejectsAHoldThatIsNeitherNonNegativeNorTheForeverSentinel(string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => TutorialValues.ParseHoldDuration(value, 5f, "scenario.xml", "duration"));
+
+            Assert.Contains("scenario.xml", exception.Message);
+            Assert.Contains("duration", exception.Message);
+        }
+
+        [Theory]
+        [InlineData("-1")]
+        [InlineData("-1.0")]
+        public void ParsesTheForeverHoldSentinel(string value)
+        {
+            Assert.Equal(
+                TutorialValues.ForeverHold,
+                TutorialValues.ParseHoldDuration(value, 5f, "scenario.xml", "duration"));
+        }
+
+        [Fact]
+        public void ParsesAnOrdinaryHoldAndItsDefault()
+        {
+            Assert.Equal(2.5f, TutorialValues.ParseHoldDuration("2.5", 5f, "scenario.xml", "duration"));
+            Assert.Equal(0f, TutorialValues.ParseHoldDuration("0", 5f, "scenario.xml", "duration"));
+            Assert.Equal(5.2f, TutorialValues.ParseHoldDuration(null, 5.2f, "scenario.xml", "duration"));
+        }
+
         [Fact]
         public void ParsesTimingUsingInvariantCulture()
         {

@@ -76,6 +76,9 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <summary>Gets the authored full-opacity duration in seconds.</summary>
         internal float Hold { get; }
 
+        /// <summary>Whether this prompt stays on screen instead of fading out.</summary>
+        internal bool HoldsForever => Hold == TutorialValues.ForeverHold;
+
         /// <summary>Gets the authored fade-out duration in seconds.</summary>
         internal float FadeOut { get; }
 
@@ -141,7 +144,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
             }
 
             Visual.Update(delta);
-            if (Visual.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
+
+            // A forever prompt stays Playing once its fade-up stops, so it keeps being advanced and
+            // any authored mover on it keeps running for as long as it is on screen.
+            if (!HoldsForever
+                && Visual.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
                 MarkDone();
             }

@@ -118,7 +118,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <returns>The constructed timeline.</returns>
         internal static Timeline BuildEnvelope(BaseElement visual, float fadeIn, float hold, float fadeOut)
         {
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+            // A forever hold stops at full opacity: it fades up and keeps no fade-out keyframe, so
+            // the last frame the timeline reaches is the one it stays on.
+            bool holdsForever = hold == TutorialValues.ForeverHold;
+            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(holdsForever ? 2 : 4);
             timeline.AddKeyFrame(KeyFrame.MakeColor(
                 RGBAColor.transparentRGBA,
                 KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
@@ -127,14 +130,18 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 RGBAColor.solidOpaqueRGBA,
                 KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
                 fadeIn));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(
-                RGBAColor.solidOpaqueRGBA,
-                KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                hold));
-            timeline.AddKeyFrame(KeyFrame.MakeColor(
-                RGBAColor.transparentRGBA,
-                KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
-                fadeOut));
+            if (!holdsForever)
+            {
+                timeline.AddKeyFrame(KeyFrame.MakeColor(
+                    RGBAColor.solidOpaqueRGBA,
+                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
+                    hold));
+                timeline.AddKeyFrame(KeyFrame.MakeColor(
+                    RGBAColor.transparentRGBA,
+                    KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
+                    fadeOut));
+            }
+
             visual.AddTimelinewithID(timeline, 0);
             return timeline;
         }
@@ -225,7 +232,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 1f,
                 source,
                 "fadeIn");
-            float hold = TutorialValues.ParseNonNegativeFloat(
+            float hold = TutorialValues.ParseHoldDuration(
                 node.Attribute("duration")?.Value,
                 isText ? 5f : 5.2f,
                 source,

@@ -65,6 +65,29 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void AForeverHoldKeepsPlayingAfterItsTimelineStops()
+        {
+            TutorialDirector director = new(new FakeWorld());
+            (TutorialPrompt forever, CountingVisual foreverVisual) =
+                MakePrompt(TutorialEvent.Start, hold: TutorialValues.ForeverHold);
+            (TutorialPrompt ordinary, _) = MakePrompt(TutorialEvent.Start);
+            director.Add(forever);
+            director.Add(ordinary);
+            director.CompleteLoading();
+
+            // Long enough for the two-keyframe fade-up to run out on both visuals.
+            director.Update(5f);
+            director.Update(5f);
+
+            Assert.Equal(TutorialPromptState.Playing, forever.State);
+            Assert.Equal(TutorialPromptState.Done, ordinary.State);
+
+            // A prompt that stays on screen keeps receiving updates, so an authored mover keeps running.
+            director.Update(1f);
+            Assert.Equal(3, foreverVisual.UpdateCount);
+        }
+
+        [Fact]
         public void SameGroupUsesXmlOrderAndCancelsSiblingsImmediately()
         {
             TutorialDirector director = new(new FakeWorld());
@@ -277,6 +300,7 @@ namespace CutTheRopeDX.Tests.Tutorials
             TutorialArea? area = null,
             string group = null,
             float delay = 0f,
+            float hold = 5f,
             bool isText = true,
             string drawName = null,
             List<string> draws = null)
@@ -288,7 +312,7 @@ namespace CutTheRopeDX.Tests.Tutorials
                 group,
                 delay,
                 fadeIn: 1f,
-                hold: 5f,
+                hold,
                 fadeOut: 0.5f,
                 isText);
             return (prompt, visual);

@@ -41,6 +41,27 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void AForeverHoldFadesUpAndNeverFadesOut()
+        {
+            LoadResult result = Load("<tutorialText locale=\"en\" duration=\"-1\" fadeIn=\"0.75\" />");
+            TutorialPrompt prompt = Assert.Single(result.Prompts);
+            Track colorTrack = prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_COLOR);
+
+            Assert.Equal(TutorialValues.ForeverHold, prompt.Hold);
+            Assert.True(prompt.HoldsForever);
+            Assert.Equal([0f, 0.75f], colorTrack.keyFrames.Select(keyFrame => keyFrame.timeOffset));
+
+            // The point of the sentinel: once the fade-up stops, the prompt sits at full opacity
+            // rather than fading back out.
+            prompt.Visual.PlayTimeline(0);
+            prompt.Visual.Update(0.75f);
+            prompt.Visual.Update(30f);
+
+            Assert.Equal(Timeline.TimelineState.TIMELINE_STOPPED, prompt.Visual.GetTimeline(0).state);
+            Assert.Equal(1f, prompt.Visual.color.AlphaChannel, 3);
+        }
+
+        [Fact]
         public void ConvertsAreaFromMapCoordinatesUsingBaseAndMapOffsets()
         {
             LoadResult result = Load(
@@ -131,7 +152,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         [Theory]
         [InlineData("anim", "wave")]
         [InlineData("delay", "NaN")]
-        [InlineData("duration", "-1")]
+        [InlineData("duration", "-2")]
         public void RejectsInvalidPresentationOrTiming(string attribute, string value)
         {
             InvalidDataException exception = Assert.Throws<InvalidDataException>(

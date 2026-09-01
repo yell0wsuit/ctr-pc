@@ -164,6 +164,35 @@ namespace CutTheRopeDX.GameMain.Tutorials
     /// <summary>Provides strict invariant-culture value parsing for tutorial XML.</summary>
     internal static class TutorialValues
     {
+        /// <summary>
+        /// Authored hold meaning "stay up until the level ends", matching the <c>-1</c> the map
+        /// schema already uses for an absent limit on stars, grabs, and rockets.
+        /// </summary>
+        internal const float ForeverHold = -1f;
+
+        /// <summary>
+        /// Parses a prompt's hold: any finite, non-negative number of seconds, or
+        /// <see cref="ForeverHold"/> for a prompt that never fades out.
+        /// </summary>
+        /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
+        /// <param name="defaultValue">Hold used when no attribute is authored.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed or default hold.</returns>
+        /// <exception cref="InvalidDataException">Thrown for any other negative or non-finite value.</exception>
+        internal static float ParseHoldDuration(
+            string value,
+            float defaultValue,
+            string source,
+            string attribute)
+        {
+            return value is not null
+                && float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed)
+                && parsed == ForeverHold
+                    ? ForeverHold
+                    : ParseNonNegativeFloat(value, defaultValue, source, attribute);
+        }
+
         /// <summary>Parses an optional finite, non-negative floating-point value.</summary>
         /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
         /// <param name="defaultValue">Value returned when no attribute is authored.</param>
