@@ -290,6 +290,45 @@ namespace CutTheRopeDX.Tests.Interactions
             return (IReadOnlyList<TutorialPrompt>)field.GetValue(director);
         }
 
+        /// <summary>The single prompt armed on one trigger event.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="tutorialEvent">Event the prompt listens on.</param>
+        /// <returns>The matching prompt.</returns>
+        public static TutorialPrompt TutorialPromptFor(this GameScene scene, TutorialEvent tutorialEvent)
+        {
+            return scene.TutorialPrompts().Single(prompt => prompt.Trigger.Event == tutorialEvent);
+        }
+
+        /// <summary>Every prompt registered on one trigger event, in XML order.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="tutorialEvent">Event the prompts listen on.</param>
+        /// <returns>The matching prompts.</returns>
+        public static List<TutorialPrompt> TutorialPromptsFor(this GameScene scene, TutorialEvent tutorialEvent)
+        {
+            return [.. scene.TutorialPrompts().Where(prompt => prompt.Trigger.Event == tutorialEvent)];
+        }
+
+        /// <summary>
+        /// A prompt's current visual opacity. Read straight off the visual, because the alpha a
+        /// tutorial fades through is timeline state that <c>Draw()</c> only consumes.
+        /// </summary>
+        /// <param name="prompt">Prompt to read.</param>
+        /// <returns>The visual's alpha.</returns>
+        public static float Alpha(this TutorialPrompt prompt)
+        {
+            return prompt.Visual.color.AlphaChannel;
+        }
+
+        /// <summary>The keyframe times on a prompt visual's colour track.</summary>
+        /// <param name="prompt">Prompt to read.</param>
+        /// <param name="timelineIndex">Timeline holding the track.</param>
+        /// <returns>The keyframe time offsets, in order.</returns>
+        public static List<float> ColorKeyFrameTimes(this TutorialPrompt prompt, int timelineIndex)
+        {
+            Track track = prompt.Visual.GetTimeline(timelineIndex).GetTrack(Track.TrackType.TRACK_COLOR);
+            return [.. track.keyFrames.Select(keyFrame => keyFrame.timeOffset)];
+        }
+
         /// <summary>Every physical candy body the scene currently offers to its systems.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The active bodies, in scene enumeration order.</returns>
