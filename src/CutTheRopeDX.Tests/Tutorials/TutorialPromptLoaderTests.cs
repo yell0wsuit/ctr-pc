@@ -62,6 +62,57 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void OpacityCapsTheEnvelopePeakInsteadOfFightingIt()
+        {
+            LoadResult result = Load("<tutorialText locale=\"en\" opacity=\"0.4\" />");
+            TutorialPrompt prompt = Assert.Single(result.Prompts);
+            Track colorTrack = prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_COLOR);
+
+            Assert.Equal(0.4f, prompt.Opacity);
+            Assert.Equal(
+                [0f, 0.4f, 0.4f, 0f],
+                colorTrack.keyFrames.Select(keyFrame => keyFrame.value.color.rgba.AlphaChannel));
+        }
+
+        [Fact]
+        public void AnAuthoredColorTintsASignThroughTheEnvelope()
+        {
+            LoadResult result = Load("<tutorial04 locale=\"en\" color=\"#ff0000\" />");
+            TutorialPrompt prompt = Assert.Single(result.Prompts);
+            Track colorTrack = prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_COLOR);
+
+            Assert.Equal(1f, prompt.Color.Value.RedColor, 3);
+            Assert.All(
+                colorTrack.keyFrames,
+                keyFrame =>
+                {
+                    Assert.Equal(1f, keyFrame.value.color.rgba.RedColor, 3);
+                    Assert.Equal(0f, keyFrame.value.color.rgba.GreenColor, 3);
+                });
+        }
+
+        [Fact]
+        public void SizeAndLineHeightReachThePrompt()
+        {
+            LoadResult result = Load("<tutorialText locale=\"en\" size=\"1.5\" lineHeight=\"2\" />");
+            TutorialPrompt prompt = Assert.Single(result.Prompts);
+
+            Assert.Equal(1.5f, prompt.SizeScale);
+            Assert.Equal(2f, prompt.LineHeightScale);
+        }
+
+        [Theory]
+        [InlineData("size")]
+        [InlineData("lineHeight")]
+        public void TypesettingAttributesAreRejectedOnASign(string attribute)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load($"<tutorial04 locale=\"en\" {attribute}=\"2\" />"));
+
+            Assert.Contains(attribute, exception.Message);
+        }
+
+        [Fact]
         public void ConvertsAreaFromMapCoordinatesUsingBaseAndMapOffsets()
         {
             LoadResult result = Load(

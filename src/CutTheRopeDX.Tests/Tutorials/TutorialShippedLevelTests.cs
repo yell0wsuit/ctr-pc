@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Tests.Tutorials
                 scene.TutorialPromptsFor(TutorialEvent.Bubbled),
                 prompt => Assert.Equal(TutorialPromptState.Armed, prompt.State));
 
-            Interaction.PlaceCandyAt(candy, RegionCentre(scene));
+            Interaction.PlaceCandyAt(candy, RegionCenter(scene));
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.All(
@@ -174,8 +174,8 @@ namespace CutTheRopeDX.Tests.Tutorials
 
         /// <summary>The middle of the authored region, in world coordinates.</summary>
         /// <param name="scene">Scene whose prompts carry the region.</param>
-        /// <returns>The region's centre.</returns>
-        private static Vector RegionCentre(GameScene scene)
+        /// <returns>The region's center.</returns>
+        private static Vector RegionCenter(GameScene scene)
         {
             TutorialArea area = scene.TutorialPromptsFor(TutorialEvent.Bubbled)[0].Trigger.Area.Value;
             return new Vector(area.X + (area.Width / 2f), area.Y + (area.Height / 2f));

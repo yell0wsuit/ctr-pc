@@ -13,7 +13,8 @@ namespace CutTheRopeDX.Framework.Visual
         float wrapWidth, int align, float maxHeight,
         RGBAColor elementColor, RGBAColor inheritedColor,
         bool isPingPonging, float pingPongOffset, float pingPongClipLeft,
-        float pingPongClipWidth, float pingPongClipHeight)
+        float pingPongClipWidth, float pingPongClipHeight,
+        float sizeScale = 1f, float lineAdvanceOffset = float.NaN, RGBAColor? colorOverride = null)
     {
         public IReadOnlyList<FormattedString> Lines { get; } = lines;
         public float DrawX { get; } = drawX;
@@ -28,5 +29,17 @@ namespace CutTheRopeDX.Framework.Visual
         public float PingPongClipLeft { get; } = pingPongClipLeft;
         public float PingPongClipWidth { get; } = pingPongClipWidth;
         public float PingPongClipHeight { get; } = pingPongClipHeight;
+
+        /// <summary>Multiplier on the font's configured size for this element alone.</summary>
+        public float SizeScale { get; } = sizeScale;
+
+        /// <summary>
+        /// Extra advance between lines, already scaled. <see cref="float.NaN"/> means the caller has
+        /// no opinion and the font's own line offset applies.
+        /// </summary>
+        public float LineAdvanceOffset { get; } = lineAdvanceOffset;
+
+        /// <summary>Replaces the font's configured color, or <see langword="null"/> to keep it.</summary>
+        public RGBAColor? ColorOverride { get; } = colorOverride;
     }
 }

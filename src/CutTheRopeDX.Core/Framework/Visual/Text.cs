@@ -64,7 +64,7 @@ namespace CutTheRopeDX.Framework.Visual
             if (w == -1f)
             {
                 float widthPadding = 0.1f;
-                wrapWidth = font.StringWidth(string_) + widthPadding;
+                wrapWidth = (font.StringWidth(string_) * sizeScale) + widthPadding;
             }
             else
             {
@@ -82,14 +82,16 @@ namespace CutTheRopeDX.Framework.Visual
                 else
                 {
                     // Keep width/height in sync for anchoring and layout when using a self-drawing font
+                    float scaledFontHeight = font.FontHeight() * sizeScale;
+                    float scaledLineOffset = LineAdvanceOffset();
                     if (formattedStrings.Count <= 1)
                     {
-                        height = (int)(font.FontHeight() + font.GetTopSpacing());
+                        height = (int)(scaledFontHeight + font.GetTopSpacing());
                         width = (int)wrapWidth;
                     }
                     else
                     {
-                        height = (int)(((font.FontHeight() + font.GetLineOffset()) * formattedStrings.Count) - font.GetLineOffset() + font.GetTopSpacing());
+                        height = (int)(((scaledFontHeight + scaledLineOffset) * formattedStrings.Count) - scaledLineOffset + font.GetTopSpacing());
                         width = (int)wrapWidth;
                     }
 
@@ -250,7 +252,8 @@ namespace CutTheRopeDX.Framework.Visual
                     formattedStrings, drawX, drawY, wrapWidth, align, maxHeight,
                     color, RGBAColor.FromRendererColor(inheritedColor),
                     isPingPonging, pingPongOffset, clipLeft,
-                    EffectivePingPongClipWidth, maxHeight > 0f ? maxHeight : height));
+                    EffectivePingPongClipWidth, maxHeight > 0f ? maxHeight : height,
+                    sizeScale, LineAdvanceOffset(), colorOverride));
             }
             else if (stringLength > 0)
             {
@@ -328,8 +331,23 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Word-wraps the current string into <see cref="FormattedString"/> lines based on <see cref="wrapWidth"/>.
         /// </summary>
+        /// <summary>
+        /// Extra advance between lines for this element, with both the font's configured spacing and
+        /// the authored line-height multiplier applied.
+        /// </summary>
+        /// <returns>The scaled line offset in pixels.</returns>
+        public float LineAdvanceOffset()
+        {
+            return ((font.FontHeight() + font.GetLineOffset()) * sizeScale * lineHeightScale)
+                - (font.FontHeight() * sizeScale);
+        }
+
         public virtual void FormatText()
         {
+            // Glyph advances come back at the font's own size, so the budget a line is measured
+            // against is the authored wrap width divided by this element's size multiplier. The
+            // rendered line then occupies exactly wrapWidth once the renderer scales it back up.
+            float layoutWidth = sizeScale > 0f ? wrapWidth / sizeScale : wrapWidth;
             short[] array = new short[512];
             char[] characters = string_.ToCharArray();
             int textLength = string_.Length;
@@ -361,7 +379,7 @@ namespace CutTheRopeDX.Framework.Visual
                     advance = font.GetCharWidth(c) + font.GetCharOffset(characters, cursor - 1, textLength);
                     wordWidth += advance;
                 }
-                bool exceedsWrap = lineWidth + wordWidth > wrapWidth;
+                bool exceedsWrap = lineWidth + wordWidth > layoutWidth;
                 if (wrapLongWords && exceedsWrap && lineEnd == lineStart)
                 {
                     // Broken before the character that overflowed rather than after it: a line a
@@ -377,7 +395,7 @@ namespace CutTheRopeDX.Framework.Visual
                     wordWidth = nowhereToBreak ? 0f : advance;
                     wordStart = lineEnd;
                 }
-                if ((lineWidth + wordWidth > wrapWidth && lineEnd != lineStart) || c == '\n')
+                if ((lineWidth + wordWidth > layoutWidth && lineEnd != lineStart) || c == '\n')
                 {
                     // The line can end before it starts: trimming the spaces a line break leaves
                     // behind runs the start of the next line past the character being read, and a
@@ -454,6 +472,25 @@ namespace CutTheRopeDX.Framework.Visual
         /// Width at which text wraps to the next line.
         /// </summary>
         public float wrapWidth;
+
+        /// <summary>
+        /// Multiplier on the font's configured size for this element alone. The font object is
+        /// shared process-wide, so a per-element size is carried here and applied by the renderer
+        /// rather than by resizing the font everything else draws with.
+        /// </summary>
+        public float sizeScale = 1f;
+
+        /// <summary>
+        /// Multiplier on the font's natural line height for this element alone.
+        /// </summary>
+        public float lineHeightScale = 1f;
+
+        /// <summary>
+        /// Replaces the font's configured color for this element, or <see langword="null"/> to keep
+        /// it. This overrides rather than modulates: the small font is black, and modulating black
+        /// by any color leaves it black.
+        /// </summary>
+        public RGBAColor? colorOverride;
 
         /// <summary>
         /// Word-wrapped lines of text.

@@ -271,6 +271,15 @@ namespace CutTheRopeDX.Browser
             SKPaint fill = metrics.Fill;
             FontConfiguration config = metrics.Config;
 
+            // A per-element size rasterizes a genuinely sized face rather than rescaling glyphs
+            // rendered at another one, so text stays crisp at any multiplier.
+            float sizeScale = call.SizeScale > 0f ? call.SizeScale : 1f;
+            SKFont scaledFont = sizeScale == 1f ? null : new SKFont(font.Typeface, font.Size * sizeScale);
+            if (scaledFont is not null)
+            {
+                font = scaledFont;
+            }
+
             renderer.FlushQuads();
             SKCanvas canvas = renderer.Target;
             _ = canvas.Save();
@@ -305,9 +314,16 @@ namespace CutTheRopeDX.Browser
             }
 
             float y = call.DrawY + metrics.GetTopSpacing();
-            float baselineOffset = metrics.BaselineOffset;
-            int lineHeight = (int)(metrics.FontHeight() + metrics.GetLineOffset());
-            SKColor textColor = Modulate(config.Color, inherited, layerAlpha);
+            float baselineOffset = metrics.BaselineOffset * sizeScale;
+            float lineAdvance = float.IsNaN(call.LineAdvanceOffset)
+                ? metrics.GetLineOffset()
+                : call.LineAdvanceOffset;
+            int lineHeight = (int)((metrics.FontHeight() * sizeScale) + lineAdvance);
+
+            // An authored color replaces the font's own rather than modulating it: the small font
+            // is black, and modulating black by any color leaves it black.
+            SKColor textColor = Modulate(
+                call.ColorOverride?.ToColor() ?? config.Color, inherited, layerAlpha);
 
             // Stroking alone would leave the glyph interior translucent, so the effect pass fills
             // as well and the fill pass then draws over it.
@@ -361,6 +377,7 @@ namespace CutTheRopeDX.Browser
                 canvas.Restore();
             }
             canvas.Restore();
+            scaledFont?.Dispose();
         }
 
         private static SKColor Modulate(Color color, Color inherited, float alpha)

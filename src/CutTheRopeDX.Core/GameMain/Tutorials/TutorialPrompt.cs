@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain.Tutorials
@@ -34,6 +35,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="fadeOut">Authored fade-out duration.</param>
         /// <param name="isText">Whether the visual belongs to the text draw list.</param>
         /// <param name="timelineIndex">Timeline played when the prompt starts.</param>
+        /// <param name="opacity">Peak opacity, from 0 to 1.</param>
+        /// <param name="color">Authored text or tint color, or null for the default.</param>
+        /// <param name="sizeScale">Multiplier on the font's configured size.</param>
+        /// <param name="lineHeightScale">Multiplier on the font's natural line height.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="visual"/> or <paramref name="trigger"/> is null.</exception>
         internal TutorialPrompt(
             BaseElement visual,
@@ -44,7 +49,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float hold,
             float fadeOut,
             bool isText,
-            int timelineIndex = 0)
+            int timelineIndex = 0,
+            float opacity = 1f,
+            RGBAColor? color = null,
+            float sizeScale = 1f,
+            float lineHeightScale = 1f)
         {
             Visual = visual ?? throw new ArgumentNullException(nameof(visual));
             Trigger = trigger ?? throw new ArgumentNullException(nameof(trigger));
@@ -55,6 +64,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
             FadeOut = fadeOut;
             IsText = isText;
             TimelineIndex = timelineIndex;
+            Opacity = opacity;
+            Color = color;
+            SizeScale = sizeScale;
+            LineHeightScale = lineHeightScale;
             delayRemaining = delay;
         }
 
@@ -87,6 +100,18 @@ namespace CutTheRopeDX.GameMain.Tutorials
 
         /// <summary>Gets the visual timeline played when the prompt starts.</summary>
         internal int TimelineIndex { get; }
+
+        /// <summary>Peak opacity this prompt fades up to, from 0 to 1.</summary>
+        internal float Opacity { get; }
+
+        /// <summary>Authored text or tint color, or <see langword="null"/> for the default.</summary>
+        internal RGBAColor? Color { get; }
+
+        /// <summary>Multiplier on the font's configured size. Text prompts only.</summary>
+        internal float SizeScale { get; }
+
+        /// <summary>Multiplier on the font's natural line height. Text prompts only.</summary>
+        internal float LineHeightScale { get; }
 
         /// <summary>Gets the current prompt state.</summary>
         internal TutorialPromptState State { get; private set; } = TutorialPromptState.Armed;

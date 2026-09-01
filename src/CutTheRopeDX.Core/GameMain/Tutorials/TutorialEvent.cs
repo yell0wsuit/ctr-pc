@@ -1,5 +1,8 @@
+using System;
 using System.Globalization;
 using System.IO;
+
+using CutTheRopeDX.Framework;
 
 namespace CutTheRopeDX.GameMain.Tutorials
 {
@@ -226,6 +229,68 @@ namespace CutTheRopeDX.GameMain.Tutorials
             return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed)
                 && float.IsFinite(parsed)
                     ? parsed
+                    : throw Invalid(source, attribute, value);
+        }
+
+        /// <summary>Parses an opacity in the closed range 0 to 1.</summary>
+        /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
+        /// <param name="defaultValue">Opacity used when no attribute is authored.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed or default opacity.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the value is malformed or outside 0 to 1.</exception>
+        internal static float ParseUnitInterval(
+            string value,
+            float defaultValue,
+            string source,
+            string attribute)
+        {
+            float parsed = ParseNonNegativeFloat(value, defaultValue, source, attribute);
+            return parsed <= 1f ? parsed : throw Invalid(source, attribute, value);
+        }
+
+        /// <summary>Parses a strictly positive multiplier.</summary>
+        /// <param name="value">Authored value, or <see langword="null"/> to use the default.</param>
+        /// <param name="defaultValue">Multiplier used when no attribute is authored.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed or default multiplier.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the value is malformed, non-finite, or not positive.</exception>
+        internal static float ParsePositiveFloat(
+            string value,
+            float defaultValue,
+            string source,
+            string attribute)
+        {
+            float parsed = ParseNonNegativeFloat(value, defaultValue, source, attribute);
+            return parsed > 0f ? parsed : throw Invalid(source, attribute, value);
+        }
+
+        /// <summary>Parses an authored <c>#RRGGBB</c> color.</summary>
+        /// <param name="value">Authored value, or <see langword="null"/> for no override.</param>
+        /// <param name="source">Map source used in validation errors.</param>
+        /// <param name="attribute">Attribute name used in validation errors.</param>
+        /// <returns>The parsed color, or <see langword="null"/> when nothing is authored.</returns>
+        /// <exception cref="InvalidDataException">Thrown when the value is not exactly <c>#RRGGBB</c>.</exception>
+        internal static RGBAColor? ParseColor(string value, string source, string attribute)
+        {
+            return value is null ? null : ParseHex(value, source, attribute);
+        }
+
+        private static RGBAColor ParseHex(string value, string source, string attribute)
+        {
+            return value.Length == 7
+                && value[0] == '#'
+                && int.TryParse(
+                    value.AsSpan(1),
+                    NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture,
+                    out int packed)
+                    ? RGBAColor.MakeRGBA(
+                        ((packed >> 16) & 0xFF) / 255f,
+                        ((packed >> 8) & 0xFF) / 255f,
+                        (packed & 0xFF) / 255f,
+                        1f)
                     : throw Invalid(source, attribute, value);
         }
 

@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Framework.Visual
             DynamicSpriteFont dynamicFont = fontSystem.GetFont(fontSize);
 
             // Create and cache the font wrapper
-            FontStashFont font = new FontStashFont().InitWithFont(dynamicFont, fontSize, color, effects, lineSpacing, topSpacing);
+            FontStashFont font = new FontStashFont().InitWithFont(dynamicFont, fontSize, color, effects, lineSpacing, topSpacing, fontSystem);
             fontCache[cacheKey] = font;
 
             return font;

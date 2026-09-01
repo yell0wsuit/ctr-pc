@@ -115,29 +115,37 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="fadeIn">Fade-in duration in seconds.</param>
         /// <param name="hold">Full-opacity duration in seconds.</param>
         /// <param name="fadeOut">Fade-out duration in seconds.</param>
+        /// <param name="peakColor">Color and opacity held at full visibility, or null for solid white.</param>
         /// <returns>The constructed timeline.</returns>
-        internal static Timeline BuildEnvelope(BaseElement visual, float fadeIn, float hold, float fadeOut)
+        internal static Timeline BuildEnvelope(
+            BaseElement visual,
+            float fadeIn,
+            float hold,
+            float fadeOut,
+            RGBAColor? peakColor = null)
         {
+            RGBAColor peak = peakColor ?? RGBAColor.solidOpaqueRGBA;
+            RGBAColor clear = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
             // A forever hold stops at full opacity: it fades up and keeps no fade-out keyframe, so
             // the last frame the timeline reaches is the one it stays on.
             bool holdsForever = hold == TutorialValues.ForeverHold;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(holdsForever ? 2 : 4);
             timeline.AddKeyFrame(KeyFrame.MakeColor(
-                RGBAColor.transparentRGBA,
+                clear,
                 KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
                 0f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(
-                RGBAColor.solidOpaqueRGBA,
+                peak,
                 KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
                 fadeIn));
             if (!holdsForever)
             {
                 timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.solidOpaqueRGBA,
+                    peak,
                     KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
                     hold));
                 timeline.AddKeyFrame(KeyFrame.MakeColor(
-                    RGBAColor.transparentRGBA,
+                    clear,
                     KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR,
                     fadeOut));
             }
@@ -242,6 +250,29 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 0.5f,
                 source,
                 "fadeOut");
+            float opacity = TutorialValues.ParseUnitInterval(
+                node.Attribute("opacity")?.Value,
+                1f,
+                source,
+                "opacity");
+            RGBAColor? color = TutorialValues.ParseColor(node.Attribute("color")?.Value, source, "color");
+            float sizeScale = TutorialValues.ParsePositiveFloat(
+                node.Attribute("size")?.Value,
+                1f,
+                source,
+                "size");
+            float lineHeightScale = TutorialValues.ParsePositiveFloat(
+                node.Attribute("lineHeight")?.Value,
+                1f,
+                source,
+                "lineHeight");
+            if (!isText)
+            {
+                // A sign has one glyph-free quad, so type-setting attributes have nothing to act on.
+                RejectTextOnlyAttribute(node, "size");
+                RejectTextOnlyAttribute(node, "lineHeight");
+            }
+
             string animationValue = node.Attribute("anim")?.Value;
             string animation = animationValue switch
             {
@@ -260,7 +291,20 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 fadeIn,
                 hold,
                 fadeOut,
-                animation);
+                animation,
+                opacity,
+                color,
+                sizeScale,
+                lineHeightScale);
+        }
+
+        private void RejectTextOnlyAttribute(XElement node, string attribute)
+        {
+            string value = node.Attribute(attribute)?.Value;
+            if (value is not null)
+            {
+                throw TutorialValues.Invalid(source, attribute, value);
+            }
         }
 
         private TutorialPrompt Instantiate(ParsedTutorial parsed)
@@ -275,13 +319,37 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     y,
                     ParseIntOrZero(node.Attribute("width")?.Value) * scale)
                 : visualFactory.CreateSign(node, parsed.Quad, x, y);
-            visual.color = RGBAColor.transparentRGBA;
+            // Text reads only the element color's alpha and takes its own RGB from the override, so
+            // only a sign tints through the envelope.
+            RGBAColor peak = parsed.IsText || parsed.Color is null
+                ? RGBAColor.MakeRGBA(1f, 1f, 1f, parsed.Opacity)
+                : RGBAColor.MakeRGBA(
+                    parsed.Color.Value.RedColor,
+                    parsed.Color.Value.GreenColor,
+                    parsed.Color.Value.BlueColor,
+                    parsed.Opacity);
+
+            visual.color = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
             if (!parsed.IsText && visual is GameObject gameObject)
             {
                 gameObject.ParseMover(node);
             }
 
-            _ = BuildEnvelope(visual, parsed.FadeIn, parsed.Hold, parsed.FadeOut);
+            if (visual is Text text)
+            {
+                text.sizeScale = parsed.SizeScale;
+                text.lineHeightScale = parsed.LineHeightScale;
+                text.colorOverride = parsed.Color;
+
+                // Layout ran at the default size when the visual was created, so re-wrap it now that
+                // the authored size multiplier is known.
+                if (parsed.SizeScale != 1f || parsed.LineHeightScale != 1f)
+                {
+                    text.SetStringandWidth(text.GetString(), text.wrapWidth);
+                }
+            }
+
+            _ = BuildEnvelope(visual, parsed.FadeIn, parsed.Hold, parsed.FadeOut, peak);
             int timelineIndex = 0;
             if (parsed.Animation == "swipe")
             {
@@ -302,7 +370,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 parsed.Hold,
                 parsed.FadeOut,
                 parsed.IsText,
-                timelineIndex);
+                timelineIndex,
+                parsed.Opacity,
+                parsed.Color,
+                parsed.SizeScale,
+                parsed.LineHeightScale);
         }
 
         private TutorialArea? ConvertArea(string value, TutorialArea? parsedArea)
@@ -345,6 +417,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float FadeIn,
             float Hold,
             float FadeOut,
-            string Animation);
+            string Animation,
+            float Opacity,
+            RGBAColor? Color,
+            float SizeScale,
+            float LineHeightScale);
     }
 }

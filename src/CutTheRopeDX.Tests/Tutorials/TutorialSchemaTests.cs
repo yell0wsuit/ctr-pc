@@ -1,6 +1,7 @@
 using System.IO;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.GameMain.Tutorials;
 
 using Xunit;
@@ -85,6 +86,70 @@ namespace CutTheRopeDX.Tests.Tutorials
             Assert.Equal(2.5f, TutorialValues.ParseHoldDuration("2.5", 5f, "scenario.xml", "duration"));
             Assert.Equal(0f, TutorialValues.ParseHoldDuration("0", 5f, "scenario.xml", "duration"));
             Assert.Equal(5.2f, TutorialValues.ParseHoldDuration(null, 5.2f, "scenario.xml", "duration"));
+        }
+
+        [Theory]
+        [InlineData("1.5")]
+        [InlineData("-0.1")]
+        [InlineData("oops")]
+        public void RejectsAnOpacityOutsideZeroToOne(string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => TutorialValues.ParseUnitInterval(value, 1f, "scenario.xml", "opacity"));
+
+            Assert.Contains("opacity", exception.Message);
+        }
+
+        [Fact]
+        public void ParsesOpacityAcrossItsWholeRange()
+        {
+            Assert.Equal(0f, TutorialValues.ParseUnitInterval("0", 1f, "scenario.xml", "opacity"));
+            Assert.Equal(0.4f, TutorialValues.ParseUnitInterval("0.4", 1f, "scenario.xml", "opacity"));
+            Assert.Equal(1f, TutorialValues.ParseUnitInterval("1", 0.5f, "scenario.xml", "opacity"));
+            Assert.Equal(1f, TutorialValues.ParseUnitInterval(null, 1f, "scenario.xml", "opacity"));
+        }
+
+        [Theory]
+        [InlineData("0")]
+        [InlineData("-1")]
+        [InlineData("oops")]
+        public void RejectsAMultiplierThatIsNotPositive(string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => TutorialValues.ParsePositiveFloat(value, 1f, "scenario.xml", "size"));
+
+            Assert.Contains("size", exception.Message);
+        }
+
+        [Fact]
+        public void ParsesAPositiveMultiplierAndItsDefault()
+        {
+            Assert.Equal(1.5f, TutorialValues.ParsePositiveFloat("1.5", 1f, "scenario.xml", "size"));
+            Assert.Equal(1f, TutorialValues.ParsePositiveFloat(null, 1f, "scenario.xml", "size"));
+        }
+
+        [Theory]
+        [InlineData("ff8800")]
+        [InlineData("#fff")]
+        [InlineData("#gggggg")]
+        [InlineData("#ff88000")]
+        public void RejectsAColorThatIsNotSixHexDigits(string value)
+        {
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => TutorialValues.ParseColor(value, "scenario.xml", "color"));
+
+            Assert.Contains("color", exception.Message);
+        }
+
+        [Fact]
+        public void ParsesAHexColorIntoUnitChannels()
+        {
+            RGBAColor parsed = TutorialValues.ParseColor("#ff8000", "scenario.xml", "color").Value;
+
+            Assert.Equal(1f, parsed.RedColor, 3);
+            Assert.Equal(128f / 255f, parsed.GreenColor, 3);
+            Assert.Equal(0f, parsed.BlueColor, 3);
+            Assert.Null(TutorialValues.ParseColor(null, "scenario.xml", "color"));
         }
 
         [Fact]
