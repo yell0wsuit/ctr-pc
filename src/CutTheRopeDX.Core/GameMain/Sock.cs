@@ -52,11 +52,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Creates the magic hat teleport flash animation, using the Christmas sock resource during the seasonal theme.
+        /// Creates the teleport flash animation from the same art the hat itself draws.
         /// </summary>
-        public void CreateAnimations()
+        /// <remarks>
+        /// The resource is passed in rather than read from the season, because a group past the
+        /// Christmas socks falls back to the magic hat and its flash has to come from there too.
+        /// </remarks>
+        /// <param name="resourceName">Texture resource this hat draws from.</param>
+        public void CreateAnimations(string resourceName)
         {
-            XmasSock = SpecialEvents.IsXmas ? Resources.Img.ObjSock : Resources.Img.ObjHat;
+            XmasSock = resourceName;
             light = Animation_createWithResID(XmasSock);
             light.anchor = 34;
             light.parentAnchor = 10;
