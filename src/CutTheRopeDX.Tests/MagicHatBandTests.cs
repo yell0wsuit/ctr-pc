@@ -142,6 +142,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TheColorSurvivesBeingDrawnThroughTheHat()
+        {
+            // The band draws last of the hat's visible layers, so whatever the renderer was told
+            // last is the band's own tint - and losing it to the scene graph's alpha-only tint is
+            // exactly how this went wrong the first time.
+            Sock hat = FirstHatOfGroup(2);
+            RecordingRenderBackend renderer = new();
+            PlatformServices.Render = renderer;
+
+            try
+            {
+                hat.Draw();
+
+                Assert.Equal(hat.Band.color.ToColor(), renderer.LastTexturedDrawColor);
+            }
+            finally
+            {
+                PlatformServices.Render = new ThrowingRenderBackend();
+            }
+        }
+
+        [Fact]
         public void TheBandStartsFromTheSameCornerAsTheHat()
         {
             // Both atlases place their frames inside the same source drawing, so the layers line up
