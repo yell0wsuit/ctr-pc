@@ -44,6 +44,14 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AHatRequiresItsTeleportSound()
+        {
+            string[] resources = ScanWithObject("<sock x=\"20\" y=\"40\" group=\"0\" />");
+
+            Assert.Contains(Resources.Snd.Teleport, resources);
+        }
+
+        [Fact]
         public void AHatWithinTheAuthoredGroupsNeedsNoBandAtlas()
         {
             string[] resources = ScanWithObject("<sock x=\"20\" y=\"40\" group=\"1\" />");
