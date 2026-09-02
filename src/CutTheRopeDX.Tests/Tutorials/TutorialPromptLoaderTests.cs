@@ -128,6 +128,36 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void AnInvalidPromptNamesTheElementItCameFrom()
+        {
+            // The map name alone leaves an author hunting through every tutorial in the level.
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load("<tutorial10 locale=\"en\" x=\"330\" y=\"120\" color=\"#75e545\" />"));
+
+            Assert.Contains("color=\"#75e545\"", exception.Message);
+            Assert.Contains("<tutorial10 locale=\"en\" x=\"330\" y=\"120\"", exception.Message);
+        }
+
+        [Fact]
+        public void SkippingInvalidPromptsDropsOnlyTheOffendingOne()
+        {
+            IReadOnlyList<TutorialPrompt> prompts = LoadTolerantly(
+                "<tutorial10 locale=\"en\" color=\"#75e545\" />",
+                "<tutorialText locale=\"en\" x=\"1\" y=\"2\" />");
+
+            Assert.True(Assert.Single(prompts).IsText);
+        }
+
+        [Fact]
+        public void AnInvalidPromptStillFailsTheLoadByDefault()
+        {
+            // What keeps a typo in shipped content from reaching a player as a prompt that never
+            // plays: the content tests load every map through this same strict path.
+            _ = Assert.Throws<InvalidDataException>(
+                () => Load("<tutorial10 locale=\"en\" color=\"#75e545\" />"));
+        }
+
+        [Fact]
         public void SizeAndLineHeightReachThePrompt()
         {
             LoadResult result = Load("<tutorialText locale=\"en\" size=\"1.5\" lineHeight=\"2\" />");
@@ -410,6 +440,12 @@ namespace CutTheRopeDX.Tests.Tutorials
             XElement node = XElement.Parse(element);
             IReadOnlyList<TutorialPrompt> prompts = loader.LoadAll([node]);
             return new LoadResult(prompts, factory);
+        }
+
+        private static IReadOnlyList<TutorialPrompt> LoadTolerantly(params string[] elements)
+        {
+            TutorialPromptLoader loader = Loader(new FakeVisualFactory(), "en");
+            return loader.LoadAll([.. elements.Select(XElement.Parse)], skipInvalid: true);
         }
 
         private static TutorialPromptLoader Loader(

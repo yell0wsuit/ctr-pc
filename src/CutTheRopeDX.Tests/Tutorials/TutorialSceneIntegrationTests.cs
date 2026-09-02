@@ -76,6 +76,21 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void ABadPromptIsDroppedWithoutTakingTheRestOfTheLevelWithIt()
+        {
+            // Authoring mistakes reach players through custom levels, where losing a prompt beats
+            // losing the session. The content tests still load every shipped map strictly.
+            GameScene scene = Scenario.New()
+                .Candy(100, 100)
+                .OmNom(160, 300)
+                .TutorialImage(10, 120, 80, new XAttribute("color", "#75e545"))
+                .TutorialText(80, 80)
+                .Build();
+
+            Assert.True(Assert.Single(scene.TutorialPrompts()).IsText);
+        }
+
+        [Fact]
         public void SampledCandyStatesReadTheirAuthoritativeLifecycleOwners()
         {
             AssertSampledCandyState("bubbled", (scene, candy) => candy.WholeBody.Bubble = new GameObject());

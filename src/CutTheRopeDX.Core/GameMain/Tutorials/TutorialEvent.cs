@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 
@@ -375,6 +376,17 @@ namespace CutTheRopeDX.GameMain.Tutorials
         internal static InvalidDataException Invalid(string source, string attribute, string value)
         {
             return new InvalidDataException($"{source}: invalid tutorial {attribute}=\"{value}\"");
+        }
+
+        /// <summary>Restates a validation failure with the element it came from.</summary>
+        /// <param name="error">Failure raised while parsing <paramref name="node"/>.</param>
+        /// <param name="node">Tutorial element being parsed.</param>
+        /// <returns>The same failure, naming the element an author has to go and fix.</returns>
+        internal static InvalidDataException InElement(InvalidDataException error, XElement node)
+        {
+            return new InvalidDataException(
+                $"{error.Message}{Environment.NewLine}  in {node}",
+                error);
         }
     }
 }

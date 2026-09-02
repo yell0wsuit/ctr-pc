@@ -36,7 +36,9 @@ namespace CutTheRopeDX.GameMain
                 offsetY,
                 mapOffsetX,
                 mapOffsetY);
-            _ = loader.LoadAll(nodes);
+            // A level a player wrote is worth more than the prompt that was typed wrong, so the
+            // game reports the bad element and plays on. Content tests load strictly.
+            _ = loader.LoadAll(nodes, skipInvalid: true);
         }
     }
 }

@@ -84,14 +84,37 @@ namespace CutTheRopeDX.GameMain.Tutorials
 
         /// <summary>Validates all nodes before instantiating the active locale and completing registration.</summary>
         /// <param name="nodes">Tutorial elements in XML order.</param>
+        /// <param name="skipInvalid">
+        /// Whether an invalid prompt is reported and dropped rather than failing the load. The game
+        /// passes <see langword="true"/> so one bad element costs a level its prompt instead of its
+        /// session; content tests leave it off, which is what keeps a typo out of shipped maps.
+        /// </param>
         /// <returns>The locale-selected prompts in XML order.</returns>
-        /// <exception cref="InvalidDataException">Thrown when any active or inactive locale copy is invalid.</exception>
-        internal IReadOnlyList<TutorialPrompt> LoadAll(IEnumerable<XElement> nodes)
+        /// <exception cref="InvalidDataException">
+        /// Thrown when any active or inactive locale copy is invalid and <paramref name="skipInvalid"/>
+        /// is <see langword="false"/>.
+        /// </exception>
+        internal IReadOnlyList<TutorialPrompt> LoadAll(IEnumerable<XElement> nodes, bool skipInvalid = false)
         {
             List<ParsedTutorial> parsedTutorials = [];
             foreach (XElement node in nodes)
             {
-                parsedTutorials.Add(Parse(node));
+                try
+                {
+                    parsedTutorials.Add(Parse(node));
+                }
+                catch (InvalidDataException exception)
+                {
+                    // The element is named here rather than at each throw site: every check runs
+                    // inside Parse, and only the caller still knows which node it was handed.
+                    InvalidDataException located = TutorialValues.InElement(exception, node);
+                    if (!skipInvalid)
+                    {
+                        throw located;
+                    }
+
+                    Console.Error.WriteLine(located.Message);
+                }
             }
 
             List<TutorialPrompt> loadedPrompts = [];
