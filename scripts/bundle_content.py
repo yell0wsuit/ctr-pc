@@ -31,7 +31,7 @@ CHUNK = 1 << 20  # 1 MiB
 # binary assets a new game build depends on, in the same change that publishes the
 # bundle - never before, or clients would be told they are behind a release that
 # doesn't exist yet.
-CONTENT_VERSION = 3
+CONTENT_VERSION = 5
 
 
 def _sha256(path: Path) -> str:
