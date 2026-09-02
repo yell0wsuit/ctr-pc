@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -15,15 +16,19 @@ namespace CutTheRopeDX.Tests.Tutorials
     {
         internal List<XElement> CreatedNodes { get; } = [];
 
+        /// <summary>Colors the loader asked each sign to be built with, in creation order.</summary>
+        internal List<RGBAColor?> SignColors { get; } = [];
+
         public BaseElement CreateText(XElement node, float x, float y, float width)
         {
             CreatedNodes.Add(node);
             return new BaseElement { x = x, y = y, width = (int)width };
         }
 
-        public BaseElement CreateSign(XElement node, int quad, float x, float y)
+        public BaseElement CreateSign(XElement node, int quad, float x, float y, RGBAColor? color)
         {
             CreatedNodes.Add(node);
+            SignColors.Add(color);
             return new CTRGameObject { x = x, y = y };
         }
     }

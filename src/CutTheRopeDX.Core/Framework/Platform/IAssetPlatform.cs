@@ -18,6 +18,25 @@ namespace CutTheRopeDX.Framework.Platform
         /// <returns>The loaded texture handle, or <see langword="null"/>.</returns>
         ITextureHandle ImageTexture(string contentPath);
 
+        /// <summary>
+        /// Builds a texture from a region of <paramref name="source"/> whose pixels keep their
+        /// alpha and wear <paramref name="tint"/>, or <see langword="null"/> without a device.
+        /// </summary>
+        /// <param name="source">Texture to copy the region out of.</param>
+        /// <param name="x">Left edge of the region in source pixels.</param>
+        /// <param name="y">Top edge of the region in source pixels.</param>
+        /// <param name="width">Region width in pixels.</param>
+        /// <param name="height">Region height in pixels.</param>
+        /// <param name="tint">Color the region's pixels take on.</param>
+        /// <returns>The recolored texture, or <see langword="null"/>.</returns>
+        ITextureHandle TintedRegion(
+            ITextureHandle source,
+            int x,
+            int y,
+            int width,
+            int height,
+            RGBAColor tint);
+
         /// <summary>Releases the cached content manager backing an image, if any.</summary>
         /// <param name="contentPath">Content-relative path, e.g. <c>images/obj_candy</c>.</param>
         void FreeImage(string contentPath);

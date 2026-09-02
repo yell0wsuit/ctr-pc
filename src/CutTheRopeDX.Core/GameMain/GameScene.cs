@@ -245,6 +245,8 @@ namespace CutTheRopeDX.GameMain
                 camera = null;
                 back?.Dispose();
                 back = null;
+                tutorialSignTints?.Dispose();
+                tutorialSignTints = null;
             }
             base.Dispose(disposing);
         }
@@ -1131,6 +1133,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Owns all tutorial prompt state for the loaded scene.</summary>
         private TutorialDirector tutorialDirector;
+
+        /// <summary>Owns the recolored sign frames the loaded level's tutorials draw from.</summary>
+        private TutorialSignTints tutorialSignTints;
 
         /// <summary>
         /// All active ghost objects in the loaded level.

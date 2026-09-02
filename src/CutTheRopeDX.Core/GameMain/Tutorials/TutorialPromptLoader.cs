@@ -27,8 +27,9 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="quad">Zero-based tutorial-sign quad.</param>
         /// <param name="x">World-space X position.</param>
         /// <param name="y">World-space Y position.</param>
+        /// <param name="color">Color the sign's ink wears, or <see langword="null"/> to leave it black.</param>
         /// <returns>The created sign visual.</returns>
-        BaseElement CreateSign(XElement node, int quad, float x, float y);
+        BaseElement CreateSign(XElement node, int quad, float x, float y, RGBAColor? color);
     }
 
     /// <summary>Validates tutorial XML, filters locale copies, and constructs registered prompts.</summary>
@@ -203,6 +204,13 @@ namespace CutTheRopeDX.GameMain.Tutorials
                 source,
                 "opacity");
             RGBAColor? color = TutorialValues.ParseColor(node.Attribute("color")?.Value, source, "color");
+            if (color is not null && !isText && TutorialSign.IsDrawnInColor(quad))
+            {
+                // A color replaces a sign's ink rather than multiplying over it, so on art that
+                // already carries its own colors it would flatten the drawing to a silhouette.
+                throw TutorialValues.Invalid(source, "color", node.Attribute("color")?.Value);
+            }
+
             float angle = TutorialValues.ParseOptionalFiniteFloat(
                 node.Attribute("angle")?.Value,
                 0f,
@@ -305,16 +313,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     x,
                     y,
                     ParseIntOrZero(node.Attribute("width")?.Value) * scale)
-                : visualFactory.CreateSign(node, parsed.Quad, x, y);
-            // Text reads only the element color's alpha and takes its own RGB from the override, so
-            // only a sign tints through the envelope.
-            RGBAColor peak = parsed.IsText || parsed.Color is null
-                ? RGBAColor.MakeRGBA(1f, 1f, 1f, parsed.Opacity)
-                : RGBAColor.MakeRGBA(
-                    parsed.Color.Value.RedColor,
-                    parsed.Color.Value.GreenColor,
-                    parsed.Color.Value.BlueColor,
-                    parsed.Opacity);
+                : visualFactory.CreateSign(node, parsed.Quad, x, y, parsed.Color);
+            // Neither kind of prompt tints through the envelope: text takes its RGB from its own
+            // color override, and a sign wears the color in its pixels. That leaves the envelope
+            // free to carry opacity alone.
+            RGBAColor peak = RGBAColor.MakeRGBA(1f, 1f, 1f, parsed.Opacity);
 
             visual.color = RGBAColor.MakeRGBA(peak.RedColor, peak.GreenColor, peak.BlueColor, 0f);
             // A path with no timeline attribute travels on the shared mover, whichever visual

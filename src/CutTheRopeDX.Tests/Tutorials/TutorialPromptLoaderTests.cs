@@ -77,20 +77,54 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
-        public void AnAuthoredColorTintsASignThroughTheEnvelope()
+        public void AnAuthoredColorIsBakedIntoTheSignRatherThanMultipliedOverIt()
         {
+            // The ink quads are pure black, so multiplying the envelope over them would leave them
+            // black whatever color was authored. The color goes into the sign's own pixels instead,
+            // which leaves the envelope free to fade opacity alone.
             LoadResult result = Load("<tutorial04 locale=\"en\" color=\"#ff0000\" />");
             TutorialPrompt prompt = Assert.Single(result.Prompts);
             Track colorTrack = prompt.Visual.GetTimeline(0).GetTrack(Track.TrackType.TRACK_COLOR);
 
-            Assert.Equal(1f, prompt.Color.Value.RedColor, 3);
+            Assert.Equal(1f, Assert.Single(result.Factory.SignColors).Value.RedColor, 3);
+            Assert.Equal(0f, Assert.Single(result.Factory.SignColors).Value.GreenColor, 3);
             Assert.All(
                 colorTrack.keyFrames,
                 keyFrame =>
                 {
                     Assert.Equal(1f, keyFrame.value.color.rgba.RedColor, 3);
-                    Assert.Equal(0f, keyFrame.value.color.rgba.GreenColor, 3);
+                    Assert.Equal(1f, keyFrame.value.color.rgba.GreenColor, 3);
+                    Assert.Equal(1f, keyFrame.value.color.rgba.BlueColor, 3);
                 });
+        }
+
+        [Fact]
+        public void AnUncoloredSignIsBuiltFromTheUntouchedAtlas()
+        {
+            LoadResult result = Load("<tutorial04 locale=\"en\" />");
+
+            Assert.Null(Assert.Single(result.Factory.SignColors));
+        }
+
+        [Theory]
+        [InlineData("tutorial10")]
+        [InlineData("tutorial11")]
+        public void RejectsAColorOnASignThatIsAlreadyDrawnInColor(string element)
+        {
+            // These two quads are full-color art; replacing their pixels would flatten them to a
+            // silhouette, so authoring a color on them is a mistake rather than an effect.
+            InvalidDataException exception = Assert.Throws<InvalidDataException>(
+                () => Load($"<{element} locale=\"en\" color=\"#ff0000\" />"));
+
+            Assert.Contains("color", exception.Message);
+        }
+
+        [Fact]
+        public void AnAlreadyColoredSignStillLoadsWithoutAColor()
+        {
+            LoadResult result = Load("<tutorial10 locale=\"en\" />");
+
+            _ = Assert.Single(result.Prompts);
         }
 
         [Fact]

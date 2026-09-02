@@ -2,6 +2,7 @@ using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Framework.Platform
@@ -25,6 +26,30 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
+        public ITextureHandle TintedRegion(
+            ITextureHandle source,
+            int x,
+            int y,
+            int width,
+            int height,
+            RGBAColor tint)
+        {
+            if (source is not MonoGameTexture texture)
+            {
+                return null;
+            }
+
+            // Content is built premultiplied, which is what the shared tint expects.
+            byte[] pixels = new byte[width * height * 4];
+            texture.Texture.GetData(0, new Rectangle(x, y, width, height), pixels, 0, pixels.Length);
+            PremultipliedTint.Apply(pixels, tint);
+
+            Texture2D tinted = new(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
+            tinted.SetData(pixels);
+            return new MonoGameTexture(tinted);
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             Images.Free(contentPath);
@@ -39,7 +64,7 @@ namespace CutTheRopeDX.Framework.Platform
             return FontManager.LoadFont(
                 config.FontFile,
                 config.Size,
-                new Microsoft.Xna.Framework.Color(config.Color.R, config.Color.G, config.Color.B, config.Color.A),
+                new Color(config.Color.R, config.Color.G, config.Color.B, config.Color.A),
                 config.Effects,
                 config.LineSpacing,
                 config.TopSpacing);

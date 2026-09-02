@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
             CTRRootController rootController = (CTRRootController)Application.SharedRootController();
             TutorialPromptLoader loader = new(
                 tutorialDirector,
-                new TutorialVisualFactory(),
+                new TutorialVisualFactory(tutorialSignTints),
                 rootController.GetMapName(),
                 LanguageHelper.CurrentCode,
                 levelAuthorsSplitCandy,

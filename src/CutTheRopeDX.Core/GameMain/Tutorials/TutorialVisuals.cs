@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
@@ -59,15 +60,29 @@ namespace CutTheRopeDX.GameMain.Tutorials
     /// <summary>Image visual for an XML-authored tutorial prompt.</summary>
     internal sealed class TutorialSign : CTRGameObject
     {
-        /// <summary>Creates a tutorial sign from the shared sign atlas.</summary>
+        /// <summary>
+        /// Whether a quad's art is drawn in its own colors. Every quad below this one is black ink
+        /// whose shape and shading live entirely in alpha, which is what lets a color replace it.
+        /// </summary>
         /// <param name="quad">Zero-based tutorial-sign quad.</param>
+        /// <returns><see langword="true"/> when the art carries colors of its own.</returns>
+        internal static bool IsDrawnInColor(int quad)
+        {
+            return quad >= FirstColorQuad;
+        }
+
+        private const int FirstColorQuad = 9;
+
+        /// <summary>Creates a tutorial sign from a sign texture.</summary>
+        /// <param name="texture">Sign atlas, or a recolored copy of one of its frames.</param>
+        /// <param name="quad">Zero-based quad within <paramref name="texture"/>.</param>
         /// <param name="x">World-space X position.</param>
         /// <param name="y">World-space Y position.</param>
         /// <returns>The initialized tutorial sign.</returns>
-        internal static TutorialSign Create(int quad, float x, float y)
+        internal static TutorialSign Create(CTRTexture2D texture, int quad, float x, float y)
         {
             TutorialSign sign = new();
-            _ = sign.InitWithTexture(Application.GetTexture(Resources.Img.TutorialSigns));
+            _ = sign.InitWithTexture(texture);
             sign.SetDrawQuad(quad);
             sign.x = x;
             sign.y = y;
@@ -76,7 +91,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
     }
 
     /// <summary>Creates the game's concrete tutorial visuals for the strict prompt loader.</summary>
-    internal sealed class TutorialVisualFactory : ITutorialVisualFactory
+    /// <param name="tints">Scene-owned cache of recolored sign frames.</param>
+    internal sealed class TutorialVisualFactory(TutorialSignTints tints) : ITutorialVisualFactory
     {
         /// <inheritdoc />
         public BaseElement CreateText(XElement node, float x, float y, float width)
@@ -85,9 +101,14 @@ namespace CutTheRopeDX.GameMain.Tutorials
         }
 
         /// <inheritdoc />
-        public BaseElement CreateSign(XElement node, int quad, float x, float y)
+        public BaseElement CreateSign(XElement node, int quad, float x, float y, RGBAColor? color)
         {
-            return TutorialSign.Create(quad, x, y);
+            CTRTexture2D atlas = Application.GetTexture(Resources.Img.TutorialSigns);
+
+            // A recolored frame stands alone, so it is drawn as its own first and only quad.
+            return color is null
+                ? TutorialSign.Create(atlas, quad, x, y)
+                : TutorialSign.Create(tints.Tinted(atlas, quad, color.Value), 0, x, y);
         }
     }
 }

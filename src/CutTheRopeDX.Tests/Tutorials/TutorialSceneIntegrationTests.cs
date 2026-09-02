@@ -47,6 +47,35 @@ namespace CutTheRopeDX.Tests.Tutorials
         }
 
         [Fact]
+        public void AColoredSignDrawsFromItsOwnRecoloredFrame()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(100, 100)
+                .OmNom(160, 300)
+                .TutorialImage(4, 120, 80, new XAttribute("color", "#ff0000"))
+                .Build();
+
+            Image sign = Assert.IsAssignableFrom<Image>(Assert.Single(scene.TutorialPrompts()).Visual);
+
+            // The recolored copy holds that one frame; the atlas it was cut from holds every sign.
+            Assert.Equal(1, sign.texture.quadsCount);
+        }
+
+        [Fact]
+        public void AnUncoloredSignDrawsStraightFromTheAtlas()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(100, 100)
+                .OmNom(160, 300)
+                .TutorialImage(4, 120, 80)
+                .Build();
+
+            Image sign = Assert.IsAssignableFrom<Image>(Assert.Single(scene.TutorialPrompts()).Visual);
+
+            Assert.True(sign.texture.quadsCount > 1);
+        }
+
+        [Fact]
         public void SampledCandyStatesReadTheirAuthoritativeLifecycleOwners()
         {
             AssertSampledCandyState("bubbled", (scene, candy) => candy.WholeBody.Bubble = new GameObject());

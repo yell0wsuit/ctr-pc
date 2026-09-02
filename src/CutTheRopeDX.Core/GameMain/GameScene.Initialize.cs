@@ -46,6 +46,10 @@ namespace CutTheRopeDX.GameMain
             bambooTubes = [];
             socks = [];
             tutorialDirector = new TutorialDirector(this);
+            // Recolored sign frames belong to the level that authored them, so a reload releases
+            // the ones the previous level built before it starts collecting its own.
+            tutorialSignTints?.Dispose();
+            tutorialSignTints = new TutorialSignTints();
             bouncers = [];
             rotatedCircles = [];
             rockets = [];
