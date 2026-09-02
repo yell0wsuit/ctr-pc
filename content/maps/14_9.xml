@@ -11,8 +11,8 @@
         <star x="212" y="312" timeout="-1" />
         <star x="276" y="314" timeout="-1" />
         <lantern x="269" y="77" path="-220,0" moveSpeed="40" candyCaptured="true" />
-        <sock x="50" y="396" group="2" angle="270" />
-        <sock x="208" y="395" group="2" angle="270" />
+        <sock x="50" y="396" group="1" angle="270" />
+        <sock x="208" y="395" group="1" angle="270" />
         <sock x="116" y="395" group="0" angle="270" />
         <sock x="276" y="398" group="0" angle="270" />
         <bubble x="53" y="312" />

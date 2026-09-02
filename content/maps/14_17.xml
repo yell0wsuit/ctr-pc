@@ -5,9 +5,9 @@
         <gameDesign twoParts="false" ropePhysicsSpeed="1.0" water="0" waterSpeed="0" />
     </layer>
     <layer name="Objects">
-        <sock x="215" y="99" group="2" angle="90" />
+        <sock x="215" y="99" group="1" angle="90" />
         <sock x="129" y="278" group="0" angle="270" path="100,0" moveSpeed="50" />
-        <sock x="42" y="276" group="2" angle="270" />
+        <sock x="42" y="276" group="1" angle="270" />
         <target x="276" y="421" />
         <lantern x="38" y="76" candyCaptured="true" />
         <sock x="125" y="100" group="0" angle="90" />
