@@ -6,6 +6,7 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -206,6 +207,7 @@ namespace CutTheRopeDX.GameMain
         public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
+            tutorialDirector.Fire(TutorialEvent.PumpFire);
             CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
@@ -257,6 +259,7 @@ namespace CutTheRopeDX.GameMain
 
             // The tube swallows the whole body; the guard above already refused a split candy.
             CandyBody body = ctx.WholeBody;
+            tutorialDirector.Fire(TutorialEvent.PipeEnter, body);
             GameObject candyVisual = body.Visual;
             ReleaseRopesForPoint(body.Point);
             ReleaseTransportAttachments(detached, body.Point);
@@ -373,6 +376,7 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     entry.Owner?.OnRopeCut(RopeCutReason.Severed);
+                    tutorialDirector.Fire(TutorialEvent.RopeCut, CandyBodyForPointOrNull(rope.tail));
                     return ropesCutCount;
                 }
             }
@@ -530,6 +534,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            tutorialDirector.Fire(TutorialEvent.SpiderSteal, capturedBody);
             CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
             GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);

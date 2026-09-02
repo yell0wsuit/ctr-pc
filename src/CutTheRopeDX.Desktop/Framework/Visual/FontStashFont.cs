@@ -23,6 +23,15 @@ namespace CutTheRopeDX.Framework.Visual
         private DynamicSpriteFont font;
 
         /// <summary>
+        /// Font system the base font came from, used to rasterize a genuinely sized font when an
+        /// element asks for its own size rather than rescaling glyphs rendered at another one.
+        /// </summary>
+        private FontSystem fontSystem;
+
+        /// <summary>Fonts rasterized for a per-element size multiplier, keyed by that multiplier.</summary>
+        private readonly Dictionary<float, DynamicSpriteFont> scaledFonts = [];
+
+        /// <summary>
         /// Font size in pixels.
         /// </summary>
         private float fontSize;
@@ -51,10 +60,12 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="effects">Stroke and shadow effect settings.</param>
         /// <param name="lineSpacing">Extra spacing between lines.</param>
         /// <param name="topSpacing">Extra spacing above the first line.</param>
+        /// <param name="system">Font system to rasterize per-element sizes from, or <see langword="null"/>.</param>
         /// <returns>The initialized <see cref="FontStashFont"/> instance.</returns>
-        public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f)
+        public FontStashFont InitWithFont(DynamicSpriteFont dynamicFont, float size, Color color, FontEffectSettings effects, float lineSpacing = 0f, float topSpacing = 0f, FontSystem system = null)
         {
             font = dynamicFont ?? throw new ArgumentNullException(nameof(dynamicFont));
+            fontSystem = system;
             fontSize = size;
             textColor = color;
             effectSettings = effects;
@@ -96,6 +107,28 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Returns the font rasterized at this font's size times <paramref name="sizeScale"/>. Falls
+        /// back to the unscaled font when no font system is available to rasterize from.
+        /// </summary>
+        /// <param name="sizeScale">Multiplier on the configured size.</param>
+        /// <returns>The sized font.</returns>
+        public DynamicSpriteFont GetInternalFont(float sizeScale)
+        {
+            if (fontSystem == null || sizeScale <= 0f || sizeScale == 1f)
+            {
+                return font;
+            }
+
+            if (!scaledFonts.TryGetValue(sizeScale, out DynamicSpriteFont scaled))
+            {
+                scaled = fontSystem.GetFont(fontSize * sizeScale);
+                scaledFonts[sizeScale] = scaled;
+            }
+
+            return scaled;
+        }
+
+        /// <summary>
         /// Returns the current effect settings.
         /// </summary>
         /// <returns>The active stroke and shadow effect settings.</returns>
@@ -117,6 +150,8 @@ namespace CutTheRopeDX.Framework.Visual
                 charImageCache.Clear();
 
                 font = null;
+                fontSystem = null;
+                scaledFonts.Clear();
             }
             base.Dispose(disposing);
         }
@@ -264,7 +299,7 @@ namespace CutTheRopeDX.Framework.Visual
                 return;
             }
 
-            DynamicSpriteFont internalFont = GetInternalFont();
+            DynamicSpriteFont internalFont = GetInternalFont(call.SizeScale);
             if (internalFont == null)
             {
                 Debug.WriteLine("FontStash: Internal font is null");
@@ -278,7 +313,11 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             FontEffectSettings effects = GetEffectSettings();
-            Color textColor = GetColor();
+            // An authored color replaces the font's own rather than modulating it: the small font is
+            // black, and modulating black by any color leaves it black.
+            Color textColor = call.ColorOverride is RGBAColor authored
+                ? ToXnaColor(authored.ToColor())
+                : GetColor();
 
             // Apply element and inherited color modulation (RGBAColor uses 0-1 floats; textColor uses 0-255 bytes)
             static byte ScaleByte(byte channel, float factor)
@@ -322,7 +361,8 @@ namespace CutTheRopeDX.Framework.Visual
             Color finalColor = MakeColor(textColor, inheritedRed, inheritedGreen, inheritedBlue, layerAlpha);
 
             float yPos = call.DrawY + GetTopSpacing();
-            int lineHeight = (int)(internalFont.LineHeight + GetLineOffset());
+            float lineAdvance = float.IsNaN(call.LineAdvanceOffset) ? GetLineOffset() : call.LineAdvanceOffset;
+            int lineHeight = (int)(internalFont.LineHeight + lineAdvance);
 
             GraphicsDevice graphicsDevice = Global.GraphicsDevice;
             // Queued sprite quads must render before text draws above them or changes render targets.

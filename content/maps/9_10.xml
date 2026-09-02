@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="320" height="480" />
-        <gameDesign ropePhysicsSpeed="1.0" special="1" twoParts="true" />
+        <gameDesign ropePhysicsSpeed="1.0" twoParts="true" />
     </layer>
     <layer name="Objects">
         <spike3 x="97" y="269" angle="90" size="3" toggled="1" />

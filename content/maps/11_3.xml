@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="640" height="480" />
-        <gameDesign ropePhysicsSpeed="1" special="1" twoParts="false" />
+        <gameDesign ropePhysicsSpeed="1" twoParts="false" />
     </layer>
     <layer name="Objects">
         <rotatedCircle x="320" y="109" size="100" handleAngle="-30" oneHandle="false" />

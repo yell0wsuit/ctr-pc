@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map width="320" height="480" gridSize="32" />
-        <gameDesign special="3" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" />
     </layer>
     <layer name="Objects">
         <target x="53" y="402" />
@@ -19,46 +19,46 @@
     </layer>
     <layer name="En">
         <tutorialText x="50" y="250" locale="en" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="en" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="en" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="Ru">
         <tutorialText x="50" y="250" locale="ru" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="ru" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="ru" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="nl">
         <tutorialText x="50" y="250" locale="nl" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="nl" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="nl" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="es">
         <tutorialText x="50" y="250" locale="es" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="es" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="es" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="pt_br">
         <tutorialText x="50" y="250" locale="pt_br" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="pt_br" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="pt_br" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="ja">
         <tutorialText x="50" y="250" locale="ja" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="ja" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="ja" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="de">
         <tutorialText x="50" y="250" locale="de" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="de" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="de" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="it">
         <tutorialText x="50" y="250" locale="it" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="it" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="it" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="zh">
         <tutorialText x="50" y="250" locale="zh" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="zh" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="zh" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="fr">
         <tutorialText x="50" y="250" locale="fr" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="fr" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="fr" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
     <layer name="ko">
         <tutorialText x="50" y="250" locale="ko" text="TUTORIAL_LVL_14_1_01" width="190" height="60" />
-        <tutorialText x="60" y="50" locale="ko" text="TUTORIAL_LVL_14_1_02" width="200" height="60" special="3" />
+        <tutorialText x="60" y="50" locale="ko" text="TUTORIAL_LVL_14_1_02" width="200" height="60" showOn="lanternCatch" />
     </layer>
 </map>

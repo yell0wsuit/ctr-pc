@@ -326,6 +326,30 @@ namespace CutTheRopeDX.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Initializes this texture from a handle built elsewhere, such as a recolored copy of
+        /// another texture's region, rather than from a content path.
+        /// </summary>
+        /// <param name="handle">Platform texture to wrap, or <see langword="null"/> without a device.</param>
+        /// <param name="w">Width of the handle in pixels.</param>
+        /// <param name="h">Height of the handle in pixels.</param>
+        /// <returns>The initialized texture instance.</returns>
+        /// <remarks>
+        /// The size is passed in rather than read back off the handle because a headless run has no
+        /// handle to read, and owning the handle rather than a content path is what makes
+        /// <see cref="Dispose(bool)"/> release it directly.
+        /// </remarks>
+        public CTRTexture2D InitWithHandle(ITextureHandle handle, int w, int h)
+        {
+            Reg();
+            textureHandle_ = handle;
+            ImageLoaded(w, h);
+            quadsCount = 0;
+            CalculateForQuickDrawing();
+            Resume();
+            return this;
+        }
+
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
@@ -333,7 +357,17 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 if (textureHandle_ != null)
                 {
-                    AssetPlatform.Current.FreeImage(_resName);
+                    // A texture built from a handle owns it outright; one loaded from content is
+                    // owned by the platform's image cache, which frees it by name.
+                    if (_resName == null)
+                    {
+                        textureHandle_.Dispose();
+                    }
+                    else
+                    {
+                        AssetPlatform.Current.FreeImage(_resName);
+                    }
+
                     textureHandle_ = null;
                 }
             }

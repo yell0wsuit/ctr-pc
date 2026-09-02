@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.GameMain.Tutorials;
 
 using Xunit;
 
@@ -69,6 +70,14 @@ namespace CutTheRopeDX.Tests.Interactions
         public static List<Bubble> Bubbles(this GameScene scene)
         {
             return Field<List<Bubble>>(scene, "bubbles");
+        }
+
+        /// <summary>All uncollected stars loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The star list.</returns>
+        public static List<Star> Stars(this GameScene scene)
+        {
+            return Field<List<Star>>(scene, "stars");
         }
 
         /// <summary>All time-freeze buttons loaded into the scene.</summary>
@@ -198,6 +207,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<Sock>>(scene, "socks");
         }
 
+        /// <summary>All steam tubes loaded into the scene.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The steam tube list.</returns>
+        public static List<SteamTube> SteamTubes(this GameScene scene)
+        {
+            return Field<List<SteamTube>>(scene, "tubes");
+        }
+
         /// <summary>All DJ discs.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The disc list.</returns>
@@ -252,6 +269,64 @@ namespace CutTheRopeDX.Tests.Interactions
         public static RecordingSceneDelegate Outcomes(this GameScene scene)
         {
             return (RecordingSceneDelegate)scene.gameSceneDelegate;
+        }
+
+        /// <summary>The scene's sole tutorial state owner.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The tutorial director.</returns>
+        public static TutorialDirector TutorialDirector(this GameScene scene)
+        {
+            return Field<TutorialDirector>(scene, "tutorialDirector");
+        }
+
+        /// <summary>All prompts registered with the scene's tutorial director in XML order.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The registered prompt list.</returns>
+        public static IReadOnlyList<TutorialPrompt> TutorialPrompts(this GameScene scene)
+        {
+            TutorialDirector director = scene.TutorialDirector();
+            FieldInfo field = typeof(TutorialDirector).GetField("prompts", Instance)
+                ?? throw new MissingFieldException(nameof(TutorialDirector), "prompts");
+            return (IReadOnlyList<TutorialPrompt>)field.GetValue(director);
+        }
+
+        /// <summary>The single prompt armed on one trigger event.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="tutorialEvent">Event the prompt listens on.</param>
+        /// <returns>The matching prompt.</returns>
+        public static TutorialPrompt TutorialPromptFor(this GameScene scene, TutorialEvent tutorialEvent)
+        {
+            return scene.TutorialPrompts().Single(prompt => prompt.Trigger.Event == tutorialEvent);
+        }
+
+        /// <summary>Every prompt registered on one trigger event, in XML order.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <param name="tutorialEvent">Event the prompts listen on.</param>
+        /// <returns>The matching prompts.</returns>
+        public static List<TutorialPrompt> TutorialPromptsFor(this GameScene scene, TutorialEvent tutorialEvent)
+        {
+            return [.. scene.TutorialPrompts().Where(prompt => prompt.Trigger.Event == tutorialEvent)];
+        }
+
+        /// <summary>
+        /// A prompt's current visual opacity. Read straight off the visual, because the alpha a
+        /// tutorial fades through is timeline state that <c>Draw()</c> only consumes.
+        /// </summary>
+        /// <param name="prompt">Prompt to read.</param>
+        /// <returns>The visual's alpha.</returns>
+        public static float Alpha(this TutorialPrompt prompt)
+        {
+            return prompt.Visual.color.AlphaChannel;
+        }
+
+        /// <summary>The keyframe times on a prompt visual's colour track.</summary>
+        /// <param name="prompt">Prompt to read.</param>
+        /// <param name="timelineIndex">Timeline holding the track.</param>
+        /// <returns>The keyframe time offsets, in order.</returns>
+        public static List<float> ColorKeyFrameTimes(this TutorialPrompt prompt, int timelineIndex)
+        {
+            Track track = prompt.Visual.GetTimeline(timelineIndex).GetTrack(Track.TrackType.TRACK_COLOR);
+            return [.. track.keyFrames.Select(keyFrame => keyFrame.timeOffset)];
         }
 
         /// <summary>Every physical candy body the scene currently offers to its systems.</summary>

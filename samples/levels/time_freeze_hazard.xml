@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map width="320" height="480" gridSize="32" />
-        <gameDesign special="1" twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" useTimeTravelRocketPhysics="true" />
+        <gameDesign twoParts="false" ropePhysicsSpeed="1" water="0" waterSpeed="0" useTimeTravelRocketPhysics="true" />
     </layer>
     <layer name="Objects">
         <target x="160" y="430" targetType="basic" />

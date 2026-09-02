@@ -52,6 +52,35 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <inheritdoc />
+        public ITextureHandle TintedRegion(
+            ITextureHandle source,
+            int x,
+            int y,
+            int width,
+            int height,
+            RGBAColor tint)
+        {
+            if (source is not SkiaTexture texture)
+            {
+                return null;
+            }
+
+            // Skia's public colors are straight, so the region is read back premultiplied here to
+            // give the shared tint the same pixels the desktop backend hands it.
+            SKImageInfo info = new(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+            using SKBitmap region = new(info);
+            if (!texture.Image.ReadPixels(info, region.GetPixels(), region.RowBytes, x, y))
+            {
+                return null;
+            }
+
+            byte[] pixels = region.Bytes;
+            PremultipliedTint.Apply(pixels, tint);
+            using SKImage tinted = SKImage.FromPixelCopy(info, pixels);
+            return new SkiaTexture(tinted.ToTextureImage(surface.Context));
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             if (_textures.Remove(contentPath, out SkiaTexture texture))

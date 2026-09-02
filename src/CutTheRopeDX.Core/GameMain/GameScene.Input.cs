@@ -5,6 +5,7 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -230,6 +231,7 @@ namespace CutTheRopeDX.GameMain
             {
                 if (steamTube != null && steamTube.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
+                    tutorialDirector.Fire(TutorialEvent.SteamBurst);
                     return true;
                 }
             }
@@ -345,7 +347,12 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
                     rotatedCircle2.lastTouch = camera.ScreenToWorld(tx, ty);
+                    bool discWasIdle = rotatedCircle2.operating == -1;
                     rotatedCircle2.operating = ti;
+                    if (discWasIdle)
+                    {
+                        tutorialDirector.Fire(TutorialEvent.DiscSpin);
+                    }
                     if (distanceToLeftHandle < 90f)
                     {
                         rotatedCircle2.SetIsLeftControllerActive(true);

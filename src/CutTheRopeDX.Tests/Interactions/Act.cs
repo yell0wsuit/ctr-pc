@@ -240,6 +240,24 @@ namespace CutTheRopeDX.Tests.Interactions
             HeadlessGame.StepFrames(scene, SettleFrames);
         }
 
+        /// <summary>
+        /// Has the candy collect the scene's star. The star is walked onto the candy rather than
+        /// the candy onto the star, so a candy held by a rope, hand, or mouse can still collect it.
+        /// </summary>
+        /// <param name="scene">Scene under test.</param>
+        /// <param name="candy">Candy that collects.</param>
+        /// <param name="starIndex">Index of the star in the scene.</param>
+        public static void CollectStar(GameScene scene, CandyContext candy, int starIndex = 0)
+        {
+            Star star = scene.Stars()[starIndex];
+            Chase(
+                scene,
+                candy,
+                position => MoveTo(star, position),
+                () => !scene.Stars().Contains(star),
+                "the candy never collected the star");
+        }
+
         /// <summary>Captures the candy in the scene's lantern.</summary>
         /// <param name="scene">Scene under test.</param>
         /// <param name="candy">Candy to capture.</param>

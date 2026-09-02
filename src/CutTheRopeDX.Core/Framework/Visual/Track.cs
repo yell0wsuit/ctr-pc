@@ -711,6 +711,12 @@ namespace CutTheRopeDX.Framework.Visual
 
             if (transition is KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN or KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT)
             {
+                // Each axis advances by v0*dt + a*dt^2/2, the exact travel under constant
+                // acceleration, so an eased segment lands on its keyframe instead of stopping short
+                // and being snapped there when the segment ends. The velocity has to be read before
+                // the acceleration is folded into it: keyFrame aliases currentStepPerSecond, so
+                // reading it afterwards applies a whole extra a*dt^2 every frame, which over a
+                // segment is 2*averageSpeed*dt of error - 14 units on a half-second tutorial sweep.
                 KeyFrame keyFrame = thiss.currentStepPerSecond;
                 switch (thiss.type)
                 {
@@ -718,69 +724,68 @@ namespace CutTheRopeDX.Framework.Visual
                         {
                             float accelDeltaX = thiss.currentStepAcceleration.value.pos.x * delta;
                             float accelDeltaY = thiss.currentStepAcceleration.value.pos.y * delta;
+                            float speedX = keyFrame.value.pos.x;
+                            float speedY = keyFrame.value.pos.y;
                             thiss.currentStepPerSecond.value.pos.x += accelDeltaX;
                             thiss.currentStepPerSecond.value.pos.y += accelDeltaY;
-                            timeline.element.x += (keyFrame.value.pos.x + (accelDeltaX / 2f)) * delta;
-                            timeline.element.y += (keyFrame.value.pos.y + (accelDeltaY / 2f)) * delta;
+                            timeline.element.x += (speedX + (accelDeltaX / 2f)) * delta;
+                            timeline.element.y += (speedY + (accelDeltaY / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_SCALE:
                         {
                             float accelDeltaScaleX = thiss.currentStepAcceleration.value.scale.scaleX * delta;
                             float accelDeltaScaleY = thiss.currentStepAcceleration.value.scale.scaleY * delta;
+                            float speedScaleX = keyFrame.value.scale.scaleX;
+                            float speedScaleY = keyFrame.value.scale.scaleY;
                             thiss.currentStepPerSecond.value.scale.scaleX += accelDeltaScaleX;
                             thiss.currentStepPerSecond.value.scale.scaleY += accelDeltaScaleY;
-                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + (accelDeltaScaleX / 2f)) * delta;
-                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + (accelDeltaScaleY / 2f)) * delta;
+                            timeline.element.scaleX += (speedScaleX + (accelDeltaScaleX / 2f)) * delta;
+                            timeline.element.scaleY += (speedScaleY + (accelDeltaScaleY / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_ROTATION:
                         {
                             float accelDeltaRotation = thiss.currentStepAcceleration.value.rotation.angle * delta;
+                            float speedRotation = keyFrame.value.rotation.angle;
                             thiss.currentStepPerSecond.value.rotation.angle += accelDeltaRotation;
-                            timeline.element.rotation += (keyFrame.value.rotation.angle + (accelDeltaRotation / 2f)) * delta;
+                            timeline.element.rotation += (speedRotation + (accelDeltaRotation / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_SKEW:
                         {
                             float accelDeltaSkewX = thiss.currentStepAcceleration.value.skew.skewX * delta;
                             float accelDeltaSkewY = thiss.currentStepAcceleration.value.skew.skewY * delta;
+                            float speedSkewX = keyFrame.value.skew.skewX;
+                            float speedSkewY = keyFrame.value.skew.skewY;
                             thiss.currentStepPerSecond.value.skew.skewX += accelDeltaSkewX;
                             thiss.currentStepPerSecond.value.skew.skewY += accelDeltaSkewY;
-                            timeline.element.skewX += (keyFrame.value.skew.skewX + (accelDeltaSkewX / 2f)) * delta;
-                            timeline.element.skewY += (keyFrame.value.skew.skewY + (accelDeltaSkewY / 2f)) * delta;
+                            timeline.element.skewX += (speedSkewX + (accelDeltaSkewX / 2f)) * delta;
+                            timeline.element.skewY += (speedSkewY + (accelDeltaSkewY / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_COLOR:
                         {
-                            ColorParams color = thiss.currentStepPerSecond.value.color;
-                            color.rgba.RedColor += thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
-                            ColorParams color2 = thiss.currentStepPerSecond.value.color;
-                            color2.rgba.GreenColor += thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
-                            ColorParams color3 = thiss.currentStepPerSecond.value.color;
-                            color3.rgba.BlueColor += thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
-                            ColorParams color4 = thiss.currentStepPerSecond.value.color;
-                            color4.rgba.AlphaChannel += thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
+                            // ColorParams is a reference type, so the acceleration must be folded
+                            // into the speed exactly once per frame, and the speed read before it.
                             float accelDeltaRed = thiss.currentStepAcceleration.value.color.rgba.RedColor * delta;
                             float accelDeltaGreen = thiss.currentStepAcceleration.value.color.rgba.GreenColor * delta;
                             float accelDeltaBlue = thiss.currentStepAcceleration.value.color.rgba.BlueColor * delta;
                             float accelDeltaAlpha = thiss.currentStepAcceleration.value.color.rgba.AlphaChannel * delta;
-                            ColorParams color5 = thiss.currentStepPerSecond.value.color;
-                            color5.rgba.RedColor += accelDeltaRed;
-                            ColorParams color6 = thiss.currentStepPerSecond.value.color;
-                            color6.rgba.GreenColor += accelDeltaGreen;
-                            ColorParams color7 = thiss.currentStepPerSecond.value.color;
-                            color7.rgba.BlueColor += accelDeltaBlue;
-                            ColorParams color8 = thiss.currentStepPerSecond.value.color;
-                            color8.rgba.AlphaChannel += accelDeltaAlpha;
+                            float speedRed = keyFrame.value.color.rgba.RedColor;
+                            float speedGreen = keyFrame.value.color.rgba.GreenColor;
+                            float speedBlue = keyFrame.value.color.rgba.BlueColor;
+                            float speedAlpha = keyFrame.value.color.rgba.AlphaChannel;
+                            ColorParams speed = thiss.currentStepPerSecond.value.color;
+                            speed.rgba.RedColor += accelDeltaRed;
+                            speed.rgba.GreenColor += accelDeltaGreen;
+                            speed.rgba.BlueColor += accelDeltaBlue;
+                            speed.rgba.AlphaChannel += accelDeltaAlpha;
                             BaseElement element = timeline.element;
-                            element.color.RedColor += (keyFrame.value.color.rgba.RedColor + (accelDeltaRed / 2f)) * delta;
-                            BaseElement element2 = timeline.element;
-                            element2.color.GreenColor += (keyFrame.value.color.rgba.GreenColor + (accelDeltaGreen / 2f)) * delta;
-                            BaseElement element3 = timeline.element;
-                            element3.color.BlueColor += (keyFrame.value.color.rgba.BlueColor + (accelDeltaBlue / 2f)) * delta;
-                            BaseElement element4 = timeline.element;
-                            element4.color.AlphaChannel += (keyFrame.value.color.rgba.AlphaChannel + (accelDeltaAlpha / 2f)) * delta;
+                            element.color.RedColor += (speedRed + (accelDeltaRed / 2f)) * delta;
+                            element.color.GreenColor += (speedGreen + (accelDeltaGreen / 2f)) * delta;
+                            element.color.BlueColor += (speedBlue + (accelDeltaBlue / 2f)) * delta;
+                            element.color.AlphaChannel += (speedAlpha + (accelDeltaAlpha / 2f)) * delta;
                             break;
                         }
 

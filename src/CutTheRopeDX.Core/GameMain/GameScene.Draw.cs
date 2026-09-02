@@ -135,14 +135,8 @@ namespace CutTheRopeDX.GameMain
                 t.targetObject?.Draw();
                 t.controller?.DrawSleepOverlays();
             }
-            foreach (object tutorialText in tutorials)
-            {
-                ((Text)tutorialText).Draw();
-            }
-            foreach (object tutorialImage in tutorialImages)
-            {
-                ((GameObject)tutorialImage).Draw();
-            }
+            tutorialDirector.DrawTexts();
+            tutorialDirector.DrawImages();
             if (antsPaths != null)
             {
                 foreach (AntsPath antsPath in antsPaths)

@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -510,6 +511,7 @@ namespace CutTheRopeDX.GameMain
                     if (collectingBody != null)
                     {
                         collectingBody.BlinkAnimation?.PlayTimeline(1);
+                        tutorialDirector.Fire(TutorialEvent.StarCollected, collectingBody);
                         starsCollected++;
                         // Update RPC with new star count
                         PlatformServices.RichPresence?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
@@ -595,6 +597,7 @@ namespace CutTheRopeDX.GameMain
                     bubble3.RemoveChildWithID(0);
                     conveyors.Remove(bubble3);
                     captured = true;
+                    tutorialDirector.Fire(TutorialEvent.BubbleCapture, body);
                     break;
                 }
 
@@ -639,14 +642,7 @@ namespace CutTheRopeDX.GameMain
                     ghost?.Update(delta);
                 }
             }
-            foreach (object obj5 in tutorials)
-            {
-                ((Text)obj5).Update(delta);
-            }
-            foreach (object obj6 in tutorialImages)
-            {
-                ((GameObject)obj6).Update(delta);
-            }
+            tutorialDirector.Update(delta);
             foreach (object obj7 in pumps)
             {
                 Pump pump = (Pump)obj7;
@@ -748,8 +744,7 @@ namespace CutTheRopeDX.GameMain
                         pendingLanternCapture,
                         0.05f);
 
-                    // Trigger special tutorial for lantern
-                    TriggerSpecialTutorial(3);
+                    tutorialDirector.Fire(TutorialEvent.LanternCatch, body);
                     break;
                 }
             }
@@ -818,7 +813,10 @@ namespace CutTheRopeDX.GameMain
                         if (MouseGrab.ShouldGrab(miceManager.ActiveMouseHasCandy(), candyPresent: true, miceManager.IsActiveMouseInRange(body.Point)))
                         {
                             miceManager.GrabWithActiveMouse(body.Point, body.Visual);
-                            TriggerSpecialTutorial(4);
+                            if (miceManager.CarriesCandy(body.Point))
+                            {
+                                tutorialDirector.Fire(TutorialEvent.MouseGrab, body);
+                            }
                             break;
                         }
                     }
@@ -886,6 +884,7 @@ namespace CutTheRopeDX.GameMain
                                 break;
                             }
 
+                            tutorialDirector.Fire(TutorialEvent.SockCatch, body);
                             sock4.state = Sock.SOCK_THROWING;
                             sock4.idleTimeout = 0.8f;
                             ReleaseRopesForPoint(body.Point);
@@ -1232,6 +1231,9 @@ namespace CutTheRopeDX.GameMain
                             continue;
                         }
 
+                        tutorialDirector.Fire(
+                            spike.electro ? TutorialEvent.ElectroHit : TutorialEvent.SpikeHit,
+                            body);
                         BreakCandyBody(body);
                         return;
                     }
@@ -1268,6 +1270,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             DetachHandsForPoint(body.Point);
                         }
+                        tutorialDirector.Fire(TutorialEvent.BouncerHit, body);
                         HandleBouncePtDelta(bouncer, body.Point, delta);
                     }
                 }
@@ -1506,6 +1509,7 @@ namespace CutTheRopeDX.GameMain
                                 continue;
                             }
 
+                            tutorialDirector.Fire(TutorialEvent.CandyEaten, body);
                             body.Visual.visible = false;
                             _ = t.Feeding.TryBeginChewing();
                             t.controller?.PlayChewing();
@@ -1566,26 +1570,6 @@ namespace CutTheRopeDX.GameMain
                     }
                     GameLost();
                     return;
-                }
-            }
-            if (special != 0 && special == 1 && !candies[0].HasNoWholeBodyInPlay && candies[0].WholeBody.Bubble != null && candy.y < 400f && candy.x > 1200f)
-            {
-                special = 0;
-                foreach (object obj16 in tutorials)
-                {
-                    TutorialText tutorial2 = (TutorialText)obj16;
-                    if (tutorial2.special == 1)
-                    {
-                        tutorial2.PlayTimeline(0);
-                    }
-                }
-                foreach (object obj17 in tutorialImages)
-                {
-                    GameObjectSpecial tutorialImage2 = (GameObjectSpecial)obj17;
-                    if (tutorialImage2.special == 1)
-                    {
-                        tutorialImage2.PlayTimeline(0);
-                    }
                 }
             }
             if (clickToCut && !ignoreTouches && !AcceptsVisualOnlyPointerInput)
@@ -1927,7 +1911,10 @@ namespace CutTheRopeDX.GameMain
                     hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
                     hand.GrabCandy();
                     selectedHandIndex = hands.IndexOf(hand);
-                    _ = ctx.Lifecycle.Attachments.CaptureByHand(hand);
+                    if (ctx.Lifecycle.Attachments.CaptureByHand(hand))
+                    {
+                        tutorialDirector.Fire(TutorialEvent.HandGrab, grabbedBody);
+                    }
 
                     // Take this candy off the ants (if it was riding them). Other candies keep
                     // their conveyor; ants won't re-grab this one while the hand holds it.
@@ -2003,50 +1990,5 @@ namespace CutTheRopeDX.GameMain
             clapEffect.PlayTimeline(0);
         }
 
-        /// <summary>
-        /// Plays the matching special tutorial and hides all other special tutorial prompts.
-        /// </summary>
-        /// <param name="tutorialId">Special tutorial identifier to trigger.</param>
-        private void TriggerSpecialTutorial(int tutorialId)
-        {
-            if (special != tutorialId)
-            {
-                return;
-            }
-
-            special = 0;
-
-            foreach (object tutorial in tutorials)
-            {
-                TutorialText tutorialText = (TutorialText)tutorial;
-                if (tutorialText.special == tutorialId)
-                {
-                    tutorialText.PlayTimeline(0);
-                }
-                else
-                {
-                    Timeline currentTimeline = tutorialText.GetCurrentTimeline();
-                    currentTimeline?.JumpToTrackKeyFrame(3, 2);
-                    tutorialText.color = RGBAColor.transparentRGBA;
-                    currentTimeline?.StopTimeline();
-                }
-            }
-
-            foreach (object tutorialImageObj in tutorialImages)
-            {
-                GameObjectSpecial tutorialImage = (GameObjectSpecial)tutorialImageObj;
-                if (tutorialImage.special == tutorialId)
-                {
-                    tutorialImage.PlayTimeline(0);
-                }
-                else
-                {
-                    Timeline currentTimeline = tutorialImage.GetCurrentTimeline();
-                    currentTimeline?.JumpToTrackKeyFrame(3, 2);
-                    tutorialImage.color = RGBAColor.transparentRGBA;
-                    currentTimeline?.StopTimeline();
-                }
-            }
-        }
     }
 }

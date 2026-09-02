@@ -2,7 +2,7 @@
 <map>
     <layer name="settings">
         <map gridSize="32" width="640" height="480" />
-        <gameDesign special="1" ropePhysicsSpeed="1.0" mapOffsetX="40" />
+        <gameDesign ropePhysicsSpeed="1.0" mapOffsetX="40" />
     </layer>
     <layer name="Objects">
         <pump x="120" y="97" angle="90" />

@@ -2,6 +2,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -44,8 +45,11 @@ namespace CutTheRopeDX.GameMain
             tubes = [];
             bambooTubes = [];
             socks = [];
-            tutorialImages = [];
-            tutorials = [];
+            tutorialDirector = new TutorialDirector(this);
+            // Recolored sign frames belong to the level that authored them, so a reload releases
+            // the ones the previous level built before it starts collecting its own.
+            tutorialSignTints?.Dispose();
+            tutorialSignTints = new TutorialSignTints();
             bouncers = [];
             rotatedCircles = [];
             rockets = [];

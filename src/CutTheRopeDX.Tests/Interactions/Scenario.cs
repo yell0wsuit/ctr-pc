@@ -30,7 +30,6 @@ namespace CutTheRopeDX.Tests.Interactions
         private readonly List<XAttribute> design = [];
         private int width = DefaultWidth;
         private int height = DefaultHeight;
-        private int special = 1;
         private bool splitCandy;
 
         internal Scenario()
@@ -268,6 +267,15 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(Node("bubble", x, y));
         }
 
+        /// <summary>Adds a collectable star.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Star(int x, int y)
+        {
+            return Add(Node("star", x, y));
+        }
+
         /// <summary>Adds a Time Travel axe body.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
@@ -473,6 +481,18 @@ namespace CutTheRopeDX.Tests.Interactions
             return Add(spikes);
         }
 
+        /// <summary>Adds a steam tube.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="angle">Tube angle in degrees.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario SteamTube(int x, int y, float angle = 0f)
+        {
+            XElement steamTube = Node("steamTube", x, y);
+            steamTube.SetAttributeValue("angle", Num(angle));
+            return Add(steamTube);
+        }
+
         /// <summary>Adds a time-freeze button.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
@@ -534,11 +554,33 @@ namespace CutTheRopeDX.Tests.Interactions
             return this;
         }
 
-        /// <summary>Sets the authored special-tutorial identifier.</summary>
-        public Scenario Special(int specialId)
+        /// <summary>Adds a tutorial text element with optional authored schema attributes.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="text">Localization key.</param>
+        /// <param name="attributes">Additional tutorial XML attributes.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario TutorialText(int x, int y, string text = "TUTORIAL_1", params XAttribute[] attributes)
         {
-            special = specialId;
-            return this;
+            XElement tutorial = Node("tutorialText", x, y);
+            tutorial.SetAttributeValue("locale", "en");
+            tutorial.SetAttributeValue("text", text);
+            AddAttributes(tutorial, attributes);
+            return Add(tutorial);
+        }
+
+        /// <summary>Adds a tutorial image element with optional authored schema attributes.</summary>
+        /// <param name="number">One-based tutorial sign number.</param>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="attributes">Additional tutorial XML attributes.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario TutorialImage(int number, int x, int y, params XAttribute[] attributes)
+        {
+            XElement tutorial = Node($"tutorial{number.ToString("00", CultureInfo.InvariantCulture)}", x, y);
+            tutorial.SetAttributeValue("locale", "en");
+            AddAttributes(tutorial, attributes);
+            return Add(tutorial);
         }
 
         /// <summary>Boots the scenario and returns the live scene.</summary>
@@ -558,7 +600,6 @@ namespace CutTheRopeDX.Tests.Interactions
                 new XElement(
                     "gameDesign",
                     new XAttribute("ropePhysicsSpeed", "1.0"),
-                    new XAttribute("special", special),
                     new XAttribute("twoParts", Flag(splitCandy)),
                     design));
 
@@ -597,6 +638,14 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             objects.Add(node);
             return this;
+        }
+
+        private static void AddAttributes(XElement node, IEnumerable<XAttribute> attributes)
+        {
+            foreach (XAttribute attribute in attributes)
+            {
+                node.SetAttributeValue(attribute.Name, attribute.Value);
+            }
         }
 
         /// <summary>Level-space position converted to the world vector the scene uses.</summary>

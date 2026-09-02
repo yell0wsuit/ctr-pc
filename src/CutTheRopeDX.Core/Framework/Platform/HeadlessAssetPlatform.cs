@@ -38,6 +38,18 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
+        public ITextureHandle TintedRegion(
+            ITextureHandle source,
+            int x,
+            int y,
+            int width,
+            int height,
+            RGBAColor tint)
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             // No texture is ever created headless, so there is nothing to release.

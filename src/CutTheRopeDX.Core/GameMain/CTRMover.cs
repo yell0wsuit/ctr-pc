@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -17,6 +18,36 @@ namespace CutTheRopeDX.GameMain
     /// <param name="r_">Rotation speed in degrees per second.</param>
     internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
+        /// <summary>
+        /// Builds a started mover from an authored <c>path</c>, or <see langword="null"/> when none
+        /// is authored. Shared so a tutorial text prompt travels exactly like any other object given
+        /// the same attributes, speed scale included.
+        /// </summary>
+        /// <param name="xml">Element carrying <c>path</c>, <c>moveSpeed</c> and <c>rotateSpeed</c>.</param>
+        /// <param name="start">World position the path is relative to.</param>
+        /// <param name="angle">Starting angle in degrees.</param>
+        /// <returns>The started mover, or <see langword="null"/>.</returns>
+        public static CTRMover FromXml(XElement xml, Vector start, float angle)
+        {
+            string pathString = xml.Attribute("path")?.Value ?? string.Empty;
+            if (pathString.Length == 0)
+            {
+                return null;
+            }
+
+            CTRMover mover = new(
+                PathPointCapacity(pathString),
+                ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * ActivePhysicsConstants.MoverSpeedScale,
+                ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value))
+            {
+                angle_ = angle,
+            };
+            mover.angle_initial = mover.angle_;
+            mover.SetPathFromStringandStart(pathString, start);
+            mover.Start();
+            return mover;
+        }
+
         /// <summary>
         /// Returns the number of path points <see cref="SetPathFromStringandStart"/> will emit for
         /// <paramref name="p"/>. Callers size the mover from this: <see cref="Mover.AddPathPoint"/>

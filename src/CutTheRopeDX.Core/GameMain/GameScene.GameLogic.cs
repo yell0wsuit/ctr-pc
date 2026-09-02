@@ -6,11 +6,86 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
+        IReadOnlyList<CandyBody> ITutorialWorld.ActiveBodies => [.. ActiveCandyBodies()];
+
+        /// <summary>
+        /// Snapshots every rocket in the level with the body carrying it, so the director can diff
+        /// ignition per rocket instead of against one scene-wide flying flag.
+        /// </summary>
+        IReadOnlyList<TutorialRocketState> ITutorialWorld.Rockets
+        {
+            get
+            {
+                if (rockets is null || rockets.Count == 0)
+                {
+                    return [];
+                }
+
+                List<TutorialRocketState> states = new(rockets.Count);
+                foreach (Rocket rocket in rockets)
+                {
+                    if (rocket is not null)
+                    {
+                        states.Add(new TutorialRocketState(rocket, BodyCarryingRocket(rocket), rocket.state));
+                    }
+                }
+
+                return states;
+            }
+        }
+
+        /// <summary>Finds the active candy body a rocket is bound to, if any.</summary>
+        /// <param name="rocket">Rocket to resolve.</param>
+        /// <returns>The carrying body, or <see langword="null"/> when the rocket is unbound.</returns>
+        private CandyBody BodyCarryingRocket(Rocket rocket)
+        {
+            foreach (CandyBody body in ActiveCandyBodies())
+            {
+                if (body.Owner?.Lifecycle.Attachments.Rocket == rocket)
+                {
+                    return body;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Samples one sustained tutorial state against a single candy body. Every answer reads the
+        /// lifecycle owner that already holds the state, so the director never caches candy state of
+        /// its own.
+        /// </summary>
+        /// <param name="tutorialEvent">Sampled state to test.</param>
+        /// <param name="body">Candy body to test it against.</param>
+        /// <returns><see langword="true"/> when the state currently holds for that body.</returns>
+        bool ITutorialWorld.Holds(TutorialEvent tutorialEvent, CandyBody body)
+        {
+#pragma warning disable IDE0072 // Only the sampled subset of the vocabulary is answerable here.
+            return tutorialEvent switch
+            {
+                TutorialEvent.Bubbled => body.Bubble != null,
+                TutorialEvent.InLantern => body.Owner?.Lifecycle.Attachments.InLantern == true,
+                TutorialEvent.CarriedByAnt => body.Owner?.Lifecycle.Attachments.AntSegment != null,
+                TutorialEvent.CarriedBySnail => ActiveSnailCountForPoint(body.Point) > 0,
+                TutorialEvent.TimeFrozen => timeFrozen,
+                TutorialEvent.GravityInverted => gravityState.IsInverted,
+
+                // Region-only: the director's authored area is the whole condition.
+                TutorialEvent.CandyMoved => true,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(tutorialEvent),
+                    tutorialEvent,
+                    "Only sampled tutorial states can be evaluated against a candy body."),
+            };
+#pragma warning restore IDE0072
+        }
+
         /// <summary>
         /// Every physical candy body the scene currently offers to its systems: one whole body per
         /// present candy and one per surviving half of a split candy. A candy that is removed or
@@ -460,6 +535,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
+            tutorialDirector.Fire(TutorialEvent.GameWon);
             pendingLevelResult = CalculateScore();
 
             EndActiveFingerTraces();
@@ -526,6 +602,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            tutorialDirector.Fire(TutorialEvent.GameLost);
             EndActiveFingerTraces();
             conveyors?.CancelAllDrags();
             dd.CancelAllDispatches();
@@ -655,6 +732,7 @@ namespace CutTheRopeDX.GameMain
                 bubble.capturedByBulb = false;
             }
 
+            tutorialDirector.Fire(TutorialEvent.BubblePop, body);
             body.Bubble = null;
             body.BubbleHasGhost = false;
             _ = (body.BubbleAnimation?.visible = false);
@@ -1076,6 +1154,7 @@ namespace CutTheRopeDX.GameMain
         public void OnButtonPressed(GameSceneButtonId _)
         {
             gravityState.Toggle();
+            tutorialDirector.Fire(TutorialEvent.GravityFlip);
             CTRSoundMgr.PlaySound(gravityState.IsInverted
                 ? Resources.Snd.GravityOn
                 : Resources.Snd.GravityOff);
