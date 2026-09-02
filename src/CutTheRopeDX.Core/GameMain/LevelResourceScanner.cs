@@ -100,6 +100,10 @@ namespace CutTheRopeDX.GameMain
                         break;
                     case "sock":
                         _ = resources.Add(SpecialEvents.IsXmas ? Resources.Img.ObjSock : Resources.Img.ObjHat);
+
+                        // Groups past the two the art bakes in wear a tinted band from this atlas.
+                        _ = resources.Add(Resources.Img.ObjHatMaskable);
+
                         _ = resources.Add(SpecialEvents.IsXmas ? Resources.Snd.TeleportXmas : Resources.Snd.Teleport);
                         break;
                     case "ghost":

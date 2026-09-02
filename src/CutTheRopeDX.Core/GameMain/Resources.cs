@@ -337,6 +337,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjPump = "obj_pump";
             public const string TutorialSigns = "tutorial_signs";
             public const string ObjHat = "obj_hat";
+            public const string ObjHatMaskable = "obj_hat_maskable";
             public const string ObjBouncer = "obj_bouncer";
             public const string ObjSpikes = "obj_spikes";
             public const string ObjElectrodes = "obj_electrodes";

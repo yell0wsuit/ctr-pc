@@ -212,6 +212,16 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <inheritdoc />
+        public override void PreDraw()
+        {
+            base.PreDraw();
+            if (useFullColorTint && !RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
+            {
+                Renderer.SetColor(color.ToColor());
+            }
+        }
+
+        /// <inheritdoc />
         public override void Draw()
         {
             PreDraw();
@@ -300,6 +310,12 @@ namespace CutTheRopeDX.Framework.Visual
         /// Whether to restore trimmed transparency offsets when drawing quads.
         /// </summary>
         public bool restoreCutTransparency;
+
+        /// <summary>
+        /// Whether drawing uses every channel of <see cref="BaseElement.color"/> instead of the
+        /// scene graph's legacy alpha-only tint.
+        /// </summary>
+        public bool useFullColorTint;
 
         /// <summary>
         /// Index of the quad to draw, or -1 to draw the full image.

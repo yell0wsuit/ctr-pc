@@ -17,6 +17,8 @@ namespace CutTheRopeDX.Tests
 
         public BlendingFactor LastBlendDestination { get; private set; }
 
+        public Color LastTexturedDrawColor { get; private set; }
+
         public void Enable(int cap) { }
 
         public void Disable(int cap) { }
@@ -81,11 +83,17 @@ namespace CutTheRopeDX.Tests
 
         public void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount) { }
 
-        public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount) { }
+        public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            LastTexturedDrawColor = color;
+        }
 
         public void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount) { }
 
-        public void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount) { }
+        public void DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
+        {
+            LastTexturedDrawColor = color;
+        }
 
         public void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount) { }
 

@@ -69,6 +69,42 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gives the hat a colored band, for groups the shipped art bakes no color for.
+        /// </summary>
+        /// <remarks>
+        /// Two layers over the base frame: an opaque backdrop that paints out the band the frame
+        /// already carries, then the grayscale mask over it. The mask keeps its shading and takes
+        /// the group's color from the renderer's own tint, which is why nothing here has to build a
+        /// recolored texture. Both are children, so they follow the hat as it turns, shrinks onto a
+        /// transporter, or travels its path.
+        /// </remarks>
+        /// <param name="pattern">Band pattern authored for the base frame this hat draws.</param>
+        /// <param name="color">Color the band wears.</param>
+        public void CreateBand(int pattern, RGBAColor color)
+        {
+            BandBackdrop = AddBandLayer(pattern * 2);
+            Band = AddBandLayer((pattern * 2) + 1);
+            Band.color = color;
+            Band.useFullColorTint = true;
+        }
+
+        /// <summary>Adds one band layer, aligned to the base frame by its own atlas offset.</summary>
+        /// <param name="quad">Quad to draw from the maskable band atlas.</param>
+        /// <returns>The added layer.</returns>
+        private Image AddBandLayer(int quad)
+        {
+            Image layer = Image_createWithResIDQuad(Resources.Img.ObjHatMaskable, quad);
+
+            // Anchored to the hat's own top-left corner: both atlases place their frames within the
+            // same source drawing, so each layer landing on its own offset lands where it was drawn.
+            layer.anchor = 9;
+            layer.parentAnchor = 9;
+            layer.DoRestoreCutTransparency();
+            _ = AddChild(layer);
+            return layer;
+        }
+
+        /// <summary>
         /// Recomputes the magic hat rotated mouth bounds from the current position and rotation.
         /// </summary>
         public void UpdateRotation()
@@ -166,6 +202,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Teleport flash animation shown when an object exits the magic hat.</summary>
         public Animation light;
+
+        /// <summary>Layer that paints out the band baked into the base frame, or <see langword="null"/> for an authored group.</summary>
+        public Image BandBackdrop { get; private set; }
+
+        /// <summary>Tinted band layer, or <see langword="null"/> for a group whose color is baked in.</summary>
+        public Image Band { get; private set; }
 
         /// <inheritdoc />
         public float PositionOnTransporter { get; set; }
