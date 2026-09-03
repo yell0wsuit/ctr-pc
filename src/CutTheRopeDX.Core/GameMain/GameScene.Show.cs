@@ -230,11 +230,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Plays the candy blink animation.
+        /// Plays the level-start blink on every candy. Time Travel walks its whole candy list and
+        /// blinks each one, so a two-candy level sparkles on both; only bodies that carry a blink
+        /// animation react, which leaves axes, bombs, and light bulbs out.
         /// </summary>
         public void DoCandyBlink()
         {
-            candyBlink.PlayTimeline(0);
+            for (int i = 0; i < candies.Count; i++)
+            {
+                candies[i].WholeBody.BlinkAnimation?.PlayTimeline(0);
+            }
         }
 
         /// <inheritdoc />
