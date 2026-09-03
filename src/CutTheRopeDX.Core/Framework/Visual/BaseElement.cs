@@ -239,6 +239,13 @@ namespace CutTheRopeDX.Framework.Visual
                     case 2:
                         Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                         break;
+                    case 3:
+                        Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONE);
+                        break;
+                    case 4:
+                        Renderer.Disable(Renderer.GL_BLEND);
+                        restoreBlendEnabled = true;
+                        break;
                     default:
                         return;
                 }
@@ -288,6 +295,11 @@ namespace CutTheRopeDX.Framework.Visual
             if (passColorToChilds)
             {
                 RestoreColor(this);
+            }
+            if (restoreBlendEnabled)
+            {
+                Renderer.Enable(Renderer.GL_BLEND);
+                restoreBlendEnabled = false;
             }
             if (restoreBlendState)
             {
@@ -903,6 +915,9 @@ namespace CutTheRopeDX.Framework.Visual
 
         private bool restoreBlendState;
 
+        /// <summary>Whether <see cref="PostDraw"/> has to switch blending back on for mode 4.</summary>
+        private bool restoreBlendEnabled;
+
         private BlendingFactor previousBlendSource;
 
         private BlendingFactor previousBlendDestination;
@@ -1048,7 +1063,9 @@ namespace CutTheRopeDX.Framework.Visual
         private readonly bool passTouchEventsToAllChilds;
 
         /// <summary>
-        /// Blending mode index (-1 = default, 0 = alpha, 1 = premultiplied, 2 = additive).
+        /// Blending mode index, matching the original's own numbering: -1 leaves blending alone,
+        /// 0 = straight alpha, 1 = premultiplied, 2 = additive, 3 = premultiplied additive,
+        /// 4 = blending off.
         /// </summary>
         public int blendingMode;
 

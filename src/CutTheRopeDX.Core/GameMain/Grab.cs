@@ -635,6 +635,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets this grab's radius source, or <see langword="null"/> when it has none.</summary>
         public AutoRadiusSource RadiusSource => Source as AutoRadiusSource;
 
+        /// <summary>
+        /// Gets or sets whether this radius grab prefers bombs and axes over candy when it picks
+        /// what to auto-attach to (the map's <c>bombsHighPriority</c>).
+        /// </summary>
+        public bool BombsHighPriority { get; internal set; }
+
         /// <summary>Gets or sets this grab's independent traits.</summary>
         public HookModifiers Modifiers { get; internal set; } = HookModifiers.None;
 

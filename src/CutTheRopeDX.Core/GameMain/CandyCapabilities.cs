@@ -80,5 +80,12 @@ namespace CutTheRopeDX.GameMain
             CanBeBrokenByHazards: false,
             CanFloatInWater: false,
             CanBeDraggedBySnail: false);
+
+        /// <summary>
+        /// A bomb: the axe's set of interactions - a physical, rocket/transport-capable body that is
+        /// neither candy nor a target for consumption - except that its sprite never turns, because
+        /// the original only writes the bomb's position when it draws.
+        /// </summary>
+        public static CandyCapabilities Bomb { get; } = Axe with { CanRotateWithRopes = false };
     }
 }

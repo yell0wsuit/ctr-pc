@@ -174,9 +174,25 @@ namespace CutTheRopeDX.Tests.Interactions
             string candyNumber = null,
             bool bindBulb = false,
             string bulbNumber = null,
-            bool breakable = true)
+            bool breakable = true,
+            bool axed = false,
+            string axeNumber = null,
+            bool bombed = false,
+            string bombNumber = null,
+            bool bombsHighPriority = false)
         {
             XElement grab = Node("grab", x, y);
+            grab.SetAttributeValue("axed", Flag(axed));
+            if (axeNumber != null)
+            {
+                grab.SetAttributeValue("axeNumber", axeNumber);
+            }
+            grab.SetAttributeValue("bombed", Flag(bombed));
+            grab.SetAttributeValue("bombsHighPriority", Flag(bombsHighPriority));
+            if (bombNumber != null)
+            {
+                grab.SetAttributeValue("bombNumber", bombNumber);
+            }
             grab.SetAttributeValue("length", Num(length));
             grab.SetAttributeValue("radius", Num(radius));
             grab.SetAttributeValue("wheel", Flag(wheel));
@@ -278,6 +294,18 @@ namespace CutTheRopeDX.Tests.Interactions
             XElement axe = Node("axe", x, y);
             axe.SetAttributeValue("axeNumber", axeNumber);
             return Add(axe);
+        }
+
+        /// <summary>Adds a Time Travel bomb body.</summary>
+        /// <param name="x">Level-space X.</param>
+        /// <param name="y">Level-space Y.</param>
+        /// <param name="bombNumber">Optional authored bomb identifier.</param>
+        /// <returns>This scenario.</returns>
+        public Scenario Bomb(int x, int y, string bombNumber = "first")
+        {
+            XElement bomb = Node("bomb", x, y);
+            bomb.SetAttributeValue("bombNumber", bombNumber);
+            return Add(bomb);
         }
 
         /// <summary>Adds a bouncer.</summary>

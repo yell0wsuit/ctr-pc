@@ -1,5 +1,5 @@
 {
-    "version": 2,
+    "version": 4,
     "files": {
         "fonts/Cafe24DongdongRegular.otf": "9768b4c22405d8aea8f84f0f59748f80fa4e78ef32a4b64851a427cd8bbd2bab",
         "fonts/KNMaiyuan-Regular.ttf": "94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f",
@@ -131,6 +131,7 @@
         "images/font_numbers_big.png": "fa826cfa12e01e08ea5e43489770e1fa290524df93afbc6c9d33d40049eae8ec",
         "images/fx_bubbles.png": "9aa35ae4a2b2109804cc95ed385e247bc7345c3a2e1386036ec7c14c51bf487b",
         "images/fx_cut_chain.png": "4bc45e4246f5c891e90fc254bc47e14a2376680513bc7f0ad6cc53959d1662af",
+        "images/fx_explosion.png": "67e83a0715f01368ccca3f53455236b8518b1bfeb256826e96aa75e75e578c6d",
         "images/fx_pause.png": "6911a0cd210a8408f9a2fc96af249770024dfb9c10393aec83503b90c451b602",
         "images/fx_sleep.png": "4769602d1870294d9c970dfb624b80ed9f50c7295efe56bb9d4003fdd23c9d2b",
         "images/gk-icon.png": "3a288848cc0a5e49fef429e395042fc0fe0515785ace352d49c3bf3262b6cc16",
@@ -171,6 +172,7 @@
         "images/obj_axe.png": "33bc5b895b1450eaf2e72fe4215638c85b49418ec01ffe54fda17efeadbad12b",
         "images/obj_bamboo_tube.png": "1d2f9421deafb143b76ae2484e0059816e66e3d05e15abd8341581bbe7e3870a",
         "images/obj_bee.png": "a3e9f02d3b7085017b84443b2518ec08aedb4e2dc4e4d7beeeafface767fb21f",
+        "images/obj_bomb.png": "8c02c4055bc2a0ccbc9ffe2541e9f04a1983e98d115166720f0d1d6453f9320d",
         "images/obj_bouncer.png": "d04e0308f24145e2ea83e1aba5be976d7826bdb2b99b186107c2b4857c461d64",
         "images/obj_bubble.png": "94fbc875dceffd2d6e5f3f8df77b53e652a7c5b09dbc94dbf377f05bfeb45d64",
         "images/obj_candy_paddington.png": "6b0ae19d2102ade937c1ac88b1706c31e45979dfed0f6c6cabce9147f1d70ab9",
@@ -332,6 +334,7 @@
         "sounds/sfx/con03.wav": "2ad1cd4bca32fdeb613f9c9765e5af03a8b4137c48425e8486fce3dfb0f78a03",
         "sounds/sfx/con04.wav": "574c815ca56531cf1e11002309b2311e7f610d13800c2cd6947676552ea741cc",
         "sounds/sfx/electric.wav": "565ddb5cccb7c6a12aabac6ea9d35d238dfa4bca0d4e4054b6c0770d4669bd71",
+        "sounds/sfx/explosion.wav": "1330159344fcde2c7472a142ba4ed98e71f58cd30b0360e766e63d608d44c275",
         "sounds/sfx/ghost_puff.wav": "4e66963e247fc61fc17f00b74966f6694b01878b12b2982c2cc1a22823450499",
         "sounds/sfx/gravity_off.wav": "56649e5a7b0870f571d6b2c99dc3bec7dca7141c2b94102c5f36187351a805f7",
         "sounds/sfx/gravity_on.wav": "45d6d6994952775fe28f2a718cc02219e4bd9738937700529d5a8739291f5ece",

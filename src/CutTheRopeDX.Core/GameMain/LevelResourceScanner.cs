@@ -112,6 +112,11 @@ namespace CutTheRopeDX.GameMain
                         _ = resources.Add(Resources.Snd.ExpRocketFlyLooped);
                         _ = resources.Add(Resources.Snd.ExpRocketInWater);
                         break;
+                    case "bomb":
+                        _ = resources.Add(Resources.Img.ObjBomb);
+                        _ = resources.Add(Resources.Img.FxExplosion);
+                        _ = resources.Add(Resources.Snd.Explosion);
+                        break;
                     case "axe":
                         _ = resources.Add(Resources.Img.ObjAxe);
                         _ = resources.Add(Resources.Img.FxCutChain);

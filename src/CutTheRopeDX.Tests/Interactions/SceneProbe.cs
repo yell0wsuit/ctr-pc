@@ -214,6 +214,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<List<TargetContext>>(scene, "targets");
         }
 
+        /// <summary>All bomb contexts, in load order.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The contexts that own a bomb body.</returns>
+        public static List<CandyContext> Bombs(this GameScene scene)
+        {
+            return [.. scene.Candies().FindAll(candy => candy.bomb != null)];
+        }
+
         /// <summary>All spike strips.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns>The spike list.</returns>

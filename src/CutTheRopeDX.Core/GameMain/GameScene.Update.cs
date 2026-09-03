@@ -200,7 +200,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             // One pass over every hookable body: whole candies and split halves alike
                             // attach to a radius hook the moment they come inside it.
-                            foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Rope))
+                            foreach (CandyBody body in AutoAttachCandidates(grab))
                             {
                                 if (TryAutoAttachGrabToBody(grab, body))
                                 {
@@ -1207,6 +1207,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
+            DetonateBombsOnContact(delta);
             foreach (object obj14 in spikes)
             {
                 Spikes spike = (Spikes)obj14;
@@ -1216,6 +1217,9 @@ namespace CutTheRopeDX.GameMain
                 // split halves alike. Decision routed through BarrierCollision.Hits.
                 if (!spike.electro || (spike.electro && spike.electroOn))
                 {
+                    // A spike bar sets off any bomb it runs through; this is the only thing in the
+                    // original that detonates a bomb other than something colliding with it.
+                    DetonateBombsTouchedBySpike(spike, delta);
                     foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
                     {
                         CandyContext ctx = body.Owner;
@@ -1766,6 +1770,21 @@ namespace CutTheRopeDX.GameMain
             {
                 gesture.UpdateVisuals(delta);
             }
+        }
+
+        /// <summary>
+        /// The bodies a radius grab considers, in the order it considers them. A
+        /// <c>bombsHighPriority</c> grab sees bombs and axes before candy, so a bomb drifting
+        /// through the radius alongside candy is the one it hooks.
+        /// </summary>
+        /// <param name="grab">The radius grab looking for a body.</param>
+        /// <returns>The eligible bodies in attachment-priority order.</returns>
+        private IEnumerable<CandyBody> AutoAttachCandidates(Grab grab)
+        {
+            return grab.BombsHighPriority
+                ? ActiveCandyBodies(CandyInteraction.Rope)
+                    .OrderByDescending(body => body.Owner.bomb != null || body.Owner.axe != null)
+                : ActiveCandyBodies(CandyInteraction.Rope);
         }
 
         /// <summary>
