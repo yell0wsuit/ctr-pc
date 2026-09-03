@@ -325,6 +325,7 @@ namespace CutTheRopeDX.GameMain
             public const string CharAnimations = "char_animations";
             public const string CharAnimationsSmooth = "char_animations_smooth";
             public const string CharAnimationsSleeping = "char_animations_sleeping";
+            public const string CharAnimationsPaddington = "char_animations_paddington";
             public const string FxSleep = "fx_sleep";
             public const string FxBubbles = "fx_bubbles";
             public const string FxCutChain = "fx_cut_chain";
@@ -343,6 +344,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjAnt = "obj_ant";
             public const string ObjBee = "obj_bee";
             public const string CharSupports = "char_supports";
+            public const string CharSupportsXmas = "char_supports_xmas";
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";
             public const string ObjVinil = "obj_vinil";

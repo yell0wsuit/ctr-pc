@@ -100,6 +100,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
         public bool StartsWithGreeting => backend.StartsWithGreeting;
 
+        /// <summary>Whether the greeting is a scripted one-shot that plays alone and without the wave sound.</summary>
+        public bool HasScriptedGreeting => backend.HasScriptedGreeting;
+
         /// <summary>
         /// Plays the excited animation.
         /// </summary>

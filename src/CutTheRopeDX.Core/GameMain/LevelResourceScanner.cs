@@ -252,8 +252,19 @@ namespace CutTheRopeDX.GameMain
                 // skin animates from its own Flash XML and never asks for them.
                 if (hasClassicTarget)
                 {
-                    _ = resources.Add(Resources.Img.CharGreetingXmas);
-                    _ = resources.Add(Resources.Img.CharIdleXmas);
+                    // In January Om Nom tips the Paddington hat instead, and keeps his idle
+                    // variations on the base sheet, so neither Christmas sheet is asked for.
+                    if (SpecialEvents.IsJanuary)
+                    {
+                        // The suitcase belongs to the hat tip, so it is classic-only too.
+                        _ = resources.Add(Resources.Img.CharAnimationsPaddington);
+                        _ = resources.Add(Resources.Img.CharSupportsXmas);
+                    }
+                    else
+                    {
+                        _ = resources.Add(Resources.Img.CharGreetingXmas);
+                        _ = resources.Add(Resources.Img.CharIdleXmas);
+                    }
                 }
 
                 _ = resources.Add(Resources.Img.XmasLights);
