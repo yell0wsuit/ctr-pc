@@ -51,6 +51,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this skin plays the greeting animation on initialization instead of idle.</summary>
         bool StartsWithGreeting { get; }
 
+        /// <summary>
+        /// Whether the greeting is a scripted one-shot that owns the whole moment: it must not be
+        /// swapped for the two-Om-Nom chat greeting, and it carries no <c>monster_greeting</c> of
+        /// its own. Om Nom tipping the Paddington hat is one; the ordinary wave is not.
+        /// </summary>
+        bool HasScriptedGreeting { get; }
+
         /// <summary>Whether this backend is driven by Flash XML animation exports.</summary>
         bool UsesFlashXmlAnimations { get; }
 

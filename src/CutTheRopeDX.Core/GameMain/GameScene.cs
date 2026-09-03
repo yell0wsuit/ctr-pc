@@ -110,19 +110,29 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ShowGreeting()
         {
+            // A scripted greeting - Om Nom tipping the Paddington hat - plays alone: the chat
+            // greeting would leave the classic skin with no animation at all, since it has no
+            // directional turns, and the hat tip would never run to hand the hat over.
+            bool scriptedGreeting = targetAnimationController?.HasScriptedGreeting == true;
+
             // On a two-Om-Nom level, randomly greet with the mutual chat instead of the wave.
             // TryShowChatGreeting returns false for diagonal/coincident pairs, falling back here.
-            if (targets.Count == 2 && RND_RANGE(0, 1) == 0 && TryShowChatGreeting())
+            if (!scriptedGreeting && targets.Count == 2 && RND_RANGE(0, 1) == 0 && TryShowChatGreeting())
             {
                 return;
             }
 
             // General greeting: the primary Om Nom waves.
             targetAnimationController?.PlayGreeting();
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
-            if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
+            // A scripted greeting is unvoiced: the hat tip carries neither the wave sound nor the
+            // Christmas bell that otherwise rings over the seasonal greeting.
+            if (!scriptedGreeting)
             {
-                CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
+                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
+                if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
+                {
+                    CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
+                }
             }
         }
 

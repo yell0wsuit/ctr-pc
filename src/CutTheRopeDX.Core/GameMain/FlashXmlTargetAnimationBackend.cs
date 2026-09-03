@@ -168,6 +168,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this skin should start by playing its greeting animation.</summary>
         public bool StartsWithGreeting => SkinDefinition.StartWithGreeting;
 
+        /// <inheritdoc />
+        public bool HasScriptedGreeting => false;
+
         /// <summary>Skin definition that backs this target's animations.</summary>
         public OmNomSkinDefinition SkinDefinition { get; }
 

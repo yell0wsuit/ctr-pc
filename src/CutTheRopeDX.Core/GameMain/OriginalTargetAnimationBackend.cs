@@ -54,8 +54,29 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Timeline ID for the second Christmas idle variation.</summary>
         public const int XmasIdleVariationTwoTimeline = 13;
 
+        /// <summary>Timeline ID for the Paddington hat-tip greeting animation.</summary>
+        public const int PaddingtonGreetingTimeline = 14;
+
         /// <summary>Timeline ID for the night-level sleeping animation.</summary>
         public const int SleepingTimeline = 15;
+
+        /// <summary>First frame of the Paddington greeting animation.</summary>
+        private const int PaddingtonGreetingStartFrame = 0;
+
+        /// <summary>Last frame of the Paddington greeting animation.</summary>
+        private const int PaddingtonGreetingEndFrame = 38;
+
+        /// <summary>
+        /// Frame delay for the Paddington greeting. The greeting runs at 24 fps rather than the
+        /// 20 fps every other original-backend animation uses.
+        /// </summary>
+        private const float PaddingtonGreetingFrameDelay = 1f / 24f;
+
+        /// <summary>
+        /// Quad holding the hat on its own, with no Om Nom. It is the prop left standing beside
+        /// Om Nom once he has tipped his hat and set it down.
+        /// </summary>
+        private const int PaddingtonHatQuad = 39;
 
         /// <summary>First frame of the night-level sleeping animation.</summary>
         private const int SleepAnimStartFrame = 0;
@@ -112,6 +133,18 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Whether this backend should use Christmas animation variants.</summary>
         private readonly bool isXmas;
 
+        /// <summary>Whether this backend should use the Paddington greeting and hat prop.</summary>
+        private bool IsPaddington { get; }
+
+        /// <summary>Hat prop revealed once the Paddington greeting has finished, or <see langword="null"/>.</summary>
+        private readonly Image padHat;
+
+        /// <summary>Whether a Paddington greeting is scheduled for this level.</summary>
+        private readonly bool paddingtonGreetingPending;
+
+        /// <summary>Whether the Paddington greeting has been started at least once.</summary>
+        private bool _paddingtonGreetingStarted;
+
         /// <summary>Blink overlay animation attached to the target.</summary>
         private readonly Animation blink;
 
@@ -138,7 +171,15 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="isNightLevel">Whether sleep animations should be configured.</param>
         /// <param name="isXmas">Whether Christmas animation variants should be configured.</param>
-        public OriginalTargetAnimationBackend(bool isNightLevel, bool isXmas)
+        /// <param name="isPaddington">Whether the Paddington greeting and hat prop should be configured.</param>
+        /// <param name="paddingtonGreetingPending">Whether a Paddington greeting is scheduled for this level.
+        /// When it is, Om Nom waits wearing the hat until the greeting fires; when it is not, the hat is
+        /// already set down beside him and he starts on the normal idle loop.</param>
+        public OriginalTargetAnimationBackend(
+            bool isNightLevel,
+            bool isXmas,
+            bool isPaddington = false,
+            bool paddingtonGreetingPending = false)
         {
             target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
@@ -146,10 +187,19 @@ namespace CutTheRopeDX.GameMain
 
             this.isNightLevel = isNightLevel;
             this.isXmas = isXmas;
+            IsPaddington = isPaddington;
+            this.paddingtonGreetingPending = isPaddington && paddingtonGreetingPending;
 
             ConfigureTargetResources();
             ConfigureTargetTimelines();
             ConfigureTargetTransitions();
+
+            if (IsPaddington)
+            {
+                padHat = CreatePaddingtonHat();
+                padHat.visible = !this.paddingtonGreetingPending;
+                AttachPaddingtonGreetingHandoff();
+            }
 
             blink = CreateBlinkAnimation();
             if (isNightLevel)
@@ -185,6 +235,14 @@ namespace CutTheRopeDX.GameMain
             target.PlayTimeline(IdleLoopTimeline);
             target.GetTimeline(IdleLoopTimeline).delegateTimelineDelegate = timelineDelegate;
             target.SetPauseAtIndexforAnimation(MouthClosingTimeline, MouthOpeningTimeline);
+
+            if (paddingtonGreetingPending)
+            {
+                // Hold on the first greeting frame so Om Nom is already wearing the hat when the
+                // level fades in, and only tips it once the delayed greeting call arrives.
+                target.PlayAnimationtimeline(Resources.Img.CharAnimationsPaddington, PaddingtonGreetingTimeline);
+                target.GetAnimation(Resources.Img.CharAnimationsPaddington)?.StopCurrentTimeline();
+            }
         }
 
         /// <inheritdoc />
@@ -196,24 +254,10 @@ namespace CutTheRopeDX.GameMain
                     target.PlayTimeline(IdleLoopTimeline);
                     break;
                 case TargetAnimationState.IdleVariationOne:
-                    if (isXmas)
-                    {
-                        target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline);
-                    }
-                    else
-                    {
-                        target.PlayTimeline(IdleVariationOneTimeline);
-                    }
+                    target.PlayTimeline(IdleVariationOneTimeline);
                     break;
                 case TargetAnimationState.IdleVariationTwo:
-                    if (isXmas)
-                    {
-                        target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline);
-                    }
-                    else
-                    {
-                        target.PlayTimeline(IdleVariationTwoTimeline);
-                    }
+                    target.PlayTimeline(IdleVariationTwoTimeline);
                     break;
                 case TargetAnimationState.IdleVariationThree:
                     break;
@@ -241,7 +285,12 @@ namespace CutTheRopeDX.GameMain
                     }
                     break;
                 case TargetAnimationState.Greeting:
-                    if (isXmas)
+                    if (IsPaddington)
+                    {
+                        target.PlayAnimationtimeline(Resources.Img.CharAnimationsPaddington, PaddingtonGreetingTimeline);
+                        _paddingtonGreetingStarted = true;
+                    }
+                    else if (isXmas)
                     {
                         target.PlayAnimationtimeline(Resources.Img.CharGreetingXmas, XmasGreetingTimeline);
                     }
@@ -271,18 +320,33 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void PlayRandomIdleVariant(Func<int, int, int> rng)
         {
-            if (rng(0, 1) == 1)
+            // The Christmas idle sheet adds two more variations to the two the base sheet already
+            // has, and Om Nom picks between all four. Paddington drops back to the base pair: the
+            // Christmas idles show him in the Santa hat he has just swapped for the bear's.
+            bool hasXmasIdleVariations = isXmas && !IsPaddington;
+
+            switch (rng(0, hasXmasIdleVariations ? 3 : 1))
             {
-                Play(TargetAnimationState.IdleVariationOne);
-            }
-            else
-            {
-                Play(TargetAnimationState.IdleVariationTwo);
+                case 0:
+                    Play(TargetAnimationState.IdleVariationOne);
+                    break;
+                case 1:
+                    Play(TargetAnimationState.IdleVariationTwo);
+                    break;
+                case 2:
+                    target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline);
+                    break;
+                default:
+                    target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline);
+                    break;
             }
         }
 
         /// <inheritdoc />
         public bool StartsWithGreeting => false;
+
+        /// <inheritdoc />
+        public bool HasScriptedGreeting => IsPaddington;
 
         /// <inheritdoc />
         public bool UsesFlashXmlAnimations => false;
@@ -349,6 +413,15 @@ namespace CutTheRopeDX.GameMain
         public void UpdateAdditionalOverlays(float delta)
         {
             _ = delta;
+
+            // The greeting hands off to the idle loop by disabling the Paddington animation, which
+            // is the moment Om Nom has finished setting the hat down next to him.
+            if (_paddingtonGreetingStarted
+                && padHat?.visible == false
+                && target.GetAnimation(Resources.Img.CharAnimationsPaddington)?.visible == false)
+            {
+                padHat.visible = true;
+            }
         }
 
         /// <inheritdoc />
@@ -369,8 +442,11 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void SyncAdditionalOverlayPosition(float x, float y)
         {
-            _ = x;
-            _ = y;
+            if (padHat != null)
+            {
+                padHat.x = x;
+                padHat.y = y;
+            }
         }
 
         /// <inheritdoc />
@@ -405,6 +481,11 @@ namespace CutTheRopeDX.GameMain
             if (zz2?.visible == true)
             {
                 zz2.Draw();
+            }
+            // Drawn after Om Nom so the hat reads as sitting in front of him.
+            if (padHat?.visible == true)
+            {
+                padHat.Draw();
             }
         }
 
@@ -466,6 +547,10 @@ namespace CutTheRopeDX.GameMain
                 target.AddImage(Resources.Img.CharGreetingXmas);
                 target.AddImage(Resources.Img.CharIdleXmas);
             }
+            if (IsPaddington)
+            {
+                target.AddImage(Resources.Img.CharAnimationsPaddington);
+            }
         }
 
         /// <summary>
@@ -488,6 +573,17 @@ namespace CutTheRopeDX.GameMain
                 target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharGreetingXmas, XmasGreetingTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 33);
                 target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 30);
                 target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 31, 61);
+            }
+
+            if (IsPaddington)
+            {
+                target.AddAnimationWithIDDelayLoopFirstLast(
+                    Resources.Img.CharAnimationsPaddington,
+                    PaddingtonGreetingTimeline,
+                    PaddingtonGreetingFrameDelay,
+                    Timeline.LoopType.TIMELINE_NO_LOOP,
+                    PaddingtonGreetingStartFrame,
+                    PaddingtonGreetingEndFrame);
             }
 
             target.AddAnimationWithIDDelayLoopFirstLast(MouthOpeningTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 27);
@@ -547,6 +643,43 @@ namespace CutTheRopeDX.GameMain
         /// Scale, rotation, and alpha are driven each frame by <see cref="AdvanceZzzState"/>.
         /// </summary>
         /// <returns>Configured ZZZ image, initially hidden.</returns>
+        /// <summary>
+        /// Creates the Paddington hat prop that stands beside Om Nom after the greeting.
+        /// </summary>
+        /// <returns>Hat prop image, sharing Om Nom's anchor so it lands where he set it down.</returns>
+        /// <summary>
+        /// Hands off from the hat tip in a single callback, the way the iOS release does: it reveals
+        /// the hat, drops Om Nom back onto the base sheet and restarts his idle loop together.
+        /// </summary>
+        /// <remarks>
+        /// Splitting those apart blanks the hat for a frame. The greeting's last frame is the only
+        /// one that draws Om Nom beside the hat, and the sheet that replaces it is hatless, so any
+        /// gap between the sheet swap and the prop appearing shows Om Nom empty-handed.
+        /// </remarks>
+        private void AttachPaddingtonGreetingHandoff()
+        {
+            Timeline greeting = target
+                .GetAnimation(Resources.Img.CharAnimationsPaddington)
+                .GetTimeline(PaddingtonGreetingTimeline);
+
+            greeting.OnFinished = () =>
+            {
+                padHat.visible = true;
+                target.PlayTimeline(IdleLoopTimeline);
+            };
+        }
+
+        private Image CreatePaddingtonHat()
+        {
+            Image hat = Image.Image_createWithResIDQuad(Resources.Img.CharAnimationsPaddington, PaddingtonHatQuad);
+            hat.DoRestoreCutTransparency();
+            // The hat is drawn straight at Om Nom's position rather than parented to him, so it has
+            // to carry his anchor to land where the greeting's own last frame left it. AddImage
+            // gives the greeting sheet the same anchor for the same reason.
+            hat.parentAnchor = hat.anchor = target.anchor;
+            return hat;
+        }
+
         private static Image CreateZzzOverlay()
         {
             Image zzz = Image.Image_createWithResID(Resources.Img.FxSleep);

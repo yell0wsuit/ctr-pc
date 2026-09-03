@@ -11,6 +11,16 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene
     {
+        /// <summary>Quad holding Paddington's suitcase on the Christmas support sheet.</summary>
+        private const int PaddingtonSupportQuad = 1;
+
+        /// <summary>
+        /// Downward nudge applied to the suitcase so Om Nom sits on its lid rather than inside it.
+        /// The iOS release offsets by 32/64/128 px across its resolution tiers, all of which are
+        /// 32 px in its 205 px quad space; scaled onto this port's 640 px quads that is 100.
+        /// </summary>
+        private const float PaddingtonSupportOffsetY = 100f;
+
         /// <summary>
         /// Loads Om Nom from XML node data
         /// Sets up Om Nom animations, blink animation, and greeting if needed
@@ -26,17 +36,33 @@ namespace CutTheRopeDX.GameMain
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
             int sittingPlatform = PackConfig.GetSittingPlatform(pack);
 
-            // Clamp quad index to valid range; fall back to first quad for invalid values.
-            CTRTexture2D supportTexture = Application.GetTexture(Resources.Img.CharSupports);
-            int quadIndex = (sittingPlatform >= 0 && sittingPlatform < supportTexture.quadRects.Length) ? sittingPlatform : 0;
+            int targetType = ParseIntOrZero(xmlNode.Attribute("targetType")?.Value ?? string.Empty);
 
-            support = Image.Image_createWithResIDQuad(Resources.Img.CharSupports, quadIndex);
+            bool isClassicSkin = OmNomSkinRegistry.IsClassicSkin(
+                OmNomSkinRegistry.ResolveTargetSkinIndex(
+                    targetType,
+                    OmNomSkinRegistry.GetSelectedSkinIndex(),
+                    OmNomSkinRegistry.TotalSkinCount));
+            bool isPaddington = SpecialEvents.IsJanuary && isClassicSkin;
+
+            bool isPrimaryTarget = targets.Count == 0;
+            bool paddingtonGreetingPending =
+                isPaddington && isPrimaryTarget && !nightLevel && CTRRootController.IsShowGreeting();
+
+            // Paddington seats Om Nom on the bear's suitcase instead of the pack's usual platform.
+            string supportResource = isPaddington ? Resources.Img.CharSupportsXmas : Resources.Img.CharSupports;
+            int requestedQuad = isPaddington ? PaddingtonSupportQuad : sittingPlatform;
+
+            // Clamp quad index to valid range; fall back to first quad for invalid values.
+            CTRTexture2D supportTexture = Application.GetTexture(supportResource);
+            int quadIndex = (requestedQuad >= 0 && requestedQuad < supportTexture.quadRects.Length) ? requestedQuad : 0;
+
+            support = Image.Image_createWithResIDQuad(supportResource, quadIndex);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            int targetType = ParseIntOrZero(xmlNode.Attribute("targetType")?.Value ?? string.Empty);
             ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateForTarget(
-                targetType, nightLevel, SpecialEvents.IsXmas);
+                targetType, nightLevel, SpecialEvents.IsXmas, isPaddington, paddingtonGreetingPending);
             TargetAnimationController controller = TargetAnimationController.Create(targetAnimationBackend);
             GameObject targetObj = controller.TargetObject;
             targetBaseScaleX = controller.GetTargetBaseScaleX();
@@ -53,6 +79,10 @@ namespace CutTheRopeDX.GameMain
             int sourceY = ParseCoordinateIntOrZero(yAttribute);
             float transformedY = (sourceY * scale) + offsetY + mapOffsetY;
             targetObj.y = support.y = transformedY;
+            if (isPaddington)
+            {
+                support.y += PaddingtonSupportOffsetY;
+            }
 
             // Mouth hitbox, center-relative so skins of any size keep the same mouth line.
             // Desktop: derived from classic char_animations (640x640): bb = (264, 350, 108, 2).
