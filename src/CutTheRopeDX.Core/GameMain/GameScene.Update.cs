@@ -13,18 +13,10 @@ namespace CutTheRopeDX.GameMain
 {
     internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
-        /// <summary>
-        /// The step the last simulated frame ran with. Cutting runs from input handlers as well as
-        /// from the update, so the bomb blast they trigger scales its impulse by this rather than by
-        /// a delta it has no access to.
-        /// </summary>
-        private float lastSimulationDelta = 0.016f;
-
         /// <inheritdoc />
         public override void Update(float delta)
         {
             delta = 0.016f;
-            lastSimulationDelta = delta;
 
             // The opening pan flies the camera across the level with input switched off. Nothing
             // else advances until it hands input back, so a candy cannot fall - or be eaten, or
@@ -1225,6 +1217,9 @@ namespace CutTheRopeDX.GameMain
                 // split halves alike. Decision routed through BarrierCollision.Hits.
                 if (!spike.electro || (spike.electro && spike.electroOn))
                 {
+                    // A spike bar sets off any bomb it runs through; this is the only thing in the
+                    // original that detonates a bomb other than something colliding with it.
+                    DetonateBombsTouchedBySpike(spike, delta);
                     foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
                     {
                         CandyContext ctx = body.Owner;

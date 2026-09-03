@@ -304,11 +304,6 @@ namespace CutTheRopeDX.GameMain
         public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int ropesCutCount = 0;
-            if (r == null)
-            {
-                // A finger stroke detonates every bomb it crosses, alongside the ropes it severs.
-                _ = DetonateBombsCrossedByLine(v1, v2, lastSimulationDelta);
-            }
             // Two passes over the level's ropes, hooks before the connector. The same test cuts
             // both - they only differ in whether an owning hook reacts afterwards - but the
             // connector registers during LoadMetadata, ahead of every hook, and this routine stops

@@ -123,30 +123,30 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Detonates every live bomb a cut stroke passes over. The stroke has to cross the bomb's
-        /// own small square, not merely come near it.
+        /// Detonates every live bomb one of a spike bar's two edges runs through. The edge has to
+        /// cross the bomb's own small square, not merely come near it.
         /// </summary>
-        /// <param name="v1">Stroke start.</param>
-        /// <param name="v2">Stroke end.</param>
+        /// <param name="spike">The spike bar, whose top and bottom edges are both tested.</param>
         /// <param name="delta">Elapsed time in seconds since the last update.</param>
-        /// <returns>The number of bombs detonated.</returns>
-        private int DetonateBombsCrossedByLine(Vector v1, Vector v2, float delta)
+        private void DetonateBombsTouchedBySpike(Spikes spike, float delta)
         {
-            int detonated = 0;
-            float extent = BombDefinition.SwipeHalfExtent;
             foreach (CandyContext bombCtx in LiveBombs().ToList())
             {
                 Vector pos = bombCtx.WholeBody.Point.pos;
-                if (!LineInRect(v1.X, v1.Y, v2.X, v2.Y, pos.X - extent, pos.Y - extent, extent * 2f, extent * 2f))
+                if (SpikeEdgeCrossesBomb(spike.t1, spike.t2, pos) || SpikeEdgeCrossesBomb(spike.b1, spike.b2, pos))
                 {
-                    continue;
+                    BoomBoomBomb(bombCtx, delta);
                 }
-
-                BoomBoomBomb(bombCtx, delta);
-                detonated++;
             }
+        }
 
-            return detonated;
+        /// <summary>Whether one spike edge passes through the square around a bomb.</summary>
+        private static bool SpikeEdgeCrossesBomb(Vector from, Vector to, Vector bombPos)
+        {
+            float extent = BombDefinition.SpikeContactHalfExtent;
+            return LineInRect(
+                from.X, from.Y, to.X, to.Y,
+                bombPos.X - extent, bombPos.Y - extent, extent * 2f, extent * 2f);
         }
 
         /// <summary>

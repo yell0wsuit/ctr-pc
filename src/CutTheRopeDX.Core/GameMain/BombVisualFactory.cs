@@ -38,8 +38,11 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public const float BlastImpulse = 1200f * TimeTravelToWorldScale;
 
-        /// <summary>Half-extent of the square a cut stroke must cross to detonate a bomb (theirs: 10).</summary>
-        public const float SwipeHalfExtent = 10f * TimeTravelToWorldScale;
+        /// <summary>
+        /// Half-extent of the square a spike edge must cross to detonate a bomb (theirs: 10).
+        /// A finger stroke does not detonate bombs - the original's cut routine never looks at them.
+        /// </summary>
+        public const float SpikeContactHalfExtent = 10f * TimeTravelToWorldScale;
 
         /// <summary>Delay between the explosion animation and the debris burst that removes the bomb.</summary>
         public const float DebrisDelay = 0.1f;

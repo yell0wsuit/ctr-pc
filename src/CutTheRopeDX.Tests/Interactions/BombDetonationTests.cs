@@ -61,8 +61,10 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void CutStrokeAcrossTheBombDetonatesIt()
+        public void CutStrokeStraightThroughTheBombLeavesItAlone()
         {
+            // The original's cut routine only ever walks hooks and their ropes - it never looks at
+            // the bomb list - so a bomb cannot be destroyed by swiping it.
             GameScene scene = Scenario.New().Candy(40, 400).Bomb(160, 200).Build();
             CandyContext bomb = Assert.Single(scene.Bombs());
             Vector at = bomb.WholeBody.Point.pos;
@@ -73,21 +75,35 @@ namespace CutTheRopeDX.Tests.Interactions
                 Vect(at.X + 60f, at.Y),
                 false);
 
+            Assert.False(bomb.bomb.Exploded);
+        }
+
+        [Fact]
+        public void SpikeRunningThroughTheBombDetonatesIt()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 60)
+                .Bomb(160, 300)
+                .Spikes(160, 300, angle: 0f)
+                .Build();
+            CandyContext bomb = Assert.Single(scene.Bombs());
+
+            HeadlessGame.StepFrames(scene, 1);
+
             Assert.True(bomb.bomb.Exploded);
         }
 
         [Fact]
-        public void CutStrokeThatMissesTheBombLeavesItAlone()
+        public void SpikeAwayFromTheBombLeavesItAlone()
         {
-            GameScene scene = Scenario.New().Candy(40, 400).Bomb(160, 200).Build();
+            GameScene scene = Scenario.New()
+                .Candy(40, 60)
+                .Bomb(160, 300)
+                .Spikes(60, 430, angle: 0f)
+                .Build();
             CandyContext bomb = Assert.Single(scene.Bombs());
-            Vector at = bomb.WholeBody.Point.pos;
 
-            _ = scene.CutWithRazorOrLine1Line2Immediate(
-                null,
-                Vect(at.X - 60f, at.Y + 200f),
-                Vect(at.X + 60f, at.Y + 200f),
-                false);
+            HeadlessGame.StepFrames(scene, 1);
 
             Assert.False(bomb.bomb.Exploded);
         }
