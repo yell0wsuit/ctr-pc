@@ -1,4 +1,6 @@
-// Offline cache for the published game.
+// Offline cache for the published game. Cross-origin isolation handling is
+// adapted from https://github.com/yell0wsuit/coi-sw under the MIT License; see
+// coi-sw.LICENSE.txt.
 //
 // service-worker-assets.js is generated at publish by the static web assets SDK: every asset
 // with its integrity hash, plus a version derived from those hashes.
@@ -38,6 +40,7 @@ const scopeUrl = new URL("./", self.location.href);
 const shellExclude = [
     /^content\//,
     /^service-worker(-assets)?\.js$/,
+    /^coi(-sw)?\.js$/,
     /^manifest\.webmanifest$/,
     // Install-dialog artwork. The browser fetches these when offering to install the game; the
     // game itself never asks for them, so caching most of a megabyte of them offline buys
@@ -61,9 +64,13 @@ const contentHashes = new Map(
 
 self.addEventListener("install", (event) => event.waitUntil(onInstall()));
 self.addEventListener("activate", (event) => event.waitUntil(onActivate()));
-self.addEventListener("fetch", (event) =>
-    event.respondWith(withIsolationHeaders(onFetch(event))),
-);
+self.addEventListener("fetch", (event) => {
+    const request = event.request;
+    if (request.cache === "only-if-cached" && request.mode !== "same-origin") {
+        return;
+    }
+    event.respondWith(withIsolationHeaders(onFetch(event)));
+});
 
 // The page asks for this once the player accepts the update prompt. Until then a new worker
 // waits, so a version never changes underneath a session in progress.
@@ -164,10 +171,13 @@ async function onFetch(event) {
 /** Adds the document policy required by shared WebAssembly memory to every response. */
 async function withIsolationHeaders(responseResult) {
     const response = await responseResult;
+    if (response.status === 0) {
+        return response;
+    }
     const headers = new Headers(response.headers);
     headers.set("Cross-Origin-Opener-Policy", "same-origin");
     headers.set("Cross-Origin-Embedder-Policy", "require-corp");
-    headers.set("Cross-Origin-Resource-Policy", "cross-origin");
+    headers.set("Cross-Origin-Resource-Policy", "same-origin");
     return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,

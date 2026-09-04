@@ -23,6 +23,9 @@ def test_missing_isolation_is_terminal_before_the_runtime_starts():
 
 
 def test_pages_service_worker_bootstraps_isolation_before_main():
+    coi = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/coi.js"
+    ).read_text(encoding="utf-8")
     pwa = (
         REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/pwa.js"
     ).read_text(encoding="utf-8")
@@ -33,19 +36,36 @@ def test_pages_service_worker_bootstraps_isolation_before_main():
         REPOSITORY_ROOT
         / "src/CutTheRopeDX.Browser/wwwroot/service-worker.published.js"
     ).read_text(encoding="utf-8")
+    project = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj"
+    ).read_text(encoding="utf-8")
+    migration_worker = (
+        REPOSITORY_ROOT
+        / "src/CutTheRopeDX.Browser/wwwroot/service-worker.js"
+    ).read_text(encoding="utf-8")
+    index = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/index.html"
+    ).read_text(encoding="utf-8")
 
-    assert "ctrdxIsolationReady" in pwa
-    assert "controllerchange" in pwa
-    assert "location.reload()" in pwa
-    assert 'candidate.state === "redundant"' in pwa
-    assert "CONTROLLER_TIMEOUT_MS" in pwa
+    assert "yell0wsuit/coi-sw" in coi
+    assert "ctrdxIsolationReady" in coi
+    assert 'register("./coi-sw.js"' in coi
+    assert "controllerchange" in coi
+    assert "location.replace(globalThis.location.href)" in coi
+    assert "ctrdxServiceWorkerRegistration" in pwa
+    assert 'ServiceWorker Include="wwwroot/coi-sw.js"' in project
+    assert 'importScripts("./coi-sw.js")' in migration_worker
+    assert index.find('src="./coi.js"') < index.find('src="./main.js"')
     assert "await globalThis.ctrdxIsolationReady" in main
+    assert 'request.cache === "only-if-cached"' in worker
+    assert "response.status === 0" in worker
     for header in (
         "Cross-Origin-Opener-Policy",
         "Cross-Origin-Embedder-Policy",
         "Cross-Origin-Resource-Policy",
     ):
         assert header in worker
+    assert 'headers.set("Cross-Origin-Resource-Policy", "same-origin")' in worker
 
 
 def test_context_loss_pauses_rather_than_drawing_on():

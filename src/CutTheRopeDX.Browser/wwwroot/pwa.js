@@ -5,121 +5,17 @@
 // for it: the waiting worker takes over and the page reloads onto the new build.
 
 const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
-const CONTROLLER_TIMEOUT_MS = 15 * 1000;
-
 requestPersistentStorage();
 
-let registrationPromise = Promise.resolve(null);
-if ("serviceWorker" in navigator) {
-    // updateViaCache: "none" keeps the HTTP cache away from the worker script itself. It is
-    // the one file whose freshness decides whether an update is ever noticed.
-    registrationPromise = navigator.serviceWorker
-        .register("./service-worker.js", { updateViaCache: "none" })
-        .then((registration) => {
+globalThis.ctrdxServiceWorkerRegistration
+    ?.then((registration) => {
+        if (registration !== null) {
             watch(registration);
-            return registration;
-        })
-        .catch((error) => {
-            console.warn("service worker registration failed:", error);
-            return null;
-        });
-}
-
-// GitHub Pages cannot set COOP/COEP response headers. The published service worker
-// adds them, but a document only becomes isolated after a controlled navigation.
-// main.js awaits this promise, so the threaded runtime is never imported during the
-// install/reload transition.
-globalThis.ctrdxIsolationReady = prepareCrossOriginIsolation(registrationPromise);
-
-async function prepareCrossOriginIsolation(registrationResult) {
-    if (globalThis.crossOriginIsolated === true) {
-        sessionStorage.removeItem("ctrdx-isolation-reload");
-        return true;
-    }
-
-    const registration = await registrationResult;
-    if (registration === null) {
-        return false;
-    }
-
-    const previousController = navigator.serviceWorker.controller;
-    const controllerChanged = waitForControllerChange();
-
-    // An older caching worker may control the page while the isolation-capable
-    // worker installs. This boot cannot run anyway, so promote the new worker
-    // immediately instead of showing the normal in-game update prompt.
-    await registration.update().catch(() => {});
-    const candidate = registration.waiting ?? registration.installing;
-    let controllerChangeExpected = previousController === null;
-    if (candidate !== null) {
-        await waitUntilInstalled(candidate);
-        if (candidate.state === "redundant") {
-            return false;
         }
-        if (candidate.state === "installed" && previousController !== null) {
-            controllerChangeExpected = true;
-            candidate.postMessage({ type: "skip-waiting" });
-        }
-    }
-
-    if (
-        controllerChangeExpected &&
-        navigator.serviceWorker.controller === previousController
-    ) {
-        if (!(await controllerChanged)) {
-            return false;
-        }
-    }
-
-    // Avoid an infinite reload if a browser accepts the worker but still declines
-    // isolation. The next load falls through to main.js's explicit error instead.
-    if (sessionStorage.getItem("ctrdx-isolation-reload") === "attempted") {
-        return false;
-    }
-    sessionStorage.setItem("ctrdx-isolation-reload", "attempted");
-    globalThis.location.reload();
-    return new Promise(() => {});
-}
-
-function waitForControllerChange() {
-    return new Promise((resolve) => {
-        let settled = false;
-        const finish = (changed) => {
-            if (!settled) {
-                settled = true;
-                globalThis.clearTimeout(timeout);
-                navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    onChange,
-                );
-                resolve(changed);
-            }
-        };
-        const onChange = () => finish(true);
-        const timeout = globalThis.setTimeout(
-            () => finish(false),
-            CONTROLLER_TIMEOUT_MS,
-        );
-        navigator.serviceWorker.addEventListener("controllerchange", onChange);
-    });
-}
-
-function waitUntilInstalled(worker) {
-    if (worker.state === "installed" || worker.state === "activated") {
-        return Promise.resolve();
-    }
-    return new Promise((resolve) => {
-        worker.addEventListener("statechange", () => {
-            if (
-                worker.state === "installed" ||
-                worker.state === "activated" ||
-                worker.state === "redundant"
-            ) {
-                resolve();
-            }
-        });
-    });
-}
+    })
+    .catch((error) =>
+        console.warn("service worker registration failed:", error),
+    );
 
 /**
  * Watches a registration for a worker that has installed and is waiting to take over.

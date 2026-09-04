@@ -64,9 +64,9 @@
     Refresh them from distribution/icons if the app icon ever changes.
   -->
 
-  <!-- Development serves the inert worker; publish swaps in the caching one. -->
+  <!-- Development serves coi-sw directly; publish swaps in the cache-aware variant. -->
   <ItemGroup>
-    <ServiceWorker Include="wwwroot/service-worker.js"
+    <ServiceWorker Include="wwwroot/coi-sw.js"
                    PublishedContent="wwwroot/service-worker.published.js" />
   </ItemGroup>
 
