@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 
 using CutTheRopeDX.Browser;
 using CutTheRopeDX.Framework;
@@ -26,14 +27,37 @@ await BrowserVideoPlayer.ImportAsync();
 bool playtest = await PlaytestSession.BeginAsync();
 Console.WriteLine($"playtest: {(playtest ? "active" : "inactive")}");
 
-int fbo = GLContextInterop.CreateContext("game");
-// Installed before the first measurement so the loop never has to measure again: from here on
-// the canvas reports its own changes.
-GLContextInterop.WatchCanvas("game");
-int[] size = GLContextInterop.CanvasSize("game");
-Console.WriteLine($"gl: fbo={fbo} size={size[0]}x{size[1]}");
+// The canvas moves to this thread before Skia exists, and never moves back: the
+// released SkiaSharp archive calls GL on whichever thread it is running on, so the
+// thread that renders has to be the thread that owns the context.
+_ = HostShim.InstallCanvasListener();
+int[] canvas = GLContextInterop.TransferCanvasToThread("game", HostShim.ThreadId());
+if (canvas.Length != 4)
+{
+    throw new InvalidOperationException("Could not transfer the canvas to the game thread.");
+}
 
-SkiaSurface surface = new(fbo, size[0], size[1]);
+int deliveryAttempts = 0;
+while (HostShim.CanvasReceived() == 0 && deliveryAttempts < 200)
+{
+    deliveryAttempts++;
+    await Task.Delay(25);
+}
+if (HostShim.CanvasReceived() == 0)
+{
+    throw new InvalidOperationException("The transferred canvas never arrived.");
+}
+
+if (HostShim.CreateWorkerContext(canvas[2], canvas[3]) == 0)
+{
+    throw new InvalidOperationException("Could not create the game thread's WebGL context.");
+}
+
+GLContextInterop.WatchCanvas("game");
+int[] size = [canvas[2], canvas[3]];
+Console.WriteLine($"gl: size={size[0]}x{size[1]}");
+
+SkiaSurface surface = new(0, size[0], size[1]);
 
 BrowserContentStore content = new("./content/");
 WebAudioBackend audio = new("./content/");
@@ -63,5 +87,7 @@ CutTheRopeDX.CtrBootstrap.Initialize(
 GameLoop.Surface = surface;
 GameLoop.Host = host;
 InputRouter.Host = host;
+
+GameLoop.Start();
 
 Console.WriteLine("boot complete");

@@ -1,5 +1,4 @@
 using System.Numerics;
-using System.Runtime.InteropServices.JavaScript;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
@@ -28,7 +27,6 @@ namespace CutTheRopeDX.Browser
         /// <param name="x">Pointer X in canvas backing pixels.</param>
         /// <param name="y">Pointer Y in canvas backing pixels.</param>
         /// <param name="phase">One of the pointer phase constants.</param>
-        [JSExport]
         internal static void OnPointer(double x, double y, int phase)
         {
             ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
@@ -87,7 +85,6 @@ namespace CutTheRopeDX.Browser
         /// <param name="delta">
         /// Wheel movement in the desktop's units, where one notch is 120 and positive scrolls up.
         /// </param>
-        [JSExport]
         internal static void OnWheel(int delta)
         {
             _ = Application.SharedRootController().HandleMouseWheel(delta);
@@ -96,7 +93,6 @@ namespace CutTheRopeDX.Browser
         /// <summary>Handles one keyboard transition.</summary>
         /// <param name="code">The DOM <c>KeyboardEvent.code</c> value.</param>
         /// <param name="down">Whether the key went down.</param>
-        [JSExport]
         internal static void OnKey(string code, bool down)
         {
             KeyCode? mapped = Map(code);

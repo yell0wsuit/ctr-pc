@@ -17,12 +17,8 @@ def test_canvas_transfer_hands_ownership_to_the_owner_thread():
     assert "transferControlToOffscreen()" in source
     assert "PThread" in source
     assert "postMessage" in source
-    # The transfer path never sizes the backing store on the browser thread.
-    transfer = source[
-        source.index("export function transferCanvasToThread") :
-        source.index("// Retained until normal boot")
-    ]
-    assert "canvas.width = " not in transfer
+    # Once transfer is possible, no browser-thread path may size the backing store.
+    assert "canvas.width = " not in source
 
 
 def test_probe_reads_pixels_through_the_owner_threads_context():

@@ -24,10 +24,6 @@ namespace CutTheRopeDX.Browser
         [JSImport("transferCanvasToThread", "glcontext")]
         public static partial int[] TransferCanvasToThread(string canvasId, int threadId);
 
-        /// <summary>Creates the browser-thread WebGL2 context during legacy boot.</summary>
-        [JSImport("createContext", "glcontext")]
-        public static partial int CreateContext(string canvasId);
-
         /// <summary>Returns the canvas backing size during legacy resize polling.</summary>
         [JSImport("canvasSize", "glcontext")]
         public static partial int[] CanvasSize(string canvasId);

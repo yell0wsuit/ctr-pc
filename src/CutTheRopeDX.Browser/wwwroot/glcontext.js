@@ -37,36 +37,6 @@ export function transferCanvasToThread(canvasId, threadId) {
     ];
 }
 
-// Retained until normal boot moves to the owner thread. The render probe transfers
-// the canvas before this path can run, so the two ownership models never mix.
-export function createContext(canvasId) {
-    const canvas = document.getElementById(canvasId);
-    if (canvas === null) {
-        return 0;
-    }
-    const attributes = {
-        alpha: 1,
-        depth: 1,
-        stencil: 8,
-        antialias: 0,
-        premultipliedAlpha: 1,
-        preserveDrawingBuffer: 0,
-        majorVersion: 2,
-        minorVersion: 0,
-        enableExtensionsByDefault: 1,
-    };
-    const GL = globalThis.ctrdxWasmModule?.GL;
-    if (!GL) {
-        return 0;
-    }
-    const handle = GL.createContext(canvas, attributes);
-    if (!handle) {
-        return 0;
-    }
-    GL.makeContextCurrent(handle);
-    return 0;
-}
-
 // The ratio canvasSize last applied to the backing store. Read by canvasDevicePixelRatio
 // so the ratio and the size a caller acts on always describe the same measurement.
 let appliedDevicePixelRatio = 1;
@@ -130,10 +100,6 @@ export function canvasSize(canvasId) {
         return [0, 0];
     }
     measure(canvas);
-    if (canvas.width !== measuredWidth || canvas.height !== measuredHeight) {
-        canvas.width = measuredWidth;
-        canvas.height = measuredHeight;
-    }
     appliedDevicePixelRatio = measuredRatio;
     return [measuredWidth, measuredHeight];
 }

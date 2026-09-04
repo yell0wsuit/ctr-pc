@@ -5,6 +5,30 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_no_jsexport_survives_on_the_browser_thread_boundary():
+    """Synchronous JSExport from the browser thread throws under threading."""
+    for relative in (
+        "src/CutTheRopeDX.Browser/Browser/GameLoop.cs",
+        "src/CutTheRopeDX.Browser/Browser/InputRouter.cs",
+    ):
+        source = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
+        assert "[JSExport]" not in source
+
+
+def test_the_frame_comes_from_the_owner_threads_animation_frame():
+    source = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/GameLoop.cs"
+    ).read_text(encoding="utf-8")
+
+    assert "UnmanagedCallersOnly" in source
+    assert "HostShim.RequestFrame()" in source
+
+    main = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/main.js"
+    ).read_text(encoding="utf-8")
+    assert "requestAnimationFrame" not in main
+
+
 def test_native_shim_runs_in_the_calling_threads_scope():
     source = (
         REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Native/ctrdxhost.c"

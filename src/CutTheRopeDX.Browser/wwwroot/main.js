@@ -128,15 +128,5 @@ syncActive();
 // inactive first.
 globalThis.addEventListener("pagehide", () => loop.Flush());
 
-let started = false;
-const frame = (timestamp) => {
-    loop.Tick(timestamp);
-    requestAnimationFrame(frame);
-};
-globalThis.ctrdxStart = () => {
-    if (!started) {
-        started = true;
-        requestAnimationFrame(frame);
-    }
-};
+globalThis.ctrdxStart = () => {};
 globalThis.ctrdxReady?.();
