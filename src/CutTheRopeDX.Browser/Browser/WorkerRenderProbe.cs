@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using SkiaSharp;
@@ -46,6 +47,29 @@ namespace CutTheRopeDX.Browser
                 $"ctrdx-thread-smoke: owner={ownerThreadId} worker={workerThreadId} " +
                 $"different={differentThread.ToString().ToLowerInvariant()} " +
                 $"result={workerResult}");
+
+            int threadId = HostShim.ThreadId();
+            int isMainRuntimeThread = HostShim.IsMainRuntimeThread();
+            int supportsAnimationFrame = HostShim.SupportsAnimationFrame();
+            Mark(
+                state,
+                "native-thread",
+                $"tid={threadId} isMainRuntime={isMainRuntimeThread} " +
+                $"rAF={supportsAnimationFrame}");
+
+            unsafe
+            {
+                HostShim.SetFrameCallback(&OnProbeFrame);
+            }
+            HostShim.RequestFrame();
+            for (int attempt = 0; attempt < 60 && HostShim.FrameCallbackHits() == 0; attempt++)
+            {
+                await Task.Delay(16);
+            }
+            Mark(
+                state,
+                "frame-driver",
+                $"rAF={supportsAnimationFrame} hits={HostShim.FrameCallbackHits()}");
 
             string executionContext = RenderProbeInterop.ExecutionContext();
             Mark(state, "browser-context", $"context={executionContext}");
@@ -119,6 +143,14 @@ namespace CutTheRopeDX.Browser
 
             Mark(state, "pixel-verified");
             return "GATE2_PASS";
+        }
+
+        [UnmanagedCallersOnly]
+        private static void OnProbeFrame(double timestampMs)
+        {
+            // Reaching managed code from the owner thread's own animation frame is
+            // the whole point of the callback; the timestamp is not used here.
+            _ = timestampMs;
         }
 
         private static string ClassifyFailure(string milestone, Exception exception)

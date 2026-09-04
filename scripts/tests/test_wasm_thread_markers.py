@@ -1,7 +1,40 @@
+import re
 from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_native_shim_runs_in_the_calling_threads_scope():
+    source = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Native/ctrdxhost.c"
+    ).read_text(encoding="utf-8")
+
+    # EM_ASM runs in the JS scope of the calling thread; JS interop does not.
+    assert "EM_ASM" in source
+    for export in (
+        "ctrdx_thread_id",
+        "ctrdx_is_main_runtime_thread",
+        "ctrdx_supports_animation_frame",
+        "ctrdx_set_frame_callback",
+        "ctrdx_request_frame",
+        "ctrdx_frame_entry",
+        "ctrdx_frame_callback_hits",
+    ):
+        # Every entry point has to survive linking to be callable from managed code.
+        assert re.search(rf"EMSCRIPTEN_KEEPALIVE\s+\S[^\n]*\b{export}\b", source)
+
+
+def test_probe_reports_the_frame_driver_assumptions():
+    source = (
+        REPOSITORY_ROOT
+        / "src/CutTheRopeDX.Browser/Browser/WorkerRenderProbe.cs"
+    ).read_text(encoding="utf-8")
+
+    assert "HostShim.SupportsAnimationFrame()" in source
+    assert "HostShim.SetFrameCallback" in source
+    assert "HostShim.RequestFrame()" in source
+    assert '"frame-driver"' in source
 
 
 def test_javascript_reports_isolation_before_runtime_creation():
