@@ -98,8 +98,20 @@ def test_hidden_page_wakes_the_owner_to_process_lifecycle():
         REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Native/ctrdxhost.c"
     ).read_text(encoding="utf-8")
 
-    assert "ctrdx-host-wake" in events
-    assert "ctrdx-host-wake" in shim
+    assert "ctrdxWake" in events
+    assert "ctrdxWake" in shim
+
+
+def test_host_messages_carry_no_command_field():
+    """The runtime's worker dispatcher reports any `cmd` it does not know."""
+    for relative in (
+        "src/CutTheRopeDX.Browser/wwwroot/host-events.js",
+        "src/CutTheRopeDX.Browser/wwwroot/glcontext.js",
+        "src/CutTheRopeDX.Browser/Native/ctrdxhost.c",
+    ):
+        source = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
+        assert "cmd:" not in source
+        assert "cmd ===" not in source
 
 
 def test_event_ring_reserves_control_capacity_and_reports_drops():

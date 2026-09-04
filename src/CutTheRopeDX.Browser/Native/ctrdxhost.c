@@ -70,8 +70,9 @@ void ctrdx_request_frame(void)
     });
 }
 
-// Coexists with the runtime worker's own onmessage, which logs unrecognized
-// commands rather than throwing.
+// Coexists with the runtime worker's own onmessage. Messages here carry no `cmd`
+// field on purpose: that handler ends in `else if (e.data.cmd)` and reports any
+// command it does not recognize twice, so a `cmd` would make every wake noisy.
 EMSCRIPTEN_KEEPALIVE
 int ctrdx_install_canvas_listener(void)
 {
@@ -84,9 +85,9 @@ int ctrdx_install_canvas_listener(void)
         globalThis.ctrdxLastGlError = 0;
         addEventListener('message', function (event) {
             var data = event.data;
-            if (data && data.cmd === 'ctrdx-transfer-canvas') {
-                globalThis.ctrdxCanvas = data.canvas;
-            } else if (data && data.cmd === 'ctrdx-host-wake') {
+            if (data && data.ctrdxTransferCanvas) {
+                globalThis.ctrdxCanvas = data.ctrdxTransferCanvas;
+            } else if (data && data.ctrdxWake) {
                 // Invalidate the animation frame that may have been suspended when
                 // the page became hidden, then process lifecycle state immediately.
                 globalThis.ctrdxFrameToken = (globalThis.ctrdxFrameToken | 0) + 1;
@@ -145,7 +146,7 @@ int ctrdx_create_worker_context(int width, int height)
         surface.addEventListener('webglcontextlost', function (event) {
             event.preventDefault();
             globalThis.ctrdxContextLost = 1;
-            postMessage({ cmd: 'ctrdx-context-lost' });
+            postMessage({ ctrdxContextLost: 1 });
         });
         return handle;
     }, width, height);

@@ -114,7 +114,7 @@ export function wheel(delta) {
 
 export function active(isActive) {
     if (write(KIND_ACTIVE, isActive ? 1 : 0, 0, 0, 0, 0) && !isActive) {
-        ownerWorker?.postMessage({ cmd: "ctrdx-host-wake" });
+        ownerWorker?.postMessage({ ctrdxWake: 1 });
     }
 }
 

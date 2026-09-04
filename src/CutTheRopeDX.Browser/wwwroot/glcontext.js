@@ -29,11 +29,12 @@ export function transferCanvasToThread(canvasId, threadId) {
         return [];
     }
 
-    worker.postMessage({ cmd: "ctrdx-transfer-canvas", canvas: offscreen }, [
-        offscreen,
-    ]);
+    // Deliberately no `cmd` field. The runtime's own worker dispatcher ends in
+    // `else if (e.data.cmd)`, so any message carrying one that it does not
+    // recognize is reported twice to the console, on every delivery.
+    worker.postMessage({ ctrdxTransferCanvas: offscreen }, [offscreen]);
     worker.addEventListener("message", (event) => {
-        if (event.data?.cmd === "ctrdx-context-lost") {
+        if (event.data?.ctrdxContextLost) {
             document.getElementById("splash")?.classList.remove("hidden");
             document.getElementById("splash-spinner")?.setAttribute("hidden", "");
             document.getElementById("splash-progress")?.setAttribute("hidden", "");
