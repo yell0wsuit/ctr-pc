@@ -1,3 +1,5 @@
+import * as hostEvents from "./host-events.js";
+
 // Hands the canvas to the managed owner thread's worker. Ownership is permanent:
 // the browser thread can never draw to this canvas or resize its backing store
 // again, so nothing may fall back to browser-thread rendering after this returns.
@@ -8,8 +10,9 @@ export function transferCanvasToThread(canvasId, threadId) {
         return [];
     }
 
-    measure(canvas);
-    appliedDevicePixelRatio = measuredRatio;
+    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
+    const cssWidth = Math.max(1, Math.round(canvas.clientWidth));
+    const cssHeight = Math.max(1, Math.round(canvas.clientHeight));
 
     let offscreen;
     try {
@@ -30,47 +33,22 @@ export function transferCanvasToThread(canvasId, threadId) {
         offscreen,
     ]);
     return [
-        Math.max(1, Math.round(canvas.clientWidth)),
-        Math.max(1, Math.round(canvas.clientHeight)),
-        measuredWidth,
-        measuredHeight,
+        cssWidth,
+        cssHeight,
+        Math.max(1, Math.round(cssWidth * ratio)),
+        Math.max(1, Math.round(cssHeight * ratio)),
     ];
 }
 
-// The ratio canvasSize last applied to the backing store. Read by canvasDevicePixelRatio
-// so the ratio and the size a caller acts on always describe the same measurement.
-let appliedDevicePixelRatio = 1;
-
-// Bumped whenever a measurement finds a shape the game has not adopted yet. The game loop
-// polls this once a frame and only asks for the size itself when it moves, so the steady
-// state costs one integer across the interop boundary rather than a DOM measurement, an
-// array allocation and a marshalled copy sixty times a second.
-let canvasGeneration = 0;
-
-let measuredWidth = 0;
-let measuredHeight = 0;
-let measuredRatio = 0;
 let watchedCanvas = null;
 let devicePixelRatioQuery = null;
 
-// Measures without touching the canvas: the backing store is only resized from canvasSize,
-// where the caller goes on to rebuild the renderer's surface from the same numbers. Doing it
-// here instead would clear the drawing buffer while the renderer still believed the old size,
-// and the frames in between would be drawn against a buffer nothing agreed on.
-function measure(canvas) {
-    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
-    const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
-    const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
-    if (
-        width !== measuredWidth ||
-        height !== measuredHeight ||
-        ratio !== measuredRatio
-    ) {
-        measuredWidth = width;
-        measuredHeight = height;
-        measuredRatio = ratio;
-        canvasGeneration++;
-    }
+function report(canvas) {
+    hostEvents.resize(
+        Math.max(1, canvas.clientWidth),
+        Math.max(1, canvas.clientHeight),
+        Math.min(globalThis.devicePixelRatio || 1, 2),
+    );
 }
 
 // A ResizeObserver reports the canvas box changing, but not the page moving to a display of a
@@ -89,43 +67,23 @@ function watchDevicePixelRatio() {
 
 function onDevicePixelRatioChange() {
     if (watchedCanvas !== null) {
-        measure(watchedCanvas);
+        report(watchedCanvas);
         watchDevicePixelRatio();
     }
-}
-
-export function canvasSize(canvasId) {
-    const canvas = document.getElementById(canvasId);
-    if (canvas === null) {
-        return [0, 0];
-    }
-    measure(canvas);
-    appliedDevicePixelRatio = measuredRatio;
-    return [measuredWidth, measuredHeight];
 }
 
 // The canvas fills the viewport through the stylesheet, so its CSS box needs no help from
 // here. Measuring it rather than sizing it is what lets the game adopt whatever shape the
 // window or the device is, instead of the page choosing a shape and the game obeying it.
-// Starts reporting canvas shape changes through canvasChangeCount, so callers stop having to
-// measure the DOM to discover that nothing moved.
 export function watchCanvas(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
         return;
     }
     watchedCanvas = canvas;
-    new ResizeObserver(() => measure(canvas)).observe(canvas);
+    new ResizeObserver(() => report(canvas)).observe(canvas);
     watchDevicePixelRatio();
-    measure(canvas);
-}
-
-export function canvasChangeCount() {
-    return canvasGeneration;
-}
-
-export function canvasDevicePixelRatio() {
-    return appliedDevicePixelRatio;
+    report(canvas);
 }
 
 export function documentBaseUrl() {

@@ -28,9 +28,7 @@ const config = runtime.getConfig();
 globalThis.ctrdxWasmModule = runtime.Module;
 await runtime.runMain(config.mainAssemblyName, []);
 
-const exports = await runtime.getAssemblyExports(config.mainAssemblyName);
 const canvas = document.getElementById("game");
-const loop = exports.CutTheRopeDX.Browser.GameLoop;
 
 // getBoundingClientRect forces the browser to settle layout before it answers, and a drag
 // asks once per pointermove. The rectangle only moves when the canvas box does, so it is
@@ -111,17 +109,13 @@ globalThis.addEventListener("keyup", (event) => sendKey(event, false));
 // tab stops getting animation frames but keeps its audio, while a window merely pushed
 // behind another stays visible and keeps ticking at full speed.
 const syncActive = () =>
-    loop.SetActive(
+    hostEvents.active(
         document.visibilityState === "visible" && document.hasFocus(),
     );
 globalThis.addEventListener("focus", syncActive);
 globalThis.addEventListener("blur", syncActive);
 document.addEventListener("visibilitychange", syncActive);
 syncActive();
-
-// Pausing already flushes the save, but a page can be discarded without ever going
-// inactive first.
-globalThis.addEventListener("pagehide", () => loop.Flush());
 
 globalThis.ctrdxStart = () => {};
 globalThis.ctrdxReady?.();

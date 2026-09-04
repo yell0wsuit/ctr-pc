@@ -8,6 +8,30 @@ WRITER = REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/host-events.js"
 ROUTER = REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/InputRouter.cs"
 
 
+def test_resize_is_reported_rather_than_polled():
+    loop = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/GameLoop.cs"
+    ).read_text(encoding="utf-8")
+    glcontext = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/glcontext.js"
+    ).read_text(encoding="utf-8")
+
+    assert "CanvasChangeCount" not in loop
+    assert "canvasChangeCount" not in glcontext
+    assert "ResizeObserver" in glcontext
+    assert "HostEventKind.Resize" in loop
+    assert "HostShim.ResizeCanvas(" in loop
+
+
+def test_the_page_no_longer_reaches_managed_code_directly():
+    main = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/main.js"
+    ).read_text(encoding="utf-8")
+
+    assert "getAssemblyExports" not in main
+    assert "loop.Flush" not in main
+
+
 def _csharp_const(name):
     source = RING.read_text(encoding="utf-8")
     match = re.search(rf"const int {name} = (\d+);", source)

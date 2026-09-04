@@ -17,7 +17,6 @@ namespace CutTheRopeDX.Browser
         private static double _lastTimestampMs;
         private static double _accumulator;
         private static bool _active = true;
-        private static int _canvasGeneration = -1;
 
         internal static SkiaSurface Surface { get; set; }
 
@@ -70,8 +69,6 @@ namespace CutTheRopeDX.Browser
                 ? StepSeconds
                 : (timestampMs - _lastTimestampMs) / 1000.0;
             _lastTimestampMs = timestampMs;
-
-            ResizeIfNeeded();
 
             _accumulator += Math.Min(elapsed, StepSeconds * MaxCatchUpSteps);
 
@@ -127,19 +124,31 @@ namespace CutTheRopeDX.Browser
             else
             {
                 CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
-                // Resigning active requests a save; the loop is about to stop advancing, so
-                // nothing else would write it.
+                // Resigning active requests a save. Every full fixed step also saves, so the
+                // only remaining exposure is a change made during the final partial frame.
                 Preferences.Update();
             }
         }
 
         /// <summary>
-        /// Writes any pending preference save immediately. The page can go away between two
-        /// animation frames, so the loop's per-step flush needs a lifecycle-driven partner.
+        /// Adopts a canvas shape the browser thread reported. Sizing the backing store
+        /// belongs to this thread: the canvas was transferred, so assigning its width
+        /// on the browser thread throws.
         /// </summary>
-        internal static void Flush()
+        internal static void ApplyResize(float cssWidth, float cssHeight, float ratio)
         {
-            Preferences.Update();
+            int width = Math.Max(1, (int)Math.Round(cssWidth * ratio));
+            int height = Math.Max(1, (int)Math.Round(cssHeight * ratio));
+            if (width == Surface.Width
+                && height == Surface.Height
+                && ratio == ScreenPresentation.Instance.Snapshot.DevicePixelRatio)
+            {
+                return;
+            }
+
+            _ = HostShim.ResizeCanvas(width, height);
+            Surface.Resize(width, height);
+            CtrRenderer.OnSurfaceChanged(width, height, ratio);
         }
 
         /// <summary>
@@ -152,38 +161,6 @@ namespace CutTheRopeDX.Browser
                 Application.SharedMovieMgr().Stop();
                 _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
-        }
-
-        /// <summary>
-        /// Adopts a new canvas shape, on the frames where there is one.
-        /// </summary>
-        /// <remarks>
-        /// The shape is watched rather than measured. Reading it every frame meant a DOM
-        /// measurement and a marshalled array crossing into the runtime sixty times a second to
-        /// answer "nothing changed"; the watcher answers that with a single integer, and the
-        /// measurement only happens on the frames where the answer is different.
-        /// </remarks>
-        private static void ResizeIfNeeded()
-        {
-            int generation = GLContextInterop.CanvasChangeCount();
-            if (generation == _canvasGeneration)
-            {
-                return;
-            }
-            _canvasGeneration = generation;
-
-            int[] canvas = GLContextInterop.CanvasSize("game");
-            float ratio = (float)GLContextInterop.CanvasDevicePixelRatio();
-            if (canvas[0] == Surface.Width
-                && canvas[1] == Surface.Height
-                && ratio == ScreenPresentation.Instance.Snapshot.DevicePixelRatio)
-            {
-                return;
-            }
-
-            _ = HostShim.ResizeCanvas(canvas[0], canvas[1]);
-            Surface.Resize(canvas[0], canvas[1]);
-            CtrRenderer.OnSurfaceChanged(canvas[0], canvas[1], ratio);
         }
 
         private static void Present()
@@ -213,9 +190,16 @@ namespace CutTheRopeDX.Browser
                     case HostEventKind.Wheel:
                         InputRouter.HandleWheel(value.Word0);
                         break;
-                    case HostEventKind.None:
                     case HostEventKind.Active:
+                        SetActive(value.Word0 != 0);
+                        break;
                     case HostEventKind.Resize:
+                        ApplyResize(
+                            BitConverter.Int32BitsToSingle(value.Word0),
+                            BitConverter.Int32BitsToSingle(value.Word1),
+                            BitConverter.Int32BitsToSingle(value.Word2));
+                        break;
+                    case HostEventKind.None:
                         break;
                     default:
                         break;

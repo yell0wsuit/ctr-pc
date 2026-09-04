@@ -54,8 +54,8 @@ if (HostShim.CreateWorkerContext(canvas[2], canvas[3]) == 0)
     throw new InvalidOperationException("Could not create the game thread's WebGL context.");
 }
 
-GLContextInterop.WatchCanvas("game");
 int[] size = [canvas[2], canvas[3]];
+float devicePixelRatio = canvas[0] > 0 ? (float)canvas[2] / canvas[0] : 1f;
 Console.WriteLine($"gl: size={size[0]}x{size[1]}");
 
 SkiaSurface surface = new(0, size[0], size[1]);
@@ -83,13 +83,14 @@ CutTheRopeDX.CtrBootstrap.Initialize(
     size[0],
     size[1],
     LanguageHelper.Current,
-    (float)GLContextInterop.CanvasDevicePixelRatio());
+    devicePixelRatio);
 
 GameLoop.Surface = surface;
 GameLoop.Host = host;
 InputRouter.Host = host;
 
 HostEventQueue.Initialize();
+GLContextInterop.WatchCanvas("game");
 GameLoop.Start();
 
 Console.WriteLine("boot complete");
