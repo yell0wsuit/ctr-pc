@@ -12,11 +12,23 @@ namespace CutTheRopeDX.Browser
             return JSHost.ImportAsync("glcontext", "../glcontext.js");
         }
 
-        /// <summary>Creates the WebGL2 context on the canvas and returns its framebuffer id.</summary>
+        /// <summary>
+        /// Hands the page canvas to the managed owner thread's worker and returns
+        /// <c>[cssWidth, cssHeight, backingWidth, backingHeight]</c>, or an empty
+        /// array when the transfer failed.
+        /// </summary>
+        /// <remarks>
+        /// Transfer is permanent. Nothing may fall back to browser-thread rendering
+        /// after this succeeds, so every check that can fail runs before it.
+        /// </remarks>
+        [JSImport("transferCanvasToThread", "glcontext")]
+        public static partial int[] TransferCanvasToThread(string canvasId, int threadId);
+
+        /// <summary>Creates the browser-thread WebGL2 context during legacy boot.</summary>
         [JSImport("createContext", "glcontext")]
         public static partial int CreateContext(string canvasId);
 
-        /// <summary>Returns the canvas backing size as [width, height], resizing it to the DPR-capped CSS size.</summary>
+        /// <summary>Returns the canvas backing size during legacy resize polling.</summary>
         [JSImport("canvasSize", "glcontext")]
         public static partial int[] CanvasSize(string canvasId);
 

@@ -6,7 +6,39 @@ from pathlib import Path
 import pytest
 
 
-def test_render_probe_uses_current_emscripten_context():
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_canvas_transfer_hands_ownership_to_the_owner_thread():
+    source = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/glcontext.js"
+    ).read_text(encoding="utf-8")
+
+    assert "transferControlToOffscreen()" in source
+    assert "PThread" in source
+    assert "postMessage" in source
+    # The transfer path never sizes the backing store on the browser thread.
+    transfer = source[
+        source.index("export function transferCanvasToThread") :
+        source.index("// Retained until normal boot")
+    ]
+    assert "canvas.width = " not in transfer
+
+
+def test_probe_reads_pixels_through_the_owner_threads_context():
+    source = (
+        REPOSITORY_ROOT
+        / "src/CutTheRopeDX.Browser/Browser/WorkerRenderProbe.cs"
+    ).read_text(encoding="utf-8")
+
+    assert "HostShim.CreateWorkerContext(" in source
+    assert "HostShim.ReadCenterPixel(" in source
+    # Readback must not go through the browser thread, which no longer owns the
+    # canvas or the context.
+    assert "RenderProbeInterop.ReadCenterPixel(" not in source
+
+
+def test_render_probe_keeps_only_browser_thread_facts_and_pixel_comparison():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js is not installed")
@@ -44,39 +76,6 @@ assert.equal(probe.isExpectedPixel(new Int32Array([17, 34, 51, 255, 0])), true);
 assert.equal(probe.isExpectedPixel([18, 34, 51, 255, 0]), false);
 assert.equal(probe.isExpectedPixel([17, 34, 51, 255]), false);
 assert.equal(probe.isExpectedPixel([17, 34, 51, 255, 1280]), false);
-
-const calls = [];
-const gl = {{
-    RGBA: 6408,
-    UNSIGNED_BYTE: 5121,
-    NO_ERROR: 0,
-    finish() {{ calls.push(["finish"]); }},
-    readPixels(x, y, width, height, format, type, pixel) {{
-        calls.push(["readPixels", x, y, width, height, format, type]);
-        pixel.set([17, 34, 51, 255]);
-    }},
-    getError() {{ calls.push(["getError"]); return 0; }},
-}};
-globalThis.document = {{
-    getElementById(id) {{
-        assert.equal(id, "game");
-        return {{ width: 10, height: 8 }};
-    }},
-}};
-globalThis.ctrdxWasmModule = {{
-    GL: {{
-        currentContext: {{ GLctx: gl }},
-        createContext() {{ throw new Error("must not create a second context"); }},
-    }},
-}};
-
-assert.deepEqual(probe.currentContextStatus(), [1, 1]);
-assert.deepEqual(probe.readCenterPixel("game"), [17, 34, 51, 255, 0]);
-assert.deepEqual(calls, [
-    ["finish"],
-    ["readPixels", 5, 4, 1, 1, 6408, 5121],
-    ["getError"],
-]);
 """
     result = subprocess.run(
         [node, "--input-type=module"],

@@ -1,15 +1,44 @@
-// Creates the WebGL2 context Skia renders into. Emscripten's GL registry is used
-// rather than canvas.getContext directly, because Skia's GPU backend resolves its GL
-// entry points through that registry - a context created outside it is invisible to Skia.
-
-function getGL() {
-    const gl = globalThis.ctrdxWasmModule?.GL;
-    if (!gl) {
-        throw new Error("Emscripten GL registry unavailable");
+// Hands the canvas to the managed owner thread's worker. Ownership is permanent:
+// the browser thread can never draw to this canvas or resize its backing store
+// again, so nothing may fall back to browser-thread rendering after this returns.
+export function transferCanvasToThread(canvasId, threadId) {
+    const canvas = document.getElementById(canvasId);
+    const worker = globalThis.ctrdxWasmModule?.PThread?.pthreads?.[threadId];
+    if (canvas === null || !worker) {
+        return [];
     }
-    return gl;
+
+    measure(canvas);
+    appliedDevicePixelRatio = measuredRatio;
+
+    let offscreen;
+    try {
+        offscreen = canvas.transferControlToOffscreen();
+    } catch (error) {
+        console.info(
+            JSON.stringify({
+                marker: "ctrdx-host",
+                boundary: "canvas-transfer",
+                threadId,
+                message: String(error),
+            }),
+        );
+        return [];
+    }
+
+    worker.postMessage({ cmd: "ctrdx-transfer-canvas", canvas: offscreen }, [
+        offscreen,
+    ]);
+    return [
+        Math.max(1, Math.round(canvas.clientWidth)),
+        Math.max(1, Math.round(canvas.clientHeight)),
+        measuredWidth,
+        measuredHeight,
+    ];
 }
 
+// Retained until normal boot moves to the owner thread. The render probe transfers
+// the canvas before this path can run, so the two ownership models never mix.
 export function createContext(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
@@ -26,13 +55,15 @@ export function createContext(canvasId) {
         minorVersion: 0,
         enableExtensionsByDefault: 1,
     };
-    const GL = getGL();
+    const GL = globalThis.ctrdxWasmModule?.GL;
+    if (!GL) {
+        return 0;
+    }
     const handle = GL.createContext(canvas, attributes);
     if (!handle) {
         return 0;
     }
     GL.makeContextCurrent(handle);
-    // Skia renders to the default framebuffer of the context it is handed.
     return 0;
 }
 
@@ -93,9 +124,6 @@ function onDevicePixelRatioChange() {
     }
 }
 
-// The canvas fills the viewport through the stylesheet, so its CSS box needs no help from
-// here. Measuring it rather than sizing it is what lets the game adopt whatever shape the
-// window or the device is, instead of the page choosing a shape and the game obeying it.
 export function canvasSize(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
@@ -110,6 +138,9 @@ export function canvasSize(canvasId) {
     return [measuredWidth, measuredHeight];
 }
 
+// The canvas fills the viewport through the stylesheet, so its CSS box needs no help from
+// here. Measuring it rather than sizing it is what lets the game adopt whatever shape the
+// window or the device is, instead of the page choosing a shape and the game obeying it.
 // Starts reporting canvas shape changes through canvasChangeCount, so callers stop having to
 // measure the DOM to discover that nothing moved.
 export function watchCanvas(canvasId) {

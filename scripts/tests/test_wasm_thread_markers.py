@@ -68,7 +68,9 @@ def test_managed_worker_probe_runs_before_the_render_boundary():
     ).read_text(encoding="utf-8")
 
     marker_offset = source.find("ctrdx-thread-smoke:")
-    first_context_offset = source.find('GLContextInterop.CreateContext("game")')
+    first_context_offset = source.find(
+        'GLContextInterop.TransferCanvasToThread("game", threadId)'
+    )
 
     assert marker_offset >= 0
     assert first_context_offset >= 0
@@ -91,14 +93,10 @@ def test_render_probe_interop_is_typed_and_dom_free():
     for export in (
         "isRequested",
         "executionContext",
-        "currentContextStatus",
-        "clearErrors",
-        "readCenterPixel",
         "isExpectedPixel",
     ):
         assert f'[JSImport("{export}", "renderprobe")]' in source
 
-    assert "public static partial int[] ReadCenterPixel(string canvasId);" in source
     assert "public static partial bool IsExpectedPixel(int[] values);" in source
     assert "JSObject" not in source
 
@@ -147,14 +145,14 @@ def test_worker_render_probe_uses_production_skia_path_and_one_result_marker():
     for required in (
         "Environment.CurrentManagedThreadId",
         "RenderProbeInterop.ExecutionContext()",
-        'GLContextInterop.CreateContext("game")',
-        'GLContextInterop.CanvasSize("game")',
-        "RenderProbeInterop.CurrentContextStatus()",
+        'GLContextInterop.TransferCanvasToThread("game", threadId)',
+        "HostShim.CreateWorkerContext(",
+        "HostShim.ContextUsable()",
         "using SkiaSurface",
         "new SKColor(17, 34, 51, 255)",
         ".Canvas.Clear(",
         ".Flush()",
-        "RenderProbeInterop.ReadCenterPixel(",
+        "HostShim.ReadCenterPixel(",
         "RenderProbeInterop.IsExpectedPixel(",
     ):
         assert required in source

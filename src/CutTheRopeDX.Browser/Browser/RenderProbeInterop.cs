@@ -20,18 +20,6 @@ namespace CutTheRopeDX.Browser
         [JSImport("executionContext", "renderprobe")]
         public static partial string ExecutionContext();
 
-        /// <summary>Returns current-context and usable-GL flags.</summary>
-        [JSImport("currentContextStatus", "renderprobe")]
-        public static partial int[] CurrentContextStatus();
-
-        /// <summary>Drains stale WebGL errors from the current context.</summary>
-        [JSImport("clearErrors", "renderprobe")]
-        public static partial bool ClearErrors();
-
-        /// <summary>Returns the canvas center RGBA channels followed by the WebGL error.</summary>
-        [JSImport("readCenterPixel", "renderprobe")]
-        public static partial int[] ReadCenterPixel(string canvasId);
-
         /// <summary>Checks the deterministic probe pixel and WebGL error values.</summary>
         [JSImport("isExpectedPixel", "renderprobe")]
         public static partial bool IsExpectedPixel(int[] values);

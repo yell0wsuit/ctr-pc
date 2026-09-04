@@ -75,40 +75,48 @@ namespace CutTheRopeDX.Browser
             Mark(state, "browser-context", $"context={executionContext}");
 
             Mark(state, "context-create");
-            int fbo = GLContextInterop.CreateContext("game");
-            int[] size = GLContextInterop.CanvasSize("game");
-            if (size.Length < 2 || size[0] <= 0 || size[1] <= 0)
+            _ = HostShim.InstallCanvasListener();
+            int[] canvas = GLContextInterop.TransferCanvasToThread("game", threadId);
+            if (canvas.Length != 4 || canvas[2] <= 0 || canvas[3] <= 0)
             {
                 return "CONTEXT_CREATE_FAILED";
             }
 
-            int[] contextStatus = RenderProbeInterop.CurrentContextStatus();
-            if (contextStatus.Length < 2 || contextStatus[0] == 0)
+            int attempts = 0;
+            while (HostShim.CanvasReceived() == 0 && attempts < 200)
+            {
+                attempts++;
+                await Task.Delay(25);
+            }
+            if (HostShim.CanvasReceived() == 0)
+            {
+                return "CONTEXT_CREATE_FAILED";
+            }
+
+            int handle = HostShim.CreateWorkerContext(canvas[2], canvas[3]);
+            if (handle == 0)
             {
                 return "CONTEXT_CREATE_FAILED";
             }
             Mark(
                 state,
                 "webgl-context-created",
-                $"fbo={fbo} size={size[0]}x{size[1]}");
+                $"handle={handle} size={canvas[2]}x{canvas[3]}");
 
-            if (contextStatus[1] == 0)
+            if (HostShim.ContextUsable() == 0)
             {
                 return "CONTEXT_NOT_CURRENT";
             }
-            Mark(
-                state,
-                "current-context-verified",
-                $"current={contextStatus[0]} usable={contextStatus[1]}");
+            Mark(state, "current-context-verified", $"handle={handle} usable=1");
 
             Mark(state, "skia-interface-create");
-            using SkiaSurface surface = new(fbo, size[0], size[1]);
+            using SkiaSurface surface = new(0, canvas[2], canvas[3]);
             Mark(state, "skia-interface-created");
             Mark(state, "skia-context-created");
             Mark(state, "skia-surface-created");
 
             Mark(state, "clear");
-            if (!RenderProbeInterop.ClearErrors())
+            if (HostShim.ClearGlErrors() == 0)
             {
                 return "CONTEXT_NOT_CURRENT";
             }
@@ -119,18 +127,27 @@ namespace CutTheRopeDX.Browser
             Mark(state, "clear-flushed");
 
             Mark(state, "pixel-readback");
-            int[] pixel = RenderProbeInterop.ReadCenterPixel("game");
-            if (pixel.Length != 5)
+            int packed = HostShim.ReadCenterPixel(canvas[2], canvas[3]);
+            if (packed == -1)
             {
                 return "PIXEL_READBACK_FAILED";
             }
 
-            Mark(state, "gl-error", $"error={pixel[4]}");
-            if (pixel[4] != 0)
+            int glError = HostShim.LastGlError();
+            Mark(state, "gl-error", $"error={glError}");
+            if (glError != 0)
             {
                 return "PIXEL_READBACK_FAILED";
             }
 
+            int[] pixel =
+            [
+                (packed >> 24) & 0xFF,
+                (packed >> 16) & 0xFF,
+                (packed >> 8) & 0xFF,
+                packed & 0xFF,
+                glError,
+            ];
             Mark(
                 state,
                 "pixel-read",
