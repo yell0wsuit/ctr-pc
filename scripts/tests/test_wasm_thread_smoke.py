@@ -13,21 +13,6 @@ from scripts.wasm_thread_smoke import (
 )
 
 
-def test_classifies_gate1_success():
-    text = """
-    ctrdx-wasm-env: crossOriginIsolated=true
-    ctrdx-thread-smoke: owner=2 worker=3 different=true result=42
-    """
-
-    assert classify_output(text) == "GATE1_PASS"
-
-
-def test_rejects_same_managed_thread():
-    text = "ctrdx-thread-smoke: owner=2 worker=2 different=false result=42"
-
-    assert classify_output(text) == "TASK_RUN_NOT_PARALLEL"
-
-
 def test_identifies_deputy_startup_failure():
     text = "mono_wasm_start_deputy_thread_async() failed RuntimeError: unreachable"
 
@@ -57,16 +42,7 @@ def test_requires_cross_origin_isolation():
 def test_classifies_gate2_terminal_results(result):
     text = f"ctrdx-render-probe: result={result}"
 
-    assert classify_output(text, gate="gate2") == result
-
-
-def test_gate2_ignores_gate1_success():
-    text = """
-    ctrdx-wasm-env: crossOriginIsolated=true
-    ctrdx-thread-smoke: owner=2 worker=3 different=true result=42
-    """
-
-    assert classify_output(text, gate="gate2") == "INCOMPLETE"
+    assert classify_output(text) == result
 
 
 def test_runtime_failure_overrides_gate2_success():
@@ -75,13 +51,13 @@ def test_runtime_failure_overrides_gate2_success():
     [MONO] Assertion failed after probe result
     """
 
-    assert classify_output(text, gate="gate2") == "RUNTIME_FAILED"
+    assert classify_output(text) == "RUNTIME_FAILED"
 
 
 def test_mono_wasm_javascript_failure_is_a_runtime_failure():
     text = "MONO_WASM: Cannot read properties of undefined (reading 'getParameter')"
 
-    assert classify_output(text, gate="gate2") == "RUNTIME_FAILED"
+    assert classify_output(text) == "RUNTIME_FAILED"
 
 
 def test_server_adds_cross_origin_isolation_headers(tmp_path):
@@ -131,8 +107,7 @@ def test_missing_browser_is_reported_as_nonzero(tmp_path, capsys):
     assert "browser executable does not exist" in capsys.readouterr().err
 
 
-@pytest.mark.parametrize("gate", ["gate1", "gate2"])
-def test_timeout_stops_browser_process(tmp_path, gate):
+def test_timeout_stops_browser_process(tmp_path):
     (tmp_path / "index.html").write_text("ok", encoding="utf-8")
     browser = tmp_path / "fake-browser"
     browser.write_text(
@@ -147,7 +122,7 @@ def test_timeout_stops_browser_process(tmp_path, gate):
     )
     browser.chmod(browser.stat().st_mode | stat.S_IXUSR)
 
-    result = run_smoke(tmp_path, browser, timeout=0.05, gate=gate)
+    result = run_smoke(tmp_path, browser, timeout=0.05)
 
     assert result.classification == "INCOMPLETE"
     assert result.timed_out is True

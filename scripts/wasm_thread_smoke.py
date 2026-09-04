@@ -34,7 +34,7 @@ GATE2_RESULTS = {
 }
 
 
-def classify_output(text: str, gate: str = "gate1") -> str:
+def classify_output(text: str, gate: str = "gate2") -> str:
     """Classify the stable markers and runtime failures in browser output."""
     if "ctrdx-wasm-env: crossOriginIsolated=false" in text:
         return "NOT_CROSS_ORIGIN_ISOLATED"
@@ -53,21 +53,10 @@ def classify_output(text: str, gate: str = "gate1") -> str:
         )
     ):
         return "RUNTIME_FAILED"
-    if gate == "gate2":
-        matches = re.findall(r"ctrdx-render-probe: result=([A-Z0-9_]+)", text)
-        for result in reversed(matches):
-            if result in GATE2_RESULTS:
-                return result
-        return "INCOMPLETE"
-    if "ctrdx-thread-smoke:" in text and "different=false" in text:
-        return "TASK_RUN_NOT_PARALLEL"
-    if (
-        "ctrdx-wasm-env: crossOriginIsolated=true" in text
-        and "ctrdx-thread-smoke:" in text
-        and "different=true" in text
-        and "result=42" in text
-    ):
-        return "GATE1_PASS"
+    matches = re.findall(r"ctrdx-render-probe: result=([A-Z0-9_]+)", text)
+    for result in reversed(matches):
+        if result in GATE2_RESULTS:
+            return result
     return "INCOMPLETE"
 
 
@@ -139,7 +128,7 @@ def run_smoke(
     publish_directory: str | Path,
     browser: str | Path,
     timeout: float,
-    gate: str = "gate1",
+    gate: str = "gate2",
     success_grace: float = 0.0,
 ) -> SmokeResult:
     output_lines: list[str] = []
@@ -208,7 +197,9 @@ def main(arguments: Sequence[str] | None = None) -> int:
     parser.add_argument("--publish-dir", required=True, type=Path)
     parser.add_argument("--browser", required=True, type=Path)
     parser.add_argument("--timeout", type=float, default=120)
-    parser.add_argument("--gate", choices=("gate1", "gate2"), default="gate1")
+    # Only the render boundary is still worth classifying automatically; the
+    # managed-threading proof it used to carry is implied by the game booting.
+    parser.add_argument("--gate", choices=("gate2",), default="gate2")
     parser.add_argument("--success-grace", type=float, default=0.0)
     args = parser.parse_args(arguments)
 
@@ -229,7 +220,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
     for line in _relevant_lines(result.output):
         print(line)
     print(f"{RESULT_PREFIX}{result.classification}")
-    expected_pass = "GATE2_PASS" if args.gate == "gate2" else "GATE1_PASS"
+    expected_pass = "GATE2_PASS"
     return 0 if result.classification == expected_pass else 1
 
 

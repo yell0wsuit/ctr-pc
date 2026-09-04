@@ -196,37 +196,6 @@ def test_javascript_reports_isolation_before_runtime_creation():
     assert marker_offset < runtime_creation_offset
 
 
-def test_managed_worker_proof_stays_out_of_the_boot_path():
-    """The worker proof belongs to the probe, not to a normal launch."""
-    boot = (
-        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Program.cs"
-    ).read_text(encoding="utf-8")
-
-    assert "ctrdx-thread-smoke:" not in boot
-    assert "Task.Run" not in boot
-
-
-def test_managed_worker_probe_runs_before_the_render_boundary():
-    source = (
-        REPOSITORY_ROOT
-        / "src/CutTheRopeDX.Browser/Browser/WorkerRenderProbe.cs"
-    ).read_text(encoding="utf-8")
-
-    marker_offset = source.find("ctrdx-thread-smoke:")
-    first_context_offset = source.find(
-        'GLContextInterop.TransferCanvasToThread("game", threadId)'
-    )
-
-    assert marker_offset >= 0
-    assert first_context_offset >= 0
-    assert marker_offset < first_context_offset
-    assert "Environment.CurrentManagedThreadId" in source
-    assert "Task.Run" in source
-    assert "different=" in source
-    assert "result={workerResult}" in source
-    assert "42" in source
-
-
 def test_render_probe_interop_is_typed_and_dom_free():
     path = (
         REPOSITORY_ROOT

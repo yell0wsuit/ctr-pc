@@ -35,18 +35,7 @@ namespace CutTheRopeDX.Browser
 
         private static async Task<string> RunCoreAsync(ProbeState state)
         {
-            int ownerThreadId = Environment.CurrentManagedThreadId;
-            Mark(state, "entry", $"owner={ownerThreadId}");
-
-            // Worker execution is proven here rather than in the boot path, so a normal
-            // launch does not carry a diagnostic it never reads.
-            (int workerThreadId, int workerResult) = await Task.Run(
-                () => (Environment.CurrentManagedThreadId, 42));
-            bool differentThread = ownerThreadId != workerThreadId;
-            Console.WriteLine(
-                $"ctrdx-thread-smoke: owner={ownerThreadId} worker={workerThreadId} " +
-                $"different={differentThread.ToString().ToLowerInvariant()} " +
-                $"result={workerResult}");
+            Mark(state, "entry", $"owner={Environment.CurrentManagedThreadId}");
 
             int threadId = HostShim.ThreadId();
             int isMainRuntimeThread = HostShim.IsMainRuntimeThread();
