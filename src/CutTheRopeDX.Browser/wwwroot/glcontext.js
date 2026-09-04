@@ -32,6 +32,17 @@ export function transferCanvasToThread(canvasId, threadId) {
     worker.postMessage({ cmd: "ctrdx-transfer-canvas", canvas: offscreen }, [
         offscreen,
     ]);
+    worker.addEventListener("message", (event) => {
+        if (event.data?.cmd === "ctrdx-context-lost") {
+            document.getElementById("splash")?.classList.remove("hidden");
+            document.getElementById("splash-spinner")?.setAttribute("hidden", "");
+            document.getElementById("splash-progress")?.setAttribute("hidden", "");
+            document.getElementById("start")?.setAttribute("hidden", "");
+            document
+                .getElementById("context-lost-error")
+                ?.removeAttribute("hidden");
+        }
+    });
     return [
         cssWidth,
         cssHeight,

@@ -1,6 +1,7 @@
 import * as hostEvents from "./host-events.js";
 import { setLoadingProgress } from "./loading-progress.js";
 
+await globalThis.ctrdxIsolationReady;
 const isolated = globalThis.crossOriginIsolated === true;
 console.info(`ctrdx-wasm-env: crossOriginIsolated=${isolated}`);
 if (!isolated) {

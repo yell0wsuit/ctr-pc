@@ -61,7 +61,9 @@ const contentHashes = new Map(
 
 self.addEventListener("install", (event) => event.waitUntil(onInstall()));
 self.addEventListener("activate", (event) => event.waitUntil(onActivate()));
-self.addEventListener("fetch", (event) => event.respondWith(onFetch(event)));
+self.addEventListener("fetch", (event) =>
+    event.respondWith(withIsolationHeaders(onFetch(event))),
+);
 
 // The page asks for this once the player accepts the update prompt. Until then a new worker
 // waits, so a version never changes underneath a session in progress.
@@ -157,6 +159,20 @@ async function onFetch(event) {
     }
 
     return fetch(request);
+}
+
+/** Adds the document policy required by shared WebAssembly memory to every response. */
+async function withIsolationHeaders(responseResult) {
+    const response = await responseResult;
+    const headers = new Headers(response.headers);
+    headers.set("Cross-Origin-Opener-Policy", "same-origin");
+    headers.set("Cross-Origin-Embedder-Policy", "require-corp");
+    headers.set("Cross-Origin-Resource-Policy", "cross-origin");
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    });
 }
 
 /**

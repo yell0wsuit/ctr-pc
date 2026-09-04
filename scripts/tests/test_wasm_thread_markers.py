@@ -22,6 +22,32 @@ def test_missing_isolation_is_terminal_before_the_runtime_starts():
     assert "ctrdx-isolation-error" in source
 
 
+def test_pages_service_worker_bootstraps_isolation_before_main():
+    pwa = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/pwa.js"
+    ).read_text(encoding="utf-8")
+    main = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/main.js"
+    ).read_text(encoding="utf-8")
+    worker = (
+        REPOSITORY_ROOT
+        / "src/CutTheRopeDX.Browser/wwwroot/service-worker.published.js"
+    ).read_text(encoding="utf-8")
+
+    assert "ctrdxIsolationReady" in pwa
+    assert "controllerchange" in pwa
+    assert "location.reload()" in pwa
+    assert 'candidate.state === "redundant"' in pwa
+    assert "CONTROLLER_TIMEOUT_MS" in pwa
+    assert "await globalThis.ctrdxIsolationReady" in main
+    for header in (
+        "Cross-Origin-Opener-Policy",
+        "Cross-Origin-Embedder-Policy",
+        "Cross-Origin-Resource-Policy",
+    ):
+        assert header in worker
+
+
 def test_context_loss_pauses_rather_than_drawing_on():
     source = (
         REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/GameLoop.cs"
@@ -29,6 +55,43 @@ def test_context_loss_pauses_rather_than_drawing_on():
 
     assert "HostShim.ContextLost()" in source
     assert "ctrdx-context-lost" in source
+    assert "reload required" in source
+    assert source.find("try") < source.find("HostShim.ContextLost()")
+
+    context_loss_start = source.find("if (HostShim.ContextLost()")
+    context_loss = source[
+        context_loss_start : source.find("try", context_loss_start + 1)
+    ]
+    assert "HostShim.RequestFrame()" not in context_loss
+
+    browser = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/glcontext.js"
+    ).read_text(encoding="utf-8")
+    assert 'classList.remove("hidden")' in browser
+
+
+def test_hidden_page_wakes_the_owner_to_process_lifecycle():
+    events = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/host-events.js"
+    ).read_text(encoding="utf-8")
+    shim = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Native/ctrdxhost.c"
+    ).read_text(encoding="utf-8")
+
+    assert "ctrdx-host-wake" in events
+    assert "ctrdx-host-wake" in shim
+
+
+def test_event_ring_reserves_control_capacity_and_reports_drops():
+    events = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/host-events.js"
+    ).read_text(encoding="utf-8")
+    loop = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/GameLoop.cs"
+    ).read_text(encoding="utf-8")
+
+    assert "CONTROL_RESERVE" in events
+    assert "ctrdx-host-events-dropped" in loop
 
 
 def test_no_jsexport_survives_on_the_browser_thread_boundary():

@@ -14,6 +14,6 @@ namespace CutTheRopeDX.Browser
 
         /// <summary>Points the browser thread's writer at the shared ring.</summary>
         [JSImport("attach", "hostevents")]
-        public static partial void Attach(int address);
+        public static partial void Attach(int address, int threadId);
     }
 }

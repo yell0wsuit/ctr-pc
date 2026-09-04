@@ -59,7 +59,12 @@ EMSCRIPTEN_KEEPALIVE
 void ctrdx_request_frame(void)
 {
     EM_ASM({
+        var token = (globalThis.ctrdxFrameToken | 0) + 1;
+        globalThis.ctrdxFrameToken = token;
         requestAnimationFrame(function (timestamp) {
+            if (globalThis.ctrdxFrameToken !== token) {
+                return;
+            }
             _ctrdx_frame_entry(timestamp);
         });
     });
@@ -81,6 +86,11 @@ int ctrdx_install_canvas_listener(void)
             var data = event.data;
             if (data && data.cmd === 'ctrdx-transfer-canvas') {
                 globalThis.ctrdxCanvas = data.canvas;
+            } else if (data && data.cmd === 'ctrdx-host-wake') {
+                // Invalidate the animation frame that may have been suspended when
+                // the page became hidden, then process lifecycle state immediately.
+                globalThis.ctrdxFrameToken = (globalThis.ctrdxFrameToken | 0) + 1;
+                _ctrdx_frame_entry(performance.now());
             }
         });
         return 1;
@@ -135,6 +145,7 @@ int ctrdx_create_worker_context(int width, int height)
         surface.addEventListener('webglcontextlost', function (event) {
             event.preventDefault();
             globalThis.ctrdxContextLost = 1;
+            postMessage({ cmd: 'ctrdx-context-lost' });
         });
         return handle;
     }, width, height);

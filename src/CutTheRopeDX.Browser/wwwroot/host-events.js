@@ -5,6 +5,9 @@
 const HEADER_BYTES = 16;
 const RECORD_BYTES = 24;
 const CAPACITY = 1024;
+// Pointer moves are the only high-volume event. Stop admitting them before the
+// ring is full so releases, lifecycle transitions, and resizes retain space.
+const CONTROL_RESERVE = 32;
 
 const WRITE_INDEX = 0;
 const READ_INDEX = 1;
@@ -30,6 +33,7 @@ const KEY_IDS = {
 let baseWord = 0;
 let view = null;
 let viewBuffer = null;
+let ownerWorker = null;
 
 // A grown wasm memory replaces the buffer behind every typed-array view, so the
 // view is rebuilt whenever the buffer identity changes. The ring's address does
@@ -43,17 +47,18 @@ function heap() {
     return view;
 }
 
-function write(kind, word0, word1, word2, word3, word4) {
+function write(kind, word0, word1, word2, word3, word4, droppable = false) {
     if (baseWord === 0) {
-        return;
+        return false;
     }
 
     const words = heap();
     const writeIndex = words[baseWord + WRITE_INDEX];
     const readIndex = Atomics.load(words, baseWord + READ_INDEX);
-    if (writeIndex - readIndex >= CAPACITY) {
-        words[baseWord + DROPPED] += 1;
-        return;
+    const limit = droppable ? CAPACITY - CONTROL_RESERVE : CAPACITY;
+    if (writeIndex - readIndex >= limit) {
+        Atomics.add(words, baseWord + DROPPED, 1);
+        return false;
     }
 
     const slot =
@@ -69,6 +74,7 @@ function write(kind, word0, word1, word2, word3, word4) {
 
     // Published last, so the reader never sees a slot before it is filled.
     Atomics.store(words, baseWord + WRITE_INDEX, writeIndex + 1);
+    return true;
 }
 
 const floatBits = new DataView(new ArrayBuffer(4));
@@ -77,8 +83,10 @@ function bits(value) {
     return floatBits.getInt32(0, true);
 }
 
-export function attach(address) {
+export function attach(address, threadId) {
     baseWord = address / 4;
+    ownerWorker =
+        globalThis.ctrdxWasmModule?.PThread?.pthreads?.[threadId] ?? null;
 }
 
 export function pointer(phase, offsetX, offsetY, rectWidth, rectHeight) {
@@ -89,6 +97,7 @@ export function pointer(phase, offsetX, offsetY, rectWidth, rectHeight) {
         bits(offsetY),
         bits(rectWidth),
         bits(rectHeight),
+        phase === 1,
     );
 }
 
@@ -104,7 +113,9 @@ export function wheel(delta) {
 }
 
 export function active(isActive) {
-    write(KIND_ACTIVE, isActive ? 1 : 0, 0, 0, 0, 0);
+    if (write(KIND_ACTIVE, isActive ? 1 : 0, 0, 0, 0, 0) && !isActive) {
+        ownerWorker?.postMessage({ cmd: "ctrdx-host-wake" });
+    }
 }
 
 export function resize(cssWidth, cssHeight, devicePixelRatio) {

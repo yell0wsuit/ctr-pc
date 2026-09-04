@@ -18,6 +18,7 @@ namespace CutTheRopeDX.Browser
         private static double _accumulator;
         private static bool _active = true;
         private static bool _contextLostReported;
+        private static int _reportedDroppedEvents;
 
         internal static SkiaSurface Surface { get; set; }
 
@@ -43,33 +44,44 @@ namespace CutTheRopeDX.Browser
         [UnmanagedCallersOnly]
         private static void OnFrame(double timestampMs)
         {
-            if (HostShim.ContextLost() != 0)
-            {
-                if (!_contextLostReported)
-                {
-                    _contextLostReported = true;
-                    Console.WriteLine("ctrdx-context-lost: simulation paused");
-                    CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
-                    Preferences.Update();
-                }
-
-                // Frames keep being requested so the loop can resume if the context
-                // ever comes back, but nothing touches Skia while it is gone: every
-                // GPU resource behind it is invalid.
-                HostShim.RequestFrame();
-                return;
-            }
-
+            bool requestNextFrame = true;
             try
             {
+                if (HostShim.ContextLost() != 0)
+                {
+                    requestNextFrame = false;
+                    if (!_contextLostReported)
+                    {
+                        _contextLostReported = true;
+                        Console.WriteLine(
+                            "ctrdx-context-lost: simulation paused; reload required");
+                        CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                        Preferences.Update();
+                    }
+
+                    return;
+                }
+
                 Tick(timestampMs);
             }
             catch (Exception exception)
             {
                 Console.WriteLine($"ctrdx-frame-error: {exception}");
             }
-
-            HostShim.RequestFrame();
+            finally
+            {
+                if (requestNextFrame)
+                {
+                    try
+                    {
+                        HostShim.RequestFrame();
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine($"ctrdx-frame-request-error: {exception}");
+                    }
+                }
+            }
         }
 
         /// <summary>Advances and draws one animation frame.</summary>
@@ -222,6 +234,13 @@ namespace CutTheRopeDX.Browser
                     default:
                         break;
                 }
+            }
+
+            int dropped = HostEventQueue.DroppedCount();
+            if (dropped != _reportedDroppedEvents)
+            {
+                _reportedDroppedEvents = dropped;
+                Console.WriteLine($"ctrdx-host-events-dropped: total={dropped}");
             }
         }
     }

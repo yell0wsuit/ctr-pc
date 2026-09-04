@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Browser
         {
             _buffer = (byte*)HostShim.EventBuffer(HostEventRing.BufferBytes);
             HostEventRing.Initialize(Span());
-            HostEventInterop.Attach((int)_buffer);
+            HostEventInterop.Attach((int)_buffer, HostShim.ThreadId());
         }
 
         /// <summary>Returns every event written since the last drain.</summary>
@@ -31,6 +31,12 @@ namespace CutTheRopeDX.Browser
 
             int count = HostEventRing.Drain(Span(), Drained);
             return Drained.AsSpan(0, count);
+        }
+
+        /// <summary>Returns the total number of records rejected by the writer.</summary>
+        public static int DroppedCount()
+        {
+            return _buffer is null ? 0 : HostEventRing.DroppedCount(Span());
         }
 
         private static Span<byte> Span()
