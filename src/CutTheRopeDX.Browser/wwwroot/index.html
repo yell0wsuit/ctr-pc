@@ -262,6 +262,11 @@
                 Taking too long? You might want to check your internet speed, or
                 reload the page.
             </p>
+            <p id="isolation-error" hidden>
+                This build needs cross-origin isolation, which this page did not get. Reload
+                once; if it keeps happening, the server is not sending the COOP and COEP
+                headers the game requires.
+            </p>
         </div>
         <dialog id="update">
             <p>A new version of the game is ready.</p>

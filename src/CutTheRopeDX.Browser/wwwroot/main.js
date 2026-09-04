@@ -1,7 +1,22 @@
-import { dotnet } from "./_framework/dotnet.js";
 import * as hostEvents from "./host-events.js";
 import { setLoadingProgress } from "./loading-progress.js";
 
+const isolated = globalThis.crossOriginIsolated === true;
+console.info(`ctrdx-wasm-env: crossOriginIsolated=${isolated}`);
+if (!isolated) {
+    // Threaded-only: there is no browser-thread rendering path to degrade to, and
+    // the canvas transfer this build depends on cannot be undone once it happens.
+    console.error(
+        "ctrdx-isolation-error: refusing to start without shared memory",
+    );
+    document.getElementById("splash-spinner")?.setAttribute("hidden", "");
+    document.getElementById("isolation-error")?.removeAttribute("hidden");
+    throw new Error("Cross-origin isolation is required.");
+}
+
+// Importing the threaded runtime itself requires SharedArrayBuffer, so the
+// isolation guard must run before this module is evaluated.
+const { dotnet } = await import("./_framework/dotnet.js");
 const reportDownloadProgress = (loaded, total) => {
     setLoadingProgress("runtime", loaded, total);
 };
@@ -18,9 +33,6 @@ if (typeof builder.withModuleConfig === "function") {
     });
 }
 
-console.info(
-    `ctrdx-wasm-env: crossOriginIsolated=${globalThis.crossOriginIsolated === true}`,
-);
 globalThis.ctrdxRenderProbe =
     new URLSearchParams(globalThis.location.search).get("renderProbe") === "1";
 const runtime = await builder.create();

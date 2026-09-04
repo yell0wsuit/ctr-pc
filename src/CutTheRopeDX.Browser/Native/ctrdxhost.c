@@ -131,6 +131,11 @@ int ctrdx_create_worker_context(int width, int height)
             return 0;
         }
         GL.makeContextCurrent(handle);
+        globalThis.ctrdxContextLost = 0;
+        surface.addEventListener('webglcontextlost', function (event) {
+            event.preventDefault();
+            globalThis.ctrdxContextLost = 1;
+        });
         return handle;
     }, width, height);
 }
@@ -198,6 +203,14 @@ int ctrdx_last_gl_error(void)
 {
     return EM_ASM_INT({
         return globalThis.ctrdxLastGlError | 0;
+    });
+}
+
+EMSCRIPTEN_KEEPALIVE
+int ctrdx_context_lost(void)
+{
+    return EM_ASM_INT({
+        return globalThis.ctrdxContextLost | 0;
     });
 }
 

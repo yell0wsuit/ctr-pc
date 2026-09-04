@@ -67,6 +67,10 @@ namespace CutTheRopeDX.Browser
         [LibraryImport(Library, EntryPoint = "ctrdx_last_gl_error")]
         internal static partial int LastGlError();
 
+        /// <summary>Returns whether this thread's WebGL context has been lost.</summary>
+        [LibraryImport(Library, EntryPoint = "ctrdx_context_lost")]
+        internal static partial int ContextLost();
+
         /// <summary>
         /// Returns the shared event buffer, allocating it on first use. Its address is
         /// stable for the process, which is what lets the browser thread keep writing to

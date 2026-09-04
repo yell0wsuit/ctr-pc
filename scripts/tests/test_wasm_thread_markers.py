@@ -5,6 +5,32 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_missing_isolation_is_terminal_before_the_runtime_starts():
+    source = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/wwwroot/main.js"
+    ).read_text(encoding="utf-8")
+
+    isolation = source.find("crossOriginIsolated")
+    runtime_import = source.find('await import("./_framework/dotnet.js")')
+    creation = source.find("builder.create()")
+    assert isolation >= 0
+    assert runtime_import >= 0
+    assert isolation < runtime_import
+    assert isolation < creation
+    # Threaded-only: there is no degraded mode to fall back to, and the canvas
+    # transfer cannot be undone once it has happened.
+    assert "ctrdx-isolation-error" in source
+
+
+def test_context_loss_pauses_rather_than_drawing_on():
+    source = (
+        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Browser/GameLoop.cs"
+    ).read_text(encoding="utf-8")
+
+    assert "HostShim.ContextLost()" in source
+    assert "ctrdx-context-lost" in source
+
+
 def test_no_jsexport_survives_on_the_browser_thread_boundary():
     """Synchronous JSExport from the browser thread throws under threading."""
     for relative in (
