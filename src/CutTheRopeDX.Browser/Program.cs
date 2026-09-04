@@ -8,6 +8,13 @@ using CutTheRopeDX.Framework.Platform;
 [assembly: SupportedOSPlatform("browser")]
 
 await GLContextInterop.ImportAsync();
+await RenderProbeInterop.ImportAsync();
+if (RenderProbeInterop.IsRequested())
+{
+    await WorkerRenderProbe.RunAsync();
+    return;
+}
+
 await FetchInterop.ImportAsync();
 await AudioInterop.ImportAsync();
 await StorageInterop.ImportAsync();

@@ -17,6 +17,11 @@ if (typeof builder.withModuleConfig === "function") {
     });
 }
 
+console.info(
+    `ctrdx-wasm-env: crossOriginIsolated=${globalThis.crossOriginIsolated === true}`,
+);
+globalThis.ctrdxRenderProbe =
+    new URLSearchParams(globalThis.location.search).get("renderProbe") === "1";
 const runtime = await builder.create();
 const config = runtime.getConfig();
 globalThis.ctrdxWasmModule = runtime.Module;
