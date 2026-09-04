@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -21,7 +20,7 @@ namespace CutTheRopeDX.Browser
     {
         private const int PreloadConcurrency = 8;
 
-        private readonly Dictionary<string, byte[]> _cache = [];
+        private readonly ContentCache _cache = new();
 
         private static string Normalize(string relativePath)
         {
@@ -34,12 +33,7 @@ namespace CutTheRopeDX.Browser
         /// <inheritdoc />
         public byte[] Read(string relativePath)
         {
-            string key = Normalize(relativePath);
-            return _cache.TryGetValue(key, out byte[] bytes)
-                ? bytes
-                : throw new InvalidOperationException(
-                    $"Content '{key}' is absent from the upfront browser content cache. "
-                    + "Regenerate content/assets.json with scripts/build_web_content.py.");
+            return _cache.Read(Normalize(relativePath));
         }
 
         /// <summary>
@@ -57,7 +51,7 @@ namespace CutTheRopeDX.Browser
             using JsonDocument document = JsonDocument.Parse(json);
             foreach (JsonProperty entry in document.RootElement.EnumerateObject())
             {
-                _cache[entry.Name] = Encoding.UTF8.GetBytes(entry.Value.GetString());
+                _cache.Set(entry.Name, Encoding.UTF8.GetBytes(entry.Value.GetString()));
             }
             FetchInterop.ReportContentProgress("metadata", 1, 1);
         }
@@ -92,6 +86,11 @@ namespace CutTheRopeDX.Browser
                     category.Name, missing, paths.Length, paths.Length - missing.Length,
                     FetchAssetAsync);
             }
+
+            // Nothing writes the cache after this point, so sealing it turns a timing
+            // assumption into a structural one: the worker threads that scan level XML
+            // read a collection that can no longer change underneath them.
+            _cache.Freeze();
         }
 
         /// <summary>
@@ -103,52 +102,33 @@ namespace CutTheRopeDX.Browser
         /// one before the next batch starts, so the connection goes idle at each boundary. Pulling
         /// from a shared cursor keeps it saturated for the whole preload, which is most of what a
         /// player waits through on a first visit.
-        /// <para>
-        /// The cursor is not synchronized because it does not need to be: the browser host runs
-        /// single-threaded, so the workers interleave only where they await.
-        /// </para>
         /// </remarks>
         /// <param name="category">Asset category, for progress reporting.</param>
         /// <param name="work">The paths still to load.</param>
         /// <param name="total">Total assets in the category, including any already loaded.</param>
         /// <param name="done">How many of that total were already loaded.</param>
         /// <param name="load">Loads one path, throwing if it cannot.</param>
-        private static async Task PumpAsync(
+        private static Task PumpAsync(
             string category, string[] work, int total, int done, Func<string, Task> load)
         {
             FetchInterop.ReportContentProgress(category, done, total);
-            int next = 0;
-
-            async Task RunWorkerAsync()
-            {
-                while (true)
-                {
-                    int index = next++;
-                    if (index >= work.Length)
-                    {
-                        return;
-                    }
-
-                    await load(work[index]);
-                    done++;
-                    FetchInterop.ReportContentProgress(category, done, total);
-                }
-            }
-
-            Task[] workers = new Task[Math.Min(PreloadConcurrency, work.Length)];
-            for (int i = 0; i < workers.Length; i++)
-            {
-                workers[i] = RunWorkerAsync();
-            }
-            await Task.WhenAll(workers);
+            return ParallelPump.RunAsync(
+                work,
+                PreloadConcurrency,
+                load,
+                completed => FetchInterop.ReportContentProgress(
+                    category, done + completed, total));
         }
 
         private async Task FetchAssetAsync(string path)
         {
             byte[] bytes = await FetchInterop.GetBytesAsync(contentBaseUrl + path);
-            _cache[path] = bytes.Length != 0
-                ? bytes
-                : throw new InvalidOperationException($"Could not preload content '{path}'.");
+            _cache.Set(
+                path,
+                bytes.Length != 0
+                    ? bytes
+                    : throw new InvalidOperationException(
+                        $"Could not preload content '{path}'."));
         }
 
         private static async Task PreloadSoundAsync(WebAudioBackend audio, string path)

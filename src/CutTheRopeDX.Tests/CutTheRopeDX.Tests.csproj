@@ -33,6 +33,10 @@
   <ItemGroup>
     <Compile Include="../CutTheRopeDX.Browser/Browser/HostEventRing.cs"
              Link="Browser/HostEventRing.cs" />
+    <Compile Include="../CutTheRopeDX.Browser/Browser/ContentCache.cs"
+             Link="Browser/ContentCache.cs" />
+    <Compile Include="../CutTheRopeDX.Browser/Browser/ParallelPump.cs"
+             Link="Browser/ParallelPump.cs" />
   </ItemGroup>
 
   <!--
