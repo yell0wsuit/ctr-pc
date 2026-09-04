@@ -19,6 +19,7 @@ if (RenderProbeInterop.IsRequested())
 await FetchInterop.ImportAsync();
 await AudioInterop.ImportAsync();
 await StorageInterop.ImportAsync();
+await HostEventInterop.ImportAsync();
 await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
 
@@ -88,6 +89,7 @@ GameLoop.Surface = surface;
 GameLoop.Host = host;
 InputRouter.Host = host;
 
+HostEventQueue.Initialize();
 GameLoop.Start();
 
 Console.WriteLine("boot complete");

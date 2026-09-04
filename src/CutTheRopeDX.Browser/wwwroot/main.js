@@ -1,4 +1,5 @@
 import { dotnet } from "./_framework/dotnet.js";
+import * as hostEvents from "./host-events.js";
 import { setLoadingProgress } from "./loading-progress.js";
 
 const reportDownloadProgress = (loaded, total) => {
@@ -29,7 +30,6 @@ await runtime.runMain(config.mainAssemblyName, []);
 
 const exports = await runtime.getAssemblyExports(config.mainAssemblyName);
 const canvas = document.getElementById("game");
-const input = exports.CutTheRopeDX.Browser.InputRouter;
 const loop = exports.CutTheRopeDX.Browser.GameLoop;
 
 // getBoundingClientRect forces the browser to settle layout before it answers, and a drag
@@ -46,21 +46,17 @@ globalThis.addEventListener("scroll", invalidateCanvasRect, {
     passive: true,
 });
 
-const toBacking = (event) => {
-    canvasRect ??= canvas.getBoundingClientRect();
-    const rect = canvasRect;
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    return [
-        (event.clientX - rect.left) * scaleX,
-        (event.clientY - rect.top) * scaleY,
-    ];
-};
-
 const sendPointer = (event, phase) => {
     event.preventDefault();
-    const [x, y] = toBacking(event);
-    input.OnPointer(x, y, phase);
+    canvasRect ??= canvas.getBoundingClientRect();
+    const rect = canvasRect;
+    hostEvents.pointer(
+        phase,
+        event.clientX - rect.left,
+        event.clientY - rect.top,
+        rect.width,
+        rect.height,
+    );
 };
 
 canvas.addEventListener("pointerdown", (event) => {
@@ -95,19 +91,18 @@ canvas.addEventListener(
             (-event.deltaY * scale * UNITS_PER_NOTCH) / PIXELS_PER_NOTCH;
         const rounded = Math.round(units);
         if (rounded !== 0) {
-            input.OnWheel(rounded);
+            hostEvents.wheel(rounded);
         }
     },
     // preventDefault needs a non-passive listener, which wheel handlers default to.
     { passive: false },
 );
 
-const RESERVED_KEYS = new Set(["Space", "ArrowLeft", "ArrowRight"]);
 const sendKey = (event, down) => {
-    if (RESERVED_KEYS.has(event.code)) {
+    if (hostEvents.reservedKey(event.code)) {
         event.preventDefault();
     }
-    input.OnKey(event.code, down);
+    hostEvents.key(event.code, down);
 };
 globalThis.addEventListener("keydown", (event) => sendKey(event, true));
 globalThis.addEventListener("keyup", (event) => sendKey(event, false));

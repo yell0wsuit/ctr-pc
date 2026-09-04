@@ -23,11 +23,31 @@ namespace CutTheRopeDX.Browser
 
         private static bool _pointerDown;
 
-        /// <summary>Handles one pointer event in canvas backing pixels.</summary>
-        /// <param name="x">Pointer X in canvas backing pixels.</param>
-        /// <param name="y">Pointer Y in canvas backing pixels.</param>
+        /// <summary>Handles one pointer event reported in CSS pixels.</summary>
+        /// <param name="offsetX">Pointer X relative to the canvas box, in CSS pixels.</param>
+        /// <param name="offsetY">Pointer Y relative to the canvas box, in CSS pixels.</param>
+        /// <param name="rectWidth">The canvas box width the offsets were measured against.</param>
+        /// <param name="rectHeight">The canvas box height the offsets were measured against.</param>
         /// <param name="phase">One of the pointer phase constants.</param>
-        internal static void OnPointer(double x, double y, int phase)
+        /// <remarks>
+        /// The browser thread reports CSS pixels and the box that produced them, because
+        /// it no longer owns the backing store and cannot know its size. Scaling to
+        /// backing pixels therefore happens here.
+        /// </remarks>
+        internal static void HandlePointer(
+            float offsetX, float offsetY, float rectWidth, float rectHeight, int phase)
+        {
+            if (rectWidth <= 0f || rectHeight <= 0f)
+            {
+                return;
+            }
+
+            float x = offsetX * (GameLoop.Surface.Width / rectWidth);
+            float y = offsetY * (GameLoop.Surface.Height / rectHeight);
+            OnPointer(x, y, phase);
+        }
+
+        private static void OnPointer(double x, double y, int phase)
         {
             ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
             CTRRectangle render = snapshot.RenderViewport;
@@ -82,39 +102,32 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <summary>Scrolls the active view, as the desktop host does from its update loop.</summary>
-        /// <param name="delta">
-        /// Wheel movement in the desktop's units, where one notch is 120 and positive scrolls up.
-        /// </param>
-        internal static void OnWheel(int delta)
+        internal static void HandleWheel(int delta)
         {
             _ = Application.SharedRootController().HandleMouseWheel(delta);
         }
 
         /// <summary>Handles one keyboard transition.</summary>
-        /// <param name="code">The DOM <c>KeyboardEvent.code</c> value.</param>
-        /// <param name="down">Whether the key went down.</param>
-        internal static void OnKey(string code, bool down)
+        internal static void HandleKey(int keyId, bool down)
         {
-            KeyCode? mapped = Map(code);
+            KeyCode? mapped = Map((HostKey)keyId);
             if (mapped is not null)
             {
                 Host?.SetKey(mapped.Value, down);
             }
         }
 
-        private static KeyCode? Map(string code)
+        private static KeyCode? Map(HostKey key)
         {
-            return code switch
+            return key switch
             {
-                // Q and R stand in for Escape and F5: a browser keeps both of those for itself,
-                // leaving fullscreen on one and reloading the page on the other, and neither can
-                // be reliably taken back from it.
-                "KeyQ" => KeyCode.Escape,
-                "KeyR" => KeyCode.F5,
-                "Space" => KeyCode.Space,
-                "Enter" => KeyCode.Enter,
-                "ArrowLeft" => KeyCode.Left,
-                "ArrowRight" => KeyCode.Right,
+                HostKey.Escape => KeyCode.Escape,
+                HostKey.F5 => KeyCode.F5,
+                HostKey.Space => KeyCode.Space,
+                HostKey.Enter => KeyCode.Enter,
+                HostKey.Left => KeyCode.Left,
+                HostKey.Right => KeyCode.Right,
+                HostKey.None => null,
                 _ => null,
             };
         }

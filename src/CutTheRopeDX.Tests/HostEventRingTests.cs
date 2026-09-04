@@ -124,5 +124,18 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0, HostEventRing.DroppedCount(buffer));
         }
+
+        [Fact]
+        public void KeyIdsCoverEveryKeyTheGameReads()
+        {
+            // The browser side maps KeyboardEvent.code to these ids so no strings
+            // cross the ring; both tables have to agree on the numbering.
+            Assert.Equal(1, (int)HostKey.Escape);
+            Assert.Equal(2, (int)HostKey.F5);
+            Assert.Equal(3, (int)HostKey.Space);
+            Assert.Equal(4, (int)HostKey.Enter);
+            Assert.Equal(5, (int)HostKey.Left);
+            Assert.Equal(6, (int)HostKey.Right);
+        }
     }
 }

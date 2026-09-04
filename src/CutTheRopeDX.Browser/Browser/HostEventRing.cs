@@ -4,6 +4,31 @@ using System.Threading;
 
 namespace CutTheRopeDX.Browser
 {
+    /// <summary>Keys the browser thread forwards, numbered so no strings cross the ring.</summary>
+    internal enum HostKey
+    {
+        /// <summary>No key.</summary>
+        None = 0,
+
+        /// <summary>Back, sent as Q because a browser keeps Escape for itself.</summary>
+        Escape = 1,
+
+        /// <summary>Reload, sent as R because a browser keeps F5 for itself.</summary>
+        F5 = 2,
+
+        /// <summary>Space.</summary>
+        Space = 3,
+
+        /// <summary>Enter.</summary>
+        Enter = 4,
+
+        /// <summary>Left arrow.</summary>
+        Left = 5,
+
+        /// <summary>Right arrow.</summary>
+        Right = 6,
+    }
+
     /// <summary>What a host event carries.</summary>
     internal enum HostEventKind
     {

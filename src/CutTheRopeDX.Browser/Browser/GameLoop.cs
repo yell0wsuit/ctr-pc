@@ -62,6 +62,10 @@ namespace CutTheRopeDX.Browser
             // Between frames, not during one: a level that arrives mid-step would be half-applied.
             PlaytestSession.Pump();
 
+            // Between frames, never inside a step: a step that saw input applied
+            // half-way through would act on a world its own physics had not produced.
+            DrainHostEvents();
+
             double elapsed = _lastTimestampMs == 0
                 ? StepSeconds
                 : (timestampMs - _lastTimestampMs) / 1000.0;
@@ -187,6 +191,36 @@ namespace CutTheRopeDX.Browser
             PlatformServices.Render.EndFrame();
             PlatformServices.Render.CopyFromRenderTargetToScreen();
             Surface.Flush();
+        }
+
+        private static void DrainHostEvents()
+        {
+            foreach (HostEvent value in HostEventQueue.Drain())
+            {
+                switch (value.Kind)
+                {
+                    case HostEventKind.Pointer:
+                        InputRouter.HandlePointer(
+                            BitConverter.Int32BitsToSingle(value.Word1),
+                            BitConverter.Int32BitsToSingle(value.Word2),
+                            BitConverter.Int32BitsToSingle(value.Word3),
+                            BitConverter.Int32BitsToSingle(value.Word4),
+                            value.Word0);
+                        break;
+                    case HostEventKind.Key:
+                        InputRouter.HandleKey(value.Word1, value.Word0 != 0);
+                        break;
+                    case HostEventKind.Wheel:
+                        InputRouter.HandleWheel(value.Word0);
+                        break;
+                    case HostEventKind.None:
+                    case HostEventKind.Active:
+                    case HostEventKind.Resize:
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

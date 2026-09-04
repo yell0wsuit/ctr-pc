@@ -7,9 +7,11 @@
 #include <emscripten/threading.h>
 #include <pthread.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 static void (*frame_callback)(double) = NULL;
 static int frame_callback_hits = 0;
+static void *event_buffer = NULL;
 
 EMSCRIPTEN_KEEPALIVE
 int ctrdx_thread_id(void)
@@ -197,4 +199,14 @@ int ctrdx_last_gl_error(void)
     return EM_ASM_INT({
         return globalThis.ctrdxLastGlError | 0;
     });
+}
+
+EMSCRIPTEN_KEEPALIVE
+void *ctrdx_event_buffer(int bytes)
+{
+    if (event_buffer == NULL)
+    {
+        event_buffer = calloc(1, (size_t)bytes);
+    }
+    return event_buffer;
 }

@@ -66,5 +66,13 @@ namespace CutTheRopeDX.Browser
         /// <summary>Returns the error captured by the last readback.</summary>
         [LibraryImport(Library, EntryPoint = "ctrdx_last_gl_error")]
         internal static partial int LastGlError();
+
+        /// <summary>
+        /// Returns the shared event buffer, allocating it on first use. Its address is
+        /// stable for the process, which is what lets the browser thread keep writing to
+        /// it across a memory growth that replaces every typed-array view.
+        /// </summary>
+        [LibraryImport(Library, EntryPoint = "ctrdx_event_buffer")]
+        internal static partial nint EventBuffer(int bytes);
     }
 }
