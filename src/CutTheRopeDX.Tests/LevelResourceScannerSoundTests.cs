@@ -33,6 +33,34 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AHatPastTheAuthoredGroupsRequiresTheBandAtlas()
+        {
+            // The band is drawn from its own atlas, and a level that draws it without listing it
+            // reads the texture off disk on the game thread the first time a hat appears.
+            string[] resources = ScanWithObject("<sock x=\"20\" y=\"40\" group=\"2\" />");
+
+            Assert.Contains(Resources.Img.ObjHat, resources);
+            Assert.Contains(Resources.Img.ObjHatMaskable, resources);
+        }
+
+        [Fact]
+        public void AHatRequiresItsTeleportSound()
+        {
+            string[] resources = ScanWithObject("<sock x=\"20\" y=\"40\" group=\"0\" />");
+
+            Assert.Contains(Resources.Snd.Teleport, resources);
+        }
+
+        [Fact]
+        public void AHatWithinTheAuthoredGroupsNeedsNoBandAtlas()
+        {
+            string[] resources = ScanWithObject("<sock x=\"20\" y=\"40\" group=\"1\" />");
+
+            Assert.Contains(Resources.Img.ObjHat, resources);
+            Assert.DoesNotContain(Resources.Img.ObjHatMaskable, resources);
+        }
+
+        [Fact]
         public void EveryLevelRequiresTheCoreGameplaySounds()
         {
             string[] resources = Scan("<map><gameDesign /></map>");

@@ -1,0 +1,45 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0005_layer_middle_01.png",
+            "frame": { "x": 1, "y": 1, "w": 157, "h": 60 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 123, "y": 109, "w": 157, "h": 60 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0006_layer_mask_01.png",
+            "frame": { "x": 160, "y": 1, "w": 153, "h": 56 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 125, "y": 112, "w": 153, "h": 56 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0007_layer_middle_02.png",
+            "frame": { "x": 1, "y": 1, "w": 157, "h": 60 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 123, "y": 109, "w": 157, "h": 60 },
+            "sourceSize": { "w": 431, "h": 431 }
+        },
+        {
+            "filename": "frame_0008_layer_mask_02.png",
+            "frame": { "x": 315, "y": 1, "w": 153, "h": 56 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 126, "y": 111, "w": 153, "h": 56 },
+            "sourceSize": { "w": 431, "h": 431 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_hat_maskable.png",
+        "format": "RGBA8888",
+        "size": { "w": 469, "h": 62 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:6f64e982137b52e01d2f5e8f5479fc42:d39f39988c574c189a338e81544a664c:11ac59378fa1db27bebe06b1bb9be298$"
+    }
+}
