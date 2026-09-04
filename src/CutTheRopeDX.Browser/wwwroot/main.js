@@ -34,8 +34,6 @@ if (typeof builder.withModuleConfig === "function") {
     });
 }
 
-globalThis.ctrdxRenderProbe =
-    new URLSearchParams(globalThis.location.search).get("renderProbe") === "1";
 const runtime = await builder.create();
 const config = runtime.getConfig();
 globalThis.ctrdxWasmModule = runtime.Module;

@@ -10,7 +10,6 @@
 #include <stdlib.h>
 
 static void (*frame_callback)(double) = NULL;
-static int frame_callback_hits = 0;
 static void *event_buffer = NULL;
 
 EMSCRIPTEN_KEEPALIVE
@@ -26,14 +25,6 @@ int ctrdx_is_main_runtime_thread(void)
 }
 
 EMSCRIPTEN_KEEPALIVE
-int ctrdx_supports_animation_frame(void)
-{
-    return EM_ASM_INT({
-        return typeof requestAnimationFrame === 'function' ? 1 : 0;
-    });
-}
-
-EMSCRIPTEN_KEEPALIVE
 void ctrdx_set_frame_callback(void (*callback)(double))
 {
     frame_callback = callback;
@@ -42,17 +33,10 @@ void ctrdx_set_frame_callback(void (*callback)(double))
 EMSCRIPTEN_KEEPALIVE
 void ctrdx_frame_entry(double timestamp)
 {
-    frame_callback_hits++;
     if (frame_callback != NULL)
     {
         frame_callback(timestamp);
     }
-}
-
-EMSCRIPTEN_KEEPALIVE
-int ctrdx_frame_callback_hits(void)
-{
-    return frame_callback_hits;
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -82,7 +66,6 @@ int ctrdx_install_canvas_listener(void)
         }
         globalThis.ctrdxCanvasListener = true;
         globalThis.ctrdxCanvas = null;
-        globalThis.ctrdxLastGlError = 0;
         addEventListener('message', function (event) {
             var data = event.data;
             if (data && data.ctrdxTransferCanvas) {
@@ -164,58 +147,6 @@ int ctrdx_resize_canvas(int width, int height)
         surface.height = $1;
         return 1;
     }, width, height);
-}
-
-EMSCRIPTEN_KEEPALIVE
-int ctrdx_context_usable(void)
-{
-    return EM_ASM_INT({
-        var current = GL.currentContext;
-        return (current && current.GLctx &&
-            typeof current.GLctx.readPixels === 'function') ? 1 : 0;
-    });
-}
-
-EMSCRIPTEN_KEEPALIVE
-int ctrdx_clear_gl_errors(void)
-{
-    return EM_ASM_INT({
-        var gl = GL.currentContext && GL.currentContext.GLctx;
-        if (!gl) {
-            return 0;
-        }
-        while (gl.getError() !== gl.NO_ERROR) {
-            // Drain stale errors so the readback owns the next reported error.
-        }
-        return 1;
-    });
-}
-
-// Returns the center pixel packed as 0xRRGGBBAA, or -1 when unavailable.
-EMSCRIPTEN_KEEPALIVE
-int ctrdx_read_center_pixel(int width, int height)
-{
-    return EM_ASM_INT({
-        var gl = GL.currentContext && GL.currentContext.GLctx;
-        if (!gl) {
-            return -1;
-        }
-        var pixel = new Uint8Array(4);
-        gl.finish();
-        gl.readPixels(
-            $0 >> 1, $1 >> 1, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-        globalThis.ctrdxLastGlError = gl.getError();
-        return ((pixel[0] << 24) | (pixel[1] << 16) |
-            (pixel[2] << 8) | pixel[3]) >>> 0;
-    }, width, height);
-}
-
-EMSCRIPTEN_KEEPALIVE
-int ctrdx_last_gl_error(void)
-{
-    return EM_ASM_INT({
-        return globalThis.ctrdxLastGlError | 0;
-    });
 }
 
 EMSCRIPTEN_KEEPALIVE

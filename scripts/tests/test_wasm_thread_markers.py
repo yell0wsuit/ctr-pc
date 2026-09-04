@@ -160,26 +160,12 @@ def test_native_shim_runs_in_the_calling_threads_scope():
     for export in (
         "ctrdx_thread_id",
         "ctrdx_is_main_runtime_thread",
-        "ctrdx_supports_animation_frame",
         "ctrdx_set_frame_callback",
         "ctrdx_request_frame",
         "ctrdx_frame_entry",
-        "ctrdx_frame_callback_hits",
     ):
         # Every entry point has to survive linking to be callable from managed code.
         assert re.search(rf"EMSCRIPTEN_KEEPALIVE\s+\S[^\n]*\b{export}\b", source)
-
-
-def test_probe_reports_the_frame_driver_assumptions():
-    source = (
-        REPOSITORY_ROOT
-        / "src/CutTheRopeDX.Browser/Browser/WorkerRenderProbe.cs"
-    ).read_text(encoding="utf-8")
-
-    assert "HostShim.SupportsAnimationFrame()" in source
-    assert "HostShim.SetFrameCallback" in source
-    assert "HostShim.RequestFrame()" in source
-    assert '"frame-driver"' in source
 
 
 def test_javascript_reports_isolation_before_runtime_creation():
@@ -194,95 +180,3 @@ def test_javascript_reports_isolation_before_runtime_creation():
     assert marker_offset >= 0
     assert runtime_creation_offset >= 0
     assert marker_offset < runtime_creation_offset
-
-
-def test_render_probe_interop_is_typed_and_dom_free():
-    path = (
-        REPOSITORY_ROOT
-        / "src/CutTheRopeDX.Browser/Browser/RenderProbeInterop.cs"
-    )
-    source = path.read_text(encoding="utf-8")
-
-    assert 'JSHost.ImportAsync("renderprobe", "../render-probe.js")' in source
-    for export in (
-        "isRequested",
-        "executionContext",
-        "isExpectedPixel",
-    ):
-        assert f'[JSImport("{export}", "renderprobe")]' in source
-
-    assert "public static partial bool IsExpectedPixel(int[] values);" in source
-    assert "JSObject" not in source
-
-
-def test_render_probe_branches_before_normal_browser_bootstrap():
-    source = (
-        REPOSITORY_ROOT / "src/CutTheRopeDX.Browser/Program.cs"
-    ).read_text(encoding="utf-8")
-
-    gl_import = source.find("await GLContextInterop.ImportAsync();")
-    probe_import = source.find("await RenderProbeInterop.ImportAsync();")
-    probe_branch = source.find("if (RenderProbeInterop.IsRequested())")
-    probe_run = source.find("await WorkerRenderProbe.RunAsync();")
-    content_import = source.find("await FetchInterop.ImportAsync();")
-    audio_import = source.find("await AudioInterop.ImportAsync();")
-    storage_import = source.find("await StorageInterop.ImportAsync();")
-
-    assert -1 not in (
-        gl_import,
-        probe_import,
-        probe_branch,
-        probe_run,
-        content_import,
-        audio_import,
-        storage_import,
-    )
-    assert (
-        gl_import
-        < probe_import
-        < probe_branch
-        < probe_run
-        < content_import
-        < audio_import
-        < storage_import
-    )
-    branch = source[probe_branch:content_import]
-    assert "return;" in branch
-
-
-def test_worker_render_probe_uses_production_skia_path_and_one_result_marker():
-    source = (
-        REPOSITORY_ROOT
-        / "src/CutTheRopeDX.Browser/Browser/WorkerRenderProbe.cs"
-    ).read_text(encoding="utf-8")
-
-    for required in (
-        "Environment.CurrentManagedThreadId",
-        "RenderProbeInterop.ExecutionContext()",
-        'GLContextInterop.TransferCanvasToThread("game", threadId)',
-        "HostShim.CreateWorkerContext(",
-        "HostShim.ContextUsable()",
-        "using SkiaSurface",
-        "new SKColor(17, 34, 51, 255)",
-        ".Canvas.Clear(",
-        ".Flush()",
-        "HostShim.ReadCenterPixel(",
-        "RenderProbeInterop.IsExpectedPixel(",
-    ):
-        assert required in source
-
-    for result in (
-        "CONTEXT_CREATE_FAILED",
-        "CONTEXT_NOT_CURRENT",
-        "SKIA_INTERFACE_FAILED",
-        "SKIA_CONTEXT_FAILED",
-        "SKIA_SURFACE_FAILED",
-        "SKIA_FLUSH_FAILED",
-        "PIXEL_READBACK_FAILED",
-        "PIXEL_MISMATCH",
-        "GATE2_PASS",
-    ):
-        assert result in source
-
-    assert "ctrdx-render-probe: milestone=" in source
-    assert source.count("ctrdx-render-probe: result=") == 1
