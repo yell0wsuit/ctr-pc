@@ -13,6 +13,9 @@ namespace CutTheRopeDX.Browser
     {
         private const double StepSeconds = 1.0 / 60.0;
         private const int MaxCatchUpSteps = 5;
+        // The ring holds fewer records than this many drains return, so a backlog always
+        // clears in one call even while the browser thread keeps writing.
+        private const int MaxDrainPasses = 8;
 
         private static double _lastTimestampMs;
         private static double _accumulator;
@@ -231,37 +234,53 @@ namespace CutTheRopeDX.Browser
 
         private static void DrainHostEvents()
         {
-            foreach (HostEvent value in HostEventQueue.Drain())
+            // Emptied rather than sampled. The read side copies a fixed number of records per
+            // call and the ring holds several times that, so one call per frame can leave a
+            // backlog behind - and the frame that carries a lifecycle change is often the last
+            // one the page gets, because a hidden page stops being given animation frames. A
+            // pause left in the backlog would strand the audio and the save until the tab came
+            // back. Bounded because the browser thread keeps writing while this reads; the ring
+            // is smaller than this many passes, so a backlog always clears.
+            for (int pass = 0; pass < MaxDrainPasses; pass++)
             {
-                switch (value.Kind)
+                ReadOnlySpan<HostEvent> batch = HostEventQueue.Drain();
+                if (batch.IsEmpty)
                 {
-                    case HostEventKind.Pointer:
-                        InputRouter.HandlePointer(
-                            BitConverter.Int32BitsToSingle(value.Word1),
-                            BitConverter.Int32BitsToSingle(value.Word2),
-                            BitConverter.Int32BitsToSingle(value.Word3),
-                            BitConverter.Int32BitsToSingle(value.Word4),
-                            value.Word0);
-                        break;
-                    case HostEventKind.Key:
-                        InputRouter.HandleKey(value.Word1, value.Word0 != 0);
-                        break;
-                    case HostEventKind.Wheel:
-                        InputRouter.HandleWheel(value.Word0);
-                        break;
-                    case HostEventKind.Active:
-                        SetActive(value.Word0 != 0, value.Word1 != 0);
-                        break;
-                    case HostEventKind.Resize:
-                        ApplyResize(
-                            BitConverter.Int32BitsToSingle(value.Word0),
-                            BitConverter.Int32BitsToSingle(value.Word1),
-                            BitConverter.Int32BitsToSingle(value.Word2));
-                        break;
-                    case HostEventKind.None:
-                        break;
-                    default:
-                        break;
+                    break;
+                }
+
+                foreach (HostEvent value in batch)
+                {
+                    switch (value.Kind)
+                    {
+                        case HostEventKind.Pointer:
+                            InputRouter.HandlePointer(
+                                BitConverter.Int32BitsToSingle(value.Word1),
+                                BitConverter.Int32BitsToSingle(value.Word2),
+                                BitConverter.Int32BitsToSingle(value.Word3),
+                                BitConverter.Int32BitsToSingle(value.Word4),
+                                value.Word0);
+                            break;
+                        case HostEventKind.Key:
+                            InputRouter.HandleKey(value.Word1, value.Word0 != 0);
+                            break;
+                        case HostEventKind.Wheel:
+                            InputRouter.HandleWheel(value.Word0);
+                            break;
+                        case HostEventKind.Active:
+                            SetActive(value.Word0 != 0, value.Word1 != 0);
+                            break;
+                        case HostEventKind.Resize:
+                            ApplyResize(
+                                BitConverter.Int32BitsToSingle(value.Word0),
+                                BitConverter.Int32BitsToSingle(value.Word1),
+                                BitConverter.Int32BitsToSingle(value.Word2));
+                            break;
+                        case HostEventKind.None:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
