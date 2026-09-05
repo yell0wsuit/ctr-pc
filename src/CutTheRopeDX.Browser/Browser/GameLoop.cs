@@ -17,6 +17,7 @@ namespace CutTheRopeDX.Browser
         private static double _lastTimestampMs;
         private static double _accumulator;
         private static bool _active = true;
+        private static bool _hidden;
         private static bool _contextLostReported;
         private static int _reportedDroppedEvents;
 
@@ -132,14 +133,21 @@ namespace CutTheRopeDX.Browser
         /// host's activate and deactivate handlers.
         /// </summary>
         /// <param name="active">Whether the page is both visible and focused.</param>
+        /// <param name="hidden">Whether the page is hidden, as opposed to merely unfocused.</param>
         /// <remarks>
         /// A blurred but still visible window keeps receiving animation frames, so the browser
-        /// alone never stops the simulation — only the pause seam does.
+        /// alone never stops the simulation — only the pause seam does. Hidden is tracked apart
+        /// from active because the two call for different responses: a window pushed behind
+        /// another is inactive but still composited, while a hidden page is not drawn at all.
         /// </remarks>
-        internal static void SetActive(bool active)
+        internal static void SetActive(bool active, bool hidden)
         {
+            bool wasHidden = _hidden;
+            _hidden = hidden;
+
             if (active == _active)
             {
+                PurgeOnHidden(wasHidden);
                 return;
             }
 
@@ -157,6 +165,24 @@ namespace CutTheRopeDX.Browser
                 // Resigning active requests a save. Every full fixed step also saves, so the
                 // only remaining exposure is a change made during the final partial frame.
                 Preferences.Update();
+            }
+
+            PurgeOnHidden(wasHidden);
+        }
+
+        /// <summary>Hands back Skia's scratch cache as the page becomes hidden.</summary>
+        /// <param name="wasHidden">Whether the page was already hidden before this transition.</param>
+        /// <remarks>
+        /// Only on the edge into hidden. Losing focus is not the same event: a window merely
+        /// pushed behind another is still composited and still on screen, and dropping its
+        /// scratch resources there buys no headroom while costing a hitch to regenerate them
+        /// the moment it comes back.
+        /// </remarks>
+        private static void PurgeOnHidden(bool wasHidden)
+        {
+            if (_hidden && !wasHidden)
+            {
+                Surface?.PurgeGpuResources();
             }
         }
 
@@ -221,7 +247,7 @@ namespace CutTheRopeDX.Browser
                         InputRouter.HandleWheel(value.Word0);
                         break;
                     case HostEventKind.Active:
-                        SetActive(value.Word0 != 0);
+                        SetActive(value.Word0 != 0, value.Word1 != 0);
                         break;
                     case HostEventKind.Resize:
                         ApplyResize(
