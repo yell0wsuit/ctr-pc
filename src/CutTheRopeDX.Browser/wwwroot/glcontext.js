@@ -35,13 +35,7 @@ export function transferCanvasToThread(canvasId, threadId) {
     worker.postMessage({ ctrdxTransferCanvas: offscreen }, [offscreen]);
     worker.addEventListener("message", (event) => {
         if (event.data?.ctrdxContextLost) {
-            document.getElementById("splash")?.classList.remove("hidden");
-            document.getElementById("splash-spinner")?.setAttribute("hidden", "");
-            document.getElementById("splash-progress")?.setAttribute("hidden", "");
-            document.getElementById("start")?.setAttribute("hidden", "");
-            document
-                .getElementById("context-lost-error")
-                ?.removeAttribute("hidden");
+            reportContextLost();
         }
     });
     return [
@@ -52,8 +46,37 @@ export function transferCanvasToThread(canvasId, threadId) {
     ];
 }
 
+// A lost context cannot be rebuilt in place yet: the GPU objects Core holds - every
+// CTRTexture2D handle, the backend's render target - outlive the context that made them, and
+// nothing re-resolves them. Reloading is what recovers, so the player is handed the reload
+// rather than told to go and find it.
+//
+// This message is posted from the webglcontextlost listener itself, so it can arrive before
+// the managed loop has run another frame - and a loss triggered by the page being suspended
+// may mean no further frame arrives at all. It says nothing about a save having just
+// happened. What makes the progress claim true is separate: Preferences.Update runs on every
+// fixed step and writes eagerly when a save was requested.
+function reportContextLost() {
+    document.getElementById("splash")?.classList.remove("hidden");
+    for (const element of ["splash-spinner", "splash-progress", "start"]) {
+        document.getElementById(element)?.setAttribute("hidden", "");
+    }
+    globalThis.ctrdxStopHint?.();
+    document.getElementById("context-lost-error")?.removeAttribute("hidden");
+
+    const resume = document.getElementById("resume");
+    if (resume === null) {
+        return;
+    }
+    resume.hidden = false;
+    resume.addEventListener("click", () => globalThis.location.reload(), {
+        once: true,
+    });
+}
+
 let watchedCanvas = null;
 let devicePixelRatioQuery = null;
+let canvasObserver = null;
 
 function report(canvas) {
     hostEvents.resize(
@@ -92,8 +115,12 @@ export function watchCanvas(canvasId) {
     if (canvas === null) {
         return;
     }
+    // Replacing rather than adding: a second call would otherwise leave the first observer
+    // running against a canvas nothing reads any more, reporting the same box twice.
+    canvasObserver?.disconnect();
     watchedCanvas = canvas;
-    new ResizeObserver(() => report(canvas)).observe(canvas);
+    canvasObserver = new ResizeObserver(() => report(canvas));
+    canvasObserver.observe(canvas);
     watchDevicePixelRatio();
     report(canvas);
 }

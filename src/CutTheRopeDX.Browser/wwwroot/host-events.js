@@ -112,8 +112,17 @@ export function wheel(delta) {
     write(KIND_WHEEL, delta, 0, 0, 0, 0);
 }
 
-export function active(isActive) {
-    if (write(KIND_ACTIVE, isActive ? 1 : 0, 0, 0, 0, 0) && !isActive) {
+export function active(isActive, isHidden) {
+    // Hidden travels separately from active rather than being folded into it. A window merely
+    // pushed behind another is inactive but still composited and still given frames, while a
+    // hidden page is neither, and the two call for different responses.
+    //
+    // Woken on both edges rather than only the pause. Going inactive needs a wake because the
+    // page stops being given animation frames before the loop would notice; coming back needs
+    // one because the frame scheduled before the page was hidden is not reliably redelivered,
+    // and nothing else re-arms the loop. A wake on a running loop costs one extra frame entry,
+    // which is cheaper than a session that never resumes.
+    if (write(KIND_ACTIVE, isActive ? 1 : 0, isHidden ? 1 : 0, 0, 0, 0)) {
         ownerWorker?.postMessage({ ctrdxWake: 1 });
     }
 }
