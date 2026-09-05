@@ -36,6 +36,13 @@
             href="https://yell0wsuit.github.io/cuttherope-dx/"
         />
 
+        <!-- The application is imported from the bootstrap module rather than by its own
+             script tag, so that failures in its module graph are reportable. These restore the
+             parse-time fetch that the script tag used to start. -->
+        <link rel="modulepreload" href="./main.js" />
+        <link rel="modulepreload" href="./host-events.js" />
+        <link rel="modulepreload" href="./loading-progress.js" />
+
         <link rel="icon" type="image/x-icon" href="./favicon.ico" />
         <link rel="apple-touch-icon" href="./icon-512.png" />
         <link rel="manifest" href="./manifest.webmanifest" />
@@ -207,8 +214,16 @@
                 border-radius: 8px;
                 cursor: pointer;
             }
-            #start[hidden] {
+            #start[hidden],
+            #resume[hidden] {
                 display: none;
+            }
+            #resume {
+                padding: 12px 28px;
+                font-size: 1rem;
+                border: 0;
+                border-radius: 8px;
+                cursor: pointer;
             }
             #update {
                 padding: 20px 24px;
@@ -263,14 +278,24 @@
                 Taking too long? You might want to check your internet speed, or
                 reload the page.
             </p>
-            <p id="isolation-error" hidden>
-                This build needs cross-origin isolation, which this page did not get. Reload
-                once; if it keeps happening, the server is not sending the COOP and COEP
+            <p id="isolation-error" role="alert" hidden>
+                This build needs cross-origin isolation, which this page did not get. If you
+                opened this link inside another app, open it in your browser instead. Otherwise
+                reload once; if it keeps happening, the server is not sending the COOP and COEP
                 headers the game requires.
             </p>
-            <p id="context-lost-error" role="alert" hidden>
-                The graphics context was lost. Reload this page to restart the game.
+            <p id="unsupported-error" role="alert" hidden>
+                This browser is too old to run the game. iOS and iPadOS need version 17 or
+                newer.
             </p>
+            <p id="boot-error" role="alert" hidden>
+                The game could not start. Check your connection and reload the page.
+            </p>
+            <p id="context-lost-error" role="alert" hidden>
+                The browser reset the game's graphics. Reload to continue - previously saved
+                progress should still be there, but the current level will restart.
+            </p>
+            <button id="resume" hidden>Resume</button>
         </div>
         <dialog id="update">
             <p>A new version of the game is ready.</p>
@@ -296,18 +321,74 @@
                 hint.hidden = false;
             }, HINT_DELAY_MS);
 
-            globalThis.ctrdxReady = () => {
+            // The advice is for a slow start, not a stopped one. A boot that has already
+            // failed says so on the splash, and this arriving half a minute later would talk
+            // over it with a suggestion that no longer applies.
+            globalThis.ctrdxStopHint = () => {
                 clearTimeout(hintTimer);
                 hint.hidden = true;
+            };
+            globalThis.ctrdxReady = () => {
+                globalThis.ctrdxStopHint();
                 spinner.hidden = true;
                 progress.remove();
                 start.hidden = false;
             };
+            // The failure seam lives here, not in main.js, because main.js reaches its own
+            // first statement only after its static imports have been fetched and evaluated.
+            // An import that fails takes main.js down before anything it installs exists.
+            // This module imports nothing and runs first, so it is the earliest point that
+            // can still speak. The first failure wins: a failed boot knocks over what follows
+            // it, and the cascade is noise once the cause is on screen.
+            let reported = false;
+            globalThis.ctrdxFail = (id, detail) => {
+                if (reported) {
+                    return;
+                }
+                reported = true;
+
+                console.error(`ctrdx-boot-failure: ${id}`, detail ?? "");
+                globalThis.ctrdxStopHint();
+                spinner.hidden = true;
+                progress.hidden = true;
+                start.hidden = true;
+                splash.classList.remove("hidden");
+                document.getElementById(id)?.removeAttribute("hidden");
+            };
+
+            const onBootRejection = (event) =>
+                globalThis.ctrdxFail("boot-error", event.reason);
+            const onBootError = (event) =>
+                globalThis.ctrdxFail("boot-error", event.error ?? event.message);
+            globalThis.addEventListener("unhandledrejection", onBootRejection);
+            globalThis.addEventListener("error", onBootError);
+
+            // Called once the game is running. After boot a rejection belongs to the running
+            // game, and covering a playable session with the boot error screen would cost the
+            // player more than the rejection did.
+            globalThis.ctrdxBootComplete = () => {
+                globalThis.removeEventListener("unhandledrejection", onBootRejection);
+                globalThis.removeEventListener("error", onBootError);
+            };
+
             start.addEventListener("click", async () => {
                 await globalThis.ctrdxStart();
                 splash.classList.add("hidden");
             });
+
+            // The application is imported here rather than through its own script tag so that
+            // this bootstrap owns the promise for its whole module graph. A module that fails
+            // to *download* raises an error event at its script element, and that event does
+            // not bubble - so a plain window listener never sees it, and the page would sit on
+            // its spinner with nothing reported. Verified in Chromium: with a separate script
+            // tag a 404 on one of main.js's static imports reached no handler at all, while
+            // this form reports it. Listening in the capture phase would also catch it, but it
+            // catches every failed resource with it - a broken splash icon would then report a
+            // boot failure over a game that started perfectly well, which was likewise
+            // confirmed. A rejection here is precise about what actually failed.
+            import("./main.js").catch((error) =>
+                globalThis.ctrdxFail("boot-error", error),
+            );
         </script>
-        <script type="module" src="./main.js"></script>
     </body>
 </html>
