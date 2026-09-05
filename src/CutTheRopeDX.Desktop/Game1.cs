@@ -139,7 +139,9 @@ namespace CutTheRopeDX
         {
             PlatformServices.Updates?.Cancel();
             Preferences.RequestSave();
-            Preferences.Update();
+            // Forced: the process is going away, so a save still backing off from an earlier
+            // failure would never be retried.
+            Preferences.Update(force: true);
             //Dispose of RPC
             PlatformServices.RichPresence?.Dispose();
             Global.MouseCursor?.Dispose();

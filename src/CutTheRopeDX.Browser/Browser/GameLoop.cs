@@ -57,7 +57,9 @@ namespace CutTheRopeDX.Browser
                         Console.WriteLine(
                             "ctrdx-context-lost: simulation paused; reload required");
                         CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
-                        Preferences.Update();
+                        // Forced: no further frame is coming, so a save still backing off from
+                        // an earlier failure would never get another chance.
+                        Preferences.Update(force: true);
                     }
 
                     return;
@@ -164,7 +166,8 @@ namespace CutTheRopeDX.Browser
                 CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
                 // Resigning active requests a save. Every full fixed step also saves, so the
                 // only remaining exposure is a change made during the final partial frame.
-                Preferences.Update();
+                // Forced, because the page may be suspended before another step runs.
+                Preferences.Update(force: true);
             }
 
             PurgeOnHidden(wasHidden);

@@ -124,6 +124,17 @@ namespace CutTheRopeDX.Framework.Core
         /// </remarks>
         private static readonly HashSet<int> DirtyBoxes = [];
 
+        /// <summary>How many consecutive write failures are tolerated before giving up.</summary>
+        private const int MaxSaveAttempts = 5;
+
+        /// <summary>Delay before the first retry; each further attempt doubles it.</summary>
+        private const long FirstRetryDelayMs = 250;
+
+        /// <summary>Consecutive failed write attempts for the pending save.</summary>
+        private static int _saveAttempts;
+
+        /// <summary>Tick count before which a failed save will not be retried.</summary>
+        private static long _retryAfterTicks;
 
         /// <summary>
         /// Gets the save directory with the following fallback priority:
@@ -795,9 +806,18 @@ namespace CutTheRopeDX.Framework.Core
         /// Saves pending preferences to disk if requested.
         /// Called once per frame by the game loop.
         /// </summary>
-        public static void Update()
+        public static void Update(bool force = false)
         {
             if (!GameSaveRequested)
+            {
+                return;
+            }
+
+            // Backing off in wall clock rather than in calls, because the two hosts call this
+            // at very different rates: the browser once per fixed step, the desktop about once
+            // a second. Counting calls would mean the same backoff meant milliseconds on one
+            // and half a minute on the other.
+            if (!force && _saveAttempts > 0 && Environment.TickCount64 < _retryAfterTicks)
             {
                 return;
             }
@@ -806,11 +826,29 @@ namespace CutTheRopeDX.Framework.Core
             {
                 WritePreferenceFiles();
                 GameSaveRequested = false;
+                _saveAttempts = 0;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving preferences: {ex}");
-                GameSaveRequested = false;
+                _saveAttempts++;
+                if (_saveAttempts >= MaxSaveAttempts)
+                {
+                    // The request is dropped so a permanently failing store does not retry for
+                    // the rest of the session. The dirty marks are deliberately left standing:
+                    // whatever asks for the next save picks this change up again, which is what
+                    // makes giving up here a pause rather than a loss.
+                    Console.WriteLine(
+                        $"Error saving preferences, giving up after {_saveAttempts} attempts: {ex}");
+                    GameSaveRequested = false;
+                    _saveAttempts = 0;
+                    return;
+                }
+
+                _retryAfterTicks =
+                    Environment.TickCount64 + (FirstRetryDelayMs << (_saveAttempts - 1));
+                Console.WriteLine(
+                    $"Error saving preferences (attempt {_saveAttempts} of {MaxSaveAttempts}), "
+                    + $"retrying shortly: {ex}");
             }
         }
 
