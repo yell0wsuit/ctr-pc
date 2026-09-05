@@ -52,13 +52,32 @@
         finishReady(globalThis.crossOriginIsolated === true);
     }
 
+    function registerWorker() {
+        return navigator.serviceWorker.register("./coi-sw.js", {
+            scope: "./",
+            updateViaCache: "none",
+        });
+    }
+
     function bootstrapIsolation() {
         const isolated = globalThis.crossOriginIsolated === true;
         if (isolated) {
             clearFlag();
-            globalThis.ctrdxServiceWorkerRegistration =
-                navigator.serviceWorker?.getRegistration("./") ??
-                Promise.resolve(null);
+            // Isolation came from the server here rather than from the worker, but the worker
+            // is also what serves the game offline and what drives the update prompt, so it
+            // still has to be installed. Looking up an existing registration instead meant a
+            // first visit to a host that sends the headers itself never got one. No reload is
+            // needed, unlike the path below: the headers are already right.
+            const registration = "serviceWorker" in navigator
+                ? registerWorker()
+                : Promise.resolve(null);
+            // Handled here as well as by pwa.js. The page is already isolated, so a failed
+            // registration costs offline caching and nothing else - but an unhandled rejection
+            // would reach the boot error screen and take the whole session with it.
+            registration.catch((error) =>
+                console.warn("service worker registration failed:", error),
+            );
+            globalThis.ctrdxServiceWorkerRegistration = registration;
             finishReady(true);
             return;
         }
@@ -95,13 +114,7 @@
             globalThis.location.replace(globalThis.location.href);
         };
 
-        const registrationPromise = navigator.serviceWorker.register(
-            "./coi-sw.js",
-            {
-                scope: "./",
-                updateViaCache: "none",
-            },
-        );
+        const registrationPromise = registerWorker();
         globalThis.ctrdxServiceWorkerRegistration = registrationPromise;
 
         const controllerTimeout = globalThis.setTimeout(() => {
