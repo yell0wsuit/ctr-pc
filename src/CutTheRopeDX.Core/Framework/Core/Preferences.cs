@@ -111,6 +111,20 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public static bool GameSaveRequested { get; set; }
 
+        /// <summary>Whether <see cref="GlobalData"/> has changed since it was last written.</summary>
+        private static bool _globalDirty;
+
+        /// <summary>Box slots whose data has changed since they were last written.</summary>
+        /// <remarks>
+        /// A save used to rewrite the global blob and every box blob whether or not they had
+        /// changed. Each write is a separate store call, and in the browser the store is
+        /// localStorage, which a worker cannot reach - so every one is proxied across to the
+        /// browser thread while the game thread waits. Writing only what changed cuts those
+        /// crossings without changing when a save happens.
+        /// </remarks>
+        private static readonly HashSet<int> DirtyBoxes = [];
+
+
         /// <summary>
         /// Gets the save directory with the following fallback priority:
         /// <list type="bullet">
@@ -317,6 +331,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -332,6 +349,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -347,6 +367,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -421,6 +444,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxIntForKey(int box, int value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -457,6 +481,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxBoolForKey(int box, bool value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -484,6 +509,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxStringForKey(int box, string value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -597,10 +623,38 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         private static void WritePreferenceFiles()
         {
-            Store.Write(GlobalSaveFileName, SerializeToJson(GlobalData));
+            // Each blob is marked clean as it lands rather than all of them at the end, so a
+            // failure part way through does not rewrite what already succeeded when the save
+            // is retried.
+            if (_globalDirty)
+            {
+                Store.Write(GlobalSaveFileName, SerializeToJson(GlobalData));
+                _globalDirty = false;
+            }
+
             for (int b = 0; b < BoxData.Count; b++)
             {
+                if (!DirtyBoxes.Contains(b))
+                {
+                    continue;
+                }
+
                 Store.Write(GetBoxSaveFileName(b), SerializeToJson(BoxData[b]));
+                _ = DirtyBoxes.Remove(b);
+            }
+        }
+
+        /// <summary>Marks every blob as needing a write.</summary>
+        /// <remarks>
+        /// For the paths that change the data without going through the setters - a migration
+        /// rewriting the split files - where nothing else would have marked anything dirty.
+        /// </remarks>
+        private static void MarkAllDirty()
+        {
+            _globalDirty = true;
+            for (int b = 0; b < BoxData.Count; b++)
+            {
+                _ = DirtyBoxes.Add(b);
             }
         }
 
@@ -793,6 +847,9 @@ namespace CutTheRopeDX.Framework.Core
                 string json = reader.ReadToEnd();
                 GlobalData.Clear();
                 _ = DeserializeFromJson(json, GlobalData);
+                // Unlike LoadPreferences this reads from somewhere other than the store, so
+                // what it produces is a change the store has not seen.
+                _globalDirty = true;
                 return true;
             }
             catch (Exception ex)
@@ -813,6 +870,10 @@ namespace CutTheRopeDX.Framework.Core
             {
                 dict.Clear();
             }
+
+            // What was just read back is by definition what is already stored.
+            _globalDirty = false;
+            DirtyBoxes.Clear();
 
             bool needsSave = false;
 
@@ -854,6 +915,9 @@ namespace CutTheRopeDX.Framework.Core
 
             if (needsSave)
             {
+                // The routing above wrote straight into the dictionaries, so nothing marked
+                // them dirty and a targeted write would find nothing to do.
+                MarkAllDirty();
                 try
                 {
                     WritePreferenceFiles();
