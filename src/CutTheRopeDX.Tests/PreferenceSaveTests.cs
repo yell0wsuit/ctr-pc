@@ -125,6 +125,41 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void RemovingAKeyMarksTheBlobForWriting()
+        {
+            WithStore(store =>
+            {
+                Preferences.SetBoxIntForKey(Slot, 5, "STARS_TEST");
+                Save(store);
+                store.Writes.Clear();
+
+                Preferences.RemoveBoxKey(Slot, "STARS_TEST");
+                Save(store);
+
+                // Taking a key away is a change. Skipping the blob here would leave the
+                // removed key on disk to be read back on the next launch, which is how a
+                // reset can appear to work and then hand the old progress back.
+                Assert.Contains(SlotBlob, store.Writes);
+            });
+        }
+
+        [Fact]
+        public void RemovingAKeyThatWasNotThereChangesNothing()
+        {
+            WithStore(store =>
+            {
+                Preferences.SetBoxIntForKey(Slot, 5, "STARS_TEST");
+                Save(store);
+                store.Writes.Clear();
+
+                Preferences.RemoveBoxKey(Slot, "STARS_ABSENT");
+                Save(store);
+
+                Assert.DoesNotContain(SlotBlob, store.Writes);
+            });
+        }
+
+        [Fact]
         public void AWriteThatFailsOnceIsRetriedRatherThanLost()
         {
             WithStore(store =>

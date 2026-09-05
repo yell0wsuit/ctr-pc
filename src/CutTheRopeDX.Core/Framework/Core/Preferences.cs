@@ -440,7 +440,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="key">Preference key to remove.</param>
         protected static void RemoveKey(string key)
         {
-            _ = GlobalData.Remove(key);
+            // Taking a key away is as much a change as setting one. Without this the blob
+            // keeps its clean mark, is skipped by the next save, and the removed key survives
+            // on disk to be read back on the next launch.
+            _globalDirty |= GlobalData.Remove(key);
         }
 
         // ── Box-scoped accessors (STARS_, SCORE_, UNLOCKED_ per box) ─────────────
@@ -545,9 +548,9 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="key">Preference key to remove.</param>
         public static void RemoveBoxKey(int box, string key)
         {
-            if (box < BoxData.Count)
+            if (box < BoxData.Count && BoxData[box].Remove(key))
             {
-                _ = BoxData[box].Remove(key);
+                _ = DirtyBoxes.Add(box);
             }
         }
 
@@ -560,6 +563,12 @@ namespace CutTheRopeDX.Framework.Core
             {
                 dict.Clear();
             }
+
+            // Every slot is dirty now, including any the caller will not go on to repopulate.
+            // A reset re-unlocks only the packs the current catalogue knows about, so a slot
+            // held over from a catalogue that no longer ships would otherwise keep its old
+            // progress on disk while appearing cleared in memory.
+            MarkAllDirty();
         }
 
         /// <summary>
