@@ -25,6 +25,21 @@
   </ItemGroup>
 
   <!--
+    The ring is a binary contract the browser thread writes and the owner thread
+    reads. It depends on nothing browser-specific, so it is linked in rather than
+    referenced: the Browser head targets net10.0-browser, which this project cannot
+    reference, and a contract this easy to get subtly wrong should not go untested.
+  -->
+  <ItemGroup>
+    <Compile Include="../CutTheRopeDX.Browser/Browser/HostEventRing.cs"
+             Link="Browser/HostEventRing.cs" />
+    <Compile Include="../CutTheRopeDX.Browser/Browser/ContentCache.cs"
+             Link="Browser/ContentCache.cs" />
+    <Compile Include="../CutTheRopeDX.Browser/Browser/ParallelPump.cs"
+             Link="Browser/ParallelPump.cs" />
+  </ItemGroup>
+
+  <!--
     The headless tests read the real content tree from their own output directory: maps, locales,
     the pack lists and image_dimensions.json. All of it is checked in, so the data files are copied
     straight from the source tree — running the tests needs no content build, no asset download and

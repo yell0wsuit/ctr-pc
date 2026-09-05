@@ -1,3 +1,8 @@
-// Development build: no offline support, so a stale cache can never shadow a rebuild.
-// The published build swaps in service-worker.published.js.
-self.addEventListener("fetch", () => {});
+// Migration bridge for clients whose existing registration still checks this
+// URL. New documents register coi-sw.js directly, but removing this script would
+// strand an old worker behind its cached index forever.
+importScripts("./coi-sw.js");
+
+self.addEventListener("install", () => {
+    self.skipWaiting();
+});

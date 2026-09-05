@@ -15,13 +15,13 @@
     <RunAOTCompilation Condition="'$(CI)' == 'true'">false</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <!--
-      Keep the browser host single-threaded. GitHub Pages can obtain cross-origin
-      isolation through a service worker, but .NET's managed worker is not correlated
-      with Emscripten's WebGL context owner: proxied and worker-owned contexts both fail
-      before Skia initializes. Re-evaluate when the .NET/Emscripten integration exposes
-      a supported canvas-transfer or main-thread GL path.
+      The managed owner thread is a worker, so it has to own the WebGL context outright:
+      SkiaSharp's WebAssembly archive binds the raw emscripten_gl* layer, which always runs
+      on the calling thread and consults no proxy. Cross-origin isolation comes from the
+      service worker, and the canvas reaches the owner thread as a transferred
+      OffscreenCanvas.
     -->
-    <WasmEnableThreads>false</WasmEnableThreads>
+    <WasmEnableThreads>true</WasmEnableThreads>
     <!-- The game ships its own locale JSON; ICU would add ~1MB for nothing. -->
     <InvariantGlobalization>true</InvariantGlobalization>
     <!--
@@ -37,6 +37,8 @@
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <EmccExportedRuntimeMethod Include="GL" />
+    <EmccExportedRuntimeMethod Include="PThread" />
+    <NativeFileReference Include="Native/ctrdxhost.c" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,9 +64,9 @@
     Refresh them from distribution/icons if the app icon ever changes.
   -->
 
-  <!-- Development serves the inert worker; publish swaps in the caching one. -->
+  <!-- Development serves coi-sw directly; publish swaps in the cache-aware variant. -->
   <ItemGroup>
-    <ServiceWorker Include="wwwroot/service-worker.js"
+    <ServiceWorker Include="wwwroot/coi-sw.js"
                    PublishedContent="wwwroot/service-worker.published.js" />
   </ItemGroup>
 

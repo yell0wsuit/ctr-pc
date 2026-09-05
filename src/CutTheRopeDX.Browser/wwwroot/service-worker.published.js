@@ -1,4 +1,6 @@
-// Offline cache for the published game.
+// Offline cache for the published game. Cross-origin isolation handling is
+// adapted from https://github.com/yell0wsuit/coi-sw under the MIT License; see
+// coi-sw.LICENSE.txt.
 //
 // service-worker-assets.js is generated at publish by the static web assets SDK: every asset
 // with its integrity hash, plus a version derived from those hashes.
@@ -38,6 +40,7 @@ const scopeUrl = new URL("./", self.location.href);
 const shellExclude = [
     /^content\//,
     /^service-worker(-assets)?\.js$/,
+    /^coi(-sw)?\.js$/,
     /^manifest\.webmanifest$/,
     // Install-dialog artwork. The browser fetches these when offering to install the game; the
     // game itself never asks for them, so caching most of a megabyte of them offline buys
@@ -61,7 +64,13 @@ const contentHashes = new Map(
 
 self.addEventListener("install", (event) => event.waitUntil(onInstall()));
 self.addEventListener("activate", (event) => event.waitUntil(onActivate()));
-self.addEventListener("fetch", (event) => event.respondWith(onFetch(event)));
+self.addEventListener("fetch", (event) => {
+    const request = event.request;
+    if (request.cache === "only-if-cached" && request.mode !== "same-origin") {
+        return;
+    }
+    event.respondWith(withIsolationHeaders(onFetch(event)));
+});
 
 // The page asks for this once the player accepts the update prompt. Until then a new worker
 // waits, so a version never changes underneath a session in progress.
@@ -71,16 +80,73 @@ self.addEventListener("message", (event) => {
     }
 });
 
+// The shell is dozens of runtime files. cache.addAll fetches them all at once; so would a
+// plain map over cache.add. A bounded pool keeps the connection saturated without asking a
+// phone to hold that many response bodies in flight, and matches the concurrency the content
+// preload already runs at.
+const SHELL_CONCURRENCY = 6;
+const RETRY_DELAY_MS = 250;
+
+/**
+ * Fetches and stores one shell asset, retrying once after a short pause.
+ *
+ * Every asset here is needed before anything can run, so there is nothing to be tolerant
+ * about - a missing one has to fail the install. The retry buys the difference between a
+ * connection that dropped a single request and a build that is genuinely unreachable: without
+ * it, one stalled request costs the visit its service worker, and with no service worker there
+ * are no COOP and COEP headers and the game refuses to start at all.
+ *
+ * @param {Cache} cache
+ * @param {{url: string, hash: string}} asset
+ */
+async function addShellAsset(cache, asset) {
+    const request = () =>
+        new Request(new URL(asset.url, scopeUrl), {
+            integrity: asset.hash,
+            cache: "no-cache",
+        });
+    try {
+        await cache.add(request());
+    } catch {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+        // A fresh Request, because the first one has been consumed by the failed attempt.
+        await cache.add(request());
+    }
+}
+
 async function onInstall() {
-    const requests = shellAssets.map(
-        (asset) =>
-            new Request(new URL(asset.url, scopeUrl), {
-                integrity: asset.hash,
-                cache: "no-cache",
-            }),
-    );
     const cache = await caches.open(shellCacheName);
-    await cache.addAll(requests);
+    const failed = [];
+    let next = 0;
+
+    // Each worker takes the next asset rather than a fixed slice, so a slow file does not
+    // leave its share of the list waiting behind it.
+    async function run() {
+        for (let index = next++; index < shellAssets.length; index = next++) {
+            try {
+                await addShellAsset(cache, shellAssets[index]);
+            } catch {
+                failed.push(shellAssets[index].url);
+            }
+        }
+    }
+
+    await Promise.all(
+        Array.from({ length: Math.min(SHELL_CONCURRENCY, shellAssets.length) }, run),
+    );
+
+    if (failed.length !== 0) {
+        // cache.addAll is one atomic batch; a sequence of cache.add calls is not, and the
+        // successful ones have already been written. This worker will not activate, so the
+        // activation cleanup that drops stale caches never runs, and the half-filled cache
+        // would sit in the origin's quota until some later version activated. Dropping it
+        // here makes the install all-or-nothing in storage as well as in outcome.
+        await caches.delete(shellCacheName);
+
+        // addAll reports only that something failed, never what, which leaves a failed
+        // install - and so a game that will not start - with nothing to go on.
+        throw new Error(`could not cache shell assets: ${failed.join(", ")}`);
+    }
 }
 
 async function onActivate() {
@@ -157,6 +223,23 @@ async function onFetch(event) {
     }
 
     return fetch(request);
+}
+
+/** Adds the document policy required by shared WebAssembly memory to every response. */
+async function withIsolationHeaders(responseResult) {
+    const response = await responseResult;
+    if (response.status === 0) {
+        return response;
+    }
+    const headers = new Headers(response.headers);
+    headers.set("Cross-Origin-Opener-Policy", "same-origin");
+    headers.set("Cross-Origin-Embedder-Policy", "require-corp");
+    headers.set("Cross-Origin-Resource-Policy", "same-origin");
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    });
 }
 
 /**

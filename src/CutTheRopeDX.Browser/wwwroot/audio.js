@@ -217,7 +217,25 @@ function resumeFromGesture() {
     });
 }
 
-globalThis.addEventListener("pointerdown", resumeFromGesture, {
-    passive: true,
+function armGestureResume() {
+    globalThis.addEventListener("pointerdown", resumeFromGesture, {
+        passive: true,
+    });
+    globalThis.addEventListener("keydown", resumeFromGesture, { passive: true });
+}
+armGestureResume();
+
+// Safari suspends the graph while the page is in the background, and has an "interrupted"
+// state of its own that a phone call or another app taking the audio device puts it in.
+// Either way the context stops being "running" long after resumeFromGesture removed itself,
+// so coming back to a visible page re-arms the listeners it took off. Registering a listener
+// that is already attached is a no-op, so this cannot stack duplicates.
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") {
+        return;
+    }
+    if (context !== null && context.state !== "running") {
+        resumeIfSuspended();
+        armGestureResume();
+    }
 });
-globalThis.addEventListener("keydown", resumeFromGesture, { passive: true });

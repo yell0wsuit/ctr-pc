@@ -5,19 +5,19 @@
 // for it: the waiting worker takes over and the page reloads onto the new build.
 
 const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
-
 requestPersistentStorage();
 
-if ("serviceWorker" in navigator) {
-    // updateViaCache: "none" keeps the HTTP cache away from the worker script itself. It is
-    // the one file whose freshness decides whether an update is ever noticed.
-    navigator.serviceWorker
-        .register("./service-worker.js", { updateViaCache: "none" })
-        .then(watch)
-        .catch((error) =>
-            console.warn("service worker registration failed:", error),
-        );
-}
+globalThis.ctrdxServiceWorkerRegistration
+    ?.then((registration) => {
+        // Truthy rather than a null check: getRegistration resolves to undefined when there
+        // is none, which slipped past the old comparison and threw on registration.waiting.
+        if (registration) {
+            watch(registration);
+        }
+    })
+    .catch((error) =>
+        console.warn("service worker registration failed:", error),
+    );
 
 /**
  * Watches a registration for a worker that has installed and is waiting to take over.

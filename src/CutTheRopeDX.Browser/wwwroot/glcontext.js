@@ -1,75 +1,89 @@
-// Creates the WebGL2 context Skia renders into. Emscripten's GL registry is used
-// rather than canvas.getContext directly, because Skia's GPU backend resolves its GL
-// entry points through that registry - a context created outside it is invisible to Skia.
+import * as hostEvents from "./host-events.js";
 
-function getGL() {
-    const gl = globalThis.ctrdxWasmModule?.GL;
-    if (!gl) {
-        throw new Error("Emscripten GL registry unavailable");
-    }
-    return gl;
-}
-
-export function createContext(canvasId) {
+// Hands the canvas to the managed owner thread's worker. Ownership is permanent:
+// the browser thread can never draw to this canvas or resize its backing store
+// again, so nothing may fall back to browser-thread rendering after this returns.
+export function transferCanvasToThread(canvasId, threadId) {
     const canvas = document.getElementById(canvasId);
-    if (canvas === null) {
-        return 0;
+    const worker = globalThis.ctrdxWasmModule?.PThread?.pthreads?.[threadId];
+    if (canvas === null || !worker) {
+        return [];
     }
-    const attributes = {
-        alpha: 1,
-        depth: 1,
-        stencil: 8,
-        antialias: 0,
-        premultipliedAlpha: 1,
-        preserveDrawingBuffer: 0,
-        majorVersion: 2,
-        minorVersion: 0,
-        enableExtensionsByDefault: 1,
-    };
-    const GL = getGL();
-    const handle = GL.createContext(canvas, attributes);
-    if (!handle) {
-        return 0;
+
+    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
+    const cssWidth = Math.max(1, Math.round(canvas.clientWidth));
+    const cssHeight = Math.max(1, Math.round(canvas.clientHeight));
+
+    let offscreen;
+    try {
+        offscreen = canvas.transferControlToOffscreen();
+    } catch (error) {
+        console.info(
+            JSON.stringify({
+                marker: "ctrdx-host",
+                boundary: "canvas-transfer",
+                threadId,
+                message: String(error),
+            }),
+        );
+        return [];
     }
-    GL.makeContextCurrent(handle);
-    // Skia renders to the default framebuffer of the context it is handed.
-    return 0;
+
+    // Deliberately no `cmd` field. The runtime's own worker dispatcher ends in
+    // `else if (e.data.cmd)`, so any message carrying one that it does not
+    // recognize is reported twice to the console, on every delivery.
+    worker.postMessage({ ctrdxTransferCanvas: offscreen }, [offscreen]);
+    worker.addEventListener("message", (event) => {
+        if (event.data?.ctrdxContextLost) {
+            reportContextLost();
+        }
+    });
+    return [
+        cssWidth,
+        cssHeight,
+        Math.max(1, Math.round(cssWidth * ratio)),
+        Math.max(1, Math.round(cssHeight * ratio)),
+    ];
 }
 
-// The ratio canvasSize last applied to the backing store. Read by canvasDevicePixelRatio
-// so the ratio and the size a caller acts on always describe the same measurement.
-let appliedDevicePixelRatio = 1;
+// A lost context cannot be rebuilt in place yet: the GPU objects Core holds - every
+// CTRTexture2D handle, the backend's render target - outlive the context that made them, and
+// nothing re-resolves them. Reloading is what recovers, so the player is handed the reload
+// rather than told to go and find it.
+//
+// This message is posted from the webglcontextlost listener itself, so it can arrive before
+// the managed loop has run another frame - and a loss triggered by the page being suspended
+// may mean no further frame arrives at all. It says nothing about a save having just
+// happened. What makes the progress claim true is separate: Preferences.Update runs on every
+// fixed step and writes eagerly when a save was requested.
+function reportContextLost() {
+    document.getElementById("splash")?.classList.remove("hidden");
+    for (const element of ["splash-spinner", "splash-progress", "start"]) {
+        document.getElementById(element)?.setAttribute("hidden", "");
+    }
+    globalThis.ctrdxStopHint?.();
+    document.getElementById("context-lost-error")?.removeAttribute("hidden");
 
-// Bumped whenever a measurement finds a shape the game has not adopted yet. The game loop
-// polls this once a frame and only asks for the size itself when it moves, so the steady
-// state costs one integer across the interop boundary rather than a DOM measurement, an
-// array allocation and a marshalled copy sixty times a second.
-let canvasGeneration = 0;
+    const resume = document.getElementById("resume");
+    if (resume === null) {
+        return;
+    }
+    resume.hidden = false;
+    resume.addEventListener("click", () => globalThis.location.reload(), {
+        once: true,
+    });
+}
 
-let measuredWidth = 0;
-let measuredHeight = 0;
-let measuredRatio = 0;
 let watchedCanvas = null;
 let devicePixelRatioQuery = null;
+let canvasObserver = null;
 
-// Measures without touching the canvas: the backing store is only resized from canvasSize,
-// where the caller goes on to rebuild the renderer's surface from the same numbers. Doing it
-// here instead would clear the drawing buffer while the renderer still believed the old size,
-// and the frames in between would be drawn against a buffer nothing agreed on.
-function measure(canvas) {
-    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
-    const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
-    const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
-    if (
-        width !== measuredWidth ||
-        height !== measuredHeight ||
-        ratio !== measuredRatio
-    ) {
-        measuredWidth = width;
-        measuredHeight = height;
-        measuredRatio = ratio;
-        canvasGeneration++;
-    }
+function report(canvas) {
+    hostEvents.resize(
+        Math.max(1, canvas.clientWidth),
+        Math.max(1, canvas.clientHeight),
+        Math.min(globalThis.devicePixelRatio || 1, 2),
+    );
 }
 
 // A ResizeObserver reports the canvas box changing, but not the page moving to a display of a
@@ -88,7 +102,7 @@ function watchDevicePixelRatio() {
 
 function onDevicePixelRatioChange() {
     if (watchedCanvas !== null) {
-        measure(watchedCanvas);
+        report(watchedCanvas);
         watchDevicePixelRatio();
     }
 }
@@ -96,39 +110,19 @@ function onDevicePixelRatioChange() {
 // The canvas fills the viewport through the stylesheet, so its CSS box needs no help from
 // here. Measuring it rather than sizing it is what lets the game adopt whatever shape the
 // window or the device is, instead of the page choosing a shape and the game obeying it.
-export function canvasSize(canvasId) {
-    const canvas = document.getElementById(canvasId);
-    if (canvas === null) {
-        return [0, 0];
-    }
-    measure(canvas);
-    if (canvas.width !== measuredWidth || canvas.height !== measuredHeight) {
-        canvas.width = measuredWidth;
-        canvas.height = measuredHeight;
-    }
-    appliedDevicePixelRatio = measuredRatio;
-    return [measuredWidth, measuredHeight];
-}
-
-// Starts reporting canvas shape changes through canvasChangeCount, so callers stop having to
-// measure the DOM to discover that nothing moved.
 export function watchCanvas(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (canvas === null) {
         return;
     }
+    // Replacing rather than adding: a second call would otherwise leave the first observer
+    // running against a canvas nothing reads any more, reporting the same box twice.
+    canvasObserver?.disconnect();
     watchedCanvas = canvas;
-    new ResizeObserver(() => measure(canvas)).observe(canvas);
+    canvasObserver = new ResizeObserver(() => report(canvas));
+    canvasObserver.observe(canvas);
     watchDevicePixelRatio();
-    measure(canvas);
-}
-
-export function canvasChangeCount() {
-    return canvasGeneration;
-}
-
-export function canvasDevicePixelRatio() {
-    return appliedDevicePixelRatio;
+    report(canvas);
 }
 
 export function documentBaseUrl() {

@@ -111,6 +111,31 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public static bool GameSaveRequested { get; set; }
 
+        /// <summary>Whether <see cref="GlobalData"/> has changed since it was last written.</summary>
+        private static bool _globalDirty;
+
+        /// <summary>Box slots whose data has changed since they were last written.</summary>
+        /// <remarks>
+        /// A save used to rewrite the global blob and every box blob whether or not they had
+        /// changed. Each write is a separate store call, and in the browser the store is
+        /// localStorage, which a worker cannot reach - so every one is proxied across to the
+        /// browser thread while the game thread waits. Writing only what changed cuts those
+        /// crossings without changing when a save happens.
+        /// </remarks>
+        private static readonly HashSet<int> DirtyBoxes = [];
+
+        /// <summary>How many consecutive write failures are tolerated before giving up.</summary>
+        private const int MaxSaveAttempts = 5;
+
+        /// <summary>Delay before the first retry; each further attempt doubles it.</summary>
+        private const long FirstRetryDelayMs = 250;
+
+        /// <summary>Consecutive failed write attempts for the pending save.</summary>
+        private static int _saveAttempts;
+
+        /// <summary>Tick count before which a failed save will not be retried.</summary>
+        private static long _retryAfterTicks;
+
         /// <summary>
         /// Gets the save directory with the following fallback priority:
         /// <list type="bullet">
@@ -317,6 +342,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -332,6 +360,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBooleanForKey(bool value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -347,6 +378,9 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
             GlobalData[key] = value;
+            // Marked on the mutation rather than on the commit: a value set with commit false
+            // is still a change, and whatever requests the next save has to write it.
+            _globalDirty = true;
             if (commit)
             {
                 RequestSave();
@@ -406,7 +440,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="key">Preference key to remove.</param>
         protected static void RemoveKey(string key)
         {
-            _ = GlobalData.Remove(key);
+            // Taking a key away is as much a change as setting one. Without this the blob
+            // keeps its clean mark, is skipped by the next save, and the removed key survives
+            // on disk to be read back on the next launch.
+            _globalDirty |= GlobalData.Remove(key);
         }
 
         // ── Box-scoped accessors (STARS_, SCORE_, UNLOCKED_ per box) ─────────────
@@ -421,6 +458,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxIntForKey(int box, int value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -457,6 +495,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxBoolForKey(int box, bool value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -484,6 +523,7 @@ namespace CutTheRopeDX.Framework.Core
         public static void SetBoxStringForKey(int box, string value, string key, bool commit = false)
         {
             EnsureBoxData(box)[key] = value;
+            _ = DirtyBoxes.Add(box);
             if (commit)
             {
                 RequestSave();
@@ -508,9 +548,9 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="key">Preference key to remove.</param>
         public static void RemoveBoxKey(int box, string key)
         {
-            if (box < BoxData.Count)
+            if (box < BoxData.Count && BoxData[box].Remove(key))
             {
-                _ = BoxData[box].Remove(key);
+                _ = DirtyBoxes.Add(box);
             }
         }
 
@@ -523,6 +563,12 @@ namespace CutTheRopeDX.Framework.Core
             {
                 dict.Clear();
             }
+
+            // Every slot is dirty now, including any the caller will not go on to repopulate.
+            // A reset re-unlocks only the packs the current catalogue knows about, so a slot
+            // held over from a catalogue that no longer ships would otherwise keep its old
+            // progress on disk while appearing cleared in memory.
+            MarkAllDirty();
         }
 
         /// <summary>
@@ -597,10 +643,38 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         private static void WritePreferenceFiles()
         {
-            Store.Write(GlobalSaveFileName, SerializeToJson(GlobalData));
+            // Each blob is marked clean as it lands rather than all of them at the end, so a
+            // failure part way through does not rewrite what already succeeded when the save
+            // is retried.
+            if (_globalDirty)
+            {
+                Store.Write(GlobalSaveFileName, SerializeToJson(GlobalData));
+                _globalDirty = false;
+            }
+
             for (int b = 0; b < BoxData.Count; b++)
             {
+                if (!DirtyBoxes.Contains(b))
+                {
+                    continue;
+                }
+
                 Store.Write(GetBoxSaveFileName(b), SerializeToJson(BoxData[b]));
+                _ = DirtyBoxes.Remove(b);
+            }
+        }
+
+        /// <summary>Marks every blob as needing a write.</summary>
+        /// <remarks>
+        /// For the paths that change the data without going through the setters - a migration
+        /// rewriting the split files - where nothing else would have marked anything dirty.
+        /// </remarks>
+        private static void MarkAllDirty()
+        {
+            _globalDirty = true;
+            for (int b = 0; b < BoxData.Count; b++)
+            {
+                _ = DirtyBoxes.Add(b);
             }
         }
 
@@ -741,9 +815,18 @@ namespace CutTheRopeDX.Framework.Core
         /// Saves pending preferences to disk if requested.
         /// Called once per frame by the game loop.
         /// </summary>
-        public static void Update()
+        public static void Update(bool force = false)
         {
             if (!GameSaveRequested)
+            {
+                return;
+            }
+
+            // Backing off in wall clock rather than in calls, because the two hosts call this
+            // at very different rates: the browser once per fixed step, the desktop about once
+            // a second. Counting calls would mean the same backoff meant milliseconds on one
+            // and half a minute on the other.
+            if (!force && _saveAttempts > 0 && Environment.TickCount64 < _retryAfterTicks)
             {
                 return;
             }
@@ -752,11 +835,29 @@ namespace CutTheRopeDX.Framework.Core
             {
                 WritePreferenceFiles();
                 GameSaveRequested = false;
+                _saveAttempts = 0;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving preferences: {ex}");
-                GameSaveRequested = false;
+                _saveAttempts++;
+                if (_saveAttempts >= MaxSaveAttempts)
+                {
+                    // The request is dropped so a permanently failing store does not retry for
+                    // the rest of the session. The dirty marks are deliberately left standing:
+                    // whatever asks for the next save picks this change up again, which is what
+                    // makes giving up here a pause rather than a loss.
+                    Console.WriteLine(
+                        $"Error saving preferences, giving up after {_saveAttempts} attempts: {ex}");
+                    GameSaveRequested = false;
+                    _saveAttempts = 0;
+                    return;
+                }
+
+                _retryAfterTicks =
+                    Environment.TickCount64 + (FirstRetryDelayMs << (_saveAttempts - 1));
+                Console.WriteLine(
+                    $"Error saving preferences (attempt {_saveAttempts} of {MaxSaveAttempts}), "
+                    + $"retrying shortly: {ex}");
             }
         }
 
@@ -793,6 +894,9 @@ namespace CutTheRopeDX.Framework.Core
                 string json = reader.ReadToEnd();
                 GlobalData.Clear();
                 _ = DeserializeFromJson(json, GlobalData);
+                // Unlike LoadPreferences this reads from somewhere other than the store, so
+                // what it produces is a change the store has not seen.
+                _globalDirty = true;
                 return true;
             }
             catch (Exception ex)
@@ -813,6 +917,10 @@ namespace CutTheRopeDX.Framework.Core
             {
                 dict.Clear();
             }
+
+            // What was just read back is by definition what is already stored.
+            _globalDirty = false;
+            DirtyBoxes.Clear();
 
             bool needsSave = false;
 
@@ -854,6 +962,9 @@ namespace CutTheRopeDX.Framework.Core
 
             if (needsSave)
             {
+                // The routing above wrote straight into the dictionaries, so nothing marked
+                // them dirty and a targeted write would find nothing to do.
+                MarkAllDirty();
                 try
                 {
                     WritePreferenceFiles();

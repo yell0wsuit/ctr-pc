@@ -66,6 +66,21 @@ namespace CutTheRopeDX.Browser
                 ?? throw new InvalidOperationException("Could not create the Skia surface.");
         }
 
+        /// <summary>
+        /// Releases Skia's cached scratch resources, leaving live ones and the context alone.
+        /// </summary>
+        /// <remarks>
+        /// Scratch resources are regenerated on demand, so giving them up costs a little work
+        /// on the next frame and nothing else. Being hidden is when a mobile browser goes
+        /// looking for GPU memory to reclaim, and a process holding the full cache through
+        /// that is the one whose context gets dropped - which on this build is unrecoverable
+        /// without a reload. Unlocked scratch only, so textures still in use stay put.
+        /// </remarks>
+        public void PurgeGpuResources()
+        {
+            Context.PurgeUnlockedResources(scratchResourcesOnly: true);
+        }
+
         /// <summary>Submits the frame's GL commands.</summary>
         public void Flush()
         {
