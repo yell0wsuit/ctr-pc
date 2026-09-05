@@ -152,8 +152,7 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                justify-content: safe center;
+                justify-content: flex-start;
                 gap: 20px;
                 overflow-y: auto;
                 touch-action: pan-y;
@@ -181,6 +180,11 @@
             }
             #splash > * {
                 flex-shrink: 0;
+            }
+            #splash::before,
+            #splash::after {
+                content: "";
+                margin: auto;
             }
             #splash img {
                 width: 96px;
@@ -291,21 +295,24 @@
                 reload the page.
             </p>
             <p id="isolation-error" role="alert" hidden>
-                This build needs cross-origin isolation, which this page did not get. If you
-                opened this link inside another app, open it in your browser instead. Otherwise
-                reload once; if it keeps happening, the server is not sending the COOP and COEP
-                headers the game requires.
+                This build needs cross-origin isolation, which this page did not
+                get. If you opened this link inside another app, open it in your
+                browser instead. Otherwise reload once; if it keeps happening,
+                the server is not sending the COOP and COEP headers the game
+                requires.
             </p>
             <p id="unsupported-error" role="alert" hidden>
-                This browser is too old to run the game. iOS and iPadOS need version 17 or
-                newer.
+                This browser is too old to run the game. iOS and iPadOS need
+                version 17 or newer.
             </p>
             <p id="boot-error" role="alert" hidden>
-                The game could not start. Check your connection and reload the page.
+                The game could not start. Check your connection and reload the
+                page.
             </p>
             <p id="context-lost-error" role="alert" hidden>
-                The browser reset the game's graphics. Reload to continue - previously saved
-                progress should still be there, but the current level will restart.
+                The browser reset the game's graphics. Reload to continue -
+                previously saved progress should still be there, but the current
+                level will restart.
             </p>
             <button id="resume" hidden>Resume</button>
         </div>
@@ -371,7 +378,10 @@
             const onBootRejection = (event) =>
                 globalThis.ctrdxFail("boot-error", event.reason);
             const onBootError = (event) =>
-                globalThis.ctrdxFail("boot-error", event.error ?? event.message);
+                globalThis.ctrdxFail(
+                    "boot-error",
+                    event.error ?? event.message,
+                );
             globalThis.addEventListener("unhandledrejection", onBootRejection);
             globalThis.addEventListener("error", onBootError);
 
@@ -379,7 +389,10 @@
             // game, and covering a playable session with the boot error screen would cost the
             // player more than the rejection did.
             globalThis.ctrdxBootComplete = () => {
-                globalThis.removeEventListener("unhandledrejection", onBootRejection);
+                globalThis.removeEventListener(
+                    "unhandledrejection",
+                    onBootRejection,
+                );
                 globalThis.removeEventListener("error", onBootError);
             };
 
