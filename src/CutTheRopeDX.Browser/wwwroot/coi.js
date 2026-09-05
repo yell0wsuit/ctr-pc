@@ -63,21 +63,33 @@
         const isolated = globalThis.crossOriginIsolated === true;
         if (isolated) {
             clearFlag();
-            // Isolation came from the server here rather than from the worker, but the worker
-            // is also what serves the game offline and what drives the update prompt, so it
-            // still has to be installed. Looking up an existing registration instead meant a
-            // first visit to a host that sends the headers itself never got one. No reload is
-            // needed, unlike the path below: the headers are already right.
-            const registration = "serviceWorker" in navigator
-                ? registerWorker()
-                : Promise.resolve(null);
-            // Handled here as well as by pwa.js. The page is already isolated, so a failed
-            // registration costs offline caching and nothing else - but an unhandled rejection
-            // would reach the boot error screen and take the whole session with it.
-            registration.catch((error) =>
-                console.warn("service worker registration failed:", error),
-            );
-            globalThis.ctrdxServiceWorkerRegistration = registration;
+            // The headers are already right here, so the worker is wanted only for offline
+            // caching and the update prompt - neither of which this load needs. It is
+            // installed once boot is over rather than now, because it claims the page as soon
+            // as it activates (skipWaiting, then clients.claim), and a controller that changes
+            // while the runtime is still fetching its own worker scripts and wasm leaves those
+            // requests straddling two worlds. Deferring keeps the offline cache without
+            // putting a controller swap in the middle of startup.
+            let deliverRegistration;
+            globalThis.ctrdxServiceWorkerRegistration = new Promise((resolve) => {
+                deliverRegistration = resolve;
+            });
+            globalThis.ctrdxInstallWorker = () => {
+                globalThis.ctrdxInstallWorker = () => {};
+                if (!("serviceWorker" in navigator)) {
+                    deliverRegistration(null);
+                    return;
+                }
+
+                const registration = registerWorker();
+                // Handled here as well as in pwa.js: the page is already isolated, so failing
+                // to register costs offline caching and nothing else, and an unhandled
+                // rejection would reach the boot error screen.
+                registration.catch((error) =>
+                    console.warn("service worker registration failed:", error),
+                );
+                deliverRegistration(registration);
+            };
             finishReady(true);
             return;
         }

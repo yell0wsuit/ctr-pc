@@ -394,6 +394,10 @@
                     onBootRejection,
                 );
                 globalThis.removeEventListener("error", onBootError);
+                // Only now, on a page that was already isolated without it: the worker claims
+                // the page when it activates, and a controller swap during startup lands in
+                // the middle of the runtime fetching its own worker scripts.
+                globalThis.ctrdxInstallWorker?.();
             };
 
             start.addEventListener("click", async () => {

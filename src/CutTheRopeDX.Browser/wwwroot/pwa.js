@@ -9,7 +9,9 @@ requestPersistentStorage();
 
 globalThis.ctrdxServiceWorkerRegistration
     ?.then((registration) => {
-        if (registration !== null) {
+        // Truthy rather than a null check: getRegistration resolves to undefined when there
+        // is none, which slipped past the old comparison and threw on registration.waiting.
+        if (registration) {
             watch(registration);
         }
     })
