@@ -49,6 +49,9 @@ namespace CutTheRopeDX.Browser
 
         /// <summary>CSS width, CSS height, then the device pixel ratio.</summary>
         Resize = 5,
+
+        /// <summary>The player pressed Play. Carries nothing.</summary>
+        Start = 6,
     }
 
     /// <summary>One record as it travels through the ring.</summary>

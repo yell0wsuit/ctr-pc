@@ -211,7 +211,10 @@ globalThis.addEventListener("pageshow", syncActive);
 
 syncActive();
 
-globalThis.ctrdxStart = () => {};
+// Booting only gets as far as a game standing ready; this is what lets it move. Until the
+// player presses Play the loop runs but the game does not, so nothing simulates and no sound
+// plays behind the splash.
+globalThis.ctrdxStart = () => hostEvents.start();
 globalThis.ctrdxReady?.();
 
 // Last, so the error boundary still covers ctrdxReady itself. Boot is not over until the

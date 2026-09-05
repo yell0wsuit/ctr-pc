@@ -21,6 +21,7 @@ namespace CutTheRopeDX.Browser
         private static double _accumulator;
         private static bool _active = true;
         private static bool _hidden;
+        private static bool _started;
         private static bool _contextLostReported;
         private static int _reportedDroppedEvents;
 
@@ -100,6 +101,15 @@ namespace CutTheRopeDX.Browser
             // Between frames, never inside a step: a step that saw input applied
             // half-way through would act on a world its own physics had not produced.
             DrainHostEvents();
+
+            // The loop runs from the moment boot finishes, because it is what reads the event
+            // ring - including the press of Play that gets us past here. The game itself waits:
+            // until then nothing steps, nothing draws and nothing sounds, so the splash is not
+            // sitting over a game that has already started without the player.
+            if (!_started)
+            {
+                return;
+            }
 
             double elapsed = _lastTimestampMs == 0
                 ? StepSeconds
@@ -269,6 +279,18 @@ namespace CutTheRopeDX.Browser
                             break;
                         case HostEventKind.Active:
                             SetActive(value.Word0 != 0, value.Word1 != 0);
+                            break;
+                        case HostEventKind.Start:
+                            if (!_started)
+                            {
+                                _started = true;
+                                // The splash was not time the player watched the game for, so
+                                // the clock restarts here rather than letting the loop burn
+                                // catch-up steps on everything that passed while they read it.
+                                _lastTimestampMs = 0;
+                                _accumulator = 0;
+                            }
+
                             break;
                         case HostEventKind.Resize:
                             ApplyResize(

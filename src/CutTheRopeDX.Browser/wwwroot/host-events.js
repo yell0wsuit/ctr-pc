@@ -18,6 +18,7 @@ const KIND_KEY = 2;
 const KIND_WHEEL = 3;
 const KIND_ACTIVE = 4;
 const KIND_RESIZE = 5;
+const KIND_START = 6;
 
 const KEY_IDS = {
     // Q and R stand in for Escape and F5: a browser keeps both of those for
@@ -136,6 +137,15 @@ export function resize(cssWidth, cssHeight, devicePixelRatio) {
         0,
         0,
     );
+}
+
+// The game holds still until this arrives. Boot has to finish before the player can press
+// Play, so the loop is already running by now - the wake is for the case where the page was
+// hidden and put it back to sleep in between.
+export function start() {
+    if (write(KIND_START, 0, 0, 0, 0, 0)) {
+        ownerWorker?.postMessage({ ctrdxWake: 1 });
+    }
 }
 
 export function reservedKey(code) {
