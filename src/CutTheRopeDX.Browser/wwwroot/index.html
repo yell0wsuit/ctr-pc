@@ -153,7 +153,15 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                justify-content: safe center;
                 gap: 20px;
+                overflow-y: auto;
+                touch-action: pan-y;
+                box-sizing: border-box;
+                padding: calc(24px + env(safe-area-inset-top, 0px))
+                    calc(24px + env(safe-area-inset-right, 0px))
+                    calc(24px + env(safe-area-inset-bottom, 0px))
+                    calc(24px + env(safe-area-inset-left, 0px));
                 background: #202329;
                 color: #e6e6e6;
                 font-family:
@@ -171,6 +179,9 @@
                 opacity: 0;
                 pointer-events: none;
             }
+            #splash > * {
+                flex-shrink: 0;
+            }
             #splash img {
                 width: 96px;
                 height: 96px;
@@ -178,15 +189,16 @@
             #splash p,
             #splash h1 {
                 margin: 0;
+                max-width: min(100%, 40rem);
+                overflow-wrap: anywhere;
                 text-align: center;
             }
             #splash h1 {
                 font-size: 1.25rem;
                 font-weight: 600;
             }
-            #splash-hint {
-                max-width: 320px;
-                padding: 0 24px;
+            #splash #splash-hint {
+                max-width: min(100%, 320px);
                 font-size: 0.8rem;
                 line-height: 1.45;
                 opacity: 0.6;
