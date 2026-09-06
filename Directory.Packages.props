@@ -7,7 +7,7 @@
 
   <!-- Game -->
   <ItemGroup>
-    <PackageVersion Include="FontStashSharp.MonoGame" Version="1.5.8" />
+    <PackageVersion Include="FontStashSharp.MonoGame" Version="1.5.9" />
     <PackageVersion Include="Microsoft.NETCore.Jit" Version="1.0.12" />
     <PackageVersion Include="MonoGame.Framework.Native" Version="$(MonoGameVersion)" />
     <PackageVersion Include="MonoGame.Framework.DesktopGL" Version="$(MonoGameVersion)" />
