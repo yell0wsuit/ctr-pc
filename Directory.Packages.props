@@ -16,7 +16,7 @@
     <PackageVersion Include="MonoGame.Runtime.Linux.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="FFmpeg.AutoGen" Version="8.1.0" />
     <PackageVersion Include="SkiaSharp" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.151.2" />
   </ItemGroup>
 
   <!-- Content builder -->
